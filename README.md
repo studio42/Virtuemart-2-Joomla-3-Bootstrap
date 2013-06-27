@@ -5,5 +5,5 @@ See http://dev.virtuemart.net/projects/virtuemart/files for all packages.
 
 VIrtuemart 2 is a online shop solution for joomla 2.5.
 
-Commit update are only some bug fix, i appied and share to the user, for now only some fixes.(comming next)
+Commit update are only some bug fix, i applied and share to the user, for now only some fixes.(comming next)
 
