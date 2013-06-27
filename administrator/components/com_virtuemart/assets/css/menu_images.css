@@ -1,0 +1,260 @@
+.vmicon{ background: no-repeat top left; width: 16px;height: 16px; float: right;margin-right: 4px;
+    opacity : 0.8;
+    -moz-opacity : 0.8;
+    -ms-filter: "alpha(opacity=90)"; /* IE 8 */
+    filter : alpha(opacity=90); /* IE < 8 */  }
+.vmicon:hover{opacity :1;}
+
+/* to use inline with no float*/
+.icon-nofloat{ display: inline-block; float: none; vertical-align: middle;}
+
+.vmicon-16-adduser{ background: url(../images/icone16.png) 0 0; }
+.vmicon-16-adduser-off{ background: url(../images/icone16.png) 0 -16px;}
+
+.vmicon-16-apply{ background: url(../images/icone16.png) 0 -82px;}
+.vmicon-16-apply{ background: url(../images/icone16.png) 0 -98px;}
+
+.vmicon-16-archive{ background: url(../images/icone16.png) 0 -164px; }
+.vmicon-16-article{ background: url(../images/icone16.png) 0 -230px; }
+.vmicon-16-back{ background: url(../images/icone16.png) 0 -296px;}
+.vmicon-16-back-off{ background: url(../images/icone16.png) 0 -212px;}
+
+.vmicon-16-bug{ background: url(../images/icone16.png) 0 -378px; }
+.vmicon-16-cancel{ background: url(../images/icone16.png) 0 -444px;}
+.vmicon-16-cancel-off{ background: url(../images/icone16.png) 0 -460px;}
+
+.vmicon-16-category{ background: url(../images/icone16.png) 0 -526px; }
+.vmicon-16-checkin{ background: url(../images/icone16.png) 0 -592px; }
+.vmicon-16-component{ background: url(../images/icone16.png) 0 -658px; }
+.vmicon-16-config{ background: url(../images/icone16.png) 0 -724px; }
+.vmicon-16-content{ background: url(../images/icone16.png) 0 -790px; }
+.vmicon-16-copy{ background: url(../images/icone16.png) 0 -856px;}
+.vmicon-16-copy-off{ background: url(../images/icone16.png) 0 -872px;}
+
+.vmicon-16-cpanel{ background: url(../images/icone16.png) 0 -938px; }
+.vmicon-16-css{ background: url(../images/icone16.png) 0 -1004px;}
+.vmicon-16-css-off{ background: url(../images/icone16.png) 0 -1004px;}
+
+.vmicon-16-default-off{ background: url(../images/icone16.png) 0 -1086px; }
+.vmicon-16-default{ background: url(../images/icone16.png) 0 -1152px; }
+.vmicon-16-download{ background: url(../images/icone16.png) 0 -1220px;}
+.vmicon-16-download-off{ background: url(../images/icone16.png) 0 -1234px;}
+
+.vmicon-16-edit{ background: url(../images/icone16.png) 0 -1300px;}
+.vmicon-16-edit-off{ background: url(../images/icone16.png) 0 -1316px;}
+
+.vmicon-16-editadd{ background: url(../images/icone16.png) 0 -1382px; }
+.vmicon-16-export{ background: url(../images/icone16.png) 0 -1448px;}
+.vmicon-16-export-off{ background: url(../images/icone16.png) 0 -1464px;}
+
+.vmicon-16-forward{ background: url(../images/icone16.png) 0 -1530px;}
+.vmicon-16-forward-off{ background: url(../images/icone16.png) 0 -1546px;}
+
+.vmicon-16-frontpage{ background: url(../images/icone16.png) 0 -1612px; }
+.vmicon-16-google2{ background: url(../images/icone16.png) 0 -1678px; }
+.vmicon-16-help{ background: url(../images/icone16.png) 0 -1744px; }
+.vmicon-16-html{ background: url(../images/icone16.png) 0 -1810px;}
+.vmicon-16-html-off{ background: url(../images/icone16.png) 0 -1826px;}
+
+.vmicon-16-import{ background: url(../images/icone16.png) 0 -1892px; }
+.vmicon-16-info{ background: url(../images/icone16.png) -66px 0; }
+.vmicon-16-install{ background: url(../images/icone16.png) -66px -66px; }
+.vmicon-16-language{ background: url(../images/icone16.png) -66px -132px; }
+.vmicon-16-logout{ background: url(../images/icone16.png) -66px -198px; }
+.vmicon-16-media{ background: url(../images/icone16.png) -66px -264px; }
+.vmicon-16-menu{ background: url(../images/icone16.png) -66px -330px; }
+.vmicon-16-menumgr{ background: url(../images/icone16.png) -66px -396px; }
+.vmicon-16-messages{ background: url(../images/icone16.png) -66px -462px; }
+.vmicon-16-module{ background: url(../images/icone16.png) -66px -528px; }
+.vmicon-16-move{ background: url(../images/icone16.png) -66px -594px;}
+.vmicon-16-move-off{ background: url(../images/icone16.png) -66px -610px;}
+
+.vmicon-16-new{ background: url(../images/icone16.png) -66px -676px;}
+.vmicon-16-new-off{ background: url(../images/icone16.png) -66px -692px;}
+
+.vmicon-16-orderstatus{ background: url(../images/icone16.png) -66px -758px; }
+.vmicon-16-plugin{ background: url(../images/icone16.png) -66px -824px; }
+.vmicon-16-preview{ background: url(../images/icone16.png) -66px -890px;}
+.vmicon-16-preview-off{ background: url(../images/icone16.png) -66px -906px;}
+
+.vmicon-16-publish{ background: url(../images/icone16.png) -66px -972px;}
+.vmicon-16-publish-off{ background: url(../images/icone16.png) -66px -988px;}
+
+.vmicon-16-refresh{ background: url(../images/icone16.png) -66px -1054px;}
+.vmicon-16-refresh-off{ background: url(../images/icone16.png) -66px -1070px;}
+
+.vmicon-16-reload{ background: url(../images/icone16.png) -66px -1136px; }
+.vmicon-16-remove{ background: url(../images/icone16.png) -66px -1202px; }
+.vmicon-16-revert{ background: url(../images/icone16.png) -66px -1268px;}
+.vmicon-16-revert-off{ background: url(../images/icone16.png) -66px -1284px;}
+
+.vmicon-16-save{ background: url(../images/icone16.png) -66px -1350px; }
+.vmicon-16-search{ background: url(../images/icone16.png) -66px -1416px;}
+.vmicon-16-search-off{ background: url(../images/icone16.png) -66px -1432px;}
+
+.vmicon-16-section{ background: url(../images/icone16.png) -66px -1498px; }
+.vmicon-16-send{ background: url(../images/icone16.png) -66px -1564px;}
+.vmicon-16-send-off{ background: url(../images/icone16.png) -66px -1576px;}
+
+.vmicon-16-static{ background: url(../images/icone16.png) -66px -1646px; }
+.vmicon-16-stats{ background: url(../images/icone16.png) -66px -1712px; }
+.vmicon-16-themes{ background: url(../images/icone16.png) -66px -1778px; }
+.vmicon-16-trash{ background: url(../images/icone16.png) -66px -1844px; }
+.vmicon-16-unpublish{ background: url(../images/icone16.png) -66px -1910px;}
+.vmicon-16-unpublish-off{ background: url(../images/icone16.png) -66px -1926px;}
+
+.vmicon-16-upload{ background: url(../images/icone16.png) -132px 0;}
+.vmicon-16-upload-off{ background: url(../images/icone16.png) -132px 16px;}
+
+.vmicon-16-user{ background: url(../images/icone16.png) -132px -82px; }
+.vmicon-16-xml{ background: url(../images/icone16.png) -132px -148px; }
+/*menu wrapper toggler */
+.virtuemart-admin-area .toggler {	position: absolute; outline: 0;}
+.vmicon-show{ background: url(../images/show.png) no-repeat;width: 20px; height: 50px; }
+.vmicon-hide{background: url(../images/hide.png) no-repeat;width: 20px; height: 50px; }
+
+/* more extras */
+.vmicon-16-account_balances{ background: url(../images/icone16-more.png) 0 0; }
+.vmicon-16-anchor{ background: url(../images/icone16-more.png) 0 -32px; }
+.vmicon-16-barchart{ background: url(../images/icone16-more.png) 0 -64px; }
+.vmicon-16-book_spelling{ background: url(../images/icone16-more.png) 0 -96px; }
+.vmicon-16-bricks{ background: url(../images/icone16-more.png) 0 -128px; }
+.vmicon-16-calculator{ background: url(../images/icone16-more.png) 0 -160px; }
+.vmicon-16-calendar{ background: url(../images/icone16-more.png) 0 -192px; }
+.vmicon-16-calendar_view_day{ background: url(../images/icone16-more.png) 0 -224px; }
+.vmicon-16-camera{ background: url(../images/icone16-more.png) 0 -256px; }
+.vmicon-16-card_back{ background: url(../images/icone16-more.png) 0 -288px; }
+.vmicon-16-card_credit{ background: url(../images/icone16-more.png) 0 -320px; }
+.vmicon-16-card_gift_2{ background: url(../images/icone16-more.png) 0 -352px; }
+.vmicon-16-cash_terminal{ background: url(../images/icone16-more.png) 0 -384px; }
+.vmicon-16-chart_bar{ background: url(../images/icone16-more.png) 0 -416px; }
+.vmicon-16-chart_pie_alternative{ background: url(../images/icone16-more.png) 0 -448px; }
+.vmicon-16-chart_stock{ background: url(../images/icone16-more.png) 0 -480px; }
+.vmicon-16-client_account_template{ background: url(../images/icone16-more.png) 0 -512px; }
+.vmicon-16-cog{ background: url(../images/icone16-more.png) 0 -544px; }
+.vmicon-16-coin_stack_gold{ background: url(../images/icone16-more.png) 0 -576px; }
+.vmicon-16-coins{ background: url(../images/icone16-more.png) 0 -608px; }
+.vmicon-16-comment_edit{ background: url(../images/icone16-more.png) 0 -640px; }
+.vmicon-16-comments{ background: url(../images/icone16-more.png) 0 -672px; }
+.vmicon-16-compress{ background: url(../images/icone16-more.png) 0 -704px; }
+.vmicon-16-convert_color_to_gray{ background: url(../images/icone16-more.png) 0 -736px; }
+.vmicon-16-creditcards{ background: url(../images/icone16-more.png) 0 -768px; }
+.vmicon-16-database_gear{ background: url(../images/icone16-more.png) 0 -800px; }
+.vmicon-16-date{ background: url(../images/icone16-more.png) 0 -832px; }
+.vmicon-16-date_edit{ background: url(../images/icone16-more.png) 0 -864px; }
+.vmicon-16-disk{ background: url(../images/icone16-more.png) 0 -896px; }
+.vmicon-16-document_editing{ background: url(../images/icone16-more.png) 0 -928px; }
+.vmicon-16-document_move{ background: url(../images/icone16-more.png) 0 -960px; }
+.vmicon-16-drive_user{ background: url(../images/icone16-more.png) 0 -992px; }
+.vmicon-16-email{ background: url(../images/icone16-more.png) 0 -1024px; }
+.vmicon-16-email_add{ background: url(../images/icone16-more.png) 0 -1056px; }
+.vmicon-16-email_open{ background: url(../images/icone16-more.png) 0 -1088px; }
+.vmicon-16-email_open_image{ background: url(../images/icone16-more.png) 0 -1120px; }
+.vmicon-16-error{ background: url(../images/icone16-more.png) 0 -1152px; }
+.vmicon-16-ext_bmp{ background: url(../images/icone16-more.png) 0 -1184px; }
+.vmicon-16-ext_doc{ background: url(../images/icone16-more.png) 0 -1216px; }
+.vmicon-16-ext_flv{ background: url(../images/icone16-more.png) 0 -1248px; }
+.vmicon-16-ext_gif{ background: url(../images/icone16-more.png) 0 -1280px; }
+.vmicon-16-ext_html{ background: url(../images/icone16-more.png) 0 -1312px; }
+.vmicon-16-ext_jpeg{ background: url(../images/icone16-more.png) 0 -1344px; }
+.vmicon-16-ext_jpg{ background: url(../images/icone16-more.png) 0 -1376px; }
+.vmicon-16-ext_mp4{ background: url(../images/icone16-more.png) 0 -1408px; }
+.vmicon-16-ext_mpeg{ background: url(../images/icone16-more.png) 0 -1440px; }
+.vmicon-16-ext_pdf{ background: url(../images/icone16-more.png) 0 -1472px; }
+.vmicon-16-ext_png{ background: url(../images/icone16-more.png) 0 -1504px; }
+.vmicon-16-ext_rar{ background: url(../images/icone16-more.png) 0 -1536px; }
+.vmicon-16-ext_swf{ background: url(../images/icone16-more.png) 0 -1568px; }
+.vmicon-16-ext_xls{ background: url(../images/icone16-more.png) 0 -1600px; }
+.vmicon-16-ext_zip{ background: url(../images/icone16-more.png) 0 -1632px; }
+.vmicon-16-film{ background: url(../images/icone16-more.png) 0 -1664px; }
+.vmicon-16-folder{ background: url(../images/icone16-more.png) 0 -1696px; }
+.vmicon-16-folder_camera{ background: url(../images/icone16-more.png) 0 -1728px; }
+.vmicon-16-folder_image{ background: url(../images/icone16-more.png) 0 -1760px; }
+.vmicon-16-folder_user{ background: url(../images/icone16-more.png) 0 -1792px; }
+.vmicon-16-folder_wrench{ background: url(../images/icone16-more.png) 0 -1824px; }
+.vmicon-16-gear_in{ background: url(../images/icone16-more.png) 0 -1856px; }
+.vmicon-16-gift_add{ background: url(../images/icone16-more.png) 0 -1888px; }
+.vmicon-16-globe{ background: url(../images/icone16-more.png) 0 -1920px; }
+.vmicon-16-group{ background: url(../images/icone16-more.png) 0 -1952px; }
+.vmicon-16-group_gear{ background: url(../images/icone16-more.png) -32px 0; }
+.vmicon-16-house{ background: url(../images/icone16-more.png) -32px -32px; }
+.vmicon-16-installer_box{ background: url(../images/icone16-more.png) -32px -64px; }
+.vmicon-16-interface_preferences{ background: url(../images/icone16-more.png) -32px -96px; }
+.vmicon-16-layout{ background: url(../images/icone16-more.png) -32px -128px; }
+.vmicon-16-layout_content{ background: url(../images/icone16-more.png) -32px -160px; }
+.vmicon-16-lorry{ background: url(../images/icone16-more.png) -32px -192px; }
+.vmicon-16-lorry_flatbed{ background: url(../images/icone16-more.png) -32px -224px; }
+.vmicon-16-magnifier{ background: url(../images/icone16-more.png) -32px -256px; }
+.vmicon-16-map{ background: url(../images/icone16-more.png) -32px -288px; }
+.vmicon-16-mixer{ background: url(../images/icone16-more.png) -32px -320px; }
+.vmicon-16-note{ background: url(../images/icone16-more.png) -32px -352px; }
+.vmicon-16-page_white_stack{ background: url(../images/icone16-more.png) -32px -384px; }
+.vmicon-16-participation_rate{ background: url(../images/icone16-more.png) -32px -416px; }
+.vmicon-16-picture{ background: url(../images/icone16-more.png) -32px -448px; }
+.vmicon-16-pictures{ background: url(../images/icone16-more.png) -32px -480px; }
+.vmicon-16-piechart{ background: url(../images/icone16-more.png) -32px -512px; }
+.vmicon-16-plugin{ background: url(../images/icone16-more.png) -32px -544px; }
+.vmicon-16-plugin_edit{ background: url(../images/icone16-more.png) -32px -576px; }
+.vmicon-16-price_watch{ background: url(../images/icone16-more.png) -32px -608px; }
+.vmicon-16-report{ background: url(../images/icone16-more.png) -32px -640px; }
+.vmicon-16-reseller_account{ background: url(../images/icone16-more.png) -32px -672px; }
+.vmicon-16-reseller_account_template{ background: url(../images/icone16-more.png) -32px -704px; }
+.vmicon-16-reseller_programm{ background: url(../images/icone16-more.png) -32px -736px; }
+.vmicon-16-shopping{ background: url(../images/icone16-more.png) -32px -768px; }
+.vmicon-16-statistic{ background: url(../images/icone16-more.png) -32px -800px; }
+.vmicon-16-statistics{ background: url(../images/icone16-more.png) -32px -832px; }
+.vmicon-16-to_do_list_cheked_1{ background: url(../images/icone16-more.png) -32px -864px; }
+.vmicon-16-user-group{ background: url(../images/icone16-more.png) -32px -896px; }
+.vmicon-16-user-phd-group{ background: url(../images/icone16-more.png) -32px -928px; }
+.vmicon-16-wrench_orange{ background: url(../images/icone16-more.png) -32px -960px; }
+td.flag-ar,.flag-ar{ background: url(../images/flag/ar.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-bg,.flag-bg{ background: url(../images/flag/bg.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-ca,.flag-ca{ background: url(../images/flag/ca.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-cs,.flag-cs{ background: url(../images/flag/cs.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-da,.flag-da{ background: url(../images/flag/da.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-de,.flag-de{ background: url(../images/flag/de.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-el,.flag-el{ background: url(../images/flag/el.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-en,.flag-en{ background: url(../images/flag/en.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-eo,.flag-eo{ background: url(../images/flag/eo.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-es,.flag-es{ background: url(../images/flag/es.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-et,.flag-et{ background: url(../images/flag/et.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-eu,.flag-eu{ background: url(../images/flag/eu.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-fa,.flag-fa{ background: url(../images/flag/fa.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-fi,.flag-fi{ background: url(../images/flag/fi.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-fo,.flag-fo{ background: url(../images/flag/fo.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-fr,.flag-fr{ background: url(../images/flag/fr.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-ga,.flag-ga{ background: url(../images/flag/ga.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-gl,.flag-gl{ background: url(../images/flag/gl.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-he,.flag-he{ background: url(../images/flag/he.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-hr,.flag-hr{ background: url(../images/flag/hr.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-hu,.flag-hu{ background: url(../images/flag/hu.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-id,.flag-id{ background: url(../images/flag/id.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-is,.flag-is{ background: url(../images/flag/is.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-it,.flag-it{ background: url(../images/flag/it.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-ja,.flag-ja{ background: url(../images/flag/ja.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-km,.flag-km{ background: url(../images/flag/km.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-lb,.flag-lb{ background: url(../images/flag/lb.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-lt,.flag-lt{ background: url(../images/flag/lt.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-lv,.flag-lv{ background: url(../images/flag/lv.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-nb,.flag-nb{ background: url(../images/flag/nb.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-nl,.flag-nl{ background: url(../images/flag/nl.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-nn,.flag-nn{ background: url(../images/flag/nn.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-pl,.flag-pl{ background: url(../images/flag/pl.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-pt,.flag-pt-br{ background: url(../images/flag/pt-br.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-pt,.flag-pt-pt{ background: url(../images/flag/pt-pt.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-ro,.flag-ro{ background: url(../images/flag/ro.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-ru,.flag-ru{ background: url(../images/flag/ru.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-sco,.flag-sco{ background: url(../images/flag/sco.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-se,.flag-se{ background: url(../images/flag/se.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-sk,.flag-sk{ background: url(../images/flag/sk.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-sl,.flag-sl{ background: url(../images/flag/sl.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-sq,.flag-sq{ background: url(../images/flag/sq.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-sv,.flag-sv{ background: url(../images/flag/sv.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-tg,.flag-tg{ background: url(../images/flag/tg.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-th,.flag-th{ background: url(../images/flag/th.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-tl,.flag-tl{ background: url(../images/flag/tl.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-tr,.flag-tr{ background: url(../images/flag/tr.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-uk,.flag-uk{ background: url(../images/flag/uk.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-vi,.flag-vi{ background: url(../images/flag/vi.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-zh,.flag-zh-hans{ background: url(../images/flag/zh-hans.png) no-repeat 0 0; padding-left:20px !important;}
+td.flag-zh,.flag-zh-hant{ background: url(../images/flag/zh-hant.png) no-repeat 0 0; padding-left:20px !important;}

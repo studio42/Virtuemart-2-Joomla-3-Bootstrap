@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_VIRTUEMART_CATEGORY_VIEW_DEFAULT_TITLE">
+		<message><![CDATA[COM_VIRTUEMART_CATEGORY_VIEW_DEFAULT_DESC]]></message>
+	</layout>
+	<state>
+		<name>COM_VIRTUEMART_CATEGORY_VIEW_DEFAULT_TITLE</name>
+		<description><![CDATA[COM_VIRTUEMART_CATEGORY_VIEW_DEFAULT_DESC]]></description>
+
+		<url addpath="/administrator/components/com_virtuemart/elements">
+			<param name="virtuemart_category_id" section="com_virtuemart"
+				type="vmcategoriesmenu" value_field="category_name"
+				label="COM_VIRTUEMART_CATEGORY_FIELD_SELECT_TITLE" description="COM_VIRTUEMART_CATEGORY_FIELD_SELECT_TITLE_DESC" />
+		</url>
+	</state>
+
+	<fields name="request">
+		<fieldset name="request"
+			addfieldpath="/administrator/components/com_virtuemart/models/fields">
+			<field name="virtuemart_category_id" type="category"
+				label="COM_VIRTUEMART_CATEGORY_FIELD_SELECT_TITLE" required="true"
+				description="COM_VIRTUEMART_CATEGORY_FIELD_SELECT_TITLE_DESC" />
+		</fieldset>
+	</fields>
+</metadata>
+

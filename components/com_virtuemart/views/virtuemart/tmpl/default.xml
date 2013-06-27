@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_VIRTUEMART_VIRTUEMART_VIEW_DEFAULT_TITLE">
+	<message><![CDATA[COM_VIRTUEMART_VIRTUEMART_VIEW_DEFAULT_TITLE_DESC]]></message>
+	</layout>
+	<state>
+		<name>COM_VIRTUEMART_VIRTUEMART_VIEW_DEFAULT_TITLE</name>
+		<description><![CDATA[COM_VIRTUEMART_VIRTUEMART_VIEW_DEFAULT_TITLE_DESC]]></description>
+	</state>
+</metadata>
+
+

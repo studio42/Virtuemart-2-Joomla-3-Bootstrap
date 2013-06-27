@@ -1,0 +1,217 @@
+/*////////////////////////////////////
+/////// VirtueMart Admin Area ////////
+////////////////////////////////////*/
+
+.virtuemart-admin-area {border: solid #b4b4b4 1px;-moz-border-radius-bottomleft: 6px;-moz-border-radius-bottomright: 6px;-webkit-border-bottom-left-radius: 6px;-webkit-border-bottom-right-radius: 6px;overflow: hidden;    background: url(../images/admin_ui/container_bg_blue.png) repeat-y  scroll 0 0 #eee ;}
+
+* html .virtuemart-admin-area { /*IE6 only*/overflow: visible;height: 1px;}
+.virtuemart-admin-area .menu-wrapper {width:200px ;float: left;}
+.virtuemart-admin-area #admin-content-wrapper {margin-left: auto;padding-right: 3px;background: url(../images/admin_ui/content_wraper_bg_grey.png) right repeat-y;}
+/*.virtuemart-admin-area .menu-wrapper, .virtuemart-admin-area #admin-content-wrapper {padding-bottom: 16000px;margin-bottom: -16000px;}*/
+.virtuemart-admin-area #admin-content-wrapper .admin-content {margin: 0;padding: 0;padding-left:10px;overflow: auto; background: url(../images/admin_ui/content_bg_grey.png) left repeat-y #fff;border-left: solid #b4b4b4 1px;height:540px;}
+.virtuemart-admin-area #admin-content-wrapper .admin-content {height:auto;min-height: 540px;}
+#header {     background: url(../images/admin_ui/header_bg.png) repeat-x scroll 0 0 #F0F0F0;padding:3px;padding-left: 10px;padding-right: 10 px;
+
+}
+
+
+.ratingbox {
+	position:relative;
+	display:block;
+	width:120px;
+	height:24px;
+	background:url(../../../../../components/com_virtuemart/assets/images/color-stars.png) repeat-x scroll 0 bottom transparent;
+}
+.ratingbox span {
+	background:url(../../../../../components/com_virtuemart/assets/images/color-stars.png) repeat-x;
+	display:block;
+	width:1%;
+	height:24px;
+	position:absolute;
+}
+.stars-orange{background-position:0 0 !important;}
+.stars-red{background-position:0 -54px !important;}
+.stars-green{background-position:0 -108px !important; }
+.stars-blue{background-position:0 -162px !important;}
+.stars-purple{background-position:0 -216px !important;}
+
+
+/*////////////////////////////////////
+/ Overwriting Joomla Admin Template //
+////////////////////////////////////*/
+
+/* Toolbar */
+#element-box, #toolbar-box, #submenu-box {padding: 0 !important;
+}
+#element-box .t, #element-box .b {display: none;}
+#content-box #element-box .m, #content-box .m {border: none;padding: 0px;background: none;}
+#content-box #toolbar-box {border-top: solid #b4b4b4 1px;border-left: solid #b4b4b4 1px;border-right: solid #b4b4b4 1px;margin: 0px;padding:0;-moz-border-radius: 6px 6px 0 0;
+-webkit-border-radius:6px 6px 0 0;background: #fff url(../images/admin_ui/head_bg.png) center center repeat-x;}
+#content-box #toolbar-box .m {border: solid #fff 1px;padding: 7px 10px 4px 10px;background: none repeat scroll 0 0 transparent;
+-moz-border-radius: 6px 6px 0 0;
+-webkit-border-top-left-radius:6px;
+-webkit-border-radius:6px 6px 0 0;text-shadow: 0px -1px 1px #fff;}
+#content-box #toolbar-box a.toolbar {border: none;}
+#content-box #toolbar-box .m .header {color: #444444;font-weight: normal;padding: 0px 0px 0px 60px;margin: 3px 0px 0px 0px;background-position: left center;background-repeat: no-repeat;}
+#content-box #toolbar-box .t, #content-box #toolbar-box .b {display: none;}
+.bartext { display: block;font-size: 12px;font-weight: bold;line-height: 32px;vertical-align: inherit;white-space: nowrap;width: auto !important;}
+
+/* System Messages overide */
+#system-message {margin: 0px !important;overflow: auto;}
+#system-message dd.message {background: #4693BB url(../images/admin_ui/saved_background.png) top repeat-x ; max-height: 400px; overflow: auto;}
+#system-message dd.message ul {color: #000; background: url("../images/icon_32/information.png") no-repeat 8px center transparent;}
+#system-message dd.message ul ,#system-message dd.error ul,#system-message dd.notice ul{margin: 0px;    border-bottom: 1px solid #84A7DB !important;   border-top: 0px !important;;}
+
+/* System Messages VM2 */
+#system-message dt.save,#system-message dt.remove,#system-message dt.cancel {display: none;}
+/* info message in dark grey */
+#system-message dd.remove,#system-message dd.save,#system-message dd.cancel {color: #F4F6F8; background: #7c7d7f url(../images/admin_ui/tabs-ul-background.png) top repeat-x !important;}
+/* message in RED */
+dl#system-message dd.error,l#system-message dd ul .vmdebug { background: #ffffff url(../images/admin_ui/save_bg.png) top repeat !important;}
+/* message in RED */
+dl#system-message dd.notice { background: #eee url(../images/admin_ui/header_bg.png) top repeat-x !important;}
+/* message icons */
+#system-message dd.message ul {background: url("../images/icon_32/information.png") no-repeat scroll 8px center transparent !important;}
+#system-message dd.notice ul {background: url("../images/icon_32/notice.png") no-repeat scroll 8px center transparent !important;}
+#system-message dd.remove ul {background: url("../images/icon_32/bin.png") no-repeat scroll 8px center transparent !important;}
+#system-message dd.save ul {background: url("../images/icon_32/disk.png") no-repeat scroll 8px center transparent !important;}
+#system-message dd.cancel ul {background: url("../images/icon_32/cancel.png") no-repeat scroll 8px center transparent !important;}
+#system-message dd ul  .vmdebug{    background: url("../images/icon_32/elements_16.png") no-repeat scroll 0px top transparent !important;display: block;}
+#system-message dd.error ul {background: url("../images/icon_32/exclamation.png") no-repeat scroll 8px center transparent !important;}
+
+fieldset input, fieldset textarea, fieldset select, fieldset img, fieldset button {
+    float: left;
+    margin: 5px 5px 5px 0;
+    width: auto;
+}
+input.readonly{  border: 0 none;}
+.adminform input.readonly{ text-align:right; border: 0 none; font-size: 0.909em;font-weight: normal; color:#000; width:75px }
+/* vmdebug */
+.vmdebug pre{ padding-left: 32px;}
+
+dl#system-message dd .vmdebug  { font-size:10px; }
+/* Fieldset */
+.virtuemart-admin-area fieldset {border-radius: 6px;-moz-border-radius: 6px;-webkit-border-radius: 6px;padding: 10px 20px;}
+.virtuemart-admin-area fieldset legend {padding: 0px 10px;}
+
+/* Inputs */
+.virtuemart-admin-area fieldset input {float: none;clear: none;display: inline-block;}
+.virtuemart-admin-area fieldset label, .virtuemart-admin-area fieldset.adminform label, .virtuemart-admin-area fieldset.adminform span.faux-label {float: none;clear: none;display: inline-block;min-width: 0px;}
+textarea {width: 100%;}
+.datepicker{width: 60px;}
+.translator {
+    border-left: 4px solid #1FBE42;
+    padding-left: 8px ;
+}
+/*////////////////////////////////////
+/////////////// Tabs /////////////////
+////////////////////////////////////*/
+
+/* The Navigation Area */
+#admin-ui-tabs ul#tabs {list-style-type:none;margin: 0px;padding: 0px ;background: #7c7d7f url(../images/admin_ui/tabs-ul-background.png) bottom repeat-x;}
+#admin-ui-tabs ul#tabs li {vertical-align: top;color: #FFFFFF;cursor: pointer;display: inline-block;vertical-align: middle;font-size: 12px;height: 32px;letter-spacing: 1px;padding: 5px 0 0 0;text-align: center;text-shadow: 0 -1px 1px #000000;}
+#admin-ui-tabs ul#tabs li span{    line-height: 12px;padding-top: 0px;position: relative;vertical-align: middle;}
+#admin-ui-tabs ul#tabs li.current {background: #fff url(../images/admin_ui/tabs-li-background.png) top repeat-x;color: #444444;text-shadow: 0px -1px 1px #fff;-moz-border-radius-topleft: 6px;-moz-border-radius-topright: 6px;-webkit-border-top-left-radius: 6px;-webkit-border-top-right-radius: 6px;-moz-box-shadow: 0px -1px 2px #3f3f40;cursor: default;border: 0 none;}
+
+/* The Content Area */
+#admin-ui-tabs .tabs {padding: 20px 3px 202px;;overflow:auto;}
+
+/* do not change the line below !!! */
+#admin-ui-tabs .dyn-tabs {overflow:auto;display:none;}
+
+/*////////////////////////////////////
+////////////// Table /////////////////
+////////////////////////////////////*/
+table.adminlist .right{text-align: right;}
+/*form {overflow: auto;}
+table.admin-table {table-layout: auto;border-collapse: collapse;width: 100%;overflow: auto;}
+table.admin-table th {background: #7c7d7f url(../images/admin_ui/admin_table_th_header_background.png) bottom repeat-x;padding: 20px 5px 5px 5px;color: #fff;font-size: 12px;text-shadow: 0px -1px 1px #000;letter-spacing: 0px;font-weight: normal;vertical-align: top;}
+table.admin-table th a {color: #fff;font-size: 13px;text-shadow: 0px -1px 1px #000;cursor:pointer;letter-spacing: 1px;font-weight: normal;}
+table.admin-table tr td {padding: 6px 5px 6px 5px;letter-spacing: 0px;cursor: pointer;font-size: 11px;}
+table.admin-table tr.row0:hover, table.admin-table tr.row1:hover {background: #8297ba url(../images/admin_ui/admin_table_tr_hover_background.png) top repeat-x;color: #fff;}
+table.admin-table tr.row0:hover a, table.admin-table tr.row1:hover a {color: #fff;text-shadow: 0px -1px 1px #5a74a6;}
+table.admin-table tr.row1 {background: #f7f7f7;text-shadow: 0px -1px 1px #fff;}*/
+
+/*////////////////////////////////////
+//////////// Admin Menu //////////////
+////////////////////////////////////*/
+#admin-ui-menu {border-bottom:1px solid #94B1CF;}
+#admin-ui-menu h3.menu-title {background: url("../images/admin_ui/page_bg_blue.png") repeat-x scroll center top #888;cursor:pointer;border-top: 1px solid #94B1CF;margin: 0px;padding: 6px 20px;color: #fff;font-size: 13px;font-weight: normal;color: #333;}
+.menu-vmlogo {background: url("../images/vm_logo.png") no-repeat scroll center bottom #707174;color: #333333;cursor: pointer;font-size: 13px;font-weight: normal;height: 30px;margin: 0;padding: 0;
+}
+.menu-notice { border: 1px solid #B4B4B4;background: url("../images/admin_ui/head_bg.png");border-radius: 6px;margin: 35px;padding: 5px;text-align: center;width: 120px;}
+.menu-notice a:link ,.menu-notice a span {color :#000 ;}
+#admin-ui-menu h3.current,#admin-ui-menu h3.menu-title:hover { background:url("../images/admin_ui/tabs-ul-background.png") repeat-x scroll center bottom #7C7D7F; color :#efefef ; }
+
+#admin-ui-menu .menu-list {border-top: 1px solid #94B1CF;}
+#admin-ui-menu .menu-list ul {margin: 0px;padding: 4px 10px;background:none repeat scroll 0 0 #F7F7F7;border-bottom: 1px solid #888888;}
+#admin-ui-menu .menu-list ul li {list-style: none;}
+#admin-ui-menu .menu-list ul li a {color: #000000;display: block;font-size: 12px;margin: 12px 0;padding: 0 15px 0 4px;text-decoration: none;    opacity : 0.8;
+    -moz-opacity : 0.8;
+    -ms-filter: "alpha(opacity=90)"; /* IE 8 */
+    filter : alpha(opacity=90); /* IE < 8 */  }
+#admin-ui-menu .menu-list ul li a:hover {color: #888; opacity :1;-moz-opacity : 1; -ms-filter: "alpha(opacity=100)"; /* IE 8 */
+    filter : alpha(opacity=100); /* IE < 8 */ }
+
+/*////////////////////////////////////
+////////// Update Notices ////////////
+////////////////////////////////////*/
+
+.update-notice {background: #59c418 url(../images/admin_ui/update_notice_background.png) top repeat-x;font-size: 13px;border-bottom: solid #66676b 1px;}
+.update-notice a:link, .update-notice a:visited {display: block;padding: 9px 20px;color: #fff;text-shadow: 0px -1px 1px #307606;letter-spacing: 1px;text-decoration: none;}
+.update-notice a:link span, .update-notice a:visited span {background: url(../images/admin_ui/icon_info.png) left top no-repeat;padding: 0px 0px 0px 32px;}
+
+/*////////////////////////////////////
+////////////// Basics ////////////////
+////////////////////////////////////*/
+.inline {display: inline-block;vertical-align: middle;}
+.clear {clear: both;}
+.floatleft {float: left;}
+.floatright{float: right;}
+.center{text-align: center}
+.right {text-align: right;}
+
+/*////////////////////////////////////
+///////////// All Width`s ////////////
+////////////////////////////////////*/
+.width1{width:1%}.width2{width:2%}.width3{width:3%}.width4{width:4%}.width5{width:5%}.width6{width:6%}.width7{width:7%}.width8{width:8%}.width9{width:9%}.width10{width:10%}.width11{width:11%}.width12{width:12%}.width13{width:13%}.width14{width:14%}.width15{width:15%}.width16{width:16%}.width17{width:17%}.width18{width:18%}.width19{width:19%}.width20{width:20%}.width21{width:21%}.width22{width:22%}.width23{width:23%}.width24{width:24%}.width25{width:25%}.width26{width:26%}.width27{width:27%}.width28{width:28%}.width29{width:29%}.width30{width:30%}.width31{width:31%}.width32{width:32%}.width33{width:33%}.width34{width:34%}.width35{width:35%}.width36{width:36%}.width37{width:37%}.width38{width:38%}.width39{width:39%}.width40{width:40%}.width41{width:41%}.width42{width:42%}.width43{width:43%}.width44{width:44%}.width45{width:45%}.width46{width:46%}.width47{width:47%}.width48{width:48%}.width49{width:49%}.width50{width:50%}.width51{width:51%}.width52{width:52%}.width53{width:53%}.width54{width:54%}.width55{width:55%}.width56{width:56%}.width57{width:57%}.width58{width:58%}.width59{width:59%}.width60{width:60%}.width61{width:61%}.width62{width:62%}.width63{width:63%}.width64{width:64%}.width65{width:65%}.width66{width:66%}.width67{width:67%}.width68{width:68%}.width69{width:69%}.width70{width:70%}.width71{width:71%}.width72{width:72%}.width73{width:73%}.width74{width:74%}.width75{width:75%}.width76{width:76%}.width77{width:77%}.width78{width:78%}.width79{width:79%}.width80{width:80%}.width81{width:81%}.width82{width:82%}.width83{width:83%}.width84{width:84%}.width85{width:85%}.width86{width:86%}.width87{width:87%}.width88{width:88%}.width89{width:89%}.width90{width:90%}.width91{width:91%}.width92{width:92%}.width93{width:93%}.width94{width:94%}.width95{width:95%}.width96{width:96%}.width97{width:97%}.width98{width:98%}.width99{width:99%}.width100{width:100%}
+
+
+/* Icones */
+.print_32, .icon-32-print {background: url(../images/icon_32/printer.png) no-repeat transparent; display: block;height: 32px;margin: auto;text-align: center;width: 32px;}
+.invoice_32, .invoice-32-print {background: url(../images/icon_32/invoice.png) no-repeat transparent; display: block;height: 32px;margin: auto;text-align: center;width: 32px;}
+.invoicenew_32, .invoice-32-print {background: url(../images/icon_32/invoicenew.png) no-repeat transparent; display: block;height: 32px;margin: auto;text-align: center;width: 32px;}
+
+#limit {width:60px;}
+
+/* jqeury ui autocomplete */
+
+.ui-widget {
+	margin-top: 2em;
+}
+.ui-widget-header,
+.ui-widget-content {
+	padding: 0.5em 1em;
+}
+.ui-widget-header h2 {
+	margin: 0;
+	padding: 0;
+}
+.ui-autocomplete{width:600px;height:300px;}
+.ui-autocomplete li{
+    background: none repeat scroll 0 0 #FFFFFF;
+    display: inline;
+    float: left;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.vmpayment_description, .vmshipment_description{
+    margin-left: 2px;
+}
+#plugin-Container{display:table;}
+.vm2-modallink{height:16px;margin-left: 3px;width:16px;display:inline-block; background: url("../images/admin_ui/icon_external_link.gif") no-repeat scroll left top transparent;}
+
+.migrateLoader {background: url(../images/loader.gif) scroll 0 0 #F0F0F0;padding:0px;width:200px;height:8px;display:inline-block;}
+

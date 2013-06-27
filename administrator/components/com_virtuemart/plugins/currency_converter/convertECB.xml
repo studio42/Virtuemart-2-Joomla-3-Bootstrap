@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<install type="currency_converter" version="1.2.0">	
+	<name>ECB Currency Converter</name>
+	<author><![CDATA[Sören Eberhardt-Biermann]]></author>
+	<creationdate>28. January 2008</creationdate>
+	<copyright><![CDATA[Sören Eberhardt-Biermann]]></copyright>
+	<license>GNU/GPL</license>
+	<authoremail></authoremail>
+	<authorurl>http://joomlacode.org/gf/project/jmart/</authorurl>
+	<version>1.0</version>
+	<description>Currency Converter Plugin, based on Rates from the European Central Bank</description>
+	<element>convertECB</element>
+  	<install>	
+		<files>
+			<filename>convertECB.php</filename>
+		</files>
+		<!--<queries>
+			<query></query>
+			<query></query>
+			<query></query>
+		</queries>-->
+	</install>	
+	
+</install>

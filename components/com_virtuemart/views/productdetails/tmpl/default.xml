@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_VIRTUEMART_PRODUCTDETAILS_VIEW_DEFAULT_TITLE">
+          <message><![CDATA[COM_VIRTUEMART_PRODUCTDETAILS_VIEW_DEFAULT_DESC]]></message>
+    </layout>
+    <state>
+        <name>COM_VIRTUEMART_PRODUCTDETAILS_VIEW_DEFAULT_TITLE</name>
+       		<description><![CDATA[COM_VIRTUEMART_PRODUCTDETAILS_VIEW_DEFAULT_DESC]]></description>
+
+        <url addpath="/administrator/components/com_virtuemart/elements">
+            <param name="virtuemart_product_id" section="com_virtuemart" type="vmproductsmenu"  value_field="product_name" label="COM_VIRTUEMART_PRODUCTDETAILS_FIELD_SELECT" description="COM_VIRTUEMART_PRODUCTDETAILS_FIELD_SELECT_DESC" />
+        </url>
+    </state>
+      
+    <fields name="request" >
+        <fieldset name="request" addfieldpath="/administrator/components/com_virtuemart/models/fields">
+            <field name="virtuemart_product_id" type="product"
+				label="COM_VIRTUEMART_PRODUCTDETAILS_FIELD_SELECT"
+				required="true"
+				description="COM_VIRTUEMART_PRODUCTDETAILS_FIELD_SELECT_DESC"
+			/>
+        </fieldset>
+    </fields>
+</metadata>

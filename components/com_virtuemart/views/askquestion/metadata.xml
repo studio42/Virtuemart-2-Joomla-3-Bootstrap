@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+        <view title="COM_VIRTUEMART_ASKQUESTION_VIEW" hidden="true">
+		<message><![CDATA[COM_VIRTUEMART_ASKQUESTION_VIEW_DESC]]></message>
+	</view>
+</metadata>

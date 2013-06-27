@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_VIRTUEMART_VENDOR_VIEW_TOS_TITLE">
+        <message><![CDATA[COM_VIRTUEMART_VENDOR_VIEW_TOS_DESC]]></message>
+
+    </layout>
+    <state>
+        <name>COM_VIRTUEMART_VENDOR_VIEW_TOS_TITLE</name>
+        <description><![CDATA[COM_VIRTUEMART_VENDOR_VIEW_TOS_DESC]]></description>
+        <url addpath="/administrator/components/com_virtuemart/elements">
+            <param name="virtuemart_vendor_id" section="com_virtuemart" type="vmvendormenu"  value_field="mf_name" label="COM_VIRTUEMART_VENDOR_FIELD_SELECT_TITLE" description="COM_VIRTUEMART_VENDOR_FIELD_SELECT_TITLE_DESC" />
+        </url>
+    </state>
+
+    <fields name="request" >
+        <fieldset name="request" addfieldpath="/administrator/components/com_virtuemart/models/fields">
+            <field name="virtuemart_vendor_id" type="vendor"
+				label="COM_VIRTUEMART_VENDOR_FIELD_SELECT_TITLE"
+				required="true"
+				description="COM_VIRTUEMART_VENDOR_FIELD_SELECT_TITLE_DESC"
+			/>
+        </fieldset>
+    </fields>
+</metadata>

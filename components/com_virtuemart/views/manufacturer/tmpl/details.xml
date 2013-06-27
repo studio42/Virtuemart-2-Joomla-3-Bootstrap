@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_VIRTUEMART_MANUFACTURER_VIEW_DETAILS_TITLE">
+        <message><![CDATA[COM_VIRTUEMART_MANUFACTURER_VIEW_DETAILS_DESC]]></message>
+
+    </layout>
+    <state>
+        <name>COM_VIRTUEMART_MANUFACTURER_VIEW_DETAILS_TITLE</name>
+        <description><![CDATA[COM_VIRTUEMART_MANUFACTURER_VIEW_DETAILS_DESC]]></description>
+        <url addpath="/administrator/components/com_virtuemart/elements">
+            <param name="virtuemart_manufacturer_id" section="com_virtuemart" type="vmmanufacturersmenu"  value_field="mf_name" label="COM_VIRTUEMART_MANUFACTURER_FIELD_SELECT_TITLE" description="COM_VIRTUEMART_MANUFACTURER_FIELD_SELECT_TITLE_DESC" />
+        </url>
+    </state>
+
+    <fields name="request" >
+        <fieldset name="request" addfieldpath="/administrator/components/com_virtuemart/models/fields">
+            <field name="virtuemart_manufacturer_id" type="manufacturer"
+				label="COM_VIRTUEMART_MANUFACTURER_FIELD_SELECT_TITLE"
+				required="true"
+				description="COM_VIRTUEMART_MANUFACTURER_FIELD_SELECT_TITLE_DESC"
+			/>
+        </fieldset>
+    </fields>
+</metadata>
