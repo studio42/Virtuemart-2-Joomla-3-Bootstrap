@@ -140,11 +140,12 @@ JHTML::_ ( 'behavior.modal' );
         <p class="width30 floatleft" id="com-form-login-remember">
             <input type="submit" name="Submit" class="default" value="<?php echo JText::_('COM_VIRTUEMART_LOGIN') ?>" />
             <?php if (JPluginHelper::isEnabled('system', 'remember')) : ?>
-            <label for="remember"><?php echo $remember_me = JVM_VERSION===1? JText::_('Remember me') : JText::_('JGLOBAL_REMEMBER_ME') ?></label>
-            <input type="checkbox" id="remember" name="remember" class="inputbox" value="yes" alt="Remember Me" />
+			<input type="checkbox" id="remember" name="remember" class="inputbox" value="yes" alt="Remember Me" />
+            <label for="remember" style="width:auto"><?php echo $remember_me = JVM_VERSION===1? JText::_('Remember me') : JText::_('JGLOBAL_REMEMBER_ME') ?></label>
+            
             <?php endif; ?>
         </p>
-        </fieldset>
+        
         <div class="clr"></div>
 
         <div class="width30 floatleft">
@@ -155,7 +156,7 @@ JHTML::_ ( 'behavior.modal' );
             <a href="<?php echo JRoute::_('index.php?option='.$comUserOption.'&view=reset'); ?>">
             <?php echo JText::_('COM_VIRTUEMART_ORDER_FORGOT_YOUR_PASSWORD'); ?></a>
         </div>
-
+	</fieldset>
 
 
         <?php /*
