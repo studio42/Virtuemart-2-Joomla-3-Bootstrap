@@ -1305,6 +1305,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 				if (!shopFunctions::InvoiceNumberReserved($invoiceNumberDate[0])) {
 					if(!class_exists('VirtueMartControllerInvoice')) require_once( JPATH_VM_SITE.DS.'controllers'.DS.'invoice.php' );
 					$controller = new VirtueMartControllerInvoice( array(
+						'base_path' => JPATH_VM_SITE,
 						'model_path' => JPATH_VM_SITE.DS.'models',
 						'view_path' => JPATH_VM_SITE.DS.'views'
 					));
