@@ -5,8 +5,11 @@ See http://dev.virtuemart.net/projects/virtuemart/files for all packages.
 
 VIrtuemart 2 is a online shop solution for joomla 2.5.
 
-Commit update are only some bug fix, i applied and share to the user, for now only some fixes.    
-Most of this fix are not included in Official release.  
+Commit update include some bug fix, i applied and share to the user.    
+Most of this fix are not included in Official release.
+
+info
+------------
 This release have to use joomla-pdf-document-view from github to make the orders PDF.  
 If you have always installed original virtuemart 2.0.20.b package, only to do is download and install this release and https://github.com/studio42/joomla-pdf-document-view/archive/master.zip
 Of course, use the Joomla installer to include all in your website.
