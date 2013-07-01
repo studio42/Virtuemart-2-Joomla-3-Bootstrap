@@ -677,7 +677,8 @@ class VmPagination extends JPagination {
 
 			$getArray = (JRequest::get( 'get' ));
 			$link ='';
-			unset ($getArray['limit']);
+			//FIX BY STUDIO 42
+			unset ($getArray['limit'], $getArray['language']);
 
 			// foreach ($getArray as $key => $value ) $link .= '&'.$key.'='.$value;
 			foreach ($getArray as $key => $value ){
