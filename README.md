@@ -13,27 +13,12 @@ Not all fix (but most) listed here are fixed
 JComponentHelper::filterText(unfixed)
 If you try to edit a product in virtuemart 2.0.2 this does not work, upgrade to j2.5+
 
-2-remove unwanted vars in url
-vmmodel
-  		unset ($getArray['limit'], $getArray['language']);
-models/product
-		unset ($getArray['globalCurrencyConverter'], $getArray['virtuemart_manufacturer_id'], $getArray['order'], $getArray['orderby'], $getArray['language']);
+2-remove unwanted languagevars in url
 
 3-fix to clone plugins
-models/product (createClone)
-
-models/customfields.php(storeProductCustomfields)
-plgVmOnCloneProduct
-
 
 4-fix to switch lang
 router.php
-getCategoryRoute
-getCategoryRouteNocache
-added $this->vmlang
-
-getProductName
-$productNamesCache[$id.$this->vmlang]
 
 product edit :
 
@@ -67,7 +52,7 @@ invert TO
 				</div>
 16- product_edit_customer.php 
 before :
-			$aflink = '<a target="_blank" href="http://www.acyba.com/acymailing.html?partner_id=19513"><img title="AcyMailing 2" height=60 src="http://www.acyba.com/images/banners/acymailing_450-109.png"/></a>';
+			$aflink
 remove one </div> some line before
 
 17- product_edit_custom.php 
@@ -75,42 +60,23 @@ remove one </div> some line before
 	TO
 				<div class="inline"><?php echo  $this->customsList; ?></div>
 				
-18- product_edit_price.php 
-	<table class="adminform" class="productPriceTable">
-TO 
-	<table class="adminform productPriceTable">
+18- product_edit_price.php  
+class="adminform" class="productPriceTable"  
 19- general HTML ID and array:
 Error: character "[" is not allowed in the value of attribute "id"
-Error: character "]" is not allowed in the value of attribute "id"
 eg.
 id="mprices[product_price_publish_up][] (BAD)
 TO mprices-product_price_publish_up-0 (OK)
 (NOTE : brake a javascript if the value is used in a script).
 
-20- closing tag : </div> is missing for <div class="mailing">
+20- closing tag : div is missing for div class="mailing"
 
-21- missing open <td> before
+21- missing open td before
 	VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
 22- after
- 					<?php echo JText::_('					<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PARENT') ?>') ?>
-	closing tag </div> is missing
+  echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PARENT')
+	closing tag div is missing
 23- do not load customer for new product :
-<fieldset>
-	<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_SHOPPERS'); ?></legend>
-		<?php echo $this->loadTemplate('customer'); ?>
-</fieldset>
-TO
-<?php if ($this->product->virtuemart_product_id) { ?>
-	<fieldset>
-		<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_SHOPPERS'); ?></legend>
-			<?php echo $this->loadTemplate('customer'); ?>
-	</fieldset>
-<?php } ?>
 
 24- remove intnotes unwanted "tabs" :
-				<textarea style="width: 100%;" class="inputbox" name="intnotes" id="intnotes" cols="35" rows="6">
-					<?php echo $this->product->intnotes; ?></textarea>
-	TO
-				<textarea style="width: 100%;" class="inputbox" name="intnotes" id="intnotes" cols="35" rows="6"><?php echo $this->product->intnotes; ?></textarea>
-				
-(Note : Some missing HTML tag break javascript)
+
