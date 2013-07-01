@@ -22,13 +22,13 @@ router.php
 
 product edit :
 
-5-bad Browser TITLE(product edit)
-6-add_new_price do not work (new product)
-7-price-remove button remove original price container, and it's imposible to readd it without saving the product.
-8-add child product, is visible in a new product(but cannot work of course)
-9-removing a plugin from a product, does not call it on save,  to inform it it's not existing. At end you have orphan tables in your plugin.
-10-price set to 0.0 are displayed as "priced" products.(confusing)
-11- on save product without price do an PHP error in product model , but because redirection, this is not visible.
+5-bad Browser TITLE(product edit)  
+6-add_new_price do not work (new product)  
+7-price-remove button remove original price container, and it's imposible to readd it without saving the product.  
+8-add child product, is visible in a new product(but cannot work of course)  
+9-removing a plugin from a product, does not call it on save,  to inform it it's not existing. At end you have orphan tables in your plugin.  
+10-price set to 0.0 are displayed as "priced" products.(confusing)  
+11- on save product without price do an PHP error in product model , but because redirection, this is not visible.  
 reason mprices is not set in : foreach($data['mprices']['product_price'] as $k => $product_price){
 12- possible same issu and fix as 11 : if (!empty($data['childs'])) {  TO  if (isset($data['childs'])) {
 13- product_edit_information.php html price :
@@ -50,10 +50,9 @@ bad HTML : code to move inside a  <td></td>
 invert TO
 					</label>
 				</div>
-16- product_edit_customer.php 
-before :
-			$aflink
-remove one </div> some line before
+16- product_edit_customer.php  
+before : $aflink  
+remove one div some line before  
 
 17- product_edit_custom.php 
 				<div><?php echo  '<div class="inline">'.$this->customsList; ?></div>
