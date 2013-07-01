@@ -29,48 +29,49 @@ product edit :
 9-removing a plugin from a product, does not call it on save,  to inform it it's not existing. At end you have orphan tables in your plugin.  
 10-price set to 0.0 are displayed as "priced" products.(confusing)  
 11- on save product without price do an PHP error in product model , but because redirection, this is not visible.  
-reason mprices is not set in : foreach($data['mprices']['product_price'] as $k => $product_price){
+reason mprices is not set in :
+``` foreach($data['mprices']['product_price'] as $k => $product_price){```
 12- possible same issu and fix as 11 : if (!empty($data['childs'])) {  TO  if (isset($data['childs'])) {
 13- product_edit_information.php html price :
-    		<td valign="top">
+```    		<td valign="top">
     			<!-- Product pricing -->
 	before :
     <table>
-    	<tr>
+    	<tr>```
 AND :
-    	<a href="#" id="add_new_price" ">  TO <a href="#" id="add_new_price">
+```    	<a href="#" id="add_new_price" ">  TO <a href="#" id="add_new_price">```
 14- product_edit_information.php
-    	<input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering">
-bad HTML : code to move inside a  <td></td>
+```    	<input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering">```
+bad HTML : code to move inside a `  <td></td>`
 
 15- product_edit_customer.php 
  after > notification_template
-    					</div>
-    				</label>
+```    					</div>
+    				</label>```
 invert TO
-    					</label>
-    				</div>
+```    					</label>
+    				</div>```   
 16- product_edit_customer.php  
-before : $aflink  
-remove one div some line before  
+before : `$aflink`  
+remove one `div` some line before  
 
 17- product_edit_custom.php 
-    				<div><?php echo  '<div class="inline">'.$this->customsList; ?></div>
+```    				<div><?php echo  '<div class="inline">'.$this->customsList; ?></div>```
 	TO
-    				<div class="inline"><?php echo  $this->customsList; ?></div>
+```    				<div class="inline"><?php echo  $this->customsList; ?></div>```
 				
 18- product_edit_price.php  
-class="adminform" class="productPriceTable"  
+`class="adminform" class="productPriceTable"`  
 19- general HTML ID and array:  
-Error: character "[" is not allowed in the value of attribute "id"  
+HTML Error: `character "[" is not allowed in the value of attribute "id"`  
 eg.  
-id="mprices[product_price_publish_up][] (BAD)  
-TO mprices-product_price_publish_up-0 (OK)  
-(NOTE : brake a javascript if the value is used in a script).  
+`id="mprices[product_price_publish_up][]` (BAD)  
+TO `mprices-product_price_publish_up-0` (OK)  
+(NOTE : can brake a javascript if the value is used in a script).  
 
-20- closing tag : div is missing for div class="mailing"  
-21- missing open td before VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)  
-22- after echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PARENT'), closing tag div is missing  
+20- closing tag : `div` is missing for `div class="mailing"`  
+21- missing open `td` before `VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)`  
+22- after `echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PARENT')`, closing tag `div` is missing  
 23- do not load customer for new product :  
 24- remove intnotes unwanted "tabs" :  
 

@@ -1,0 +1,105 @@
+
+1-Incompatible j1.5 & j1.7 :
+JComponentHelper::filterText
+
+2-remove unwanted vars in url
+vmmodel
+			unset ($getArray['limit'], $getArray['language']);
+models/product
+		unset ($getArray['globalCurrencyConverter'], $getArray['virtuemart_manufacturer_id'], $getArray['order'], $getArray['orderby'], $getArray['language']);
+
+3-fix to clone plugins
+models/product (createClone)
+
+models/customfields.php(storeProductCustomfields)
+plgVmOnCloneProduct
+
+
+4-fix to switch lang
+router.php
+getCategoryRoute
+getCategoryRouteNocache
+added $this->vmlang
+
+getProductName
+$productNamesCache[$id.$this->vmlang]
+
+product edit :
+
+5-bad Browser TITLE(product edit)
+6-add_new_price do not work (new product)
+7-price-remove button remove original price container, and it's imposible to readd it without saving the product.
+8-add child product, is visible in a new product(but cannot work of course)
+9-removing a plugin from a product, does not call it on save,  to inform it it's not existing. At end you have orphan tables in your plugin.
+10-price set to 0.0 are displayed as "priced" products.(confusing)
+11- on save product without price do an PHP error in product model , but because redirection, this is not visible.
+reason mprices is not set in : foreach($data['mprices']['product_price'] as $k => $product_price){
+12- possible same issu and fix as 11 : if (!empty($data['childs'])) {  TO  if (isset($data['childs'])) {
+13- product_edit_information.php html price :
+		<td valign="top">
+			<!-- Product pricing -->
+	before :
+<table>
+	<tr>
+AND :
+	<a href="#" id="add_new_price" ">  TO <a href="#" id="add_new_price">
+14- product_edit_information.php
+	<input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering">
+bad HTML : code to move inside a  <td></td>
+
+15- product_edit_customer.php 
+ after > notification_template
+					</div>
+				</label>
+invert TO
+					</label>
+				</div>
+16- product_edit_customer.php 
+before :
+			$aflink = '<a target="_blank" href="http://www.acyba.com/acymailing.html?partner_id=19513"><img title="AcyMailing 2" height=60 src="http://www.acyba.com/images/banners/acymailing_450-109.png"/></a>';
+remove one </div> some line before
+
+17- product_edit_custom.php 
+				<div><?php echo  '<div class="inline">'.$this->customsList; ?></div>
+	TO
+				<div class="inline"><?php echo  $this->customsList; ?></div>
+				
+18- product_edit_price.php 
+	<table class="adminform" class="productPriceTable">
+TO 
+	<table class="adminform productPriceTable">
+19- general HTML ID and array:
+Error: character "[" is not allowed in the value of attribute "id"
+Error: character "]" is not allowed in the value of attribute "id"
+eg.
+id="mprices[product_price_publish_up][] (BAD)
+TO mprices-product_price_publish_up-0 (OK)
+(NOTE : brake a javascript if the value is used in a script).
+
+20- closing tag : </div> is missing for <div class="mailing">
+
+21- missing open <td> before
+	VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
+22- after
+ 					<?php echo JText::_('					<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PARENT') ?>') ?>
+	closing tag </div> is missing
+23- do not load customer for new product :
+<fieldset>
+	<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_SHOPPERS'); ?></legend>
+		<?php echo $this->loadTemplate('customer'); ?>
+</fieldset>
+TO
+<?php if ($this->product->virtuemart_product_id) { ?>
+	<fieldset>
+		<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_SHOPPERS'); ?></legend>
+			<?php echo $this->loadTemplate('customer'); ?>
+	</fieldset>
+<?php } ?>
+
+24- remove intnotes unwanted "tabs" :
+				<textarea style="width: 100%;" class="inputbox" name="intnotes" id="intnotes" cols="35" rows="6">
+					<?php echo $this->product->intnotes; ?></textarea>
+	TO
+				<textarea style="width: 100%;" class="inputbox" name="intnotes" id="intnotes" cols="35" rows="6"><?php echo $this->product->intnotes; ?></textarea>
+				
+(Note : Some missing HTML tag break javascript)
