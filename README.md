@@ -11,7 +11,7 @@ Not all fix (but most) listed here are fixed
 -------------
 1-Incompatible j1.5 & j1.7 :
 JComponentHelper::filterText(unfixed)
-If you try to edit a product in this release this does not work, upgrade to j2.5+
+If you try to edit a product in virtuemart 2.0.2 this does not work, upgrade to j2.5+
 
 2-remove unwanted vars in url
 vmmodel
