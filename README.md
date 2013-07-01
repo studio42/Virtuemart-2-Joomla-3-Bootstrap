@@ -30,7 +30,7 @@ product edit :
 10-price set to 0.0 are displayed as "priced" products.(confusing)  
 11- on save product without price do an PHP error in product model , but because redirection, this is not visible.  
 reason mprices is not set in :
-``` foreach($data['mprices']['product_price'] as $k => $product_price){```
+` foreach($data['mprices']['product_price'] as $k => $product_price){`
 12- possible same issu and fix as 11 : if (!empty($data['childs'])) {  TO  if (isset($data['childs'])) {
 13- product_edit_information.php html price :
 ```    		<td valign="top">
