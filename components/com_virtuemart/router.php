@@ -656,7 +656,7 @@ class vmrouterHelper {
 	/* instance of class */
 	private static $_instances = array ();
 
-	private static $_catRoute = array ();
+	private $_catRoute = array ();
 
 	public $CategoryName = array();
 	private $dbview = array('vendor' =>'vendor','category' =>'category','virtuemart' =>'virtuemart','productdetails' =>'product','cart' => 'cart','manufacturer' => 'manufacturer','user'=>'user');
@@ -734,7 +734,7 @@ class vmrouterHelper {
 	}
 	/* Get Joomla menu item and the route for category */
 	public function getCategoryRouteNocache($virtuemart_category_id){
-		if (! array_key_exists ($virtuemart_category_id . $this->vmlang, self::$_catRoute)){
+		if (! array_key_exists ($virtuemart_category_id . $this->vmlang, $this->_catRoute)){
 			$category = new stdClass();
 			$category->route = '';
 			$category->itemId = 0;
@@ -767,21 +767,22 @@ class vmrouterHelper {
 				$category->route .= $this->CategoryName[$virtuemart_category_id] ;
 				if ($menuCatid == 0  && $this->menu['virtuemart']) $category->itemId = $this->menu['virtuemart'] ;
 			}
-			self::$_catRoute[$virtuemart_category_id . $this->vmlang] = $category;
+			$this->_catRoute[$virtuemart_category_id . $this->vmlang] = $category;
 		}
-		return self::$_catRoute[$virtuemart_category_id . $this->vmlang] ;
+		
+		return $this->_catRoute[$virtuemart_category_id . $this->vmlang] ;
 	}
 
 	/*get url safe names of category and parents categories  */
 	public function getCategoryNames($virtuemart_category_id,$catMenuId=0){
-
+		
 		static $categoryNamesCache = array();
 		$strings = array();
 		$db = JFactory::getDBO();
 		$parents_id = array_reverse($this->getCategoryRecurse($virtuemart_category_id,$catMenuId)) ;
 
 		foreach ($parents_id as $id ) {
-			if(!isset($categoryNamesCache[$id])){
+			if(!isset($categoryNamesCache[$id. $this->vmlang])){
 				$q = 'SELECT `slug` as name
 					FROM  `#__virtuemart_categories_'.$this->vmlang.'`
 					WHERE  `virtuemart_category_id`='.(int)$id;
@@ -846,7 +847,7 @@ class vmrouterHelper {
 
 		static $productNamesCache = array();
 
-		if(!isset($productNamesCache[$id])){
+		if(!isset($productNamesCache[$id.$this->vmlang])){
 			$db = JFactory::getDBO();
 			$query = 'SELECT `slug` FROM `#__virtuemart_products_'.$this->vmlang.'`  ' .
 				' WHERE `virtuemart_product_id` = ' . (int) $id;
@@ -854,7 +855,7 @@ class vmrouterHelper {
 			$name = $db->loadResult();
 			$productNamesCache[$id] = $name ;
 		} else {
-			$name = $productNamesCache[$id];
+			$name = $productNamesCache[$id.$this->vmlang];
 		}
 
 		return $name.$this->seo_sufix;
