@@ -1684,21 +1684,24 @@ class VirtueMartModelProduct extends VmModel {
 		}
 		$product->slug = $product->slug . '-' . $id;
 		$product->save_customfields = 1;
+		$product->cloned_product_id = $id;
 		$this->store ($product);
 		return $this->_id;
 	}
 
 	/* look if whe have a product type */
 	private function productCustomsfieldsClone ($virtuemart_product_id) {
-
+		$fieldsArray = array();
 		$this->_db = JFactory::getDBO ();
-		$q = "SELECT * FROM `#__virtuemart_product_customfields`";
+		$q = "SELECT * FROM `#__virtuemart_product_customfields` as pc ";
+		$q .= "left join  `#__virtuemart_customs` as c on c.virtuemart_custom_id=pc.virtuemart_custom_id";
 		$q .= " WHERE `virtuemart_product_id` = " . $virtuemart_product_id;
 		$this->_db->setQuery ($q);
 		$customfields = $this->_db->loadAssocList ();
 		if ($customfields) {
 			foreach ($customfields as &$customfield) {
 				unset($customfield['virtuemart_product_id'], $customfield['virtuemart_customfield_id']);
+				$fieldsArray[] = $customfield ;
 			}
 			return $customfields;
 		}
@@ -1846,8 +1849,8 @@ class VirtueMartModelProduct extends VmModel {
 		$getArray = (JRequest::get ('get'));
 		$link = '';
 		$fieldLink = '';
-		// remove setted variable
-		unset ($getArray['globalCurrencyConverter'], $getArray['virtuemart_manufacturer_id'], $getArray['order'], $getArray['orderby']);
+		// remove setted variable FIX BY STUDIO 42
+		unset ($getArray['globalCurrencyConverter'], $getArray['virtuemart_manufacturer_id'], $getArray['order'], $getArray['orderby'], $getArray['language']);
 
 		// foreach ($getArray as $key => $value )
 		// $fieldLink .= '&'.$key.'='.$value;
