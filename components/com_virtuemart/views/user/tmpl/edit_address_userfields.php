@@ -20,29 +20,26 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Status Of Delimiter
-$closeDelimiter = false;
 $openTable = true;
 $hiddenFields = '';
-
 // Output: Userfields
 foreach($this->userFields['fields'] as $field) {
-
+	
 	if($field['type'] == 'delimiter') {
 
 		// For Every New Delimiter
 		// We need to close the previous
 		// table and delimiter
-		if($closeDelimiter) { ?>
+		if($oldType  !=='delimiter' ) { 
+		?>
 			</table>
-		</fieldset>
-		<?php
-		} ?>
-
-		<fieldset>
-			<span class="userfields_info"><?php echo $field['title'] ?></span>
 
 		<?php
-		$closeDelimiter = true;
+		} 
+		?>
+		<div class="userfields_info"><?php echo $field['title'] ?></div>
+
+		<?php
 		$openTable = true;
 
 	} elseif ($field['hidden'] == true) {
@@ -58,7 +55,6 @@ foreach($this->userFields['fields'] as $field) {
 		if($openTable) {
 			$openTable = false;
 			?>
-
 			<table  class="adminForm user-details">
 
 		<?php
@@ -78,14 +74,13 @@ foreach($this->userFields['fields'] as $field) {
 				</tr>
 	<?php
 	}
-
+	$oldType = $field['type'];
 }
 
 // At the end we have to close the current
 // table and delimiter ?>
+		</table>
 
-			</table>
-		</fieldset>
 
 <?php // Output: Hidden Fields
 echo $hiddenFields

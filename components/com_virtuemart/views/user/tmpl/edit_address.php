@@ -30,6 +30,12 @@ else {
 	$rtask = 'registercheckoutuser';
 	$url = JRoute::_ ('index.php?option=com_virtuemart&view=cart&task=checkout', $this->useXHTML, $this->useSSL);
 }
+if (strpos ($this->fTask, 'cart') || strpos ($this->fTask, 'checkout')) {
+	$rview = 'cart';
+}
+else {
+	$rview = 'user';
+}
 ?>
 <h1><?php echo $this->page_title ?></h1>
 <?php
@@ -69,6 +75,7 @@ echo shopFunctionsF::getLoginForm (TRUE, FALSE, $url);
 	}
 </script>
 
+<form method="post" id="userForm" name="userForm" action="<?php echo JRoute::_ ('index.php'); ?>" class="form-validate">
 <fieldset>
 	<h2><?php
 		if ($this->address_type == 'BT') {
@@ -77,20 +84,27 @@ echo shopFunctionsF::getLoginForm (TRUE, FALSE, $url);
 		else {
 			echo JText::_ ('COM_VIRTUEMART_USER_FORM_ADD_SHIPTO_LBL');
 		}
+
 		?>
+		<button class="default right" type="reset"
+				onclick="window.location.href='<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=' . $rview); ?>'"><?php echo JText::_ ('COM_VIRTUEMART_CANCEL'); ?></button>
 	</h2>
 
-	<form method="post" id="userForm" name="userForm" class="form-validate">
-		<!--<form method="post" id="userForm" name="userForm" action="<?php echo JRoute::_ ('index.php'); ?>" class="form-validate">-->
+		<?php
+		if (!class_exists ('VirtueMartCart')) {
+			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		}
+
+		if (count ($this->userFields['functions']) > 0) {
+			echo '<script language="javascript">' . "\n";
+			echo join ("\n", $this->userFields['functions']);
+			echo '</script>' . "\n";
+		}
+		echo $this->loadTemplate ('userfields');
+
+		?>
 		<div class="control-buttons">
 			<?php
-			if (strpos ($this->fTask, 'cart') || strpos ($this->fTask, 'checkout')) {
-				$rview = 'cart';
-			}
-			else {
-				$rview = 'user';
-			}
-// echo 'rview = '.$rview;
 
 			if (strpos ($this->fTask, 'checkout') || $this->address_type == 'ST') {
 				$buttonclass = 'default';
@@ -115,8 +129,6 @@ echo shopFunctionsF::getLoginForm (TRUE, FALSE, $url);
 					<button class="<?php echo $buttonclass ?>" title="<?php echo JText::_ ('COM_VIRTUEMART_CHECKOUT_AS_GUEST'); ?>" type="submit"
 					        onclick="javascript:return myValidator(userForm, '<?php echo $this->fTask; ?>');"><?php echo JText::_ ('COM_VIRTUEMART_CHECKOUT_AS_GUEST'); ?></button>
 					<?php } ?>
-				<button class="default" type="reset"
-				        onclick="window.location.href='<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=' . $rview); ?>'"><?php echo JText::_ ('COM_VIRTUEMART_CANCEL'); ?></button>
 
 
 				<?php
@@ -126,26 +138,8 @@ echo shopFunctionsF::getLoginForm (TRUE, FALSE, $url);
 
 				<button class="<?php echo $buttonclass ?>" type="submit"
 				        onclick="javascript:return myValidator(userForm, '<?php echo $this->fTask; ?>');"><?php echo JText::_ ('COM_VIRTUEMART_SAVE'); ?></button>
-				<button class="default" type="reset"
-				        onclick="window.location.href='<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=' . $rview); ?>'"><?php echo JText::_ ('COM_VIRTUEMART_CANCEL'); ?></button>
-
 				<?php } ?>
 		</div>
-
-
-		<?php
-		if (!class_exists ('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
-		}
-
-		if (count ($this->userFields['functions']) > 0) {
-			echo '<script language="javascript">' . "\n";
-			echo join ("\n", $this->userFields['functions']);
-			echo '</script>' . "\n";
-		}
-		echo $this->loadTemplate ('userfields');
-
-		?>
 </fieldset>
 <?php // }
 if ($this->userDetails->JUser->get ('id')) {
