@@ -120,13 +120,13 @@ $i=0;
 							<option value=""><?php echo JText::_('COM_VIRTUEMART_UNCATEGORIZED')  ?></option>
 							<?php echo $this->category_tree; ?>
 						</select>
+						<?php
+						// It is important to have all product information in the form, since we do not preload the parent
+						// I place the ordering here, maybe we make it editable later.
+							if(!isset($this->product->ordering)) $this->product->ordering = 0;
+						?>
+						<input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering">
 					</td>
-					<?php
-					// It is important to have all product information in the form, since we do not preload the parent
-					// I place the ordering here, maybe we make it editable later.
-						if(!isset($this->product->ordering)) $this->product->ordering = 0;
-					?>
-					<input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering">
 				</tr>
 				<?php $i = 1 - $i; ?>
 				<tr class="row<?php echo $i?>">
@@ -151,7 +151,8 @@ $i=0;
         </tr>
 	</table>
 </fieldset>
-
+<table width="100%">
+	<tr>
 		<td valign="top">
 			<!-- Product pricing -->
           <fieldset>
@@ -260,15 +261,14 @@ $i=0;
     </table>
     <div class="button2-left">
         <div class="blank">
-            <a href="#" id="add_new_price" "><?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_ADD_PRICE') ?> </a>
+            <a href="#" id="add_new_price"><?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_ADD_PRICE') ?> </a>
         </div>
     </div>
 
 </fieldset>
+	</td>
 </tr>
-		</td>
-	</tr>
-	<tr>
+<tr>
 	<td colspan="2" >
 	<fieldset>
 		<legend>
@@ -289,6 +289,7 @@ $i=0;
 
 				<td width="29%"><div style="text-align:right; font-weight: bold;">
 					<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PARENT') ?>
+					</div>
 				</td>
 				<td width="71%"> <?php
 				if ($this->product->product_parent_id) {
@@ -386,8 +387,7 @@ $i=0;
 			<fieldset>
 				<legend>
 				<?php echo JText::_('COM_VIRTUEMART_PRODUCT_PRINT_INTNOTES'); ?></legend>
-				<textarea style="width: 100%;" class="inputbox" name="intnotes" id="intnotes" cols="35" rows="6">
-					<?php echo $this->product->intnotes; ?></textarea>
+				<textarea style="width: 100%;" class="inputbox" name="intnotes" id="intnotes" cols="35" rows="6"><?php echo $this->product->intnotes; ?></textarea>
 			</fieldset>
 		</td>
 	</tr>

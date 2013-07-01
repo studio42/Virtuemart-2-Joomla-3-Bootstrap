@@ -117,12 +117,12 @@ defined('_JEXEC') or die('Restricted access'); ?>
 	</tr>
 </table>
 </fieldset>
-
-<fieldset>
-	<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_SHOPPERS'); ?></legend>
-		<?php echo $this->loadTemplate('customer'); ?>
-</fieldset>
-
+<?php if ($this->product->virtuemart_product_id) { ?>
+	<fieldset>
+		<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_SHOPPERS'); ?></legend>
+			<?php echo $this->loadTemplate('customer'); ?>
+	</fieldset>
+<?php } ?>
 
 
 

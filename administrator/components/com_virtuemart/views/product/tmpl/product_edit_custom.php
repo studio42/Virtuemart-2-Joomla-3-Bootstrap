@@ -58,7 +58,8 @@ if (isset($this->product->customfields_fromParent)) { ?>
 						$tables['fields'] .= '<tr class="removable">
 							<td>'.JText::_($customfield->custom_title).'</td>
 							<td>'.$customfield->custom_tip.'</td>
-							<td>'.$customfield->display.'</td>'.
+							<td>'.$customfield->display.'</td>
+							<td>'.
 							VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
 							.'</td>
 							<td>'.JText::_('COM_VIRTUEMART_CUSTOM_EXTENSION').'</td>
@@ -120,7 +121,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 
 			<fieldset style="background-color:#F9F9F9;">
 				<legend><?php echo JText::_('COM_VIRTUEMART_CUSTOM_FIELD_TYPE' );?></legend>
-				<div><?php echo  '<div class="inline">'.$this->customsList; ?></div>
+				<div class="inline"><?php echo  $this->customsList; ?></div>
 
 				<table id="custom_fields" class="adminlist" cellspacing="0" cellpadding="0">
 					<thead>

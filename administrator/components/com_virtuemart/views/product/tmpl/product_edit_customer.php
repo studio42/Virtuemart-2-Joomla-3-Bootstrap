@@ -42,8 +42,8 @@ $i = 0;
 					<label for="notification_template">
 						<span class="hasTip" title="<?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_USE_NOTIFY_TEMPLATE_TIP'); ?>">
 						<?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_USE_NOTIFY_TEMPLATE'); ?></span>
+					</label>
 				</div>
-				</label>
 				<div><input type="text" name="notify_number" value="" size="4"/><?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_NOTIFY_NUMBER'); ?></div>
 			</div>
 			<br/>
@@ -58,7 +58,7 @@ $i = 0;
 				</div>
 				<div id="customers-list-msg"></div>
 				<br/>
-
+			</div>
 
 		</td>
 	</tr>
@@ -146,8 +146,6 @@ $i = 0;
 				</table>
 
 				<?php } ?>
-			</div>
-
 			</div>
 		</td>
 	</tr>

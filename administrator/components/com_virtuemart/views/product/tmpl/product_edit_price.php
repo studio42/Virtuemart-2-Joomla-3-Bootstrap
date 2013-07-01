@@ -25,7 +25,7 @@ defined ('_JEXEC') or die('Restricted access'); ?>
 <?php
 $rowColor = 0;
 ?>
-<table class="adminform" class="productPriceTable">
+<table class="adminform productPriceTable">
 
     <tr class="row<?php echo $rowColor?>">
         <td width="120px">
