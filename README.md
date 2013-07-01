@@ -46,19 +46,19 @@ bad HTML : code to move inside a `  <td></td>`
 
 15- product_edit_customer.php 
  after > notification_template
-```    					</div>
-    				</label>```
+`    					</div>
+    				</label>`
 invert TO
-```    					</label>
-    				</div>```   
+`    					</label>
+    				</div>`   
 16- product_edit_customer.php  
 before : `$aflink`  
 remove one `div` some line before  
 
 17- product_edit_custom.php 
-```    				<div><?php echo  '<div class="inline">'.$this->customsList; ?></div>```
+`    				<div><?php echo  '<div class="inline">'.$this->customsList; ?></div>`
 	TO
-```    				<div class="inline"><?php echo  $this->customsList; ?></div>```
+`    				<div class="inline"><?php echo  $this->customsList; ?></div>`
 				
 18- product_edit_price.php  
 `class="adminform" class="productPriceTable"`  
