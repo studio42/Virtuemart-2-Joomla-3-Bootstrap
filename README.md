@@ -11,6 +11,9 @@ This release have to use joomla-pdf-document-view from github to make the orders
 If you have always installed original virtuemart 2.0.20.b package, only to do is download and install this release and https://github.com/studio42/joomla-pdf-document-view/archive/master.zip
 Of course, use the Joomla installer to include all in your website.
 
+If you want better PDF, then look the full explain at http://studio42.github.io/joomla-pdf-document-view/index.html. But you have to update the original virtuemart with this repository to use another PDF class.
+
+
 
 Not all fix (but most) listed here are fixed
 -------------
