@@ -7,7 +7,7 @@ VIrtuemart 2 is a online shop solution for joomla 2.5.
 
 Commit update are only some bug fix, i applied and share to the user, for now only some fixes.
 
-Not all fix (but most) listed here a re fixed
+Not all fix (but most) listed here are fixed
 -------------
 1-Incompatible j1.5 & j1.7 :
 JComponentHelper::filterText(unfixed)
