@@ -71,10 +71,13 @@ class VirtueMartControllerInvoice extends JController
 	public function display($cachable = false, $urlparams = false)  {
 		$format = JRequest::getWord('format','html');
 
+
 		if ($format != 'pdf') {
+			$document = JFactory::getDocument();
 			$viewName='invoice';
 			$view = $this->getView($viewName, $format);
 			$view->headFooter = true;
+			$view->document = $document;
 			$view->display();
 		} else {
 			$viewName='invoice';
@@ -157,10 +160,21 @@ class VirtueMartControllerInvoice extends JController
 		$jlang->load('com_virtuemart', JPATH_SITE, $jlang->getDefault(), true);
 		$jlang->load('com_virtuemart', JPATH_SITE, null, true);
 
-		$this->addViewPath( JPATH_VM_SITE.DS.'views' );
-		$view = $this->getView($viewName, $format);
 
-		$view->addTemplatePath( JPATH_VM_SITE.DS.'views'.DS.$viewName.DS.'tmpl' );
+		$app = JApplication::getInstance('site', array(), 'J');
+		// $template = $app->getTemplate();// does not work, the path is a constant and cannot be redefined.
+		$attributes = array('charset' => 'utf-8', 'lineend' => 'unix', 'tab' => '  ', 'language' => $jlang->getTag(),
+			'direction' => $jlang->isRTL() ? 'rtl' : 'ltr');
+
+		$document = JDocument::getInstance('pdf', $attributes);
+		$document->setDestination('F'); // render to file
+		$document->setPath($path);
+		$viewType = $document->getType();
+		$viewName='invoice';
+		$viewLayout = JRequest::getCmd('layout', 'default');
+
+		$view = $this->getView($viewName, 'html', '', array('base_path' => $this->basePath, 'layout' => $viewLayout ));
+		$view->document = $document ;
 		$vmtemplate = VmConfig::get('vmtemplate',0);
 		if($vmtemplate===0 or $vmtemplate == 'default'){
 			if(JVM_VERSION == 2){
@@ -176,150 +190,34 @@ class VirtueMartControllerInvoice extends JController
 		}
 
 		$TemplateOverrideFolder = JPATH_SITE.DS."templates".DS.$templateName.DS."html".DS."com_virtuemart".DS."invoice";
-		if(file_exists($TemplateOverrideFolder)){
+		// if(file_exists($TemplateOverrideFolder)){
 			$view->addTemplatePath( $TemplateOverrideFolder);
-		}
+		// }
 
 		$view->invoiceNumber = $invoiceNumberDate[0];
 		$view->invoiceDate = $invoiceNumberDate[1];
 
 		$view->orderDetails = $orderDetails;
 		$view->uselayout = 'invoice';
+		// $document->Set('Creator','Invoice by VirtueMart 2, used library tcpdf');
+		// $document->Set('Author', $view->vendor->vendor_name);
 
+		// $document->Set('Title',JText::_('COM_VIRTUEMART_INVOICE_TITLE'));
+		// $document->Set('Subject',JText::sprintf('COM_VIRTUEMART_INVOICE_SUBJ',$view->vendor->vendor_store_name));
+		// $document->Set('Keywords','Invoice by VirtueMart 2');
 		ob_start();
 		$view->display();
-		$html = ob_get_contents();
+		$document->setBuffer( ob_get_contents());
+		// $html must contain the path here
+		$document->render();
 		ob_end_clean();
+		
+		//var_dump( $this->basePath,$template,$format,$app,$view,$document,$this,$html); jexit();
 
 
-		// create new PDF document
-		$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-		// set document information
-		$pdf->SetCreator('Invoice by VirtueMart 2, used library tcpdf');
-		$pdf->SetAuthor($view->vendor->vendor_name);
-
-		$pdf->SetTitle(JText::_('COM_VIRTUEMART_INVOICE_TITLE'));
-		$pdf->SetSubject(JText::sprintf('COM_VIRTUEMART_INVOICE_SUBJ',$view->vendor->vendor_store_name));
-		$pdf->SetKeywords('Invoice by VirtueMart 2');
-
-		//virtuemart.cloudaccess.net/index.php?option=com_virtuemart&view=invoice&layout=details&virtuemart_order_id=18&order_number=6e074d9b&order_pass=p_9cb9e2&task=checkStoreInvoice
-		if(empty($view->vendor->images[0])){
-			vmError('Vendor image given path empty ');
-		} else if(empty($view->vendor->images[0]->file_url_folder) or empty($view->vendor->images[0]->file_name) or empty($view->vendor->images[0]->file_extension) ){
-			vmError('Vendor image given image is not complete '.$view->vendor->images[0]->file_url_folder.$view->vendor->images[0]->file_name.'.'.$view->vendor->images[0]->file_extension);
-			vmdebug('Vendor image given image is not complete, the given media',$view->vendor->images[0]);
-		} else if(!empty($view->vendor->images[0]->file_extension) and strtolower($view->vendor->images[0]->file_extension)=='png'){
-			vmError('Warning extension of the image is a png, tpcdf has problems with that in the header, choose a jpg or gif');
-		} else {
-			$imagePath = DS. str_replace('/',DS, $view->vendor->images[0]->file_url_folder.$view->vendor->images[0]->file_name.'.'.$view->vendor->images[0]->file_extension);
-			if(!file_exists(JPATH_ROOT.$imagePath)){
-				vmError('Vendor image missing '.$imagePath);
-			} else {
-				$pdf->SetHeaderData($imagePath, 60, $view->vendor->vendor_store_name, $view->vendorAddress);
-			}
-		}
-
-		// set header and footer fonts
-		$pdf->setHeaderFont(Array('helvetica', '', 8));
-		$pdf->setFooterFont(Array('helvetica', '', 10));
-
-		// set default monospaced font
-		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-		//set margins
-		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-		//set auto page breaks
-		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-		//set image scale factor
-		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-		//TODO include the right file (in libraries/tcpdf/config/lang set some language-dependent strings
-		$l='';
-		$pdf->setLanguageArray($l);
-
-		// set default font subsetting mode
-		$pdf->setFontSubsetting(true);
-
-		// Set font
-		// dejavusans is a UTF-8 Unicode font, if you only need to
-		// print standard ASCII chars, you can use core fonts like
-		// helvetica or times to reduce file size.
-		$pdf->SetFont('helvetica', '', 8, '', true);
-
-		// Add a page
-		// This method has several options, check the source code documentation for more information.
-		$pdf->AddPage();
-
-		// Set some content to print
-		// $html =
-
-		// Print text using writeHTMLCell()
-		$pdf->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
-
-
-		// Close and output PDF document
-		// This method has several options, check the source code documentation for more information.
-		$pdf->Output($path, 'F');
-		return $path;
+		return $view->document->getPath() ; //$html;//jexit();
 
 	}
 }
-
-
-
-
-if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
-	vmError('Controller invoice: For the pdf invoice, you must install the tcpdf library at '.JPATH_VM_LIBRARIES.DS.'tcpdf');
-} else {
-	if(!class_exists('TCPDF'))	require_once(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php');
-	// Extend the TCPDF class to create custom Header and Footer
-	class MYPDF extends TCPDF {
-
-		public function __construct() {
-
-			parent::__construct();
-
-
-		}
-
-		//Page header
-		/*	public function Header() {
-		// Logo
-		$image_file = K_PATH_IMAGES.'logo_example.jpg';
-		$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		// Set font
-		$this->SetFont('helvetica', 'B', 20);
-		// Title
-		$this->Cell(0, 15, '<< TCPDF Example 003 >>', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-		}*/
-
-		// Page footer
-		public function Footer() {
-			// Position at 15 mm from bottom
-			$this->SetY(-15);
-			// Set font
-			$this->SetFont('helvetica', 'I', 8);
-
-			$vendorModel = VmModel::getModel('vendor');
-			$vendor = & $vendorModel->getVendor();
-			// 			$this->assignRef('vendor', $vendor);
-			$vendorModel->addImages($vendor,1);
-			//vmdebug('$vendor',$vendor);
-			$html = $vendor->vendor_legal_info."<br /> Page ".$this->getAliasNumPage().'/'.$this->getAliasNbPages();
-			// Page number
-			$this->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
-
-			// 		$this->writeHTML(0, 10, $vendor->vendor_legal_info."<br /> Page ".$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
-		}
-	}
-}
-
-
-
 
 // No closing tag
