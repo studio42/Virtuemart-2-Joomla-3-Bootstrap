@@ -465,7 +465,6 @@ class VirtueMartModelCustomfields extends VmModel {
 		$this->_db->setQuery( 'SELECT `virtuemart_customfield_id` FROM `#__virtuemart_'.$table.'_customfields` as `PC` WHERE `PC`.virtuemart_'.$table.'_id ='.$id );
 		$old_customfield_ids = $this->_db->loadResultArray();
 
-
 		if (isset ( $datas['custom_param'] )) $params = true ;
 		else $params = false ;
 		if (array_key_exists('field', $datas)) {
@@ -473,19 +472,19 @@ class VirtueMartModelCustomfields extends VmModel {
 			$customfieldIds = array();
 
 
-			foreach($datas['field'] as $key => $fields){
+			foreach($datas['field'] as $key => &$fields){
 				$fields['virtuemart_'.$table.'_id'] =$id;
 				$tableCustomfields = $this->getTable($table.'_customfields');
 				$tableCustomfields->setPrimaryKey('virtuemart_product_id');
 
-				if (!empty($datas['custom_param'][$key]) and !isset($datas['clone']) ) {
+				if (!empty($datas['custom_param'][$key]) and !isset($datas['cloned_product_id']) ) {
 					if (array_key_exists( $key,$datas['custom_param'])) {
 						$fields['custom_param'] = json_encode($datas['custom_param'][$key]);
 					}
 				}
 
 				VirtueMartModelCustomfields::setParameterableByFieldType($tableCustomfields,$fields['field_type']);
-				if(!isset($datas['clone'])){
+				if(!isset($datas['cloned_product_id'])){
 					VirtueMartModelCustomfields::bindParameterableByFieldType($tableCustomfields,$fields['field_type']);
 				}
 
@@ -511,9 +510,18 @@ class VirtueMartModelCustomfields extends VmModel {
 
 		JPluginHelper::importPlugin('vmcustom');
 		$dispatcher = JDispatcher::getInstance();
-		if (isset($datas['plugin_param']) and is_array($datas['plugin_param'])) {
+		
+		if (isset($datas['plugin_param']) and is_array($datas['plugin_param']) and !isset($datas['cloned_product_id'])) {
 			foreach ($datas['plugin_param'] as $key => $plugin_param ) {
 				$dispatcher->trigger('plgVmOnStoreProduct', array($datas, $plugin_param ));
+			}
+		} else if (isset($datas['field']) and is_array($datas['field']) and isset($datas['cloned_product_id'])) {
+			foreach ($datas['field'] as $key => $plugin_param ) {
+				
+				if ($plugin_param['field_type'] !=='E') continue;
+				// var_dump($datas); jexit();
+				$datas['plugin_param'] = $datas['field'] ;
+				$dispatcher->trigger('plgVmOnCloneProduct', array($datas, $plugin_param,$datas['cloned_product_id'] ));
 			}
 		}
 
@@ -1231,7 +1239,7 @@ class VirtueMartModelCustomfields extends VmModel {
 						}
 						$html .= ShopFunctionsF::translateTwoLangKeys ($productCustom->custom_title, $value);
 					}
-					$html .= '</span><br />';
+					$html .= '</span>'; //STUDIO 42 , removed <br/>, why simply not "div" and not "span" ?
 				}
 				else {
 					// falldown method if customfield are deleted
