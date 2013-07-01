@@ -61,21 +61,16 @@ remove one div some line before
 				
 18- product_edit_price.php  
 class="adminform" class="productPriceTable"  
-19- general HTML ID and array:
-Error: character "[" is not allowed in the value of attribute "id"
-eg.
-id="mprices[product_price_publish_up][] (BAD)
-TO mprices-product_price_publish_up-0 (OK)
-(NOTE : brake a javascript if the value is used in a script).
+19- general HTML ID and array:  
+Error: character "[" is not allowed in the value of attribute "id"  
+eg.  
+id="mprices[product_price_publish_up][] (BAD)  
+TO mprices-product_price_publish_up-0 (OK)  
+(NOTE : brake a javascript if the value is used in a script).  
 
-20- closing tag : div is missing for div class="mailing"
-
-21- missing open td before
-	VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
-22- after
-  echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PARENT')
-	closing tag div is missing
-23- do not load customer for new product :
-
-24- remove intnotes unwanted "tabs" :
+20- closing tag : div is missing for div class="mailing"  
+21- missing open td before VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)  
+22- after echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PARENT'), closing tag div is missing  
+23- do not load customer for new product :  
+24- remove intnotes unwanted "tabs" :  
 
