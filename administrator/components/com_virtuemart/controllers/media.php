@@ -40,6 +40,7 @@ class VirtuemartControllerMedia extends VmController {
 	 * @author
 	 */
 	function __construct() {
+		VmConfig::loadJLang('com_virtuemart_media');
 		parent::__construct('virtuemart_media_id');
 
 	}

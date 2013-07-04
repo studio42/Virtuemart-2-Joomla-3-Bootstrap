@@ -37,6 +37,7 @@ class JElementVMFiles extends JElement {
 		$path = JPATH_ROOT . DS . $rel_path;
 		$filter = $node->attributes ('filter');
 		$exclude = array($node->attributes ('exclude'), '.svn', 'CVS', '.DS_Store', '__MACOSX', 'index.html');
+		$pattern = implode ( "|", $exclude);
 		$stripExt = $node->attributes ('stripext');
 		if (!JFolder::exists ($path)) {
 			return JText::sprintf ('COM_VIRTUEMART_FOLDER_NOT_EXIST', $node->attributes ('directory'));
@@ -57,7 +58,7 @@ class JElementVMFiles extends JElement {
 		if (is_array ($files)) {
 			foreach ($files as $file) {
 				if ($exclude) {
-					if (preg_match (chr (1) . $exclude . chr (1), $file)) {
+					if (preg_match (chr (1) . $pattern . chr (1), $file)) {
 						continue;
 					}
 				}
@@ -67,7 +68,7 @@ class JElementVMFiles extends JElement {
 				$options[] = JHTML::_ ('select.option', $file, $file);
 			}
 		}
-		$class = 'multiple="true" size="5"';
+		$class = 'multiple="true" size="5" data-placeholder="'.JText::_('COM_VIRTUEMART_DRDOWN_SELECT_SOME_OPTIONS').'"';
 		return JHTML::_ ('select.genericlist', $options, '' . $control_name . '[' . $name . '][]', $class, 'value', 'text', $value, $control_name . $name);
 	}
 

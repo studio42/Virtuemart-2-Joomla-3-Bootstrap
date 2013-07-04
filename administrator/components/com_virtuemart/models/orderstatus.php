@@ -31,7 +31,7 @@ if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmo
  */
 class VirtueMartModelOrderstatus extends VmModel {
 
-	private $renderStatusList = null;
+	private $_renderStatusList = array();
 	/**
 	 * constructs a VmModel
 	 * setMainTable defines the maintable of the model
@@ -39,6 +39,7 @@ class VirtueMartModelOrderstatus extends VmModel {
 	 */
 	function __construct() {
 		parent::__construct();
+		VmConfig::loadJLang('com_virtuemart_orders',TRUE);
 		$this->setMainTable('orderstates');
 	}
 
@@ -78,21 +79,44 @@ class VirtueMartModelOrderstatus extends VmModel {
 
 	}
 
+	function renderOSList($value,$name = 'order_status',$multiple=FALSE,$attrs='',$langkey=''){
+
+		$idA = $id = $name;
+ 		$attrs .= ' class="inputbox" ';
+		if ($multiple) {
+			$attrs .= ' multiple="multiple" ';
+			if(empty($langkey)) $langkey = 'COM_VIRTUEMART_DRDOWN_SELECT_SOME_OPTIONS';
+			$attrs .=  ' data-placeholder="'.JText::_($langkey).'"';
+			$idA .= '[]';
+		} else {
+			if(empty($langkey)) $langkey = 'COM_VIRTUEMART_LIST_EMPTY_OPTION';
+		}
+
+		if(is_array($value)){
+			$hashValue = implode($value);
+		} else {
+			$hashValue = $value;
+		}
+
+		$hash = md5($hashValue.$name.$attrs);
+		if (!isset($this->_renderStatusList[$hash])) {
+			$orderStates = $this->getOrderStatusNames();
+			$emptyOption = JHTML::_ ('select.option', -1, JText::_ ($langkey), 'order_status_code', 'order_status_name');
+			array_unshift ($orderStates, $emptyOption);
+			if ($multiple) {
+				$attrs .=' size="'.count($orderStates).'" ';
+			}
+
+			$this->_renderStatusList[$hash] = JHTML::_('select.genericlist', $orderStates, $idA, $attrs, 'order_status_code', 'order_status_name', $value,$id,true);
+		}
+		return $this->_renderStatusList[$hash] ;
+	}
+
 	function renderOrderStatusList($value, $name = 'order_status[]' )
 	{
-		//if ($multiple) {
-			$attrs = 'multiple="multiple"';
-			//$name ='order_status[]';
-		//} else {
-		//	$name ='order_status';
-			//$attrs ='';
-		//}
+		$id = substr($name,0,-2);
+		return $this->renderOSList($value,$id,TRUE);
 
-		if (!$this->renderStatusList) {
-			$orderStates = $this->getOrderStatusNames();
-			$this->renderStatusList = JHTML::_('select.genericlist', $orderStates, $name, 'multiple="multiple"', 'order_status_code', 'order_status_name', $value, 'order_items_status',true);
-		}
-		return $this->renderStatusList ;
 	}
 
 }

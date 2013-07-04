@@ -104,7 +104,7 @@ class VirtueMartModelCurrency extends VmModel {
 	 * Retireve a list of currencies from the database.
 	 *
 	 * This is written to get a list for selecting currencies. Therefore it asks for enabled
-	 * @author RolandD, Max Milbers
+	 * @author Max Milbers
 	 * @return object List of currency objects
 	 */
 	function getCurrencies($vendorId=1) {

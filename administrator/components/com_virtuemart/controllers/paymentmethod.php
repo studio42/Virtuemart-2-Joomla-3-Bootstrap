@@ -40,6 +40,7 @@ class VirtuemartControllerPaymentmethod extends VmController {
 	 * @access	public
 	 */
 	public function __construct() {
+		VmConfig::loadJLang('com_virtuemart_orders',TRUE);
 		parent::__construct();
 
 	}

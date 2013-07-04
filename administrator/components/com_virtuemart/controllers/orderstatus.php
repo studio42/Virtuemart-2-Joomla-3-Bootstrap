@@ -43,7 +43,7 @@ class VirtuemartControllerOrderstatus extends VmController {
 	function __construct()
 	{
 		parent::__construct();
-
+		VmConfig::loadJLang('com_virtuemart_orders',TRUE);
 	}
 
 

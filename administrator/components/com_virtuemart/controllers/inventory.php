@@ -5,7 +5,7 @@
 *
 * @package	VirtueMart
 * @subpackage
-* @author RolandD
+* @author Max Milbers
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -29,7 +29,7 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  * Inventory Controller
  *
  * @package    VirtueMart
- * @author RolandD
+ * @author Max Milbers
  */
 class VirtuemartControllerInventory extends VmController {
 

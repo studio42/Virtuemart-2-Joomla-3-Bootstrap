@@ -93,10 +93,15 @@ class VirtuemartControllerRatings extends VmController {
 
 		if($layout=='list_reviews'){
 
-			$product_id= JRequest::getInt('virtuemart_product_id',0);
+			$virtuemart_product_id = JRequest::getVar('virtuemart_product_id',array(),'', 'array');
+			if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
+				$virtuemart_product_id = (int)$virtuemart_product_id[0];
+			} else {
+				$virtuemart_product_id = (int)$virtuemart_product_id;
+			}
 			$redPath = '';
-			if (!empty($product_id)) {
-				$redPath = '&task=listreviews&virtuemart_product_id=' . $product_id;
+			if (!empty($virtuemart_product_id)) {
+				$redPath = '&task=listreviews&virtuemart_product_id=' . $virtuemart_product_id;
 			}
 
 			parent::publish('virtuemart_rating_review_id','rating_reviews',$this->redirectPath.$redPath);
@@ -113,10 +118,15 @@ class VirtuemartControllerRatings extends VmController {
 
 		if($layout=='list_reviews'){
 
-			$product_id= JRequest::getInt('virtuemart_product_id',0);
+			$virtuemart_product_id = JRequest::getVar('virtuemart_product_id',array(),'', 'array');
+			if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
+				$virtuemart_product_id = (int)$virtuemart_product_id[0];
+			} else {
+				$virtuemart_product_id = (int)$virtuemart_product_id;
+			}
 			$redPath = '';
-			if (!empty($product_id)) {
-				$redPath = '&task=listreviews&virtuemart_product_id=' . $product_id;
+			if (!empty($virtuemart_product_id)) {
+				$redPath = '&task=listreviews&virtuemart_product_id=' . $virtuemart_product_id;
 			}
 
 			parent::unpublish('virtuemart_rating_review_id','rating_reviews',$this->redirectPath.$redPath);
@@ -169,7 +179,12 @@ class VirtuemartControllerRatings extends VmController {
 		if($apply){
 			$redir = 'index.php?option=com_virtuemart&view=ratings&task=edit_review&virtuemart_rating_review_id='.$id;
 		} else {
-			$virtuemart_product_id = JRequest::getInt('virtuemart_product_id',0);
+			$virtuemart_product_id = JRequest::getVar('virtuemart_product_id',array(),'', 'array');
+			if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
+				$virtuemart_product_id = (int)$virtuemart_product_id[0];
+			} else {
+				$virtuemart_product_id = (int)$virtuemart_product_id;
+			}
 			$redir = 'index.php?option=com_virtuemart&view=ratings&task=listreviews&virtuemart_product_id='.$virtuemart_product_id;
 		}
 
@@ -182,7 +197,12 @@ class VirtuemartControllerRatings extends VmController {
 	 */
 	function cancelEditReview(){
 
-		$virtuemart_product_id = JRequest::getInt('virtuemart_product_id',0);
+		$virtuemart_product_id = JRequest::getVar('virtuemart_product_id',array(),'', 'array');
+		if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
+			$virtuemart_product_id = (int)$virtuemart_product_id[0];
+		} else {
+			$virtuemart_product_id = (int)$virtuemart_product_id;
+		}
 		$msg = JText::sprintf('COM_VIRTUEMART_STRING_CANCELLED',$this->mainLangKey); //'COM_VIRTUEMART_OPERATION_CANCELED'
 		$this->setRedirect('index.php?option=com_virtuemart&view=ratings&task=listreviews&virtuemart_product_id='.$virtuemart_product_id, $msg);
 	}

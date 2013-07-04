@@ -63,7 +63,7 @@ class VirtuemartControllerCustom extends VmController {
 	/**
 	* Clone a product
 	*
-	* @author RolandD, Max Milbers
+	* @author Max Milbers
 	*/
 	public function createClone() {
 		$mainframe = Jfactory::getApplication();

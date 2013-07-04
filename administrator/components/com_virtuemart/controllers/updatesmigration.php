@@ -108,13 +108,14 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 	/**
 	 * Sets the storeowner to the currently logged in user
-	 * He needs to have admin rights todo so
+	 * He needs admin rights
 	 *
 	 * @author Max Milbers
 	 */
 	function setStoreOwner(){
 
 		$data = JRequest::get('get');
+		JRequest::setVar($data['token'], '1', 'post');
 		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
@@ -348,6 +349,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	 */
 	function _getMsgDangerousTools(){
 		$uri = JFactory::getURI();
+		VmConfig::loadJLang('com_virtuemart_config');
 		$link = $uri->root() . 'administrator/index.php?option=com_virtuemart&view=config';
 		$msg = JText::sprintf('COM_VIRTUEMART_SYSTEM_DANGEROUS_TOOL_DISABLED', JText::_('COM_VIRTUEMART_ADMIN_CFG_DANGEROUS_TOOLS'), $link);
 		return $msg;
@@ -469,6 +471,57 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		$this->setRedirect($this->redirectPath, $msg);
 	}
 
+	function portVmAttributes(){
+
+
+		$data = JRequest::get('get');
+		if(!empty($data['token']))JRequest::setVar($data['token'], '1', 'post');
+		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+
+		$this->checkPermissionForTools();
+
+		if(!VmConfig::get('dangeroustools', true)){
+			$msg = $this->_getMsgDangerousTools();
+			$this->setRedirect($this->redirectPath, $msg);
+			return false;
+		}
+
+		$this->storeMigrationOptionsInSession();
+		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		$migrator = new Migrator();
+		$result = $migrator->portVm1Attributes();
+		if($result){
+			$msg = 'Migration Vm2 attributes finished';
+		} else {
+			$msg = 'Migration was interrupted by max_execution time, please restart';
+		}
+		$this->setRedirect($this->redirectPath, $msg);
+	}
+
+	function portVmRelatedProducts(){
+		$data = JRequest::get('get');
+		if(!empty($data['token']))JRequest::setVar($data['token'], '1', 'post');
+		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		$this->checkPermissionForTools();
+
+		if(!VmConfig::get('dangeroustools', true)){
+			$msg = $this->_getMsgDangerousTools();
+			$this->setRedirect($this->redirectPath, $msg);
+			return false;
+		}
+
+		$this->storeMigrationOptionsInSession();
+		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		$migrator = new Migrator();
+		$result = $migrator->portVm1RelatedProducts();
+		if($result){
+			$msg = 'Migration Vm2 related products finished';
+		} else {
+			$msg = 'Migration was interrupted by max_execution time, please restart';
+		}
+		$this->setRedirect($this->redirectPath, $msg);
+	}
+
 	function reOrderChilds(){
 
 		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
@@ -521,19 +574,26 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		}
 
 		$this->setRedirect($this->redirectPath, 'is an update '.$update);
-/*		$db = JFactory::getDBO();
-		$query = 'SHOW COLUMNS FROM `#__virtuemart_products` ';
-		$db->setQuery($query);
-		$columns = $db->loadResultArray(0);
 
-		if(!in_array('product_ordered',$columns)){
-			echo 'is in array';
-			$query = 'ALTER TABLE `#__virtuemart_products` ADD product_ordered int(11)';
-			$db->setQuery($query);
-			$db->query();
-		}*/
 	}
 
 
+	function resetThumbs(){
+
+		$data = JRequest::get('get');
+		JRequest::setVar($data['token'], '1', 'post');
+		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		$this->checkPermissionForTools();
+
+		if(!VmConfig::get('dangeroustools', true)){
+			$msg = $this->_getMsgDangerousTools();
+			$this->setRedirect($this->redirectPath, $msg);
+			return false;
+		}
+
+		$model = VmModel::getModel('updatesMigration');
+		$result = $model->resetThumbs();
+		$this->setRedirect($this->redirectPath, $result);
+	}
 }
 

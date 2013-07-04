@@ -48,7 +48,7 @@ class VirtuemartControllerManufacturer extends VmController {
 
 	/**
 	 * Handle the save task
-	 * Checks already in the controller the rights todo so and sets the data by filtering the post
+	 * Checks already in the controller the rights and sets the data by filtering the post
 	 *
 	 * @author Max Milbers
 	 */

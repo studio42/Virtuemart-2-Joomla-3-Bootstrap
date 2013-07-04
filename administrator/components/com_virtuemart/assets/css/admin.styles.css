@@ -156,6 +156,12 @@ font-size: 12px;
 	max-height: 90px;
 	max-width: 110px;
 }
+.vm_mini_image {
+    /*Ensures that large thumbs are with-in bounding box so remove button is not hidden*/
+    max-height: 50px;
+    max-width: 80px;
+    vertical-align: middle;
+}
 .vm__img_autocrop{
     display: block;
     max-height: 400px;
@@ -301,3 +307,4 @@ a.fg-button, .always-left{
 .stock-out{background-color:#f9a7aa !important;color : black}
 .stock-low{background-color:#F7B77B !important;color : black}
 .stock-normal{background-color:#F0F9D0 !important;color : black}
+table.adminlist td.order {width:100px !important}

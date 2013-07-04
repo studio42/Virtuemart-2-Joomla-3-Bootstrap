@@ -41,6 +41,7 @@ class VirtuemartControllerConfig extends VmController {
 	 * @author
 	 */
 	function __construct() {
+		VmConfig::loadJLang('com_virtuemart_config');
 		parent::__construct();
 
 	}

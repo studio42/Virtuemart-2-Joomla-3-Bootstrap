@@ -26,7 +26,8 @@ dangeroustools=0
 debug_enable=none
 google_jquery=1
 multix=none
-
+usefancy=1
+jchosen=1
 
 ##Shopfront
 pdf_button_enable=1
@@ -128,6 +129,9 @@ browse_search_fields=array:product_sku|category_name|category_description|mf_nam
     oncheckout_show_register=1
     oncheckout_show_steps=0
     oncheckout_show_register_text=COM_VIRTUEMART_ONCHECKOUT_DEFAULT_TEXT_REGISTER
+inv_os=C
+email_os_s=array:U|C|X|R|S
+email_os_v=array:U|C|X|R
 
 ##SEO
     seo_disabled=0

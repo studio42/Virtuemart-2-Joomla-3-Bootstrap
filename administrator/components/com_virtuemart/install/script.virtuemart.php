@@ -159,9 +159,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this->recurse_copy($src,$dst);
 
-			$params = JComponentHelper::getParams('com_languages');
-			$lang = $params->get('site', 'en-GB');//use default joomla
-			$lang = strtolower(strtr($lang,'-','_'));
 			if(!class_exists('GenericTableUpdater')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
 			$updater = new GenericTableUpdater();
 			$updater->createLanguageTables();
@@ -243,9 +240,13 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				'product_price_edate' => ' `product_price_publish_down` DATETIME NULL DEFAULT NULL AFTER `product_price_publish_up`'
 			));
 
-			$this->alterTable('#__virtuemart_medias',array(
-				'file_params' => '`file_params` varchar(17500)'
-			));
+			 $this->alterTable('#__virtuemart_medias',
+				 array(
+					'file_url' => '`file_url` varchar(900) NOT NULL DEFAULT ""',
+					'file_params' => '`file_params` varchar(17500)',
+					'file_url_thumb' => '`file_url_thumb` varchar(900) NOT NULL DEFAULT ""',
+   				)
+ 			);
 
 			$this->deleteReCreatePrimaryKey('#__virtuemart_userinfos','virtuemart_userinfo_id');
 
@@ -262,9 +263,35 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->adjustDefaultOrderStates();
 
 			$this->fixOrdersVendorId();
+
+			$this->fixConfigValues();
 			if($loadVm) $this->displayFinished(true);
 
 			return true;
+		}
+
+		private function fixConfigValues(){
+			if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
+			VmConfig::loadConfig();
+
+			$data = array();
+			$list_limit = VmConfig::get('list_limit',0);
+			if(!empty($list_limit)){
+				$data['llimit_init_BE'] = $list_limit;
+				$data['llimit_init_FE'] = $list_limit;
+			}
+			$pagseq = VmConfig::get('pagination_sequence',0);
+			if(!empty($pagseq)){
+				$data['pagseq'] = $pagseq;
+				$data['pagseq_1'] = $pagseq;
+				$data['pagseq_2'] = $pagseq;
+				$data['pagseq_3'] = $pagseq;
+				$data['pagseq_4'] = $pagseq;
+				$data['pagseq_5'] = $pagseq;
+			}
+
+			$configModel = VmModel::getModel('config');
+			$configModel->store($data);
 		}
 
 		private function fixOrdersVendorId(){
