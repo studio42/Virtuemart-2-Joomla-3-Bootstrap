@@ -21,7 +21,7 @@
 jimport('joomla.application.component.controller');
 if (!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
 
-class VmController extends JController{
+class VmController extends JControllerLegacy{
 
 	protected $_cidName = 0;
 	protected $_cname = 0;
@@ -62,7 +62,7 @@ class VmController extends JController{
 	* @param   boolean  $cachable   If true, the view output will be cached
 	* @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	*
-	* @return  JController  A JController object to support chaining.
+	* @return  JControllerLegacy  A JControllerLegacy object to support chaining.
 	* @since   11.1
 	*/
 	public function display($cachable = false, $urlparams = false)
@@ -333,7 +333,7 @@ class VmController extends JController{
 	/**
 	 * This function just overwrites the standard joomla function, using our standard class VmModel
 	 * for this
-	 * @see JController::getModel()
+	 * @see JControllerLegacy::getModel()
 	 */
 	function getModel($name = '', $prefix = '', $config = array()){
 		if(!class_exists('ShopFunctions'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');

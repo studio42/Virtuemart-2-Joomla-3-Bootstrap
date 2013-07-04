@@ -217,7 +217,7 @@ class VirtuemartViewUser extends VmView {
 			JToolBarHelper::custom('toggle.user_is_vendor.0', 'unpublish','','COM_VIRTUEMART_USER_ISNOTVENDOR');
 			JToolBarHelper::divider();
 			JToolBarHelper::deleteList();
-			JToolBarHelper::editListX();
+			JToolBarHelper::editList();
 
 			//This is intentionally, creating new user via BE is buggy and can be done by joomla
 			//JToolBarHelper::addNewX();

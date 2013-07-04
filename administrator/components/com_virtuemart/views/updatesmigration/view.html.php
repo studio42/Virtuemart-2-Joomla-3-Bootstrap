@@ -56,9 +56,9 @@ class VirtuemartViewUpdatesMigration extends VmView {
 /*		$db = JFactory::getDBO();
 		$config = JFactory::getConfig();
 
-		$prefix = $config->getValue('config.dbprefix').'virtuemart_%';
+		$prefix = $config->get('dbprefix').'virtuemart_%';
 		$db->setQuery('SHOW TABLES LIKE "'.$prefix.'"');
-		if (!$tables = $db->loadResultArray()) {
+		if (!$tables = $db->loadColumn()) {
 			vmError ($db->getErrorMsg());
 			return false;
 		}

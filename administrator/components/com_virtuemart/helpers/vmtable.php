@@ -253,7 +253,7 @@ class VmTable extends JTable{
 
 			//We store in UTC time, dont touch it!
 			$date = JFactory::getDate();
-			$today = $date->toMySQL();
+			$today = $date->toSql();
 			//vmdebug('my today ',$date);
 			$user = JFactory::getUser();
 
@@ -1187,7 +1187,7 @@ class VmTable extends JTable{
 		}
 
 		$config = JFactory::getConfig();
-		$siteOffset = $config->getValue('config.offset');
+		$siteOffset = $config->get('offset');
 		$date = JFactory::getDate('now', $siteOffset);
 
 		$time = $date->toMysql();
@@ -1354,7 +1354,7 @@ class VmTable extends JTable{
 		$query = 'SELECT `'.$this->_tbl_key.'` FROM `'.$table.'` WHERE '.$whereKey.' = "' .$this->$k . '"';
 		$this->_db->setQuery( $query );
 		// 		vmdebug('checkAndDelete',$query);
-		$list = $this->_db->loadResultArray();
+		$list = $this->_db->loadColumn();
 		// 		vmdebug('checkAndDelete',$list);
 		
 		

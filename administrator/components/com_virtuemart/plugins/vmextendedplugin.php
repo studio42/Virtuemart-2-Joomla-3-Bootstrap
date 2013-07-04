@@ -32,7 +32,7 @@ abstract class vmExtendedPlugin extends vmPlugin {
 	 * Method to get the plugin name
 	 *
 	 * The plugin name parsed using the classname
-	 * (adapted from Joomla's JModel)
+	 * (adapted from Joomla's JModelLegacy )
 	 *
 	 * @return	string The name of the plugin
 	 */

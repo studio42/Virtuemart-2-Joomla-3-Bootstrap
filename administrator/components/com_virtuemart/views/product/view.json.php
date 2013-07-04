@@ -30,7 +30,7 @@ if(!class_exists('VirtueMartModelCustomfields')) require(JPATH_VM_ADMINISTRATOR.
  * @package		VirtueMart
  * @author
  */
-class VirtuemartViewProduct extends JView {
+class VirtuemartViewProduct extends JViewLegacy {
 
 	var $json = array();
 
@@ -93,7 +93,7 @@ class VirtuemartViewProduct extends JView {
 					AND `product_parent_id`= '.JRequest::getInt('virtuemart_product_id');
 					//$this->db->setQuery(' SELECT virtuemart_product_id, product_name FROM `#__virtuemart_products` WHERE `product_parent_id` ='.(int)$product_id);
 					$this->db->setQuery($q);
-					if ($childIds = $this->db->loadResultArray()) {
+					if ($childIds = $this->db->loadColumn()) {
 					// Get childs
 						foreach ($childIds as $childId) {
 							$field->custom_value = $childId;

@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the model framework
-if(!class_exists('JModel')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
+// j3 FIX if(!class_exists('JModelLegacy ')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
 
 
 /**
@@ -30,7 +30,7 @@ if(!class_exists('JModel')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'applicati
  * @subpackage updatesMigration
  * @author Max Milbers, RickG
  */
-class VirtueMartModelUpdatesMigration extends JModel {
+class VirtueMartModelUpdatesMigration extends JModelLegacy  {
 
     /**
      * Checks the VirtueMart Server for the latest available Version of VirtueMart
@@ -342,9 +342,9 @@ class VirtueMartModelUpdatesMigration extends JModel {
 		$db = JFactory::getDBO();
 		$config = JFactory::getConfig();
 
-		$prefix = $config->getValue('config.dbprefix').'virtuemart_%';
+		$prefix = $config->get('dbprefix').'virtuemart_%';
 		$db->setQuery('SHOW TABLES LIKE "'.$prefix.'"');
-		if (!$tables = $db->loadResultArray()) {
+		if (!$tables = $db->loadColumn()) {
 		    vmError ($db->getErrorMsg());
 		    return false;
 		}
@@ -392,7 +392,7 @@ class VirtueMartModelUpdatesMigration extends JModel {
 		foreach ($tables as $table) {
 			$query = 'SHOW TABLES LIKE "'.$prefix.'virtuemart_'.$table.'_%"';
 			$this->_db->setQuery($query);
-			if($translatedTables= $this->_db->loadResultArray()) {
+			if($translatedTables= $this->_db->loadColumn()) {
 				foreach ($translatedTables as $translatedTable) {
 					$this->_db->setQuery('TRUNCATE TABLE `'.$translatedTable.'`');
 					if($this->_db->query()) vmInfo( $translatedTable.' empty');

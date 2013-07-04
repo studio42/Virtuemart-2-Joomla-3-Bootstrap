@@ -30,7 +30,7 @@ jimport('joomla.application.component.controller');
  * @author Valérie Isaksen
  *
  */
-class VirtueMartControllerPluginresponse extends JController {
+class VirtueMartControllerPluginresponse extends JControllerLegacy {
 
     /**
      * Construct the cart

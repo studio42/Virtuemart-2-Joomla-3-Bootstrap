@@ -75,7 +75,7 @@ class VirtueMartModelShipmentmethod extends VmModel {
 				/* Add the shipmentcarreir shoppergroups */
 				$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shipmentmethod_shoppergroups WHERE `virtuemart_shipmentmethod_id` = "'.$this->_id.'"';
 				$this->_db->setQuery($q);
-				$this->_data->virtuemart_shoppergroup_ids = $this->_db->loadResultArray();#
+				$this->_data->virtuemart_shoppergroup_ids = $this->_db->loadColumn();#
 				if(empty($this->_data->virtuemart_shoppergroup_ids)) $this->_data->virtuemart_shoppergroup_ids = 0;
 
 
@@ -119,7 +119,7 @@ class VirtueMartModelShipmentmethod extends VmModel {
 				/* Add the shipment shoppergroups */
 				$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shipmentmethod_shoppergroups WHERE `virtuemart_shipmentmethod_id` = "'.$data->virtuemart_shipmentmethod_id.'"';
 				$this->_db->setQuery($q);
-				$data->virtuemart_shoppergroup_ids = $this->_db->loadResultArray();
+				$data->virtuemart_shoppergroup_ids = $this->_db->loadColumn();
 
 				/* Write the first 5 shoppergroups in the list */
 				$data->shipmentShoppersList = shopfunctions::renderGuiList('virtuemart_shoppergroup_id','#__virtuemart_shipmentmethod_shoppergroups','virtuemart_shipmentmethod_id',$data->virtuemart_shipmentmethod_id,'shopper_group_name','#__virtuemart_shoppergroups','virtuemart_shoppergroup_id','shoppergroup',4,0);

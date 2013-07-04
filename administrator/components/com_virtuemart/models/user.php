@@ -174,7 +174,7 @@ class VirtueMartModelUser extends VmModel {
 
 		$q = 'SELECT `virtuemart_userinfo_id` FROM `#__virtuemart_userinfos` WHERE `virtuemart_user_id` = "' . (int)$this->_id.'"';
 		$this->_db->setQuery($q);
-		$userInfo_ids = $this->_db->loadResultArray(0);
+		$userInfo_ids = $this->_db->loadColumn(0);
 		// 		vmdebug('my query',$this->_db->getQuery());
 		// 		vmdebug('my $_ui',$userInfo_ids,$this->_id);
 		$this->_data->userInfo = array ();
@@ -385,7 +385,7 @@ class VirtueMartModelUser extends VmModel {
 			$user = JFactory::getUser();
 			if ($user->authorise('core.edit', 'com_users') && $user->authorise('core.manage', 'com_users'))
 			{
-			$model = JModel::getInstance('Groups', 'UsersModel', array('ignore_request' => true));
+			$model = JModelLegacy ::getInstance('Groups', 'UsersModel', array('ignore_request' => true));
 			return $model->getItems();
 			}
 			else
@@ -603,7 +603,7 @@ class VirtueMartModelUser extends VmModel {
 			}
 
 			$date = JFactory::getDate();
-			$user->set('registerDate', $date->toMySQL());
+			$user->set('registerDate', $date->toSql());
 
 			// If user activation is turned on, we need to set the activation information
 			$useractivation = $usersConfig->get( 'useractivation' );
@@ -879,7 +879,7 @@ class VirtueMartModelUser extends VmModel {
 				AND `address_type` = "BT"';
 
 				$this->_db->setQuery($q);
-				$total = $this->_db->loadResultArray();
+				$total = $this->_db->loadColumn();
 
 				if (count($total) > 0) {
 					$data['virtuemart_userinfo_id'] = (int)$total[0];

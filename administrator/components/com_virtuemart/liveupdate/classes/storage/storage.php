@@ -65,12 +65,12 @@ class LiveUpdateStorage
 				$value = serialize($value);
 			}
 		}
-		self::$registry->setValue("update.$key", $value);
+		self::$registry->set("update.$key", $value);
 	}
 	
 	public final function get($key, $default)
 	{
-		$value = self::$registry->getValue("update.$key", $default);
+		$value = self::$registry->get("update.$key", $default);
 		if($key == 'updatedata') {
 			if(function_exists('json_encode') && function_exists('json_decode')) {
 				$value = json_decode($value);

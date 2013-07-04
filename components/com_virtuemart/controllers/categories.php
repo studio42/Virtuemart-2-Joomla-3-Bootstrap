@@ -28,7 +28,7 @@ jimport('joomla.application.component.controller');
 * @package VirtueMart
 * @author Max Milbers
 */
-class VirtueMartControllerCategories extends JController {
+class VirtueMartControllerCategories extends JControllerLegacy {
 
 
 	public function display($cachable = false, $urlparams = false) {

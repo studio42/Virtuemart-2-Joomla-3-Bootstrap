@@ -149,7 +149,7 @@ class TableUserfields extends VmTable {
 		 }
 
 		$this->_db->setQuery( $query );
-		$list = $this->_db->loadResultArray();
+		$list = $this->_db->loadColumn();
 
 		if($list){
 

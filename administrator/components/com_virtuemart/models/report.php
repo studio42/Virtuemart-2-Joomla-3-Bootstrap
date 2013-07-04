@@ -71,7 +71,7 @@ class VirtuemartModelReport extends VmModel {
 	function correctTimeOffset(&$inputDate){
 
 		$config = JFactory::getConfig();
-		$this->siteOffset = $config->getValue('config.offset');
+		$this->siteOffset = $config->get('offset');
 
 		$date = new JDate($inputDate);
 
@@ -88,7 +88,7 @@ class VirtuemartModelReport extends VmModel {
 		$this->until_period = JRequest::getVar ('until_period', $this->date_presets['last30']['until']);
 
 		$config = JFactory::getConfig();
-		$siteOffset = $config->getValue('config.offset');
+		$siteOffset = $config->get('offset');
 		$this->siteTimezone = new DateTimeZone($siteOffset);
 
 		$this->correctTimeOffset($this->from_period);
@@ -105,7 +105,7 @@ class VirtuemartModelReport extends VmModel {
 		$this->until_period = $this->date_presets[$this->period]['until'];
 
 		$config = JFactory::getConfig();
-		$siteOffset = $config->getValue('config.offset');
+		$siteOffset = $config->get('offset');
 		$this->siteTimezone = new DateTimeZone($siteOffset);
 
 		$this->correctTimeOffset($this->from_period);
@@ -184,7 +184,7 @@ class VirtuemartModelReport extends VmModel {
 				FROM `#__virtuemart_orderstates`
 				WHERE published=1 ';
 			$this->_db->setQuery ($query);
-			$list = $this->_db->loadResultArray ();
+			$list = $this->_db->loadColumn ();
 			foreach ($orderstates as $val) {
 				if (in_array ($val, $list)) {
 					$statusList[] = '`i`.`order_status` = "' . $val . '"';

@@ -24,7 +24,7 @@ jimport('joomla.application.component.controller');
 
 if(!class_exists('VirtueMartModelState')) require( JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'state.php' );
 
-class VirtueMartControllerState extends JController
+class VirtueMartControllerState extends JControllerLegacy
 {
     /**
 	 * Method to display the view

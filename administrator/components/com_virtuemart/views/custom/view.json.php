@@ -28,7 +28,7 @@ jimport( 'joomla.application.component.view');
  * @package		VirtueMart
  * @author  Patrick Kohl
  */
-class VirtuemartViewCustom extends JView {
+class VirtuemartViewCustom extends JViewLegacy {
 
 	/* json object */
 	private $json = null;

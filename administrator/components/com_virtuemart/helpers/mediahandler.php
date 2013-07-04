@@ -1099,7 +1099,7 @@ class VmMediaHandler {
 
 			$this->_db->setQuery($q);
 			//		$result = $this->_db->loadAssocList();
-			if ($virtuemart_media_ids = $this->_db->loadResultArray()) {
+			if ($virtuemart_media_ids = $this->_db->loadColumn()) {
 				$errMsg = $this->_db->getErrorMsg();
 				$errs = $this->_db->getErrors();
 

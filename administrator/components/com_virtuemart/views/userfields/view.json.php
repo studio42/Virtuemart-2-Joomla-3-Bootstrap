@@ -28,7 +28,7 @@ jimport( 'joomla.application.component.view');
  * @package		VirtueMart
  * @author  Patrick Kohl
  */
-class VirtuemartViewUserfields extends JView {
+class VirtuemartViewUserfields extends JViewLegacy {
 
 	function display($tpl = null) {
 		$db = JFactory::getDBO();

@@ -178,14 +178,14 @@ class VirtueMartModelCalc extends VmModel {
 
 		// Convert selected dates to MySQL format for storing.
 		$startDate = JFactory::getDate($data['publish_up']);
-		$data['publish_up'] = $startDate->toMySQL();
+		$data['publish_up'] = $startDate->toSql();
 //		if ($data['publish_down'] == '' or $data['publish_down']==0){
 		if (empty($data['publish_down']) || trim($data['publish_down']) == JText::_('COM_VIRTUEMART_NEVER')){
 			if(empty($this->_db)) $this->_db = JFactory::getDBO();
 			$data['publish_down']	= $this->_db->getNullDate();
 		} else {
 			$expireDate = JFactory::getDate($data['publish_down']);
-			$data['publish_down']	= $expireDate->toMySQL();
+			$data['publish_down']	= $expireDate->toSql();
 		}
 
 		$table->bindChecknStore($data);
@@ -253,7 +253,7 @@ class VirtueMartModelCalc extends VmModel {
 		$db = JFactory::getDBO();
 
 		$nullDate		= $db->getNullDate();
-		$now			= JFactory::getDate()->toMySQL();
+		$now			= JFactory::getDate()->toSql();
 
 		$q = 'SELECT * FROM `#__virtuemart_calcs` WHERE ';
 		foreach ($kind as $field){

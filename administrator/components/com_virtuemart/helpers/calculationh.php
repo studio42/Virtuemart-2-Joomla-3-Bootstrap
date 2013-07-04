@@ -73,7 +73,7 @@ class calculationHelper {
 
 		//We store in UTC and use here of course also UTC
 		$jnow = JFactory::getDate();
-		$this->_now = $jnow->toMySQL();
+		$this->_now = $jnow->toSql();
 		$this->_nullDate = $this->_db->getNullDate();
 
 		//Attention, this is set to the mainvendor atm.
@@ -117,7 +117,7 @@ class calculationHelper {
 		} else {
 			//We store in UTC and use here of course also UTC
 			$jnow = JFactory::getDate();
-			self::$_instance->_now = $jnow->toMySQL();
+			self::$_instance->_now = $jnow->toSql();
 		}
 		return self::$_instance;
 	}
@@ -178,12 +178,12 @@ class calculationHelper {
 				$this->_db->setQuery('SELECT `usgr`.`virtuemart_shoppergroup_id` FROM #__virtuemart_vmuser_shoppergroups as `usgr`
  										JOIN `#__virtuemart_shoppergroups` as `sg` ON (`usgr`.`virtuemart_shoppergroup_id`=`sg`.`virtuemart_shoppergroup_id`)
  										WHERE `usgr`.`virtuemart_user_id`="' . $user->id . '" AND `sg`.`virtuemart_vendor_id`="' . (int) $vendorId . '" ');
-				$this->_shopperGroupId = $this->_db->loadResultArray();
+				$this->_shopperGroupId = $this->_db->loadColumn();
 				if (empty($this->_shopperGroupId)) {
 
 					$this->_db->setQuery('SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shoppergroups
 								WHERE `default`="'.($user->guest+1).'" AND `virtuemart_vendor_id`="' . (int) $vendorId . '"');
-					$this->_shopperGroupId = $this->_db->loadResultArray();
+					$this->_shopperGroupId = $this->_db->loadColumn();
 				}
 			}
 			else if (empty($this->_shopperGroupId)) {
@@ -468,7 +468,7 @@ class calculationHelper {
 		}
 
 		$this->_db->setQuery('SELECT `virtuemart_category_id` FROM #__virtuemart_product_categories  WHERE `virtuemart_product_id`="' . $productId . '" ');
-		$this->_cats = $this->_db->loadResultArray();
+		$this->_cats = $this->_db->loadColumn();
 
 // 		vmTime('getProductPrices no object given query time','getProductCalcs');
 
@@ -1063,7 +1063,7 @@ class calculationHelper {
 
 				$q = 'SELECT `virtuemart_category_id` FROM #__virtuemart_calc_categories WHERE `virtuemart_calc_id`="' . $rule['virtuemart_calc_id'] . '"';
 				$this->_db->setQuery($q);
-				$this->allrules[$this->productVendorId][$entrypoint][$i]['cats'] = $this->_db->loadResultArray();
+				$this->allrules[$this->productVendorId][$entrypoint][$i]['cats'] = $this->_db->loadColumn();
 
 			}
 
@@ -1075,7 +1075,7 @@ class calculationHelper {
 			if(!isset($this->allrules[$this->productVendorId][$entrypoint][$i]['shoppergrps'])){
 				$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_calc_shoppergroups WHERE `virtuemart_calc_id`="' . $rule['virtuemart_calc_id'] . '"';
 				$this->_db->setQuery($q);
-				$this->allrules[$this->productVendorId][$entrypoint][$i]['shoppergrps'] = $this->_db->loadResultArray();
+				$this->allrules[$this->productVendorId][$entrypoint][$i]['shoppergrps'] = $this->_db->loadColumn();
 			}
 
 			$hitsShopper = true;
@@ -1086,13 +1086,13 @@ class calculationHelper {
 			if(!isset($this->allrules[$this->productVendorId][$entrypoint][$i]['countries'])){
 				$q = 'SELECT `virtuemart_country_id` FROM #__virtuemart_calc_countries WHERE `virtuemart_calc_id`="' . $rule["virtuemart_calc_id"] . '"';
 				$this->_db->setQuery($q);
-				$this->allrules[$this->productVendorId][$entrypoint][$i]['countries'] = $this->_db->loadResultArray();
+				$this->allrules[$this->productVendorId][$entrypoint][$i]['countries'] = $this->_db->loadColumn();
 			}
 
 			if(!isset($this->allrules[$this->productVendorId][$entrypoint][$i]['states'])){
 				$q = 'SELECT `virtuemart_state_id` FROM #__virtuemart_calc_states WHERE `virtuemart_calc_id`="' . $rule["virtuemart_calc_id"] . '"';
 				$this->_db->setQuery($q);
-				$this->allrules[$this->productVendorId][$entrypoint][$i]['states'] = $this->_db->loadResultArray();
+				$this->allrules[$this->productVendorId][$entrypoint][$i]['states'] = $this->_db->loadColumn();
 			}
 
 			$hitsDeliveryArea = true;
@@ -1113,7 +1113,7 @@ class calculationHelper {
 			if(!isset($this->allrules[$this->productVendorId][$entrypoint][$i]['manufacturers'])){
 				$q = 'SELECT `virtuemart_manufacturer_id` FROM #__virtuemart_calc_manufacturers WHERE `virtuemart_calc_id`="' . $rule['virtuemart_calc_id'] . '"';
 				$this->_db->setQuery($q);
-				$this->allrules[$this->productVendorId][$entrypoint][$i]['manufacturers'] = $this->_db->loadResultArray();
+				$this->allrules[$this->productVendorId][$entrypoint][$i]['manufacturers'] = $this->_db->loadColumn();
 			}
 
 			$hitsManufacturer = true;
@@ -1167,11 +1167,11 @@ class calculationHelper {
 
 			$q = 'SELECT `virtuemart_country_id` FROM #__virtuemart_calc_countries WHERE `virtuemart_calc_id`="' . $rule["virtuemart_calc_id"] . '"';
 			$this->_db->setQuery($q);
-			$countries = $this->_db->loadResultArray();
+			$countries = $this->_db->loadColumn();
 
 			$q = 'SELECT `virtuemart_state_id` FROM #__virtuemart_calc_states WHERE `virtuemart_calc_id`="' . $rule["virtuemart_calc_id"] . '"';
 			$this->_db->setQuery($q);
-			$states = $this->_db->loadResultArray();
+			$states = $this->_db->loadColumn();
 
 			$hitsDeliveryArea = true;
 			//vmdebug('gatherEffectingRulesForBill $hitsDeliveryArea $countries and states  ',$countries,$states,$q);
@@ -1185,12 +1185,12 @@ class calculationHelper {
 
 			$q = 'SELECT `virtuemart_category_id` FROM #__virtuemart_calc_categories WHERE `virtuemart_calc_id`="' . $rule['virtuemart_calc_id'] . '"';
 			$this->_db->setQuery($q);
-			$rule['calc_categories'] = $this->_db->loadResultArray();
+			$rule['calc_categories'] = $this->_db->loadColumn();
 
 
 			$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_calc_shoppergroups WHERE `virtuemart_calc_id`="' . $rule["virtuemart_calc_id"] . '"';
 			$this->_db->setQuery($q);
-			$shoppergrps = $this->_db->loadResultArray();
+			$shoppergrps = $this->_db->loadColumn();
 
 			$hitsShopper = true;
 			if (isset($this->_shopperGroupId)) {

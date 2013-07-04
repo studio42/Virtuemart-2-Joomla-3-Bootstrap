@@ -26,7 +26,7 @@ AdminUIHelper::startAdminArea();
 	<?php
 	$this->customfields->addHidden('view', 'custom');
 	$this->customfields->addHidden('task', '');
-	$this->customfields->addHidden(JUtility::getToken(), 1);
+	$this->customfields->addHidden(JSession::getFormToken(), 1);
 //if ($this->custom->custom_parent_id) $this->customfields->addHidden('custom_parent_id',$this->custom->custom_parent_id);
 	$attribute_id = JRequest::getVar('attribute_id', '');
 	if (!empty($attribute_id))

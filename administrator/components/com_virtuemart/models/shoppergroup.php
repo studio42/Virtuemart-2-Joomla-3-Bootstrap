@@ -158,7 +158,7 @@ class VirtueMartModelShopperGroup extends VmModel {
 			$shopperGroups[] = $_defaultShopperGroup->virtuemart_shoppergroup_id;
 		/*	$this->_db->setQuery('SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shoppergroups
 								WHERE `default`="'.($user->guest+1).'" AND `virtuemart_vendor_id`="' . (int) $vendorId . '"');
-			$this->_shopperGroupId = $this->_db->loadResultArray();*/
+			$this->_shopperGroupId = $this->_db->loadColumn();*/
 		}
 		$this->removeSessionSgrps($shopperGroups);
 

@@ -470,7 +470,7 @@ class vmParameters extends JParameter {
 			$query .= "\n ORDER BY `" . $db->getEscaped($orderfield) . "` " . $sorting;
 		}
 		$db->setQuery($query);
-		$array = $db->loadResultArray();
+		$array = $db->loadColumn();
 
 		if ($multiselect == '1') {
 			$multiple = 'multiple="multiple"';

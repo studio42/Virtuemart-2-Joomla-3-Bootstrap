@@ -580,8 +580,8 @@ class VirtueMartCart {
 	 * @return object The product details object
 	 */
 	private function getProduct($virtuemart_product_id, $quantity) {
-		JModel::addIncludePath(JPATH_VM_ADMINISTRATOR . DS . 'models');
-		$model = JModel::getInstance('Product', 'VirtueMartModel');
+		JModelLegacy ::addIncludePath(JPATH_VM_ADMINISTRATOR . DS . 'models');
+		$model = JModelLegacy ::getInstance('Product', 'VirtueMartModel');
 		$product = $model->getProduct($virtuemart_product_id, true, false,true,$quantity);
 
 		if ( VmConfig::get('oncheckout_show_images')){
@@ -789,8 +789,8 @@ class VirtueMartCart {
 		}
 
 		if (($this->selected_shipto = JRequest::getVar('shipto', null)) !== null) {
-			JModel::addIncludePath(JPATH_VM_ADMINISTRATOR . DS . 'models');
-			$userModel = JModel::getInstance('user', 'VirtueMartModel');
+			JModelLegacy ::addIncludePath(JPATH_VM_ADMINISTRATOR . DS . 'models');
+			$userModel = JModelLegacy ::getInstance('user', 'VirtueMartModel');
 			$stData = $userModel->getUserAddressList(0, 'ST', $this->selected_shipto);
 			$this->validateUserData('ST', $stData[0]);
 		}

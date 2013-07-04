@@ -7,18 +7,18 @@
 
 defined('_JEXEC') or die();
 
-if(!class_exists('JModel')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
+// j3 FIX if(!class_exists('JModelLegacy ')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
 
 /**
  * The Live Update MVC model
  */
-class LiveUpdateModel extends JModel
+class LiveUpdateModel extends JModelLegacy 
 {
 	public function download()
 	{
 		// Get the path to Joomla!'s temporary directory
-		$jreg =JFactory::getConfig();
-		$tmpdir = $jreg->getValue('config.tmp_path');
+		$conf =JFactory::getConfig();
+		$tmpdir = $conf->get('tmp_path');
 		
 		jimport('joomla.filesystem.folder');
 		// Make sure the user doesn't use the system-wide tmp directory. You know, the one that's
@@ -145,7 +145,7 @@ class LiveUpdateModel extends JModel
 		if(!JFile::exists($instModelFile)) return false;
 		
 		require_once JPATH_ADMINISTRATOR.'/components/com_akeeba/models/installer.php';
-		$model	= JModel::getInstance('Installer', 'AkeebaModel');
+		$model	= JModelLegacy ::getInstance('Installer', 'AkeebaModel');
 		$packageType = JInstallerHelper::detectType($tempdir);
 		$name = $model->getExtensionName($tempdir);
 		

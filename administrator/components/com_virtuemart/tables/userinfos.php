@@ -105,7 +105,7 @@ class TableUserinfos extends VmTableData {
 										FROM #__virtuemart_userinfos
 										WHERE virtuemart_userinfo_id = ".$this->virtuemart_userinfo_id;
 				$this->_db->setQuery($q);
-				$total = $this->_db->loadResultArray();
+				$total = $this->_db->loadColumn();
 
 				if (count($total) > 0) {
 
@@ -131,7 +131,7 @@ class TableUserinfos extends VmTableData {
 			}
 
 			$this->_db->setQuery($q);
-			$total = $this->_db->loadResultArray();
+			$total = $this->_db->loadColumn();
 
 			if (count($total) > 0) {
 				$this->virtuemart_userinfo_id = (int)$total[0];

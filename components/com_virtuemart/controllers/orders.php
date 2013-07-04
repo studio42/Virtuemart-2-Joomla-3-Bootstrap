@@ -27,12 +27,12 @@ jimport('joomla.application.component.controller');
  *
  * @package		VirtueMart
  */
-class VirtueMartControllerOrders extends JController
+class VirtueMartControllerOrders extends JControllerLegacy
 {
 
 	/**
 	 * Todo do we need that anylonger? that way.
-	 * @see JController::display()
+	 * @see JControllerLegacy::display()
 	 */
 	public function display($cachable = false, $urlparams = false)  {
 

@@ -73,7 +73,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 			/* Add the paymentmethod shoppergroups */
 			$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_paymentmethod_shoppergroups WHERE `virtuemart_paymentmethod_id` = "'.$this->_id.'"';
 			$this->_db->setQuery($q);
-			$this->_data->virtuemart_shoppergroup_ids = $this->_db->loadResultArray();
+			$this->_data->virtuemart_shoppergroup_ids = $this->_db->loadColumn();
 
 			if (JVM_VERSION===1) {
 				$table = '#__plugins';
@@ -126,7 +126,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 				/* Add the paymentmethod shoppergroups */
 				$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_paymentmethod_shoppergroups WHERE `virtuemart_paymentmethod_id` = "'.$data->virtuemart_paymentmethod_id.'"';
 				$this->_db->setQuery($q);
-				$data->virtuemart_shoppergroup_ids = $this->_db->loadResultArray();
+				$data->virtuemart_shoppergroup_ids = $this->_db->loadColumn();
 
 
 				/* Write the first 5 shoppergroups in the list */

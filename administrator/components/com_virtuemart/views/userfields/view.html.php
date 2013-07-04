@@ -152,8 +152,8 @@ class VirtuemartViewUserfields extends VmView {
 			$this->assignRef('editor', $editor);
 		} else {
 			JToolBarHelper::title( JText::_('COM_VIRTUEMART_MANAGE_USER_FIELDS'));
-			JToolBarHelper::addNewX();
-			JToolBarHelper::editListX();
+			JToolBarHelper::addNew();
+			JToolBarHelper::editList();
 			JToolBarHelper::divider();
 			JToolBarHelper::custom('toggle.required.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_REQUIRE');
 			JToolBarHelper::custom('toggle.required.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_UNREQUIRE');

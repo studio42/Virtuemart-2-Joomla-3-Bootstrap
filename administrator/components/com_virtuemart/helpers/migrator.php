@@ -17,8 +17,6 @@
 
 if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not allowed.' );
 
-if(!class_exists('JModel'))
-require(JPATH_ROOT . DS . 'libraries' . DS . 'joomla' . DS . 'application' . DS . 'component' . DS . 'model.php');
 if(!class_exists('VmModel'))
 require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
 
@@ -254,7 +252,7 @@ class Migrator extends VmModel{
 				OR vm.`virtuemart_media_id` = "'.$media->virtuemart_media_id.'" ';
 
 				$this->_db->setQuery($q);
-				$res = $this->_db->loadResultArray();
+				$res = $this->_db->loadColumn();
 				vmdebug('so',$res);
 				if(count($res)>0){
 				vmInfo('File for '.$media->file_url.' is missing, but used ');
@@ -509,7 +507,7 @@ class Migrator extends VmModel{
 
 		// vendor_id >> virtuemart_vendor_id
 		$this->_db->setQuery('select `name` FROM `#__virtuemart_userfields`');
-		$vm2Fields = $this->_db->loadResultArray ();
+		$vm2Fields = $this->_db->loadColumn ();
 		$this->_db->setQuery('select * FROM `#__vm_userfield`');
 		$oldfields = $this->_db->loadObjectList();
 		$migratedfields ='';
@@ -713,7 +711,7 @@ class Migrator extends VmModel{
 		$vendor = $this->_db->loadAssoc() ;
 		$currency_code_3 = explode( ',', $vendor['vendor_accepted_currencies'] );//EUR,USD
 		$this->_db->query( 'SELECT currency_id FROM `#__virtuemart_currencies` WHERE `currency_code_3` IN ( "'.implode('","',$currency_code_3).'" ) ' );
-		$vendor['vendor_accepted_currencies'] = $this->_db->loadResultArray();
+		$vendor['vendor_accepted_currencies'] = $this->_db->loadColumn();
 
 		$vendorModel = VmModel::getModel('vendor');
 		$vendorId = $vendorModel->store($vendor);
@@ -1097,7 +1095,7 @@ $maxItems = 5;
 
 					$q = 'SELECT `category_id` FROM #__vm_product_category_xref WHERE #__vm_product_category_xref.product_id = "'.$product['product_id'].'" ';
 					$this->_db->setQuery($q);
-					$productCats = $this->_db->loadResultArray();
+					$productCats = $this->_db->loadColumn();
 
 					$productcategories = array();
 					if(!empty($productCats)){
@@ -1281,7 +1279,7 @@ $maxItems = 5;
 
 		if (!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
 		$this->_db->setQuery('select `order_status_code` FROM `#__virtuemart_orderstates` `');
-		$vm2Fields = $this->_db->loadResultArray ();
+		$vm2Fields = $this->_db->loadColumn ();
 		$this->_db->setQuery('select * FROM `#__vm_order_status`');
 		$oldfields = $this->_db->loadObjectList();
 		$migratedfields ='';
@@ -1537,7 +1535,7 @@ $maxItems = 5;
 	private function _changeToStamp($dateIn){
 
 		$date = JFactory::getDate($dateIn);
-		return $date->toMySQL();
+		return $date->toSql();
 	}
 
 	private function _ensureUsingCurrencyId($curr){

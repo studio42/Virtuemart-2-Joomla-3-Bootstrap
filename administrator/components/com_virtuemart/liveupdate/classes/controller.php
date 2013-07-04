@@ -12,7 +12,7 @@ jimport('joomla.application.component.controller');
 /**
  * The Live Update MVC controller
  */
-class LiveUpdateController extends JController
+class LiveUpdateController extends JControllerLegacy
 {
 	private $jversion = '15';
 

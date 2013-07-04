@@ -23,7 +23,7 @@ jimport ('joomla.application.component.controller');
  *
  * @package        VirtueMart
  */
-class VirtuemartControllerPlugin extends JController {
+class VirtuemartControllerPlugin extends JControllerLegacy {
 
 	/**
 	 * Method to render the plugin datas

@@ -28,7 +28,7 @@ jimport('joomla.application.component.controller');
  * @package		VirtueMart
  */
 
-class VirtueMartControllerManufacturer extends JController
+class VirtueMartControllerManufacturer extends JControllerLegacy
 {
 
 }

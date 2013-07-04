@@ -573,7 +573,7 @@ class VmConfig {
 
 				$session  =JFactory::getSession();
 				$registry = $session->get('registry');
-				$siteLang = $registry->getValue('application.data.lang') ;
+				$siteLang = $registry->get('application.data.lang') ;
 				} else  {
 				// TODO test wiht j1.7
 				jimport('joomla.language.helper');
@@ -1035,11 +1035,16 @@ class vmJsApi{
 	 * @ Author KOHL Patrick
 	 */
 	static function jQuery() {
-
-		if (JFactory::getApplication ()->get ('jquery')) {
-			return FALSE;
-		}
+// var_dump(JFactory::getApplication());
+		// if (JFactory::getApplication()->get ('jquery')) {
+			// return FALSE;
+		// }
+		JHtml::_('jquery.framework');
 		$isSite = JFactory::getApplication()->isSite();
+		if (!$isSite) {
+			vmJsApi::js ('jquery.ui.autocomplete.html');
+		}
+		return ;
 		if (!VmConfig::get ('jquery', TRUE) and $isSite) {
 			return FALSE;
 		}
@@ -1063,7 +1068,7 @@ class vmJsApi{
 			vmJsApi::js ('jquery.ui.autocomplete.html');
 		}
 		vmJsApi::js( 'jquery.noConflict');
-		JFactory::getApplication()->set('jquery',TRUE);
+		// JFactory::getApplication()->set('jquery',TRUE);
 		return TRUE;
 	}
 	// Virtuemart product and price script

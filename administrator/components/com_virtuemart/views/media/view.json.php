@@ -28,7 +28,7 @@ jimport( 'joomla.application.component.view');
  * @package		VirtueMart
  * @author  Patrick Kohl
  */
-class VirtuemartViewMedia extends JView {
+class VirtuemartViewMedia extends JViewLegacy {
 
 	/* json object */
 	private $json = null;

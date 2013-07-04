@@ -20,14 +20,14 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the model framework
-if(!class_exists('JModel')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
+// j3 FIX if(!class_exists('JModelLegacy ')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
 
 /**
  * Model for Macola
  *
  * @package		VirtueMart
  */
-class VirtueMartModelVirtueMart extends JModel {
+class VirtueMartModelVirtueMart extends JModelLegacy  {
 
 
 
@@ -115,7 +115,7 @@ class VirtueMartModelVirtueMart extends JModel {
 		$query .= 'JOIN `#__virtuemart_orders` as uo ON u.id = uo.virtuemart_user_id ';
 		$query .= 'WHERE `perms` <> "admin" ';
         $query .= 'AND `perms` <> "storeadmin" ';
-        $query .= 'AND INSTR(`usertype`, "administrator") = 0 AND INSTR(`usertype`, "Administrator") = 0 ';
+        // $query .= 'AND INSTR(`usertype`, "administrator") = 0 AND INSTR(`usertype`, "Administrator") = 0 ';
         $query .= ' ORDER BY uo.`created_on` DESC';
         return $this->_getList($query, 0, $nbrCusts);
     }

@@ -22,9 +22,9 @@ defined('_JEXEC') or die('Restricted access');
  * @author Milbo
  *
  */
-if(!class_exists('JModel')) require(JPATH_ROOT.DS.'libraries'.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php');
+// j3 FIX if(!class_exists('JModelLegacy ')) require(JPATH_ROOT.DS.'libraries'.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php');
 
-class GenericTableUpdater extends JModel{
+class GenericTableUpdater extends JModelLegacy {
 
 	public function __construct(){
 
@@ -51,8 +51,8 @@ class GenericTableUpdater extends JModel{
 		$this->maxMemoryLimit = $this->return_bytes(ini_get('memory_limit')) * 0.85;
 
 		$config = JFactory::getConfig();
-		$this->_prefix = $config->getValue('config.dbprefix');
-
+		$this->_prefix = $config->get('dbprefix');
+// var_dump($this->_prefix,$config);jexit('bug');
 		$this->reCreaPri = VmConfig::get('reCreaPri',0);
 		$this->reCreaKey = VmConfig::get('reCreaKey',1);
 	}
@@ -272,7 +272,7 @@ class GenericTableUpdater extends JModel{
 // 		vmdebug('updateMyVmTables $tables',$tables); return false;
 		// 	vmdebug('Parsed tables',$tables); //return;
 		$this->_db->setQuery('SHOW TABLES LIKE "%'.$like.'%"');
-		if (!$existingtables = $this->_db->loadResultArray()) {
+		if (!$existingtables = $this->_db->loadColumn()) {
 			vmError('updateMyVmTables '.$this->_db->getErrorMsg());
 			return false;
 		}
@@ -400,7 +400,7 @@ class GenericTableUpdater extends JModel{
 		if(!$eKeys = $this->_db->loadObjectList() ){
 			$this->_app->enqueueMessage('alterKey show index:'.$this->_db->getErrorMsg() );
 		} else {
-			$eKeyNames= $this->_db->loadResultArray(2);
+			$eKeyNames= $this->_db->loadColumn(2);
 		}
 
 // 				vmdebug('my $eKeys',$eKeys);
@@ -413,7 +413,7 @@ class GenericTableUpdater extends JModel{
 
 			//doubled keys are listed twice, but gets both deleted with one command, so we must check if the key is still there
 			$this->_db->setQuery("SHOW INDEXES  FROM `".$tablename."` "); //SHOW {INDEX | INDEXES | KEYS}
-			$eKeyNamesNOW= $this->_db->loadResultArray(2);
+			$eKeyNamesNOW= $this->_db->loadColumn(2);
 
 			$oldcolum = $this->reCreateKeyByTableAttributes($eKeys[$i]);
 
@@ -525,7 +525,7 @@ class GenericTableUpdater extends JModel{
 		$query = 'SHOW FULL COLUMNS  FROM `'.$tablename.'` ';
 		$this->_db->setQuery($query);
 		$fullColumns = $this->_db->loadObjectList();
-		$columns = $this->_db->loadResultArray(0);
+		$columns = $this->_db->loadColumn(0);
 
 		//Attention user_infos is not in here, because it an contain customised fields. #__virtuemart_order_userinfos #__virtuemart_userinfos
 		//This is currently not working as intended, because the config is not deleted before, it is better to create an extra command for this, when we need it later

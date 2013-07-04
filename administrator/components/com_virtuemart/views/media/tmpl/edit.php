@@ -28,7 +28,7 @@ echo '<fieldset>';
 
 $this->media->addHidden('view','media');
 $this->media->addHidden('task','');
-$this->media->addHidden(JUtility::getToken(),1);
+$this->media->addHidden(JSession::getFormToken(),1);
 $this->media->addHidden('file_type',$this->media->file_type);
 
 

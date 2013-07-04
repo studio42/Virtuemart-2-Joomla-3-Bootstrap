@@ -57,7 +57,7 @@ class convertECB {
 
 		// check if cache is enabled in configuration
 
-		$cacheactive = $conf->getValue('config.caching');
+		$cacheactive = $conf->get('caching');
 
 		$cache->setCaching(1); //enable caching
 
