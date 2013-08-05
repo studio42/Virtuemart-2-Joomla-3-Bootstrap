@@ -1,7 +1,5 @@
 Virtuemart 2.0 Joomla 3 Bootstrapped
 =============
-This repositry is from original 2.0.20.b stable zip package from virtuemart 2 Official site (without aditional languages & files).
-See http://dev.virtuemart.net/projects/virtuemart/files for all packages.
 
 **This is an convertion for joomla 3.0**
 
@@ -28,6 +26,8 @@ Clone product **with plugin** correctly, if the method is in the plugin.
 Commit update include many bug fix, i applied and share to the user.    
 Most of this fix are not included in Official release.
 
+This repositry is from original 2.0.20.b stable zip package from virtuemart 2 Official site (without aditional languages & files).
+See http://dev.virtuemart.net/projects/virtuemart/files for original packages without this changes and fixes.
 info
 ------------
 This release have to use joomla-pdf-document-view from github to make the orders PDF.  
