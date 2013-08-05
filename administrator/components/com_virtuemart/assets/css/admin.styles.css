@@ -1,6 +1,88 @@
-.ui-autocomplete {position : absolute;}
+/* Bootstrap fix j3 TODO, better trick or add another class ?*/
+@media (min-width: 767px) {
+	th.autosize {
+		max-width: 120px;
+		width: auto;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	#content .row-fluid .span12 [class*="span"] {
+		margin-left: 1%;
+	}
+	td.key{min-width:100px;}
 
 
+}
+
+
+/* .ui-autocomplete {position : absolute;} */
+@media (max-width: 767px) {
+	th.autosize {
+		max-width: 45px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+td.key{min-width:60px;vertical-align:top;}
+table.admintable td.span6{width:50%}
+.chzn-container{width:200px}
+.btn-toggle input[type="checkbox"]{
+    display: none;
+}
+.admintable{width:100%;}
+#vmmenu .accordion-inner{padding: 2px 1px;}
+#sidebar-toggle{position: absolute;
+left: 2px;
+width: 6px;
+z-index:10;
+opacity: 0.2;
+}
+#sidebar-toggle:hover{
+	opacity: 0.9;
+}
+.price-container{border:1px solid #ccc;margin-bottom:5px;}
+/* jqeury ui autocomplete */
+
+.ui-widget {
+	margin-top: 2em;
+}
+.ui-widget-header,
+.ui-widget-content {
+	padding: 0.5em 1em;
+}
+.ui-widget-header h2 {
+	margin: 0;
+	padding: 0;
+}
+.ui-autocomplete{width: 90%;overflow: hidden;}
+.ui-autocomplete li{
+    display: inline-block;
+	float: left;
+}.ui-autocomplete li a{
+    font-size:8px;
+}
+.clear{clear:both}
+/* old css*/
+.ratingbox {
+	position:relative;
+	display:block;
+	width:120px;
+	height:24px;
+	background:url(../../../../../components/com_virtuemart/assets/images/color-stars.png) repeat-x scroll 0 bottom transparent;
+}
+.ratingbox span {
+	background:url(../../../../../components/com_virtuemart/assets/images/color-stars.png) repeat-x;
+	display:block;
+	width:1%;
+	height:24px;
+	position:absolute;
+}
+.stars-orange{background-position:0 0 !important;}
+
+/* unused ??? */
 #vmPage input {background: #e8e8e8 url(../images/backgrounds.png) top repeat-x;padding: 5px 5px 4px 5px;border: solid #CAC9C9 1px;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;color: #000;}
 #vmPage input:hover {background: #e8e8e8 url(../images/backgrounds.png) repeat-x;background-position: 0px -40px;color: #0270bc;}
 #vmPage textarea, #vmPage select {padding: 3px 5px 2px 5px;border: solid #CAC9C9 1px;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;color: #000;}
@@ -229,12 +311,20 @@ span.trash {
 div.threecols ul li {
     background: none repeat scroll 0 0 transparent;
     display: inline-block;
-    min-height: 10px;
+    min-height: 32px;
     padding: 0;
     vertical-align: top;
-       width: 32%;
+    width: 32.3%;
+	padding-right:1%;
 }
-
+div.threecols ul li label.btn-block{
+	white-space: nowrap;
+	overflow: hidden;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-overflow: ellipsis;
+	text-align: left;
+}
 div.threecols ul   {
    margin:0;
    padding:0;
