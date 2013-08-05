@@ -49,7 +49,7 @@ class VmImage extends VmMediaHandler {
 		return $data;
 	}
 
-	function displayMediaFull($imageArgs='',$lightbox=true,$effect ="class='modal'",$description = true ){
+	function displayMediaFull($imageArgs='',$lightbox=true,$effect ="class='modalbox'",$description = true ){
 
 		if(!$this->file_is_forSale){
 			// Remote image URL
@@ -157,7 +157,7 @@ class VmImage extends VmMediaHandler {
 	}
 
 	public function checkPathCreateFolders($path){
-
+		jimport('joomla.filesystem.folder');
 		$elements = explode(DS,$path);
 		$examine = JPATH_ROOT;
 		foreach($elements as $piece){
@@ -176,10 +176,10 @@ class VmImage extends VmMediaHandler {
 	 * @param string $image Name of the image file to display
 	 * @param string $text Text to use for the image alt text and to display under the image.
 	 */
-	static public function displayImageButton($link, $imageclass, $text, $mainclass = 'vmicon48') {
-		$button = '<a title="' . $text . '" href="' . $link . '">';
-		$button .= '<span class="'.$mainclass.' '.$imageclass.'"></span>';
-		$button .= '<br />' . $text.'</a>';
+	static public function displayImageButton($link, $imageclass, $text, $btColor = '') {
+		$button = '<a class="span12 '.$btColor.'" title="' . $text . '" href="' . $link . '">';
+		$button .= '<i class="'.$imageclass.'"></i> ';
+		$button .=  $text.'</a>';
 		echo $button;
 
 	}

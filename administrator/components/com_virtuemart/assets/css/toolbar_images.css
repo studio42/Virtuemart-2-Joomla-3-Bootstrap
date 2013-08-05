@@ -4,11 +4,15 @@
 .icon-32-vm_new_32 { 
    background: url(../images/icon_32/vm_new_32.png); 
 }
+#cpanel div{
+    text-align: left;
 
+}
 /* 48x48 images and joomla overide to use it*/
-#cpanel span.vmicon48 {    display: inline-block !important; height: 48px; width: 48px;margin-top: 10px;}
-#cpanel div.icon { cursor: pointer; }
-
+/* #cpanel span.vmicon48 {    display: inline-block !important; height: 48px; width: 48px;margin-top: 10px;}
+#cpanel div.icon { cursor: pointer;float:left; }
+ */
+.view-updatesmigration i.vmicon48 {height: 48px; width: 48px;}
 .vmicon48, .icon-48-head{background-image: url(../images/icone48.png) ; background-repeat: no-repeat !important; display :inline-block ;}
 .vm_category_48, .vm_product_types_48, .vm_custom_48{ background-position: 0 0; height: 48px; } 
 .vm_config_48{ background-position: 0 -48px !important; height: 48px; } 

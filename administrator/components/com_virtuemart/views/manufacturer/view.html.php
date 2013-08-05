@@ -34,10 +34,10 @@ class VirtuemartViewManufacturer extends VmView {
 	function display($tpl = null) {
 
 		// Load the helper(s)
-
-
+		//Template path and helper fix for Front-end editing
+		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'manufacturer'.DS.'tmpl');
+		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
 		$this->loadHelper('html');
-
 
 		// get necessary models
 		$model = VmModel::getModel('manufacturer');
@@ -69,7 +69,6 @@ class VirtuemartViewManufacturer extends VmView {
 			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
 			$virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor();
 			$this->assignRef('virtuemart_vendor_id', $virtuemart_vendor_id);
-
 
 		}
 		else {

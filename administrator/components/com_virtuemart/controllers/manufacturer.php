@@ -43,7 +43,7 @@ class VirtuemartControllerManufacturer extends VmController {
 	 */
 	function __construct() {
 		parent::__construct('virtuemart_manufacturer_id');
-
+		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
 	}
 
 	/**

@@ -133,7 +133,7 @@ class VirtueMartModelManufacturer extends VmModel {
 		}
 
 		if ( $search && $search != 'true') {
-			$search = '"%' . $this->_db->getEscaped( $search, true ) . '%"' ;
+			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 			//$search = $this->_db->Quote($search, false);
 			$where[] .= ' LOWER( `mf_name` ) LIKE '.$search;
 		}

@@ -16,11 +16,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 * http://virtuemart.net
 */
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
-//This is for akeeba release system, it must be executed before any other task
-require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'liveupdate'.DS.'liveupdate.php';
-if(JRequest::getCmd('view','') == 'liveupdate') {
-    LiveUpdate::handleRequest();
-    return;
+if ($admin = JFactory::getUser()->authorise('core.admin') ) {
+	//This is for akeeba release system, it must be executed before any other task
+	require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'liveupdate'.DS.'liveupdate.php';
+	if(JRequest::getCmd('view','') == 'liveupdate') {
+		LiveUpdate::handleRequest();
+		return;
+	}
 }
 
 if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
@@ -68,7 +70,6 @@ $controller = new $_class();
 
 // Perform the Request task
 $controller->execute(JRequest::getWord('task', $_controller));
-
 $controller->redirect();
 
 // pure php no closing tag

@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
 	<legend>
 		<?php echo JText::_('COM_VIRTUEMART_SHOPPER_FORM_LBL') ?>
 	</legend>
-	<table class="adminform">
+	<table>
 		<tr>
 			<td class="key">
 				<label for="virtuemart_vendor_id">
@@ -86,14 +86,15 @@ defined('_JEXEC') or die('Restricted access');
 </fieldset>
 <?php } ?>
 
-<fieldset>
+<fieldset class="l1">
 	<legend>
 		<?php echo JText::_('COM_VIRTUEMART_USERFIELDS_FORM_LBL'); ?>
 	</legend>
-<?php
+	<table>
+	<?php
 	$_k = 0;
-	$_set = false;
-	$_table = false;
+	$_set = true;
+	$_table = true;
 	$_hiddenFields = '';
 
 	if (count($this->userFieldsBT['functions']) > 0) {
@@ -123,7 +124,7 @@ defined('_JEXEC') or die('Restricted access');
 				echo '</fieldset>'."\n";
 			}
 			$_set = true;
-			echo '<fieldset>'."\n";
+			echo '<fieldset class="l2">'."\n";
 			echo '	<legend>'."\n";
 			echo '		' . $_field['title'];
 			echo '	</legend>'."\n";
@@ -146,15 +147,11 @@ defined('_JEXEC') or die('Restricted access');
 		echo '			</td>'."\n";
 		echo '		</tr>'."\n";
 	}
+	?>
+	</table>
+</fieldset>
 
-	if ($_table) {
-		echo '	</table>'."\n";
-	}
-	if ($_set) {
-		echo '</fieldset>'."\n";
-	}
-	echo $_hiddenFields;
-?>
+<?php echo $_hiddenFields; ?>
 <input type="hidden" name="virtuemart_userinfo_id" value="<?php echo $this->userInfoID; ?>" />
 <input type="hidden" name="address_type" value="BT" />
 </fieldset>

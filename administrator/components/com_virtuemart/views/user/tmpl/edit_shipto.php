@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-AdminUIHelper::startAdminArea();
+// AdminUIHelper::startAdminArea();
 
 ?>
 
@@ -27,10 +27,11 @@ AdminUIHelper::startAdminArea();
 	<legend>
 		<?php echo JText::_('COM_VIRTUEMART_SHOPPER_FORM_SHIPTO_LBL'); ?>
 	</legend>
+	<table>
 <?php
 	$_k = 0;
-	$_set = false;
-	$_table = false;
+	$_set = true;
+	$_table = true;
 	$_hiddenFields = '';
 // 	vmdebug('shipToFields',$this->shipToFields);
 	if (count($this->shipToFields['functions']) > 0) {
@@ -69,7 +70,7 @@ AdminUIHelper::startAdminArea();
 
 		if (!$_table) {
 			// A table hasn't been opened as well. We need one here,
-			echo '	<table class="adminform">'."\n";
+			echo '	<table>'."\n";
 			$_table = true;
 		}
 		echo '		<tr>'."\n";
@@ -83,13 +84,11 @@ AdminUIHelper::startAdminArea();
 		echo '			</td>'."\n";
 		echo '		</tr>'."\n";
 	}
+	?>
+	</table>
+</fieldset>
 
-	if ($_table) {
-		echo '	</table>'."\n";
-	}
-	if ($_set) {
-		echo '</fieldset>'."\n";
-	}
+<?php
 	echo $_hiddenFields;
 
 if(!empty($this->virtuemart_userinfo_id)){
@@ -97,10 +96,9 @@ if(!empty($this->virtuemart_userinfo_id)){
 }
 ?>
 
-</fieldset>
 
 <?php
 
-	AdminUIHelper::endAdminArea();
+	// AdminUIHelper::endAdminArea();
 
 ?>

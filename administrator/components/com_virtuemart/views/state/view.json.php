@@ -38,10 +38,11 @@ class VirtuemartViewState extends JViewLegacy {
 		//retrieving countries id
 		$country_ids = JRequest::getString('virtuemart_country_id');
 		$country_ids = explode(',', $country_ids);
-		
+		// json size divided by 2 using a simple letter in json response and of course javascript memory
+		// more then 1kb / country with states
 		foreach($country_ids as $country_id){
-			$q= 'SELECT `virtuemart_state_id`, `state_name` FROM `#__virtuemart_states`  WHERE `virtuemart_country_id`= "'.(int)$country_id.'" 
-				ORDER BY `#__virtuemart_states`.`state_name`';
+			$q= 'SELECT `virtuemart_state_id` as k, `state_name` as v FROM `#__virtuemart_states`  WHERE `virtuemart_country_id`= "'.(int)$country_id.'" 
+				ORDER BY v';
 			$db->setQuery($q);
 			
 			$states[$country_id] = $db->loadAssocList();

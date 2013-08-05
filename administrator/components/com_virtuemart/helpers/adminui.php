@@ -28,7 +28,10 @@ class AdminUIHelper {
      */
     static function startAdminArea($backEnd=true) {
 		if (JRequest::getWord ( 'format') =='pdf') return;
-		if (JRequest::getWord ( 'tmpl') =='component') self::$backEnd=false;
+		if (JRequest::getWord ( 'tmpl') =='component') {
+			self::$backEnd=false;
+			include('front/edit.html.php');
+		}
     	if(self::$vmAdminAreaStarted) return;
     	self::$vmAdminAreaStarted = true;
 		$front = JURI::root(true).'/components/com_virtuemart/assets/';
@@ -36,30 +39,44 @@ class AdminUIHelper {
 		$document = JFactory::getDocument();
 
 		//loading defaut admin CSS
-		$document->addStyleSheet($admin.'css/admin_ui.css');
-		$document->addStyleSheet($admin.'css/admin_menu.css');
+		// $document->addStyleSheet($admin.'css/admin_ui.css');
+		// $document->addStyleSheet($admin.'css/admin_menu.css');
+		if (JVM_VERSION===2 || self::$backEnd===false) {
+			JHtml::_('bootstrap.loadCss') ;
+			JHtml::_('bootstrap.tooltip') ;
+			if (JVM_VERSION===2) $document->addScript($admin.'js/j25fixes.js');
+			$document->setMetadata('viewport', 'width=device-width, initial-scale=1.0'); 
+			JHtml::_('behavior.framework');
+		}
 		$document->addStyleSheet($admin.'css/admin.styles.css');
 		$document->addStyleSheet($admin.'css/toolbar_images.css');
 		$document->addStyleSheet($admin.'css/menu_images.css');
-		$document->addStyleSheet($front.'css/chosen.css');
-		$document->addStyleSheet($front.'css/vtip.css');
+		// $document->addStyleSheet($front.'css/chosen.css');
+		// $document->addStyleSheet($front.'css/vtip.css');
 		$document->addStyleSheet($front.'css/jquery.fancybox-1.3.4.css');
 		//$document->addStyleSheet($admin.'css/jqtransform.css');
 
 		//loading defaut script
-
+		// JHtml::_('bootstrap.tooltip');
 		$document->addScript($front.'js/fancybox/jquery.mousewheel-3.0.4.pack.js');
 		$document->addScript($front.'js/fancybox/jquery.easing-1.3.pack.js');
 		$document->addScript($front.'js/fancybox/jquery.fancybox-1.3.4.pack.js');
 		$document->addScript($admin.'js/jquery.coookie.js');
-		$document->addScript($front.'js/chosen.jquery.min.js');
+		// $document->addScript($front.'js/chosen.jquery.min.js');
+		JHtml::_('formbehavior.chosen', 'select');
 		$document->addScript($admin.'js/vm2admin.js');
 		//$document->addScript($admin.'js/jquery.jqtransform.js');
 		if (JText::_('COM_VIRTUEMART_JS_STRINGS') == 'COM_VIRTUEMART_JS_STRINGS') $vm2string = "editImage: 'edit image',select_all_text: 'select all options',select_some_options_text: 'select some options'" ;
 		else $vm2string = JText::_('COM_VIRTUEMART_JS_STRINGS') ;
+		//prevent joomlaJtext bug.
+		JText::script('JGLOBAL_SELECT_SOME_OPTIONS');
+		// old type image var tip_image='".JURI::root(true)."/components/com_virtuemart/assets/js/images/vtip_arrow.png';
+		// fix for jsonRequest in front admin
+		$baseUrlCurrent =  self::$backEnd===false ? '/' : '/administrator/';
+
 		$document->addScriptDeclaration ( "
 //<![CDATA[
-		var tip_image='".JURI::root(true)."/components/com_virtuemart/assets/js/images/vtip_arrow.png';
+		var vmBaseUrl = '". JURI::root(true).$baseUrlCurrent. "';
 		var vm2string ={".$vm2string."} ;
 		 jQuery( function($) {
 
@@ -70,8 +87,11 @@ class AdminUIHelper {
 				$('#admin-ui-tabs').vm2admin('tabs',virtuemartcookie).find('select').chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text}); 
 			}
 
-			$('#content-box [title]').vm2admin('tips',tip_image);
-			$('.modal').fancybox();
+			// TIPS IS now from bootstrap  $('#content-box [title]').vm2admin('tips',tip_image);
+			jQuery('.hasTip').tooltip({});
+
+			$('.fb-modal-toggle,.modalbox').fancybox();
+			// $('.modal').modal();
 			$('.reset-value').click( function(e){
 				e.preventDefault();
 				none = '';
@@ -83,39 +103,53 @@ class AdminUIHelper {
 //]]>
 		");
 		?>
-		<?php if (!self::$backEnd) echo '<div class="toolbar" style="height: 84px;position: relative;">'.vmView::getToolbar().'</div>'; ?>
-		<div class="virtuemart-admin-area">
+
+
 		<?php
 		// Include ALU System
 		if (self::$backEnd) {
 		require_once JPATH_VM_ADMINISTRATOR.DS.'liveupdate'.DS.'liveupdate.php';
 		?>
-
-			<div class="menu-wrapper">
-				<a href="index.php?option=com_virtuemart&view=virtuemart" ><div class="menu-vmlogo"></div></a>
+		<div class="vm2admin">
+		<div class="row-fluid">
+		<div class="span12">
+			<div class="btn btn-large btn-inverse" id="sidebar-toggle"><i class="icon-chevron-left"></i></div>
+			<div class="span3 j-sidebar-container">
+				<div class="well well-small"><a href="index.php?option=com_virtuemart&view=virtuemart" ><div class="menu-vmlogo"></div></a></div>
 				<?php AdminUIHelper::showAdminMenu();
-				?>
-				<div class="menu-notice">
-				<?php
-				echo LiveUpdate::getIcon(array(),'notice');
-				?>
-				<?php echo VmConfig::getInstalledVersion(); ?>
-				</div>
+				if ($admin = JFactory::getUser()->authorise('core.admin') ) {
+					?>
+					<div class="menu-notice hidden-phone">
+						<?php echo LiveUpdate::getIcon(array(),'notice'); ?>
+						<?php echo VmConfig::getInstalledVersion(); ?>
+					</div>
+					<?php
+				} ?>
 
 			</div>
-		<?php } ?>
-			<div id="admin-content-wrapper">
-			<div class="toggler vmicon-show"></div>
-				<div id="admin-content" class="admin-content">
+		<?php } 
+		$view = jRequest::getWord('view','virtuemart');
+		if (!self::$backEnd)  $span = '';
+		elseif ($view == 'virtuemart') $span = 'span5';
+		else $span='span9';
+		?>
+			<div id="j-main-container" class="<?php echo $span ?>">
 		<?php
 	}
 
 	/**
 	 * Close out the adminstrator area table.
-	 * @author RickG, Max Milbers
+	 * @author RickG, Max Milbers, Patrick Kohl
+	 * @boolean $ajaxResults, in case of raw/ajax result exist, include the file
+	 * Note the script must be set after joomla javascript declaration to overide it.
 	 */
-	static function endAdminArea() {
-		if (!self::$backEnd) return;
+	static function endAdminArea($ajaxResults = false) {
+		if (!self::$backEnd) {
+			echo '</div></div></div>';
+			vmJsApi::js ('jquery.ui.autocomplete.html');
+			if ($ajaxResults) include('ajax/results.html.php');
+			return;
+		}
 		self::$vmAdminAreaStarted = false;
 		if (VmConfig::get('debug') == '1') {
 		//TODO maybe add debuggin again here
@@ -124,11 +158,15 @@ class AdminUIHelper {
 		?>
 					<div class="clear"></div>
 				</div>
+				<div class="clear"></div>
 			</div>
-			<div class="clear"></div>
 		</div>
-	<?php
-	    }
+		</div>
+
+		<?php 
+		// add ajax results script
+		if ($ajaxResults) include('ajax/results.html.php');
+	}
 
 	/**
 	 * Admin UI Tabs
@@ -143,15 +181,16 @@ class AdminUIHelper {
 		$document->addScriptDeclaration ( '
 		var virtuemartcookie="'.$cookieName.'";
 		');
-
-		$html = '<div id="admin-ui-tabs">';
-
+		$defaultTab = key($load_template);
+		$html = JHtml::_('bootstrap.startTabSet', $cookieName, array('active' => 'page-'.$defaultTab)); 
+		// $html = JHtml::_('bootstrap.startTabSet', $cookieName); 
 		foreach ( $load_template as $tab_content => $tab_title ) {
-			$html .= '<div class="tabs" title="' . JText::_ ( $tab_title ) . '">';
+			$html .= JHtml::_('bootstrap.addTab', $cookieName , 'page-'.$tab_content, JText::_($tab_title, true)); 
+			// $html .= '<div class="tabs" title="' . JText::_ ( $tab_title ) . '">';
 			$html .= $view->loadTemplate ( $tab_content );
-			$html .= '<div class="clear"></div></div>';
+			$html .= JHtml::_('bootstrap.endTab');
 		}
-		$html .= '</div>';
+		$html .= JHtml::_('bootstrap.endTabSet'); 
 		echo $html;
 	}
 
@@ -167,14 +206,13 @@ class AdminUIHelper {
 			$document->addScriptDeclaration ( '
 			var virtuemartcookie="vm-tab";
 			');
-			$html = 	'<div id="admin-ui-tabs">
-
-							<div class="tabs" title="'.JText::_($language).'">';
+			$html = JHtml::_('bootstrap.startTabSet', 'solo', array('active' => 'page-solo')); 
+			$html .= JHtml::_('bootstrap.addTab', 'solo' , 'page-solo', JText::_($language, true)); 
 			echo $html;
 		}
 		if ($return == 'end') {
-			$html = '		</div>
-						</div>';
+			$html = JHtml::_('bootstrap.endTab');
+			$html .= JHtml::_('bootstrap.endTabSet'); 
 			echo $html;
 		}
 	}
@@ -187,10 +225,19 @@ class AdminUIHelper {
 	static function _getAdminMenu($moduleId = 0) {
 		$db = JFactory::getDBO ();
 		$menuArr = array ();
-
+		$admin = JFactory::getUser()->authorise('core.admin');
+		$manage = JFactory::getUser()->authorise('core.manage');
 		$filter [] = "jmmod.published='1'";
 		$filter [] = "item.published='1'";
 		$filter [] = "jmmod.is_admin='1'";
+		if (!$admin) {
+			$filter [] = "item.view!='config'";
+			$filter [] = "item.view!='updatesmigration'";
+		}
+		// var_dump($admin,$filter);
+		// if (!$manage) {
+			// $filter [] = "item.view!='config'";
+		// }
 		if (! empty ( $moduleId )) {
 			$filter [] = 'vmmod.module_id=' . ( int ) $moduleId;
 		}
@@ -219,54 +266,57 @@ class AdminUIHelper {
 	static function showAdminMenu() {
 		$document = JFactory::getDocument ();
 		$moduleId = JRequest::getInt ( 'module_id', 0 );
-
+		$collapse_in= " in";
 		$menuItems = AdminUIHelper::_getAdminMenu ( $moduleId );
-		?>
-
-		<div id="admin-ui-menu" class="admin-ui-menu">
-
+		$modCount = 1; ?>
+<!--		<div>Virtuemart</div>-->
+		<div class="sidebar-nav accordion" id="vmmenu">
 		<?php
-		$modCount = 1;
-		foreach ( $menuItems as $item ) { ?>
-
-			<h3 class="menu-title">
-				<?php echo JText::_ ( $item ['title'] )?>
-			</h3>
-
-			<div class="menu-list">
-				<ul>
-				<?php
-				foreach ( $item ['items'] as $link ) {
-				    $target='';
-					if ($link ['name'] == '-') {
-						// it was emtpy before
-					} else {
-						if (strncmp ( $link ['link'], 'http', 4 ) === 0) {
-							$url = $link ['link'];
-							$target='TARGET="_blank"';
-						} else {
-							$url = ($link ['link'] === '') ? 'index.php?option=com_virtuemart' :$link ['link'] ;
-							$url .= $link ['view'] ? "&view=" . $link ['view'] : '';
-							$url .= $link ['task'] ? "&task=" . $link ['task'] : '';
-							// $url .= $link['extra'] ? $link['extra'] : '';
-						}
-						?>
-					<li>
-						<a href="<?php echo $url; ?>" <?php echo $target; ?>><span class="<?php echo $link ['icon_class'] ?>"></span><?php echo JText::_ ( $link ['name'] )?></a>
-					</li>
+		foreach ( $menuItems as $item ) { 
+			$vmd = 'vmd'.$modCount ;
+			?>
+			<div class="accordion-group">
+				<div class="accordion-heading">
+					<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#vmmenu" href="#<?php echo $vmd ?>">
+						<i class="icon-chevron-down pull-right"></i><?php echo JText::_ ( $item ['title'] )?>
+					</a>
+				</div>
+				<div id="<?php echo $vmd ?>" class="accordion-body collapse<?php echo $collapse_in ?>">
+				<div class="accordion-inner">
+					<ul class="nav nav-list">
 					<?php
+					foreach ( $item ['items'] as $link ) {
+						$target='';
+						if ($link ['name'] == '-') {
+							// it was emtpy before
+						} else {
+							if (strncmp ( $link ['link'], 'http', 4 ) === 0) {
+								$url = $link ['link'];
+								$target='TARGET="_blank"';
+							} else {
+								$url = ($link ['link'] === '') ? 'index.php?option=com_virtuemart' :$link ['link'] ;
+								$url .= $link ['view'] ? "&view=" . $link ['view'] : '';
+								$url .= $link ['task'] ? "&task=" . $link ['task'] : '';
+								// $url .= $link['extra'] ? $link['extra'] : '';
+							}
+							?>
+						<li>
+							<a href="<?php echo $url; ?>" <?php echo $target; ?>><span class="<?php echo $link ['icon_class'] ?>"></span><?php echo JText::_ ( $link ['name'] )?></a>
+						</li>
+						<?php
+						}
 					}
-				}
-				?>
-			    </ul>
+					?>
+					</ul>
+				</div>
+				</div>
 			</div>
-
 			<?php
+			$collapse_in ='';
 			$modCount ++;
-		}
-		?>
+		} ?>
 		</div>
-	<?php
+		<?php
 	}
 
 }

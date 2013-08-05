@@ -1,10 +1,16 @@
-.vmicon{ background: no-repeat top left; width: 16px;height: 16px; float: right;margin-right: 4px;
+/* Icones */
+.print_24, .invoice_24, .invoicenew_24{background: url(../images/icon_24/print_24.png) no-repeat transparent; display: block;height: 24px;margin: auto;text-align: center;width: 24px;}
+.print_24{ background-position:-24px 0}
+.invoice_24{ background-position:0 -24px}
+
+.vmicon{ background: no-repeat top left; width: 16px !important;height: 16px !important; float: right;margin-right: 4px;
     opacity : 0.8;
     -moz-opacity : 0.8;
     -ms-filter: "alpha(opacity=90)"; /* IE 8 */
     filter : alpha(opacity=90); /* IE < 8 */  }
 .vmicon:hover{opacity :1;}
-
+.menu-vmlogo {background: url("../images/vm_menulogo.png") no-repeat scroll 10px bottom;color: #333333;cursor: pointer;font-size: 13px;font-weight: normal;height: 48px;margin: 0;padding: 0;
+}
 /* to use inline with no float*/
 .icon-nofloat{ display: inline-block; float: none; vertical-align: middle;}
 

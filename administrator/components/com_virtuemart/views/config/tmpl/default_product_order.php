@@ -19,51 +19,42 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 ?>
-<br />
-
-<table>
-    <tr><td valign="top">
-		<fieldset>
-		<legend><?php echo JText::_('COM_VIRTUEMART_BROWSE_ORDERBY_DEFAULT_FIELD_TITLE') ?></legend>
+<fieldset>
+	<legend><?php echo JText::_('COM_VIRTUEMART_BROWSE_ORDERBY_DEFAULT_FIELD_TITLE') ?></legend>
 		<table class="admintable">
 			<tr>
-			<td class="key">
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_BROWSE_ORDERBY_DEFAULT_FIELD_LBL_TIP'); ?>" >
+			<td>
+			    <h4 class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_BROWSE_ORDERBY_DEFAULT_FIELD_LBL_TIP'); ?>" >
 			    <?php echo JText::_('COM_VIRTUEMART_BROWSE_ORDERBY_DEFAULT_FIELD_LBL') ?>
-			    </span>
+			    </h4>
+				<?php echo JHTML::_('Select.genericlist', $this->orderByFields->select, 'browse_orderby_field', 'size=1', 'value', 'text', VmConfig::get('browse_orderby_field','product_name'),'product_name'); ?>
 			</td>
 			<td>
-			    <?php echo JHTML::_('Select.genericlist', $this->orderByFields->select, 'browse_orderby_field', 'size=1', 'value', 'text', VmConfig::get('browse_orderby_field','product_name'),'product_name'); ?>
-
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_BROWSE_CAT_ORDERBY_DEFAULT_FIELD_LBL_TIP'); ?>" >
+			    <h4 class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_BROWSE_CAT_ORDERBY_DEFAULT_FIELD_LBL_TIP'); ?>" >
 			    <?php echo JText::_('COM_VIRTUEMART_BROWSE_CAT_ORDERBY_DEFAULT_FIELD_LBL') ?>
-			    </span>
-
+			    </h4>
 			    <?php echo JHTML::_('Select.genericlist', $this->orderByFields->select, 'browse_cat_orderby_field', 'size=1', 'value', 'text', VmConfig::get('browse_cat_orderby_field','category_name'),'category_name'); ?>
 			</td>
 		    </tr>
 		    <tr>
-			<td class="key">
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_BROWSE_ORDERBY_FIELDS_LBL_TIP'); ?>">
+			<td colspan="2">
+			    <h4 class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_BROWSE_ORDERBY_FIELDS_LBL_TIP'); ?>">
 			    <?php echo JText::_('COM_VIRTUEMART_BROWSE_ORDERBY_FIELDS_LBL') ?>
-			    </span>
-			</td>
-			<td><fieldset class="checkbox">
+			    </h4>
+				<fieldset class="checkbox">
 			    <?php echo $this->orderByFields->checkbox ; ?>
-			</fieldset></td>
-		    </tr>
-		    <tr>
-			<td class="key">
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_BROWSE_SEARCH_FIELDS_LBL_TIP'); ?>">
-			    <?php echo JText::_('COM_VIRTUEMART_BROWSE_SEARCH_FIELDS_LBL') ?>
-			    </span>
+				</fieldset>
 			</td>
-			<td><fieldset class="checkbox">
+		</tr>
+		<tr>
+			<td colspan="2">
+			    <h4 class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_BROWSE_SEARCH_FIELDS_LBL_TIP'); ?>">
+			    <?php echo JText::_('COM_VIRTUEMART_BROWSE_SEARCH_FIELDS_LBL') ?>
+			    </h4>
+				<fieldset class="checkbox">
 			    <?php echo $this->searchFields->checkbox ; ?>
-			</fieldset></td>
-		    </tr>
-		    <tr>
-		</table>
-		</fieldset>
-	</td></tr>
-</table>
+				</fieldset>
+			</td>
+	    </tr>
+	</table>
+</fieldset>

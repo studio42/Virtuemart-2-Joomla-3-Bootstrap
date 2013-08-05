@@ -25,15 +25,16 @@ AdminUIHelper::startAdminArea();
 <?php // Loading Templates in Tabs
 $tabarray = array();
 $tabarray['edit'] = 'COM_VIRTUEMART_ADMIN_SHIPMENT_FORM';
-$tabarray['config'] = 'COM_VIRTUEMART_ADMIN_SHIPMENT_CONFIGURATION';
+$tabarray['options'] = 'COM_VIRTUEMART_ADMIN_SHIPMENT_CONFIGURATION';
 
 AdminUIHelper::buildTabs ( $this, $tabarray , $this->shipment->virtuemart_shipmentmethod_id );
 // Loading Templates in Tabs END ?>
 
     <!-- Hidden Fields -->
 	<?php echo $this->addStandardHiddenToForm(); ?>
-<input type="hidden" name="virtuemart_shipmentmethod_id" value="<?php echo $this->shipment->virtuemart_shipmentmethod_id; ?>" />
-<input type="hidden" name="xxcontroller" value="shipmentmethod" />
+	<input type="hidden" name="shipment_jplugin_id" value="<?php echo $this->shipment->shipment_jplugin_id; ?>" />
+	<input type="hidden" name="virtuemart_shipmentmethod_id" value="<?php echo $this->shipment->virtuemart_shipmentmethod_id; ?>" />
+<!--Why this old code here ? <input type="hidden" name="xxcontroller" value="shipmentmethod" />-->
 
 </form>
     <?php AdminUIHelper::endAdminArea(); ?>

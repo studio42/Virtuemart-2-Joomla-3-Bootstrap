@@ -71,7 +71,9 @@ class VirtueMartModelRatings extends VmModel {
 
      	$tables = ' FROM `#__virtuemart_ratings` AS `r` JOIN `#__virtuemart_products_'.VMLANG.'` AS `p`
      			USING (`virtuemart_product_id`) ';
-     	$whereString = '';
+     	if ($filter_ratings = jrequest::getvar('filter_ratings'))
+			$whereString = 'where product_name like "%'.$this->_db->escape($filter_ratings).'%"';
+			else $whereString = '';
      	$this->_data = $this->exeSortSearchListQuery(0,' r.*,p.`product_name` ',$tables,$whereString,'',$this->_getOrdering());
 // 	    $this->_data = $this->_getList($q, $this->getState('limitstart'), $this->getState('limit'));
 
@@ -88,10 +90,12 @@ class VirtueMartModelRatings extends VmModel {
     * Load a single rating
     * @author RolandD
     */
-    public function getRating($cids) {
+    public function getRating($cids = array(0) ) {
 
-	    if (empty($cids)) {
-		    return;
+		$pid = JRequest::getInt('virtuemart_product_id',0);
+	    if (empty($cids) ) {
+			if (!$pid) return;
+			else $cids[0] = 0 ;
 	    }
 
 		/* First copy the product in the product table */
@@ -100,9 +104,9 @@ class VirtueMartModelRatings extends VmModel {
 		/* Load the rating */
 		$joinValue = array('product_name' =>'#__virtuemart_products');
 
-	    if ($cids) {
-		    $ratings_data->load ($cids[0], $joinValue, 'virtuemart_product_id');
-	    }
+	    // if ($cids) {
+		    $ratings_data->load ($cids[0], null, 'virtuemart_product_id');
+	    // }
 
 		/* Add some variables for a new rating */
 		if (JRequest::getWord('task') == 'add') {

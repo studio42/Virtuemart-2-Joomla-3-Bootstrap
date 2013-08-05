@@ -42,6 +42,11 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	 * @access	public
 	 */
 	function __construct(){
+		if (!JFactory::getUser()->authorise('core.admin'))
+		{
+			JFactory::getApplication()->redirect('index.php', JText::_('JERROR_ALERTNOAUTHOR'));
+			return;
+		}
 		parent::__construct();
 
 	}
@@ -95,8 +100,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function installSampleData(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 // 		$this->checkPermissionForTools();
 
 		$model = $this->getModel('updatesMigration');
@@ -115,7 +119,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function setStoreOwner(){
 
 		$data = JRequest::get('get');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$model = $this->getModel('updatesMigration');
@@ -135,8 +139,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function restoreSystemDefaults(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		if(VmConfig::get('dangeroustools', false)){
@@ -163,8 +166,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function deleteVmTables(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$msg = JText::_('COM_VIRTUEMART_SYSTEM_VMTABLES_DELETED');
@@ -190,8 +192,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function deleteVmData(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$msg = JText::_('COM_VIRTUEMART_SYSTEM_VMDATA_DELETED');
@@ -212,8 +213,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function deleteAll(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$msg = JText::_('COM_VIRTUEMART_SYSTEM_ALLVMDATA_DELETED');
@@ -232,8 +232,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function deleteRestorable(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$msg = JText::_('COM_VIRTUEMART_SYSTEM_RESTVMDATA_DELETED');
@@ -257,8 +256,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function refreshCompleteInstall($sample=false){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		if(VmConfig::get('dangeroustools', true)){
@@ -293,8 +291,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function updateDatabase(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 // 		$this->checkPermissionForTools();
 
 		if(!class_exists('com_virtuemartInstallerScript')) require(JPATH_VM_ADMINISTRATOR . DS . 'install' . DS . 'script.virtuemart.php');
@@ -311,8 +308,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function renewConfig(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		//if(VmConfig::get('dangeroustools', true)){
@@ -356,8 +352,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	function portMedia(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
@@ -370,7 +365,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 	function migrateGeneralFromVmOne(){		$data = JRequest::get('get');
 
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
@@ -388,7 +383,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 	function migrateUsersFromVmOne(){
 
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
@@ -407,7 +402,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 	function migrateProductsFromVmOne(){
 
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
@@ -425,7 +420,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 	function migrateOrdersFromVmOne(){
 
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
@@ -448,7 +443,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	 */
 	function migrateAllInOne(){
 
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		if(!VmConfig::get('dangeroustools', true)){
@@ -471,7 +466,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 	function reOrderChilds(){
 
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		$this->checkPermissionForTools();
 
 		if(!VmConfig::get('dangeroustools', true)){
@@ -524,7 +519,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 /*		$db = JFactory::getDBO();
 		$query = 'SHOW COLUMNS FROM `#__virtuemart_products` ';
 		$db->setQuery($query);
-		$columns = $db->loadResultArray(0);
+		$columns = $db->loadColumn(0);
 
 		if(!in_array('product_ordered',$columns)){
 			echo 'is in array';

@@ -17,92 +17,58 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
-
-AdminUIHelper::startAdminArea();
-
+defined('_JEXEC') or die();
 ?>
-
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-	<div id="editcell">
-		<table class="adminlist" cellspacing="0" cellpadding="0">
-		<thead>
-		<tr>
-			<th width="10">
-				<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->shipments); ?>);" />
-			</th>
-			<th>
-				<?php echo JText::_('COM_VIRTUEMART_SHIPMENT_NAME_LBL'); ?>
-			</th>
-                        <th>
-				<?php echo JText::_('COM_VIRTUEMART_SHIPMENT_LIST_DESCRIPTION_LBL'); ?>
-			</th>
-                        <th width="20">
-				<?php echo JText::_('COM_VIRTUEMART_SHIPPING_SHOPPERGROUPS'); ?>
-			</th>
-                        <th>
-				<?php echo JText::_('COM_VIRTUEMART_SHIPMENTMETHOD'); ?>
-			</th>
-			<th>
-				<?php echo JText::_('COM_VIRTUEMART_LIST_ORDER'); ?>
-			</th>
-			<th width="20"><?php echo JText::_('COM_VIRTUEMART_PUBLISHED'); ?></th>
-			 <th><?php echo $this->sort('virtuemart_shipmentmethod_id', 'COM_VIRTUEMART_ID')  ?></th>
-		</tr>
-		</thead>
-		<?php
-		$k = 0;
-		for ($i=0, $n=count( $this->shipments ); $i < $n; $i++) {
-			$row = $this->shipments[$i];
-			$published = JHTML::_('grid.published', $row, $i );
-			/**
-			 * @todo Add to database layout published column
-			 */
-			$row->published = 1;
-			$checked = JHTML::_('grid.id', $i, $row->virtuemart_shipmentmethod_id);
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=shipmentmethod&task=edit&cid[]=' . $row->virtuemart_shipmentmethod_id);
-			?>
-			<tr class="row<?php echo $k ; ?>">
-				<td width="10">
-					<?php echo $checked; ?>
-				</td>
-				<td align="left">
-					<?php echo JHTML::_('link', $editlink, JText::_($row->shipment_name)); ?>
-				</td>
-                                <td align="left">
-					<?php echo $row->shipment_desc; ?>
-				</td>
-                                <td>
-					<?php echo $row->shipmentShoppersList; ?>
-				</td>
-                                <td align="left">
-					<?php echo $row->shipment_element; //JHTML::_('link', $editlink, JText::_($row->shipment_element)); ?>
-				</td>
-				<td align="left">
-					<?php echo JText::_($row->ordering); ?>
-				</td>
-				<td><?php echo $published; ?></td>
-				<td align="center">
-					<?php echo $row->virtuemart_shipmentmethod_id; ?>
-				</td>
-			</tr>
+	<?php AdminUIHelper::startAdminArea(); ?>
+
+	<div id="results">
+		<?php 
+		// split to use ajax search
+		echo $this->loadTemplate('results'); ?>
+	</div>
+
+	<div id="shipmentsModal" class="modal hide" tabindex="-1" aria-hidden="true">
+		<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_SHIPMENTMETHOD_S').' ('.JText::_('COM_VIRTUEMART_ADD').')'; ?><button type="button" class="close" aria-hidden="true">&times;</button></div>
+		<div class="modal-body">
+		<div class="row-striped">
+		<?php // shipment_jplugin_id
+		// var_dump($this->installedshipments); 
+		foreach ($this->installedShipments as $shipment) {
+			if ($shipment->enabled == 1 ) {
+				$link = JROUTE::_('index.php?option=com_virtuemart&view=shipmentmethod&task=add&shipment_jplugin_id=' . $shipment->extension_id);
+				?>
+				<div class="row-fluid"><a href="<?php echo $link ?>"> <?php echo $shipment->name ?></a></div>
 			<?php
-			$k = 1 - $k;
+			}
+			else
+			{ ?>
+					<div><?php echo $shipment->name ?></div>
+				<?php
+			}
+		} ?>
+		</div>
+		</div>
+		<div class="close btn"><?php echo JText::_('JCANCEL') ?></div>
+	</div>
+	<script type="text/javascript">
+		Joomla.submitbutton = function(pressbutton) {
+			if (pressbutton == 'add') {
+				jQuery('#shipmentsModal').removeClass('hide');
+				e.preventDefault();
+				return false;
+			} else {
+				Joomla.submitform( pressbutton );
+				return;
+			}
 		}
-		?>
-		<tfoot>
-			<tr>
-				<td colspan="10">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
-</div>
+				// Attach the modal to document
+		jQuery(function($){
+			$('#shipmentsModal .close').click( function() {
+				$('#shipmentsModal').addClass('hide');
+			});
+		});
+	</script>
 
-	<?php echo $this->addStandardHiddenToForm(); ?>
+	<?php AdminUIHelper::endAdminArea(true); ?>
 </form>
-
-
-
-<?php AdminUIHelper::endAdminArea(); ?>

@@ -389,15 +389,20 @@ class VirtuemartModelReport extends VmModel {
 
 	public function renderOrderstatesList () {
 
-		$orderstates = JRequest::getVar ('order_status_code', 'C');
+		$orderstates = JRequest::getVar ('order_status_code', null);
+		// if ($orderstates === null) $orderstates = 'C' ;
 		//print_r($orderstates);
 		$query = 'SELECT `order_status_code` as value, `order_status_name` as text
 			FROM `#__virtuemart_orderstates`
 			WHERE published=1 ';
 		$this->_db->setQuery ($query);
 		$list = $this->_db->loadObjectList ();
+		foreach ($list as $state){
+			$state->text = ShopFunctions::altText($state->text,'COM_VIRTUEMART_ORDER_STATUS');
+		}
+			
 		//$html = VmHTML::select ('order_status_code[]', $list, $orderstates, 'size="7" class="inputbox" onchange="this.form.submit();" multiple="multiple"');
-		$html = VmHTML::select ('order_status_code[]', $list, $orderstates, 'size="7" class="inputbox"  multiple="multiple"');
+		$html = VmHTML::select ('order_status_code[]', $list, $orderstates, 'size="7" class="input-xlarge"  multiple="multiple"');
 		return $html;
 	}
 
@@ -413,7 +418,7 @@ class VirtuemartModelReport extends VmModel {
 		$options[] = JHTML::_ ('select.option', JText::_ ('COM_VIRTUEMART_REPORT_INTERVAL_GROUP_MONTHLY'), 'month');
 		$options[] = JHTML::_ ('select.option', JText::_ ('COM_VIRTUEMART_REPORT_INTERVAL_GROUP_YEARLY'), 'year');
 		//$listHTML = JHTML::_ ('select.genericlist', $options, 'intervals', 'class="inputbox" onchange="this.form.submit();" size="5"', 'text', 'value', $intervals);
-		$listHTML = JHTML::_ ('select.genericlist', $options, 'intervals', 'class="inputbox" size="6"', 'text', 'value', $intervals);
+		$listHTML = JHTML::_ ('select.genericlist', $options, 'intervals', 'class="input-medium" size="6"', 'text', 'value', $intervals);
 		return $listHTML;
 	}
 }

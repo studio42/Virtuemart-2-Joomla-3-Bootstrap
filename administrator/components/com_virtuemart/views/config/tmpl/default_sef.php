@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
     <table class="admintable">
 	<tr>
 	    <td class="key">		 
-		<span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_DISABLE_TIP'); ?>">
+		<span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_DISABLE_TIP'); ?>">
 		<label for="seo_disabled"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_DISABLE') ?></label>
 		</span>
 	    </td>
@@ -34,17 +34,17 @@ defined('_JEXEC') or die('Restricted access');
 	    </td>
 	</tr>	<tr>
 	    <td class="key">		 
-		<span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_SUFIX_TIP'); ?>">
+		<span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_SUFIX_TIP'); ?>">
 			<label for="seo_disabled"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_SUFIX') ?></label>
 		</span>
 	    </td>
 	    <td>
-			<input type="text" name="seo_sufix" class="inputbox" value="<?php echo VmConfig::get('seo_sufix','-detail') ?>" />
+			<input type="text" name="seo_sufix" class="inputbox input-mini" value="<?php echo VmConfig::get('seo_sufix','-detail') ?>" />
 	    </td>
 	</tr>
 	<tr>
 	    <td class="key">
-		<span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_TRANSLATE_TIP'); ?>">
+		<span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_TRANSLATE_TIP'); ?>">
 		<label for="seo_translate"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_TRANSLATE') ?></label>
 		</span>
 	    </td>
@@ -54,7 +54,7 @@ defined('_JEXEC') or die('Restricted access');
 	</tr>
 	<tr>
 	    <td class="key">		
-		<span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_USE_ID_TIP'); ?>">
+		<span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_USE_ID_TIP'); ?>">
 		<label for="seo_use_id"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_USE_ID') ?></label>
 		</span>
 	    </td>

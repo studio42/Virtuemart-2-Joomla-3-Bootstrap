@@ -41,6 +41,11 @@ class VirtuemartControllerConfig extends VmController {
 	 * @author
 	 */
 	function __construct() {
+		if (!JFactory::getUser()->authorise('core.admin'))
+		{
+			JFactory::getApplication()->redirect('index.php', JText::_('JERROR_ALERTNOAUTHOR'));
+			return;
+		}
 		parent::__construct();
 
 	}
@@ -53,7 +58,7 @@ class VirtuemartControllerConfig extends VmController {
 	 */
 	function save($data = 0){
 
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 		$model = VmModel::getModel('config');
 
 		$data = JRequest::get('post');

@@ -220,7 +220,7 @@ class VirtueMartModelMedia extends VmModel {
 		}
 
 		if ($search = JRequest::getString('searchMedia', false)){
-			$search = '"%' . $this->_db->getEscaped( $search, true ) . '%"' ;
+			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 			$where[] = ' (`file_title` LIKE '.$search.'
 								OR `file_description` LIKE '.$search.'
 								OR `file_meta` LIKE '.$search.'
@@ -284,7 +284,7 @@ class VirtueMartModelMedia extends VmModel {
 	function storeMedia($data,$type){
 
 // 		vmdebug('my data in media to store start',$data['virtuemart_media_id']);
-		JRequest::checkToken() or jexit( 'Invalid Token, while trying to save media' );
+		JSession::checkToken() or JSession::checkToken('get') or jexit( 'Invalid Token, while trying to save media' );
 
 		if(empty($data['media_action'])){
 			$data['media_action'] = 'none';

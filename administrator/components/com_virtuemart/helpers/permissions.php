@@ -152,7 +152,7 @@ class Permissions extends JObject{
 
 		if (VmConfig::get('vm_price_access_level') != '') {
 			// Is the user allowed to see the prices?
-			$this->_show_prices  = $user->authorize( 'virtuemart', 'prices' );
+			$this->_show_prices  = $user->authorise( 'virtuemart', 'prices' );
 		}
 		else {
 			$this->_show_prices = 1;
@@ -167,21 +167,15 @@ class Permissions extends JObject{
 
 			//We must prevent that Administrators or Managers are 'just' shoppers
 			//TODO rewrite it working correctly with jooomla ACL
-			if(JVM_VERSION === 2 ){
-				if($user->authorise('core.admin')){
-					$perm  = 'admin';
-				}
-			} else {
-				if(strpos($user->usertype,'Administrator')!== false){
-					$perm  = 'admin';
-				}
+			if($user->authorise('core.admin')){
+				$perm  = 'admin';
 			}
+
 
 			if(empty($perm)){
 
-				if(JVM_VERSION === 2 ){
-					if($user->groups){
-						if($user->authorise('core.admin')){
+				if($user->groups){
+					if($user->authorise('core.admin')){
 							$perm  = 'admin';
 						} else if($user->authorise('core.manage')){
 							$perm  = 'storeadmin';
@@ -191,17 +185,6 @@ class Permissions extends JObject{
 					} else {
 						$perm  = 'shopper';
 					}
-
-				} else {
-					if(strpos($user->usertype,'Administrator')!== false){
-						$perm  = 'admin';
-					} else if(strpos($user->usertype,'Manager')!== false){
-						$perm  = 'storeadmin';
-					} else {
-						$perm  = 'shopper';
-					}
-				}
-
 			}
 
 			$this->_is_registered_customer = true;

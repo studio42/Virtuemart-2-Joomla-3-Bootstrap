@@ -94,7 +94,9 @@ abstract class vmCustomPlugin extends vmPlugin {
 		if (empty($field->custom_element)) {
 			return 0;
 		}
-		if (!empty($field->custom_param) && is_string ($field->custom_param)) {
+		if (empty($field->custom_param) ) return ;
+		if ($field->custom_param[0] !== '{') return ;
+		if (is_string ($field->custom_param)) {
 			$custom_param = json_decode ($field->custom_param, TRUE);
 		}
 		else {

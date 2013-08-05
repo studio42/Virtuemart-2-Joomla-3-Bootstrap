@@ -175,7 +175,7 @@ class CurrencyDisplay {
 
 		if(count($this->_priceConfig)>0)return true;
 
-		if(!class_exists('JParameter')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'html'.DS.'parameter.php' );
+		// if(!class_exists('JParameter')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'html'.DS.'parameter.php' );
 
 		$user = JFactory::getUser();
 
@@ -203,17 +203,17 @@ class CurrencyDisplay {
 			$result = $this->_db->loadRow();
 		}
 
-		if(!empty($result[0])){
-			$result[0] = unserialize($result[0]);
-		}
+		$config = new JRegistry;
+		$config->loadString($result[0]);
 
+		//TODO  what is the logic here ???
 		$custom_price_display = 0;
 		if(!empty($result[1])){
 			$custom_price_display = $result[1];
 		}
 
 		if($custom_price_display && !empty($result[0])){
-			$show_prices = $result[0]->get('show_prices',VmConfig::get('show_prices', 1));
+			$show_prices = $config->get('show_prices',VmConfig::get('show_prices', 1));
 			// 			vmdebug('$result[0]',$result[0],$show_prices);
 		} else {
 			$show_prices = VmConfig::get('show_prices', 1);
@@ -235,9 +235,9 @@ class CurrencyDisplay {
 				//Here we check special settings of the shoppergroup
 				// 				$result = unserialize($result);
 				if($custom_price_display==1){
-					$show = (int)$result[0]->get($name);
-					$round = (int)$result[0]->get($name.'Rounding');
-					$text = $result[0]->get($name.'Text');
+					$show = (int)$config->get($name);
+					$round = (int)$config->get($name.'Rounding');
+					$text = $config->get($name.'Text');
 					// 					vmdebug('$custom_price_display');
 				} else {
 					$show = VmConfig::get($name,0);

@@ -16,118 +16,66 @@
 * @version $Id: default.php 6475 2012-09-21 11:54:21Z Milbo $
 */
 
+// Added modal for adding NEW payment. THe customer have to preselect a payment now to add a new one.
+// this permit to load directly the config XML and not to save 2 time the paymentmethod form
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
-
-AdminUIHelper::startAdminArea();
+defined('_JEXEC') or die();
 //if($virtuemart_vendor_id==1 || $perm->check( 'admin' )){
-
+$multiX = Vmconfig::get('multix','none')!=='none' ? true : false ;
+$cols = $multiX ? 10 : 9 ;
 ?>
-
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-	<div id="editcell">
-		<table class="adminlist" cellspacing="0" cellpadding="0">
-		<thead>
-		<tr>
+	<?php AdminUIHelper::startAdminArea(); ?>
 
-			<th width="2">
-				<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->payments); ?>);" />
-			</th>
-			<th >
-				<?php echo JText::_('COM_VIRTUEMART_PAYMENT_LIST_NAME'); ?>
-			</th>
-			 <th>
-				<?php echo JText::_('COM_VIRTUEMART_PAYMENT_LIST_DESCRIPTION_LBL'); ?>
-			</th>
-			<?php if($this->perms->check( 'admin' )){ ?>
-			<th >
-				<?php echo JText::_('COM_VIRTUEMART_VENDOR');  ?>
-			</th><?php }?>
+	<div class="clearfix"> </div>
+	<div id="results">
+		<?php 
+		// split to use ajax search
+		echo $this->loadTemplate('results'); ?>
+	</div>
 
-			<th  >
-				<?php echo JText::_('COM_VIRTUEMART_PAYMENT_SHOPPERGROUPS'); ?>
-			</th>
-			<th >
-				<?php echo JText::_('COM_VIRTUEMART_PAYMENT_ELEMENT'); ?>
-			</th>
-			<th  >
-				<?php echo JText::_('COM_VIRTUEMART_LIST_ORDER'); ?>
-			</th>
-			<th >
-				<?php echo JText::_('COM_VIRTUEMART_PUBLISHED'); ?>
-			</th>
-			<?php if(Vmconfig::get('multix','none')!=='none'){ ?>
-			<th width="10">
-				<?php echo JText::_('COM_VIRTUEMART_SHARED'); ?>
-			</th>
-			<?php } ?>
-			 <th><?php echo $this->sort('virtuemart_paymentmethod_id', 'COM_VIRTUEMART_ID')  ?></th>
-		</tr>
-		</thead>
-		<?php
-		$k = 0;
-
-		for ($i=0, $n=count( $this->payments ); $i < $n; $i++) {
-
-			$row = $this->payments[$i];
-			$checked = JHTML::_('grid.id', $i, $row->virtuemart_paymentmethod_id);
-			$published = JHTML::_('grid.published', $row, $i);
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=paymentmethod&task=edit&cid[]=' . $row->virtuemart_paymentmethod_id);
-			?>
-			<tr class="<?php echo "row".$k; ?>">
-
-				<td align="center" >
-					<?php echo $checked; ?>
-				</td>
-				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->payment_name; ?></a>
-				</td>
-				 <td align="left">
-					<?php echo $row->payment_desc; ?>
-				</td>
-				<?php if($this->perms->check( 'admin' )){?>
-				<td align="left">
-					<?php echo JText::_($row->virtuemart_vendor_id); ?>
-				</td>
-				<?php } ?>
-
-				<td>
-					<?php echo $row->paymShoppersList; ?>
-				</td>
-				<td>
-					<?php echo $row->payment_element; ?>
-				</td>
-				<td>
-					<?php echo $row->ordering; ?>
-				</td>
-				<td align="center">
-					<?php echo $published; ?>
-				</td>
-				<?php if(Vmconfig::get('multix','none')!=='none'){ ?>
-				<td align="center">
-					<?php echo $row->shared; ?>
-				</td>
-				<?php } ?>
-				<td align="center">
-					<?php echo $row->virtuemart_paymentmethod_id; ?>
-				</td>
-			</tr>
+	<!-- new Payment method preselect in modal -->
+	<div id="PaymentsModal" class="modal hide" tabindex="-1" aria-hidden="true">
+		<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_PAYMENTMETHOD_S').' ('.JText::_('COM_VIRTUEMART_ADD').')'; ?><button type="button" class="close" aria-hidden="true">&times;</button></div>
+		<div class="modal-body">
+		<div class="row-striped">
+		<?php // payment_jplugin_id
+		// var_dump($this->installedPayments); 
+		foreach ($this->installedPayments as $payment) {
+			if ($payment->enabled == 1 ) {
+				$link = JROUTE::_('index.php?option=com_virtuemart&view=paymentmethod&task=add&payment_jplugin_id=' . $payment->extension_id);
+				?>
+				<div class="row-fluid"><a href="<?php echo $link ?>"> <?php echo $payment->name ?></a></div>
 			<?php
-			$k = 1 - $k;
+			}
+			else
+			{ ?>
+					<div><?php echo $payment->name ?></div>
+				<?php
+			}
+		} ?>
+		</div>
+		</div>
+		<div class="close btn"><?php echo JText::_('JCANCEL') ?></div></div>
+	</div>
+	<script type="text/javascript">
+		Joomla.submitbutton = function(pressbutton) {
+			if (pressbutton == 'add') {
+				jQuery('#PaymentsModal').removeClass('hide');
+				e.preventDefault();
+				return false;
+			} else {
+				Joomla.submitform( pressbutton );
+				return;
+			}
 		}
-		?>
-		<tfoot>
-			<tr>
-				<td colspan="21">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
-</div>
+				// Attach the modal to document
+		jQuery(function($){
+			jQuery('#PaymentsModal .close').click( function() {
+				jQuery('#PaymentsModal').addClass('hide');
+			});
+		});
+	</script>
+	<?php AdminUIHelper::endAdminArea(true); ?>
 
-	<?php echo $this->addStandardHiddenToForm(); ?>
 </form>
-
-
-<?php AdminUIHelper::endAdminArea(); ?>

@@ -49,7 +49,8 @@ class VirtuemartControllerMedia extends VmController {
 	 * for ajax call media
 	 */
 	function viewJson() {
-
+		
+		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views'); 
 		/* Create the view object. */
 		$view = $this->getView('media', 'json');
 

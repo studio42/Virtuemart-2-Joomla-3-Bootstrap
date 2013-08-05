@@ -66,20 +66,25 @@ class VirtueMartModelState extends VmModel {
      * @author RickG, Max Milbers
 	 * @return object List of state objects
 	 */
-	public function getStates($countryId, $noLimit=false)
+	public function getStates($countryId, $noLimit=false, $search ='')
 	{
-		$quer= 'SELECT * FROM `#__virtuemart_states`  WHERE `virtuemart_country_id`= "'.(int)$countryId.'"
-				ORDER BY `#__virtuemart_states`.`state_name`';
+
+		$q= 'SELECT * FROM `#__virtuemart_states`  WHERE `virtuemart_country_id`= "'.(int)$countryId.'"';
+		if($search){
+			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
+			$q .= ' AND `state_name` LIKE '.$search;
+		}
+		$q .= ' ORDER BY `state_name`';
 
 		if ($noLimit) {
-		    $this->_data = $this->_getList($quer);
+		    $this->_data = $this->_getList($q);
 		}
 		else {
-		    $this->_data = $this->_getList($quer, $this->getState('limitstart'), $this->getState('limit'));
+		    $this->_data = $this->_getList($q, $this->getState('limitstart'), $this->getState('limit'));
 		}
 
 		if(count($this->_data) >0){
-			$this->_total = $this->_getListCount($quer);
+			$this->_total = $this->_getListCount($q);
 		}
 
 		return $this->_data;

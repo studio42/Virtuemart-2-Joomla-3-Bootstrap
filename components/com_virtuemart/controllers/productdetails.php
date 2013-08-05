@@ -63,11 +63,11 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		if(!VmConfig::get('ask_question',false)){
 			$view->display ();
 		}
-		JRequest::checkToken () or jexit ('Invalid Token');
+		JSession::checkToken() or jexit ('Invalid Token');
 		if (!class_exists ('shopFunctionsF')) {
 			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		}
-		$mainframe = JFactory::getApplication ();
+		$app = JFactory::getApplication ();
 		$vars = array();
 		$min = VmConfig::get ('asks_minimum_comment_length', 50) + 1;
 		$max = VmConfig::get ('asks_maximum_comment_length', 2000) - 1;
@@ -127,7 +127,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		} else {
 			$string = 'COM_VIRTUEMART_MAIL_NOT_SEND_SUCCESSFULLY';
 		}
-		$mainframe->enqueueMessage (JText::_ ($string));
+		$app->enqueueMessage (JText::_ ($string));
 
 
 		$view->setLayout ('mail_confirmed');
@@ -141,7 +141,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 	 */
 	public function mailRecommend () {
 
-		JRequest::checkToken () or jexit ('Invalid Token');
+		JSession::checkToken() or jexit ('Invalid Token');
 		// Display it all
 		$view = $this->getView ('recommend', 'html');
 
@@ -153,7 +153,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		}
 		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
 
-		$mainframe = JFactory::getApplication ();
+		$app = JFactory::getApplication ();
 		$vars = array();
 
 		$virtuemart_product_idArray = JRequest::getInt ('virtuemart_product_id', 0);
@@ -189,7 +189,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		} else {
 			$string = 'COM_VIRTUEMART_MAIL_NOT_SEND_SUCCESSFULLY';
 		}
-		$mainframe->enqueueMessage (JText::_ ($string));
+		$app->enqueueMessage (JText::_ ($string));
 
 // 		vmdebug('my email vars ',$vars,$TOMail);
 
@@ -256,20 +256,24 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 	public function recalculate () {
 
 		//$post = JRequest::get('request');
+		// joomla 2.5 & 3 
+		$input = JFactory::getApplication()->input;
+		//$fields = $jinput->getArray('jform'); // array
+		//$input->get('val',default, 'int');
 
-//		echo '<pre>'.print_r($post,1).'</pre>';
 		jimport ('joomla.utilities.arrayhelper');
-		$virtuemart_product_idArray = JRequest::getVar ('virtuemart_product_id', array()); //is sanitized then
+		$virtuemart_product_idArray = $input->get( 'virtuemart_product_id' , null, 'array'); //is sanitized then
+
 		if(is_array($virtuemart_product_idArray)){
-			JArrayHelper::toInteger ($virtuemart_product_idArray);
 			$virtuemart_product_id = $virtuemart_product_idArray[0];
 		} else {
 			$virtuemart_product_id = $virtuemart_product_idArray;
 		}
 
 		$customPrices = array();
-		$customVariants = JRequest::getVar ('customPrice', array()); //is sanitized then
-		//echo '<pre>'.print_r($customVariants,1).'</pre>';
+
+		$customVariants = $input->get( 'customPrice' , null, 'array'); //is sanitized then
+		// var_dump($customVariants);
 
 		//MarkerVarMods
 		foreach ($customVariants as $customVariant) {
@@ -282,18 +286,12 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 			}
 		}
 
-		$quantityArray = JRequest::getVar ('quantity', array()); //is sanitized then
-		JArrayHelper::toInteger ($quantityArray);
-
-		$quantity = 1;
-		if (!empty($quantityArray[0])) {
-			$quantity = $quantityArray[0];
-		}
+		$quantityArray = $input->get( 'quantity' , array(1) ,'array' ); //is sanitized then
 
 		$product_model = VmModel::getModel ('product');
 
 		//VmConfig::$echoDebug = TRUE;
-		$prices = $product_model->getPrice ($virtuemart_product_id, $customPrices, $quantity);
+		$prices = $product_model->getPrice ($virtuemart_product_id, $customPrices, $quantityArray[0]);
 
 		$priceFormated = array();
 		if (!class_exists ('CurrencyDisplay')) {

@@ -18,6 +18,14 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
+$edit_link = '';
+if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+if (Permissions::getInstance()->check("admin,storeadmin")) {
+	$edit_link = '<a href="'.JURI::root().'index.php?option=com_virtuemart&tmpl=component&view=manufacturer&task=edit&virtuemart_manufacturer_id=' . $this->manufacturer->virtuemart_manufacturer_id.'">
+		'.JHTML::_('image', 'media/system/images/edit.png', JText::_('JACTION_EDIT'), array('width' => 16, 'height' => 16, 'border' => 0)).'</a>';
+}
+
+echo $edit_link;
 ?>
 
 <div class="manufacturer-details-view">

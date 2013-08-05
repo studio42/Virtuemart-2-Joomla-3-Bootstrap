@@ -39,18 +39,11 @@ class VirtuemartViewVirtuemart extends VmView {
 
 		$model = VmModel::getModel('virtuemart');
 
-		$nbrCustomers = $model->getTotalCustomers();
-		$this->assignRef('nbrCustomers', $nbrCustomers);
-
-		$nbrActiveProducts = $model->getTotalActiveProducts();
-		$this->assignRef('nbrActiveProducts', $nbrActiveProducts);
-		$nbrInActiveProducts = $model->getTotalInActiveProducts();
-		$this->assignRef('nbrInActiveProducts', $nbrInActiveProducts);
-		$nbrFeaturedProducts = $model->getTotalFeaturedProducts();
-		$this->assignRef('nbrFeaturedProducts', $nbrFeaturedProducts);
-
-		$ordersByStatus = $model->getTotalOrdersByStatus();
-		$this->assignRef('ordersByStatus', $ordersByStatus);
+		$this->nbrCustomers = $model->getTotalCustomers();
+		$this->nbrActiveProducts = $model->getTotalActiveProducts();
+		$this->nbrInActiveProducts = $model->getTotalInActiveProducts();
+		$this->nbrFeaturedProducts = $model->getTotalFeaturedProducts();
+		$this->ordersByStatus = $model->getTotalOrdersByStatus();
 
 		$recentOrders = $model->getRecentOrders();
 			if(!class_exists('CurrencyDisplay'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
@@ -65,10 +58,9 @@ class VirtuemartViewVirtuemart extends VmView {
 				}
 				$order->order_total = $_currencies['v'.$order->virtuemart_vendor_id]->priceDisplay($order->order_total);
 			}
-		$this->assignRef('recentOrders', $recentOrders);
-		$recentCustomers = $model->getRecentCustomers();
-		$this->assignRef('recentCustomers', $recentCustomers);
-		// Options button.
+		$this->recentOrders = $recentOrders;
+		$this->recentCustomers = $model->getRecentCustomers();
+		// Options button. IF a Day config come from XML
 		// if ( !JVM_VERSION===1) {
 			// if (JFactory::getUser()->authorise('core.admin', 'com_virtuemart')) {
 				// JToolBarHelper::preferences('com_virtuemart');

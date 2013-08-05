@@ -17,7 +17,7 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 ?>
 
@@ -46,7 +46,7 @@ defined('_JEXEC') or die('Restricted access');
 		</th>
 	</thead>
 	<?php
-		$k = 0;
+
 		$n = 1;
 		foreach ($this->orderlist as $i => $row) {
 			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $row->virtuemart_order_id);
@@ -57,7 +57,7 @@ defined('_JEXEC') or die('Restricted access');
 // 				. JHTML::_('image.site', 'printButton.png', ((JVM_VERSION===1) ? '/images/M_images/' : '/images/system/'), null, null, JText::_('COM_VIRTUEMART_PRINT'), array('align' => 'center', 'height'=> '16',  'width' => '16', 'border' => '0')).'</a>';
 
 			?>
-			<tr class="row<?php echo $k ; ?>">
+			<tr >
 				 
 				<td align="left">
 					<a href="<?php echo $editlink; ?>"><?php echo $row->order_number; ?></a>
@@ -78,8 +78,7 @@ defined('_JEXEC') or die('Restricted access');
 					<?php echo $this->currency->priceDisplay($row->order_total); ?>
 				</td>
 			</tr>
-	<?php
-			$k = 1 - $k;
+		<?php
 		}
 	?>
 	</table>

@@ -27,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
 
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_ADDTOCART_POPUP_EXPLAIN'); ?>">
 					<label for="addtocart_popup"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_ADDTOCART_POPUP') ?>
 				</label>
@@ -39,7 +39,7 @@ defined('_JEXEC') or die('Restricted access');
 		</tr>
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_LANGFIX_EXPLAIN'); ?>">
 					<label for="addtocart_popup"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_LANGFIX') ?>
 				</label>
@@ -51,7 +51,7 @@ defined('_JEXEC') or die('Restricted access');
 		</tr>
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_AUTOMATIC_SHIPMENT_EXPLAIN'); ?>">
 					<label for="automatic_shipment"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_AUTOMATIC_SHIPMENT') ?>
 				</label>
@@ -63,7 +63,7 @@ defined('_JEXEC') or die('Restricted access');
 		</tr>
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_AUTOMATIC_PAYMENT_EXPLAIN'); ?>">
 					<label for="automatic_payment"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_AUTOMATIC_PAYMENT') ?>
 				</label>
@@ -75,7 +75,7 @@ defined('_JEXEC') or die('Restricted access');
 		</tr>
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_AGREE_TERMS_ONORDER_EXPLAIN'); ?>">
 					<label for="agree_to_tos_onorder"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_AGREE_TERMS_ONORDER') ?>
 				</label>
@@ -88,7 +88,7 @@ defined('_JEXEC') or die('Restricted access');
 
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_LEGALINFO_TIP'); ?>">
 					<label for="oncheckout_show_legal_info"><?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_LEGALINFO') ?>
 				</label> </span>
@@ -99,7 +99,7 @@ defined('_JEXEC') or die('Restricted access');
 		</tr>
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_REGISTER_TIP'); ?>">
 					<label for="oncheckout_show_register"><?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_REGISTER') ?>
 				</label> </span>
@@ -110,7 +110,7 @@ defined('_JEXEC') or die('Restricted access');
 		</tr>
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_ONLY_REGISTERED_TIP'); ?>">
 					<label for="oncheckout_only_registered"><?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_ONLY_REGISTERED') ?>
 				</label> </span>
@@ -121,7 +121,7 @@ defined('_JEXEC') or die('Restricted access');
 		</tr>
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_STEPS_TIP'); ?>">
 					<label for="oncheckout_show_steps"><?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_STEPS') ?>
 				</label> </span>
@@ -132,7 +132,7 @@ defined('_JEXEC') or die('Restricted access');
 		</tr>
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_PRODUCTIMAGES_TIP'); ?>">
 					<label for="oncheckout_show_images"><?php echo JText::_('COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_PRODUCTIMAGES') ?>
 				</label> </span>
@@ -144,7 +144,7 @@ defined('_JEXEC') or die('Restricted access');
 
 		<tr>
 			<td class="key"><span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_STATUS_PDF_INVOICES_EXPLAIN'); ?>">
 					 <?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_STATUS_PDF_INVOICES') ?>
 				 </span>
@@ -168,7 +168,7 @@ defined('_JEXEC') or die('Restricted access');
 <table class="admintable">
 <tr>
 <td class="key">
-<span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_TITLES_LBL_TIP'); ?>">
+<span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_TITLES_LBL_TIP'); ?>">
 <?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_TITLES_LBL') ?>
 </span>
 </td>

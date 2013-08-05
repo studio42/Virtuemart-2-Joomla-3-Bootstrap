@@ -143,8 +143,8 @@ class calculationHelper {
 		                    `calc_kind` IN (' . implode(",",$epoints). ' )
 		                     AND `published`="1"
 		                     AND (`virtuemart_vendor_id`="' . $this->productVendorId . '" OR `shared`="1" )
-		                     AND ( ( publish_up = "' . $this->_db->getEscaped($this->_nullDate) . '" OR publish_up <= "' . $this->_db->getEscaped($this->_now) . '" )
-		                        AND ( publish_down = "' . $this->_db->getEscaped($this->_nullDate) . '" OR publish_down >= "' . $this->_db->getEscaped($this->_now) . '" )
+		                     AND ( ( publish_up = ' . $this->_db->quote($this->_nullDate) . ' OR publish_up <= ' . $this->_db->quote($this->_now) . ' )
+		                        AND ( publish_down = ' . $this->_db->quote($this->_nullDate) . ' OR publish_down >= ' . $this->_db->quote($this->_now) . ' )
 										OR `for_override` = "1" )';
 			$this->_db->setQuery($q);
 			$allrules = $this->_db->loadAssocList();
@@ -1156,8 +1156,8 @@ class calculationHelper {
                 `calc_kind`="' . $entrypoint . '"
                 AND `published`="1"
                 AND (`virtuemart_vendor_id`="' . $cartVendorId . '" OR `shared`="1" )
-				AND ( publish_up = "' . $this->_db->getEscaped($this->_nullDate) . '" OR publish_up <= "' . $this->_db->getEscaped($this->_now) . '" )
-				AND ( publish_down = "' . $this->_db->getEscaped($this->_nullDate) . '" OR publish_down >= "' . $this->_db->getEscaped($this->_now) . '" ) ';
+				AND ( publish_up = ' . $this->_db->quote($this->_nullDate) . ' OR publish_up <= ' . $this->_db->quote($this->_now) . ' )
+				AND ( publish_down = ' . $this->_db->quote($this->_nullDate) . ' OR publish_down >= ' . $this->_db->quote($this->_now) . ' ) ';
 		//			$shoppergrps .  $countries . $states ;
 		$this->_db->setQuery($q);
 		$rules = $this->_db->loadAssocList();

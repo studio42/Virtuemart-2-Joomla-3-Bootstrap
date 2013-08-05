@@ -67,10 +67,10 @@ class VirtuemartViewCountry extends VmView {
 			$this->addStandardDefaultViewCommands(true,false);
 
 			//First the view lists, it sets the state of the model
-			$this->addStandardDefaultViewLists($model,0,'ASC');
+			$this->addStandardDefaultViewLists($model,0,'ASC','filter_country');
 
 			$filter_country = JRequest::getWord('filter_country', false);
-			$countries = $model->getCountries(false, false, $filter_country);
+			$countries = $model->getCountries(false, false, $this->lists['filter_country']);
 			$this->assignRef('countries',	$countries);
 
 			$pagination = $model->getPagination();

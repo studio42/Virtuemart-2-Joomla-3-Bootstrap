@@ -53,7 +53,7 @@ class VirtuemartViewShipmentmethod extends VmView {
 		        $shipment = $model->getShipment();
 			$this->loadHelper('image');
 			// $this->loadHelper('html');
-			$this->loadHelper('parameterparser');
+			// $this->loadHelper('parameterparser');
 			// jimport('joomla.html.pane');
 			 if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
 			 $vendor_id = 1;
@@ -82,7 +82,7 @@ class VirtuemartViewShipmentmethod extends VmView {
 
 			$pagination = $model->getPagination();
 			$this->assignRef('pagination', $pagination);
-
+			$this->installedShipments = $this->shipmentsPlgList();
 		}
 
 		parent::display($tpl);
@@ -91,17 +91,10 @@ class VirtuemartViewShipmentmethod extends VmView {
 	function renderInstalledShipmentPlugins($selected)
 	{
 		$db = JFactory::getDBO();
+		$table = '#__extensions';
+		$enable = 'enabled';
+		$ext_id = 'extension_id';
 
-		if (JVM_VERSION===1) {
-			$table = '#__plugins';
-			$enable = 'published';
-			$ext_id = 'id';
-		}
-		else {
-			$table = '#__extensions';
-			$enable = 'enabled';
-			$ext_id = 'extension_id';
-		}
 		$q = 'SELECT * FROM `'.$table.'` WHERE `folder` = "vmshipment" AND `'.$enable.'`="1" ';
 		$db->setQuery($q);
 		$result = $db->loadAssocList($ext_id);
@@ -115,6 +108,12 @@ class VirtuemartViewShipmentmethod extends VmView {
 		}
 		return JHtml::_('select.genericlist', $result, 'shipment_jplugin_id', null, $ext_id, 'name', $selected);
 	}
-
+	// list all payement(enabled or disabeld
+	function shipmentsPlgList(){
+		$db = JFactory::getDBO();
+		$q = 'SELECT * FROM `#__extensions` WHERE `folder` = "vmshipment"';// AND `enabled`="1" ';
+		$db->setQuery($q);
+		return $db->loadObjectList('extension_id');
+	}
 }
 // pure php no closing tag

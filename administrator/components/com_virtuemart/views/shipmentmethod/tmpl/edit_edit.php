@@ -4,7 +4,7 @@
  * Description
  *
  * @package	VirtueMart
- * @subpackage Paymentmethod
+ * @subpackage shipmentmethod
  * @author Max Milbers
  * @link http://www.virtuemart.net
  * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
@@ -23,12 +23,12 @@ defined('_JEXEC') or die('Restricted access');
 <?php echo $this->langList; ?>
 <div class="col50">
     <fieldset>
-        <legend><?php echo JText::_('COM_VIRTUEMART_SHIPMENTMETHOD'); ?></legend>
+        <legend><?php echo JText::_('COM_VIRTUEMART_SHIPMENTMETHOD').' '.$this->shipment->shipment_element ; ?></legend>
         <table class="admintable">
-	    <?php echo VmHTML::row('input', 'COM_VIRTUEMART_SHIPPING_FORM_NAME', 'shipment_name', $this->shipment->shipment_name); ?>
+	    <?php echo VmHTML::row('input', 'COM_VIRTUEMART_SHIPPING_FORM_NAME', 'shipment_name', $this->shipment->shipment_name ? $this->shipment->shipment_name : $this->shipment->shipment_element); ?>
 	    <?php echo VmHTML::row('booleanlist', 'COM_VIRTUEMART_PUBLISH', 'published', $this->shipment->published); ?>
 	    <?php echo VmHTML::row('textarea', 'COM_VIRTUEMART_SHIPPING_FORM_DESCRIPTION', 'shipment_desc', $this->shipment->shipment_desc); ?>
-	    <?php echo VmHTML::row('raw', 'COM_VIRTUEMART_SHIPPING_CLASS_NAME', $this->pluginList); ?>
+	    <?php // echo VmHTML::row('raw', 'COM_VIRTUEMART_SHIPPING_CLASS_NAME', $this->pluginList); ?>
 	    <?php echo VmHTML::row('raw', 'COM_VIRTUEMART_SHIPPING_FORM_SHOPPER_GROUP', $this->shopperGroupList); ?>
 	    <?php echo VmHTML::row('input', 'COM_VIRTUEMART_LIST_ORDER', 'ordering', $this->shipment->ordering, 'class="inputbox"', '', 4, 4); ?>
 	    <?php

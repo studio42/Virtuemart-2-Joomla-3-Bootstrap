@@ -1,7 +1,8 @@
 /**
  * list country.js: General Javascript Library for VirtueMart Administration
- *
- *
+ * Note Patrick kohl : Found many bugs, completly brake in case of multiple list!
+ * Now the json cache (optCache) is common for all calls(states are always same for each country) 
+ * and not set for each select list anymore.
  * @package	VirtueMart
  * @subpackage Javascript Library
  * @author Patrick Kohl
@@ -10,36 +11,38 @@
  */
 
 (function($){
-	var undefined,
+	var undefined, optCache = [], ids,
 	methods = {
 		list: function(options) {
+			var self = this ;
 			var dest = options.dest;
 			var ids = options.ids;
-			methods.update(this,dest,ids);
+			if (ids.length) methods.update(self,dest,ids);
 
-			$(this).change( function() { methods.update(this,dest)});
+			$(self).change( function() { methods.update(self,dest)});
 		},
 		update: function(org,dest,ids) {
 			var opt = $(org),
 				optValues = opt.val() || [],
 				byAjax = [] ;
 			if (!$.isArray(optValues)) optValues = jQuery.makeArray(optValues);
-			if ( typeof  oldValues !== "undefined") {
+			if ( typeof  org.oldValues !== "undefined") {
 				//remove if not in optValues
-				$.each(oldValues, function(key, oldValue) {
-					if ( ($.inArray( oldValue, optValues )) < 0 ) $("#group"+oldValue+"").remove();
+				$.each(org.oldValues, function(key, oldValue) {
+					if ( ($.inArray( oldValue, optValues )) < 0 ) $(dest+'group'+oldValue+"").remove();
 				});
 			}
 			//push in 'byAjax' values and do it in ajax
 			$.each(optValues, function(optkey, optValue) {
-				if( opt.data( 'd'+optValue) === undefined ) byAjax.push( optValue );
+				if( optCache[ 'd'+optValue ] === undefined ) byAjax.push( optValue );
 			});
 			if (byAjax.length >0) {
 				$.getJSON('index.php?option=com_virtuemart&view=state&format=json&virtuemart_country_id=' + byAjax,
 						function(result){
 						
 						// Max Bitte Testen
-						var virtuemart_state_id = $('#virtuemart_state_id');
+						// NOTE patrick Kohl, does not work with 2 list(id is same
+						var virtuemart_state_id = $(dest);
 						var status = virtuemart_state_id.attr('required');
 						
 						if(status == 'required') {
@@ -54,9 +57,9 @@
 
 						$.each(result, function(key, value) {
 							if (value.length >0) {
-								opt.data( 'd'+key, value );	
+								optCache[ 'd'+key ] = value ;
 							} else { 
-								opt.data( 'd'+key, 0 );		
+								optCache[ 'd'+key ] = 0 ;
 							}
 						});
 						methods.addToList(opt,optValues,dest);
@@ -73,19 +76,21 @@
 				methods.addToList(opt,optValues,dest)
 				$(dest).trigger("liszt:updated");
 			}
-			oldValues = optValues ;
+			org.oldValues = optValues ;
 			
 		},
 		addToList: function(opt,values,dest) {
+			var id = $(dest).attr('id');
 			$.each(values, function(dataKey, dataValue) { 
-				var groupExist = $("#group"+dataValue+"").size(); 
+				var groupId = dest+'group'+dataValue, groupExist = $(groupId).size(); 
+
 				if ( ! groupExist ) {
-					var datas = opt.data( 'd'+dataValue );
+					var datas = optCache[ 'd'+dataValue ];
 					if (datas.length >0) {
 					var label = opt.find("option[value='"+dataValue+"']").text();
-					var group ='<optgroup id="group'+dataValue+'" label="'+label+'">';
+					var group ='<optgroup id="'+id+'group'+dataValue+'" label="'+label+'">';
 					$.each( datas  , function( key, value) {
-						if (value) group +='<option value="'+ value.virtuemart_state_id +'">'+ value.state_name +'</option>';
+						if (value) group +='<option value="'+ value.k +'">'+ value.v +'</option>';
 					});
 					group += '</optgroup>';
 					$(dest).append(group);

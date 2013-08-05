@@ -64,7 +64,7 @@ class VirtuemartViewOrderstatus extends VmView {
 				$qry = 'SELECT ordering AS value, order_status_name AS text'
 				. ' FROM #__virtuemart_orderstates'
 				. ' ORDER BY ordering';
-				$ordering = JHTML::_('list.specificordering',  $orderStatus, $orderStatus->virtuemart_orderstate_id, $qry);
+				$ordering = JHTML::_('list.ordering',  $orderStatus->ordering, $qry, '', $orderStatus->virtuemart_orderstate_id);
 				$this->assignRef('ordering', $ordering);
 
 

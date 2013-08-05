@@ -17,93 +17,19 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
-
-AdminUIHelper::startAdminArea();
-
-?>
-
+defined('_JEXEC') or die('Restricted access'); ?>
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-    <div id="editcell">
-	<table class="adminlist" cellspacing="0" cellpadding="0">
-	    <thead>
-		<tr>
-		    <th width="10">
-			<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->coupons); ?>);" />
-		    </th>
-		    <th>
-			<?php echo JText::_('COM_VIRTUEMART_COUPON_CODE'); ?>
-		    </th>
-		    <th>
-			<?php echo JText::_('COM_VIRTUEMART_COUPON_PERCENT_TOTAL'); ?>
-		    </th>
-		    <th>
-			<?php echo JText::_('COM_VIRTUEMART_COUPON_TYPE'); ?>
-		    </th>
-		    <th>
-			<?php echo JText::_('COM_VIRTUEMART_VALUE'); ?>
-		    </th>
-		    <th>
-			<?php echo JText::_('COM_VIRTUEMART_COUPON_VALUE_VALID_AT'); ?>
-		    </th>
-		     <th><?php echo $this->sort('virtuemart_coupon_id', 'COM_VIRTUEMART_ID')  ?></th>
-		</tr>
-	    </thead>
-	    <?php
-	    $k = 0;
-	    for ($i=0, $n=count($this->coupons); $i < $n; $i++) {
-		$row = $this->coupons[$i];
+	<?php AdminUIHelper::startAdminArea(); ?>
 
-		$checked = JHTML::_('grid.id', $i, $row->virtuemart_coupon_id);
-		$editlink = JROUTE::_('index.php?option=com_virtuemart&view=coupon&task=edit&cid[]=' . $row->virtuemart_coupon_id);
-		?>
-	    <tr class="row<?php echo $k; ?>">
-		<td width="10">
-			<?php echo $checked; ?>
-		</td>
-		<td align="left">
-		    <a href="<?php echo $editlink; ?>"><?php echo $row->coupon_code; ?></a>
-		</td>
-		<td>
-			<?php echo JText::_($row->percent_or_total); ?>
-		</td>
-		<td align="left">
-			<?php echo JText::_($row->coupon_type); ?>
-		</td>
-		<td>
-			<?php echo JText::_($row->coupon_value); ?>
-		    <?php if ( $row->percent_or_total=='percent') echo '%' ;
-		    else echo $this->vendor_currency;   ?>
-		</td>
-		<td align="left">
-			<?php echo JText::_($row->coupon_value_valid); ?> <?php echo $this->vendor_currency; ?>
-		</td>
-		<td align="left">
-			<?php echo JText::_($row->virtuemart_coupon_id); ?>
-		</td>
-	    </tr>
-		<?php
-		$k = 1 - $k;
-	    }
-	    ?>
-	    <tfoot>
-		<tr>
-		    <td colspan="10">
-			<?php echo $this->pagination->getListFooter(); ?>
-		    </td>
-		</tr>
-	    </tfoot>
-	</table>
-    </div>
+	<div id="filter-bar" class="btn-toolbar">
+		<?php echo $this->displayDefaultViewSearch('COM_VIRTUEMART_COUPON_CODE') ?>
+	</div>
+	<div class="clearfix"> </div>
+	<div id="results">
+		<?php 
+		// split to use ajax search
+		echo $this->loadTemplate('results'); ?>
+	</div>
 
-    <input type="hidden" name="option" value="com_virtuemart" />
-    <input type="hidden" name="controller" value="coupon" />
-    <input type="hidden" name="view" value="coupon" />
-    <input type="hidden" name="task" value="" />
-    <input type="hidden" name="boxchecked" value="0" />
-    <?php echo JHTML::_( 'form.token' ); ?>
+	<?php AdminUIHelper::endAdminArea(true); ?>
 </form>
-
-
-
-<?php AdminUIHelper::endAdminArea(); ?>

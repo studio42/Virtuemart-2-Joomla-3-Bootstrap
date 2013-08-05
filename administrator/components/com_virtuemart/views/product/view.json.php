@@ -45,9 +45,15 @@ class VirtuemartViewProduct extends JViewLegacy {
 	function display($tpl = null) {
 
 		//$this->loadHelper('customhandler');
-
+		// Get the task
+		$this->task = JRequest::getWord('task',$this->getLayout());
+		if ($this->task == 'massxref_cats_exe') {
+			return;
+		
+		}
+		
 		$filter = JRequest::getVar('q', JRequest::getVar('term', false) );
-
+		if ($filter) $filter = $this->db->escape( $filter, true ) ;
 		$id = JRequest::getInt('id', false);
 		$product_id = JRequest::getInt('virtuemart_product_id', 0);
 		//$customfield = $this->model->getcustomfield();
@@ -56,14 +62,14 @@ class VirtuemartViewProduct extends JViewLegacy {
 			$query = "SELECT virtuemart_product_id AS id, CONCAT(product_name, '::', product_sku) AS value
 				FROM #__virtuemart_products_".VMLANG."
 				 JOIN `#__virtuemart_products` AS p using (`virtuemart_product_id`)";
-			if ($filter) $query .= " WHERE product_name LIKE '%". $this->db->getEscaped( $filter, true ) ."%' or product_sku LIKE '%". $this->db->getEscaped( $filter, true ) ."%' limit 0,10";
+			if ($filter) $query .= " WHERE product_name LIKE '%". $filter ."%' or product_sku LIKE '%". $filter ."%' limit 0,10";
 			self::setRelatedHtml($query,'R');
 		}
 		else if ($this->type=='relatedcategories')
 		{
 			$query = "SELECT virtuemart_category_id AS id, CONCAT(category_name, '::', virtuemart_category_id) AS value
 				FROM #__virtuemart_categories_".VMLANG;
-			if ($filter) $query .= " WHERE category_name LIKE '%". $this->db->getEscaped( $filter, true ) ."%' limit 0,10";
+			if ($filter) $query .= " WHERE category_name LIKE '%". $filter ."%' limit 0,10";
 			self::setRelatedHtml($query,'Z');
 		}
 		else if ($this->type=='custom')
@@ -120,15 +126,17 @@ class VirtuemartViewProduct extends JViewLegacy {
 					 } else {
 					     $cartIcone= 'default-off';
 					 }
+					if ($field->custom_tip) $tip = ' class="hasTip" title="'.$field->custom_tip.'"';
+					else $tip ='';
 					 $html[] = '
 					<tr class="removable">
-						<td>'.$field->custom_title.'</td>
+						<td><span '.$tip.'>'.JText::_($field->custom_title).'<span></td>
 						<td>'.$field->custom_tip.'</td>
 						<td>'.$display.'
 						'.$this->model->setEditCustomHidden($field, $this->row).'
 						<p>'.JTEXT::_('COM_VIRTUEMART_CUSTOM_ACTIVATE_JAVASCRIPT').'</p></td>
 						<td>'.JText::_('COM_VIRTUEMART_CUSTOM_EXTENSION').'</td>
-						<td><span class="vmicon vmicon-16-'.$cartIcone.'"></span></td>
+						<td class="hidden-phone"><span class="vmicon vmicon-16-'.$cartIcone.'"></span></td>
 						<td><span class="vmicon vmicon-16-remove"></span><input class="ordering" type="hidden" value="'.$this->row.'" name="field['.$this->row .'][ordering]" /></td>
 					</tr>';
 					$this->row++;
@@ -138,14 +146,16 @@ class VirtuemartViewProduct extends JViewLegacy {
 					$display = $this->model->displayProductCustomfieldBE($field,$product_id,$this->row);
 					 if ($field->is_cart_attribute) $cartIcone=  'default';
 					 else  $cartIcone= 'default-off';
+					if ($field->custom_tip) $tip = ' class="hasTip" title="'.$field->custom_tip.'"';
+					else $tip ='';
 					 $html[] = '<tr class="removable">
-						<td>'.$field->custom_title.'</td>
-						<td>'.$field->custom_tip.'</td>
+						<td class="key"><div '.$tip.'>'.JText::_($field->custom_title).'<div>'.
+						($field->custom_field_desc ? '<small>'.$field->custom_field_desc.'</small>' :'' ). '
 						 <td>'.$display.'</td>
 						 <td>'.JText::_($fieldTypes[$field->field_type]).'
 							'.$this->model->setEditCustomHidden($field, $this->row).'
 						</td>
-						 <td><span class="vmicon vmicon-16-'.$cartIcone.'"></span></td>
+						 <td class="hidden-phone"><span class="vmicon vmicon-16-'.$cartIcone.'"></span></td>
 						 <td><span class="vmicon vmicon-16-remove"></span><input class="ordering" type="hidden" value="'.$this->row.'" name="field['.$this->row .'][ordering]" /></td>
 						</tr>';
 					$this->row++;

@@ -38,33 +38,40 @@ abstract class vmPSPlugin extends vmPlugin {
 
 		$this->_tableChecked = TRUE;
 	}
-
+	// adapted for joomla 2.5/3.x
 	public function getVarsToPush () {
 
 		$black_list = array('spacer');
 		$data = array();
-		if (JVM_VERSION === 2) {
-			$filename = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name . '/' . $this->_name . '.xml';
-		} else {
-			$filename = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name . '.xml';
-		}
+		$filename = JPATH_PLUGINS.'/' . $this->_type . '/' . $this->_name . '/' . $this->_name . '.xml';
 		// Check of the xml file exists
 		$filePath = JPath::clean ($filename);
 		if (is_file ($filePath)) {
-			$xml = JFactory::getXMLParser ('simple');
-			$result = $xml->loadFile ($filename);
-			if ($result) {
-				if ($params = $xml->document->params) {
-					foreach ($params as $param) {
-						if ($param->_name = "params") {
-							if ($children = $param->_children) {
-								foreach ($children as $child) {
-									if (isset($child->_attributes['name'])) {
-										$data[$child->_attributes['name']] = array('', 'char');
-										$result = TRUE;
-									}
-								}
+//to
+			$xml = simplexml_load_file($filename);
+			if ($xml) {
+				if ($fields = $xml->config->fields) {
+					foreach ($fields->fieldset as $fieldset) {
+						foreach ($fieldset->field as $field) {
+							if(!isset($field['type'])) continue ;
+							// note : valid XML form fields have always a name
+							if(isset($field['name'])) {
+								if(!isset($field['type'])) continue ;
+								$type = (string)$field['type'];
+								// remove type without value, some are missing, add it here PLZ
+								if ($type == 'spacer' || $type == 'vmjpluginwarning' ) continue;
+								$data[(string)$field['name']] = array('', 'char');
 							}
+						// if ($param->_name = "params") {
+							// if ($children = $param->_children) {
+								// foreach ($children as $child) {
+									// if (isset($child->_attributes['name'])) {
+										// $data[$child->_attributes['name']] = array('', 'char');
+										// $result = TRUE;
+									// }
+								// }
+							// }
+						// }
 						}
 					}
 				}
@@ -523,21 +530,12 @@ abstract class vmPSPlugin extends vmPlugin {
 
 		$select = 'SELECT l.*, v.*, ';
 
-		if (JVM_VERSION === 1) {
-			$extPlgTable = '#__plugins';
-			$extField1 = 'id';
-			$extField2 = 'element';
+		$extPlgTable = '#__extensions';
+		$extField1 = 'extension_id';
+		$extField2 = 'element';
 
-			$select .= 'j.`' . $extField1 . '`, j.`name`, j.`element`, j.`folder`, j.`client_id`, j.`access`,
-				j.`params`,  j.`checked_out`, j.`checked_out_time`,  s.virtuemart_shoppergroup_id ';
-		} else {
-			$extPlgTable = '#__extensions';
-			$extField1 = 'extension_id';
-			$extField2 = 'element';
-
-			$select .= 'j.`' . $extField1 . '`,j.`name`, j.`type`, j.`element`, j.`folder`, j.`client_id`, j.`enabled`, j.`access`, j.`protected`, j.`manifest_cache`,
-				j.`params`, j.`custom_data`, j.`system_data`, j.`checked_out`, j.`checked_out_time`, j.`state`,  s.virtuemart_shoppergroup_id ';
-		}
+		$select .= 'j.`' . $extField1 . '`,j.`name`, j.`type`, j.`element`, j.`folder`, j.`client_id`, j.`enabled`, j.`access`, j.`protected`, j.`manifest_cache`,
+			j.`params`, j.`custom_data`, j.`system_data`, j.`checked_out`, j.`checked_out_time`, j.`state`,  s.virtuemart_shoppergroup_id ';
 
 		$q = $select . ' FROM   `#__virtuemart_' . $this->_psType . 'methods_' . VMLANG . '` as l ';
 		$q .= ' JOIN `#__virtuemart_' . $this->_psType . 'methods` AS v   USING (`virtuemart_' . $this->_psType . 'method_id`) ';
@@ -679,16 +677,9 @@ abstract class vmPSPlugin extends vmPlugin {
 		$vendorEmail = $vendorModel->getVendorEmail ($vendorId);
 		$vendorName = $vendorModel->getVendorName ($vendorId);
 		JUtility::sendMail ($vendorEmail, $vendorName, $vendorEmail, $subject, $message);
-		if (JVM_VERSION === 1) {
-			//get all super administrator
-			$query = 'SELECT name, email, sendEmail' .
-				' FROM #__users' .
-				' WHERE LOWER( usertype ) = "super administrator"';
-		} else {
-			$query = 'SELECT name, email, sendEmail' .
+		$query = 'SELECT name, email, sendEmail' .
 				' FROM #__users' .
 				' WHERE sendEmail=1';
-		}
 		$db = JFactory::getDBO ();
 		$db->setQuery ($query);
 		$rows = $db->loadObjectList ();
@@ -1175,24 +1166,15 @@ abstract class vmPSPlugin extends vmPlugin {
 
 		$_db = JFactory::getDBO ();
 
-		if (JVM_VERSION === 1) {
-			$_q = 'SELECT 1 '
-				. 'FROM   #__virtuemart_' . $this->_psType . 'methods v '
-				. ',      #__plugins             j '
-				. 'WHERE j.`element` = "' . $this->_name . '" '
-				. 'AND   v.`' . $this->_psType . '_jplugin_id` = j.`id` '
-				. 'AND   v.`virtuemart_vendor_id` = "' . $_vendorId . '" '
-				. 'AND   v.`published` = 1 ';
-		} else {
-			$_q = 'SELECT 1 '
-				. 'FROM   #__virtuemart_' . $this->_psType . 'methods AS v '
-				. ',      #__extensions   AS     j '
-				. 'WHERE j.`folder` = "' . $this->_type . '" '
-				. 'AND j.`element` = "' . $this->_name . '" '
-				. 'AND   v.`' . $this->_psType . '_jplugin_id` = j.`extension_id` '
-				. 'AND   v.`virtuemart_vendor_id` = "' . $_vendorId . '" '
-				. 'AND   v.`published` = 1 ';
-		}
+		$_q = 'SELECT 1 '
+			. 'FROM   #__virtuemart_' . $this->_psType . 'methods AS v '
+			. ',      #__extensions   AS     j '
+			. 'WHERE j.`folder` = "' . $this->_type . '" '
+			. 'AND j.`element` = "' . $this->_name . '" '
+			. 'AND   v.`' . $this->_psType . '_jplugin_id` = j.`extension_id` '
+			. 'AND   v.`virtuemart_vendor_id` = "' . $_vendorId . '" '
+			. 'AND   v.`published` = 1 ';
+
 
 		$_db->setQuery ($_q);
 		$_r = $_db->loadAssoc ();

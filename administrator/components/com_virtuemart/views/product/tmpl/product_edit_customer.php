@@ -16,8 +16,9 @@
  * @version $Id: product_edit_customer.php 6272 2012-07-12 18:01:11Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
-defined ('_JEXEC') or die('Restricted access');
+defined ('_JEXEC') or die();
 $i = 0;
+if ($this->jsonPath !=='') return;
 ?>
 <table class="adminform">
 	<tbody>
@@ -49,9 +50,9 @@ $i = 0;
 			<br/>
 
 			<div class="mailing">
-				<div class="button2-left" data-type="sendmail">
+				<div class="button2-left btn" data-type="sendmail">
 					<div class="blank" style="padding:0 6px;cursor: pointer;" title="<?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_SEND_TIP'); ?>">
-						<span class="vmicon vmicon-16-email"></span>
+						 <span class="vmicon vmicon-16-email"></span>
 						<?php echo Jtext::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_SEND'); ?>
 					</div>
 
@@ -161,11 +162,11 @@ $i = 0;
 	</tbody>
 </table>
 <script type="text/javascript">
-	<!--
+	<!-- 
 	var $customerMailLink = '<?php echo JURI::root () . '/index.php?option=com_virtuemart&view=productdetails&task=sentproductemailtoshoppers&virtuemart_product_id=' . $this->product->virtuemart_product_id ?>';
-	var $customerMailNotifyLink = '<?php echo 'index.php?option=com_virtuemart&view=product&task=ajax_notifyUsers&virtuemart_product_id=' . $this->product->virtuemart_product_id ?>';
-	var $customerListLink = '<?php echo 'index.php?option=com_virtuemart&view=product&format=json&type=userlist&virtuemart_product_id=' . $this->product->virtuemart_product_id ?>';
-	var $customerListNotifyLink = '<?php echo 'index.php?option=com_virtuemart&view=product&task=ajax_waitinglist&virtuemart_product_id=' . $this->product->virtuemart_product_id ?>';
+	var $customerMailNotifyLink = '<?php echo $this->jsonPath. 'index.php?option=com_virtuemart&view=product&task=ajax_notifyUsers&virtuemart_product_id=' . $this->product->virtuemart_product_id ?>';
+	var $customerListLink = '<?php echo $this->jsonPath.'index.php?option=com_virtuemart&view=product&format=json&type=userlist&virtuemart_product_id=' . $this->product->virtuemart_product_id ?>';
+	var $customerListNotifyLink = '<?php echo $this->jsonPath. 'index.php?option=com_virtuemart&view=product&task=ajax_waitinglist&virtuemart_product_id=' . $this->product->virtuemart_product_id ?>';
 	var $customerListtype = 'reserved';
 
 	jQuery(document).ready(function () {
@@ -191,7 +192,7 @@ $i = 0;
 				}
 				var $max_number = jQuery('input[name=notify_number]').val();
 
-				jQuery.post($customerMailNotifyLink, { subject:$subject, mailbody:$body, max_number:$max_number, token:'<?php echo JUtility::getToken () ?>' },
+				jQuery.post($customerMailNotifyLink, { subject:$subject, mailbody:$body, max_number:$max_number, token:'<?php echo JSession::getFormToken () ?>' },
 					function (data) {
 						alert('<?php echo addslashes (JTExt::_ ('COM_VIRTUEMART_PRODUCT_NOTIFY_MESSAGE_SENT')); ?>');
 						jQuery.getJSON($customerListNotifyLink, {tmpl:'component', no_html:1},
@@ -224,7 +225,7 @@ $i = 0;
 				}
 				else {
 					var $statut = jQuery('select#order_items_status').val();
-					jQuery.post($customerMailLink, { subject:$subject, mailbody:$body, statut:$statut, token:'<?php echo JUtility::getToken () ?>' },
+					jQuery.post($customerMailLink, { subject:$subject, mailbody:$body, statut:$statut, token:'<?php echo JSession::getFormToken () ?>' },
 						function (data) {
 							alert('<?php echo addslashes (JTExt::_ ('COM_VIRTUEMART_PRODUCT_NOTIFY_MESSAGE_SENT')); ?>');
 							//jQuery("#customers-list-msg").html('<strong><?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_NOTIFY_MESSAGE_SENT')?></strong>');

@@ -44,7 +44,7 @@ class VirtuemartViewCoupon extends VmView {
 
 		$model = VmModel::getModel();
 
-		$coupon = $model->getCoupon();
+		$coupon = $model->getData();
 		$this->SetViewTitle('', $coupon->coupon_code);
 
 
@@ -96,16 +96,13 @@ class VirtuemartViewCoupon extends VmView {
 
 			$this->addStandardEditViewCommands();
         } else {
+			//First the view lists, it sets the state of the model
 
 			$this->addStandardDefaultViewCommands();
-			$this->addStandardDefaultViewLists($model);
-
-			$coupons = $model->getCoupons();
-			$this->assignRef('coupons',	$coupons);
-
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
-
+			$this->addStandardDefaultViewLists($model,0,'ASC');
+			$code = JRequest::getWord('search', false);
+			$this->coupons = $model->getCoupons($code);
+			$this->pagination = $model->getPagination();
 		}
 
 		parent::display($tpl);

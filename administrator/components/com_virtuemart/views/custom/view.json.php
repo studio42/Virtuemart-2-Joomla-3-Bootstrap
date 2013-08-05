@@ -50,26 +50,33 @@ class VirtuemartViewCustom extends JViewLegacy {
 			}
 		}
 		elseif ( $custom_jplugin_id = JRequest::getInt('custom_jplugin_id') ) {
-			if (JVM_VERSION===1) {
-				$table = '#__plugins';
-				$ext_id = 'id';
-			} else {
-				$table = '#__extensions';
-				$ext_id = 'extension_id';
-			}
-			$q = 'SELECT `params`,`element` FROM `' . $table . '` WHERE `' . $ext_id . '` = "'.$custom_jplugin_id.'"';
+			$q = 'SELECT `params`,`element` FROM `#__extensions` WHERE `extension_id` = "'.$custom_jplugin_id.'"';
 			$db ->setQuery($q);
 			$this->plugin = $db ->loadObject();
-			$this->loadHelper('parameterparser');
-			$parameters = new vmParameters($this->plugin->params,  $this->plugin->element , 'plugin' ,'vmcustom');
+			JPluginHelper::importPlugin('vmcustom');
+			$dispatcher = JDispatcher::getInstance();
+			//    			$varsToPushParam = $dispatcher->trigger('plgVmDeclarePluginParams',array('custom',$this->plugin->custom_element,$this->plugin->custom_jplugin_id));
+			$retValue = $dispatcher->trigger('plgVmDeclarePluginParamsCustom',array('custom',$this->plugin->element,$custom_jplugin_id ,&$this->plugin));
+
+			// TOTO JPARAMETER $this->loadHelper('parameterparser');
+			$path	= JPath::clean( JPATH_PLUGINS.'/vmcustom/' . $this->plugin->element . '/' . $this->plugin->element . '.xml');
+			if (file_exists($path))
+			{
+
+				$this->custom->form = JForm::getInstance('plgForm', $path, array(),true, '//config');
+				// $this->plugin->xml = simplexml_load_file($path);
+				$this->custom->form->bind($this->plugin);
+			}
+			// $parameters = new vmParameters($this->plugin->params,  $this->plugin->element , 'plugin' ,'vmcustom');
 			$lang = JFactory::getLanguage();
 			$filename = 'plg_vmcustom_' .  $this->plugin->element;
 			$lang->load($filename, JPATH_ADMINISTRATOR);
-			echo $parameters->render();
+			$this->setLayout('edit');
+			echo $this->loadTemplate ( 'options');
+			// echo $parameters->render();
 			echo '<input type="hidden" value="'.$this->plugin->element.'" name="custom_value">';
-			jExit();
 		}
-		jExit();
+		// jExit();
 	}
 
 }

@@ -63,15 +63,15 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	 * @access public
 	 */
 	public function add() {
-		$mainframe = JFactory::getApplication();
+		$app = JFactory::getApplication();
 		if (VmConfig::get('use_as_catalog', 0)) {
 			$msg = JText::_('COM_VIRTUEMART_PRODUCT_NOT_ADDED_SUCCESSFULLY');
 			$type = 'error';
-			$mainframe->redirect('index.php', $msg, $type);
+			$app->redirect('index.php', $msg, $type);
 		}
 		$cart = VirtueMartCart::getCart();
 		if ($cart) {
-			$virtuemart_product_ids = JRequest::getVar('virtuemart_product_id', array(), 'default', 'array');
+			$virtuemart_product_ids = JFactory::getApplication()->input->get( 'virtuemart_product_id', null, 'array');
 			$success = true;
 			if ($cart->add($virtuemart_product_ids,$success)) {
 				$msg = JText::_('COM_VIRTUEMART_PRODUCT_ADDED_SUCCESSFULLY');
@@ -81,11 +81,11 @@ class VirtueMartControllerCart extends JControllerLegacy {
 				$type = 'error';
 			}
 
-			$mainframe->enqueueMessage($msg, $type);
-			$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'));
+			$app->enqueueMessage($msg, $type);
+			$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'));
 
 		} else {
-			$mainframe->enqueueMessage('Cart does not exist?', 'error');
+			$app->enqueueMessage('Cart does not exist?', 'error');
 		}
 	}
 
@@ -97,7 +97,6 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	 */
 	public function addJS() {
 
-		//maybe we should use $mainframe->close(); or jexit();instead of die;
 		/* Load the cart helper */
 		//require_once(JPATH_VM_SITE.DS.'helpers'.DS.'cart.php');
 		$this->json = new stdClass();
@@ -110,7 +109,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			} else
 			$categoryLink = '';
 			$continue_link = JRoute::_('index.php?option=com_virtuemart' . $categoryLink);
-			$virtuemart_product_ids = JRequest::getVar('virtuemart_product_id', array(), 'default', 'array');
+			$virtuemart_product_ids = JFactory::getApplication()->input->get( 'virtuemart_product_id', null, 'array');
 			$errorMsg = JText::_('COM_VIRTUEMART_CART_PRODUCT_ADDED');
 			if ($cart->add($virtuemart_product_ids, $errorMsg )) {
 
@@ -249,16 +248,16 @@ class VirtueMartControllerCart extends JControllerLegacy {
 					$cart->setCartIntoSession();
 					break;
 				} else if ($_retVal === false ) {
-					$mainframe = JFactory::getApplication();
-					$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&task=edit_shipment',$this->useXHTML,$this->useSSL), $_retVal);
+					$app = JFactory::getApplication();
+					$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&task=edit_shipment',$this->useXHTML,$this->useSSL), $_retVal);
 					break;
 				}
 			}
 
 			if ($cart->getInCheckOut()) {
 
-				$mainframe = JFactory::getApplication();
-				$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&task=checkout') );
+				$app = JFactory::getApplication();
+				$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&task=checkout') );
 			}
 		}
 		// 	self::Cart();
@@ -332,15 +331,15 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	 * @access public
 	 */
 	public function delete() {
-		$mainframe = JFactory::getApplication();
+		$app = JFactory::getApplication();
 		/* Load the cart helper */
 		$cart = VirtueMartCart::getCart();
 		if ($cart->removeProductCart())
-		$mainframe->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_REMOVED_SUCCESSFULLY'));
+		$app->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_REMOVED_SUCCESSFULLY'));
 		else
-		$mainframe->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_NOT_REMOVED_SUCCESSFULLY'), 'error');
+		$app->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_NOT_REMOVED_SUCCESSFULLY'), 'error');
 
-		$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'));
+		$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'));
 	}
 
 	/**
@@ -350,15 +349,15 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	 * @access public
 	 */
 	public function update() {
-		$mainframe = JFactory::getApplication();
+		$app = JFactory::getApplication();
 		/* Load the cart helper */
 		$cartModel = VirtueMartCart::getCart();
 		if ($cartModel->updateProductCart())
-		$mainframe->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_UPDATED_SUCCESSFULLY'));
+		$app->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_UPDATED_SUCCESSFULLY'));
 		else
-		$mainframe->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_NOT_UPDATED_SUCCESSFULLY'), 'error');
+		$app->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_NOT_UPDATED_SUCCESSFULLY'), 'error');
 
-		$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'));
+		$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'));
 	}
 
 	/**
@@ -396,8 +395,8 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			// Display it all
 			$view->display();
 		} else {
-			$mainframe = JFactory::getApplication();
-			$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'), JText::_('COM_VIRTUEMART_CART_DATA_NOT_VALID'));
+			$app = JFactory::getApplication();
+			$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'), JText::_('COM_VIRTUEMART_CART_DATA_NOT_VALID'));
 		}
 	}
 
@@ -407,8 +406,8 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		if ($cart) {
 			$cart->setOutOfCheckout();
 		}
-		$mainframe = JFactory::getApplication();
-		$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'), 'Cancelled');
+		$app = JFactory::getApplication();
+		$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'), 'Cancelled');
 	}
 
 }

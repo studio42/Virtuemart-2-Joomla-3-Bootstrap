@@ -34,7 +34,8 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
 class VirtuemartControllerCategory extends VmController {
 
 	public function __construct() {
-		parent::__construct();
+		parent::__construct('virtuemart_category_id');
+		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
 
 	}
 
@@ -62,7 +63,7 @@ class VirtuemartControllerCategory extends VmController {
 	public function orderUp()
 	{
 		// Check token
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 
 		//capturing virtuemart_category_id
 		$id = 0;
@@ -97,7 +98,7 @@ class VirtuemartControllerCategory extends VmController {
 	public function orderDown()
 	{
 		// Check token
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 
 		//capturing virtuemart_category_id
 		$id = 0;
@@ -130,7 +131,7 @@ class VirtuemartControllerCategory extends VmController {
 	public function saveOrder()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 
 		$cid	= JRequest::getVar( 'cid', array(), 'post', 'array' );	//is sanitized
 		JArrayHelper::toInteger($cid);

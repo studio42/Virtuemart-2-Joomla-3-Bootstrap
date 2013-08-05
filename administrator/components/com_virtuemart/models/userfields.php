@@ -71,6 +71,8 @@ class VirtueMartModelUserfields extends VmModel {
 		,'euvatid'          => 'virtuemart_shoppergroup_id'
 		,'webaddress'       => 'webaddresstype'
 		);
+		$this->addvalidOrderingFieldName(array('name','type','ordering','virtuemart_userfield_id'));
+
 		$this->_selectedOrdering = 'ordering';
 		$this->_selectedOrderingDir = 'ASC';
 	}
@@ -264,13 +266,9 @@ class VirtueMartModelUserfields extends VmModel {
 
 		if(strpos($data['type'],'plugin')!==false){
 			// missing string FIX, Bad way ?
-			if (JVM_VERSION===1) {
-				$tb = '#__plugins';
-				$ext_id = 'id';
-			} else {
-				$tb = '#__extensions';
-				$ext_id = 'extension_id';
-			}
+			$tb = '#__extensions';
+			$ext_id = 'extension_id';
+
 			$plgName = substr($data['type'],6);
 			$q = 'SELECT `' . $ext_id . '` FROM `' . $tb . '` WHERE `element` = "'.$plgName.'"';
 			$this->_db->setQuery($q);
@@ -1196,7 +1194,7 @@ class VirtueMartModelUserfields extends VmModel {
 	{
 		$db = JFactory::getDBO();
 		if ($search = JRequest::getWord('search', false)) {
-			$search = '"%' . $this->_db->getEscaped( $search, true ) . '%"' ;
+			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 			//$search = $this->_db->Quote($search, false);
 			return (' WHERE `name` LIKE ' .$search);
 		}

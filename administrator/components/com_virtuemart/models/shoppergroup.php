@@ -51,12 +51,16 @@ class VirtueMartModelShopperGroup extends VmModel {
 	    if (empty($this->_data)) {
 	      $this->_data = $this->getTable('shoppergroups');
 	      $this->_data->load((int) $this->_id);
-	      if(!empty($this->_data->price_display)){
-	      	$this->_data->price_display = unserialize($this->_data->price_display);
-	      } else{
-	      	if(!class_exists('JParameter')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'html'.DS.'parameter.php' );
-	      	$this->_data->price_display = new JParameter('');
-	      }
+	      // if(!empty($this->_data->price_display)){
+	      	// $this->_data->price_display = json_decode($this->_data->price_display);
+	      // } else{
+	      	// if(!class_exists('JParameter')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'html'.DS.'parameter.php' );
+	      	// $this->_data->price_display = new JParameter('');
+			$price_display = new JRegistry($this->_data->price_display);
+			// TODO var_dump($this->_data->price_display);
+			$this->_data->price_display = $price_display;
+
+	      // }
 	   }
 
 		return $this->_data;
@@ -74,8 +78,7 @@ class VirtueMartModelShopperGroup extends VmModel {
     function getShopperGroups($onlyPublished=false, $noLimit = false) {
     	$db = JFactory::getDBO();
 
-	    $query = 'SELECT * FROM `#__virtuemart_shoppergroups` ORDER BY `virtuemart_vendor_id`,`shopper_group_name` ';
-
+	    $query = 'SELECT * FROM `#__virtuemart_shoppergroups` '.$this->_getOrdering() ;
 		if ($noLimit) {
 			$this->_data = $this->_getList($query);
 		}
@@ -92,17 +95,21 @@ class VirtueMartModelShopperGroup extends VmModel {
    										'basePriceWithTax','basePriceWithTax','discountedPriceWithoutTax',
    										'salesPrice','priceWithoutTax',
    										'salesPriceWithDiscount','discountAmount','taxAmount');
-
-   	$param ='show_prices='.$data['show_prices']."\n";
+	$params = array();
+	$params['show_prices']= (bool)$data['show_prices'];
+   	// $param ='show_prices='.$data['show_prices']."\n";
    	foreach($myfields as $fields){
-   		$param .= $fields.'='.$data[$fields]."\n";		//attention there must be doublequotes
-   		$param .= $fields.'Text='.$data[$fields.'Text']."\n";
-   		$param .= $fields.'Rounding='.$data[$fields.'Rounding']."\n";
+		$params[$fields] = (bool)$data[$fields];
+		$params[$fields.'Text'] = (bool)$data[$fields.'Text'];
+		$params[$fields.'Rounding'] = (int)$data[$fields.'Rounding'];
+   		// $param .= $fields.'='.$data[$fields]."\n";		//attention there must be doublequotes
+   		// $param .= $fields.'Text='.$data[$fields.'Text']."\n";
+   		// $param .= $fields.'Rounding='.$data[$fields.'Rounding']."\n";
    	}
 
-   	if(!class_exists('JParameter')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'html'.DS.'parameter.php' );
-		$jparam = new JParameter($param);
-   	$data['price_display'] = serialize(new JParameter($param));
+   	// if(!class_exists('JParameter')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'html'.DS.'parameter.php' );
+		// $jparam = new JParameter($param);
+   	$data['price_display'] = json_encode($params);
 
    	return parent::store($data);
    }

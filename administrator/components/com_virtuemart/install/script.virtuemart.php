@@ -21,7 +21,7 @@ if($maxtime < 140){
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 defined('JPATH_VM_ADMINISTRATOR') or define('JPATH_VM_ADMINISTRATOR', JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart');
 
-if(!class_exists('JModel')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
+// j3 FIX if(!class_exists('JModelLegacy ')) require JPATH_LIBRARIES.DS.'joomla'.DS.'model'.DS.'model.php';
 
 // hack to prevent defining these twice in 1.6 installation
 if (!defined('_VM_SCRIPT_INCLUDED')) {
@@ -46,7 +46,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			}
 			require_once($this->path.DS.'helpers'.DS.'config.php');
 			JTable::addIncludePath($this->path.DS.'tables');
-			JModel::addIncludePath($this->path.DS.'models');
+			JModelLegacy ::addIncludePath($this->path.DS.'models');
 
 		}
 
@@ -127,7 +127,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$lang = $params->get('site', 'en-GB');//use default joomla
 			$lang = strtolower(strtr($lang,'-','_'));
 
-			$model = JModel::getInstance('updatesmigration', 'VirtueMartModel');
+			$model = JModelLegacy ::getInstance('updatesmigration', 'VirtueMartModel');
 			$model->execSQLFile($this->path.DS.'install'.DS.'install.sql',$lang);
 			$model->execSQLFile($this->path.DS.'install'.DS.'install_essential_data.sql',$lang);
 			$model->execSQLFile($this->path.DS.'install'.DS.'install_required_data.sql',$lang);
@@ -220,7 +220,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$lang = strtolower(strtr($lang,'-','_'));
 
 			if(!class_exists('VirtueMartModelUpdatesMigration')) require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'updatesmigration.php');
-			$model = new VirtueMartModelUpdatesMigration(); //JModel::getInstance('updatesmigration', 'VirtueMartModel');
+			$model = new VirtueMartModelUpdatesMigration(); //JModelLegacy ::getInstance('updatesmigration', 'VirtueMartModel');
 			$model->execSQLFile($this->path.DS.'install'.DS.'install.sql',$lang);
 			// 			$this->displayFinished(true);
 			//return false;
@@ -353,7 +353,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$query = 'SHOW COLUMNS FROM `'.$tablename.'` ';
 			$this->_db->setQuery($query);
-			$columns = $this->_db->loadResultArray(0);
+			$columns = $this->_db->loadColumn(0);
 
 			foreach($fields as $fieldname => $alterCommand){
 				if(in_array($fieldname,$columns)){
@@ -383,7 +383,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$query = 'SHOW COLUMNS FROM `'.$table.'` ';
 			$this->_db->setQuery($query);
-			$columns = $this->_db->loadResultArray(0);
+			$columns = $this->_db->loadColumn(0);
 
 			if(!in_array($field,$columns)){
 
@@ -589,8 +589,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$this->_db->setQuery($q);
 				$res = $this->_db->loadResult();
 				if(!empty($res)){
-					JRequest::setVar(JUtility::getToken(), '1', 'post');
-					$config = JModel::getInstance('config', 'VirtueMartModel');
+					JRequest::setVar(JSession::getFormToken(), '1', 'post');
+					$config = JModelLegacy ::getInstance('config', 'VirtueMartModel');
 					$config->setDangerousToolsOff();
 				}
 
@@ -714,7 +714,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					?>
 					<div class="icon">
 						<a
-							href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=installSampleData&token='.JUtility::getToken()) ?>">
+							href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=installSampleData&token='.JSession::getFormToken()) ?>">
 							<span class="vmicon48 vm_install_48"></span> <br />
 						<?php echo JText::_('COM_VIRTUEMART_INSTALL_SAMPLE_DATA'); ?>
 							</a>
@@ -723,7 +723,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		<?php } ?>
 
 				<div class="icon">
-				<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&task=disableDangerousTools&token='.JUtility::getToken() ) ?>">
+				<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&task=disableDangerousTools&token='.JSession::getFormToken() ) ?>">
 					<span class="vmicon48 vm_frontpage_48"></span>
 					<br /><?php echo JText::_('COM_VIRTUEMART_INSTALL_GO_SHOP') ?>
 				</a>
@@ -753,20 +753,15 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$vmInstall = new com_virtuemartInstallerScript();
 		$upgrade = $vmInstall->checkIfUpdate();
 
-		if(version_compare(JVERSION,'1.6.0','ge')) {
+		// if(version_compare(JVERSION,'1.6.0','ge')) {
 			// Joomla! 1.6 code here
-		} else {
+		// } else {
 			// Joomla! 1.5 code here
-			$method = ($upgrade) ? 'update' : 'install';
-			$vmInstall->$method();
-			$vmInstall->postflight($method);
-		}
+			// $method = ($upgrade) ? 'update' : 'install';
+			// $vmInstall->$method();
+			// $vmInstall->postflight($method);
+		// }
 
-		/*		if ((JVM_VERSION===1)) {
-			$method = ($upgrade) ? 'update' : 'install';
-		$vmInstall->$method();
-		$vmInstall->postflight($method);
-		}*/
 
 		return true;
 	}
@@ -781,17 +776,12 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$vmInstall = new com_virtuemartInstallerScript();
 		// 		$vmInstall->preflight('uninstall');
 
-		if(version_compare(JVERSION,'1.6.0','ge')) {
+		// if(version_compare(JVERSION,'1.6.0','ge')) {
 			// Joomla! 1.6 code here
-		} else {
-			$vmInstall->uninstall();
-			$vmInstall->postflight('uninstall');
-		}
-
-		/*		if (JVM_VERSION===1) {
-			$vmInstall->uninstall();
-		$vmInstall->postflight('uninstall');
-		}*/
+		// } else {
+			// $vmInstall->uninstall();
+			// $vmInstall->postflight('uninstall');
+		// }
 
 		return true;
 	}

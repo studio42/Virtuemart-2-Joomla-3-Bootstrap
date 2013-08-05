@@ -26,7 +26,7 @@ vmJsApi::JvalideForm();
 $this->editor = JFactory::getEditor();
 
 ?>
-<form method="post" name="adminForm" action="index.php" enctype="multipart/form-data" id="adminForm">
+<form method="post" name="adminForm" action="<?php echo juri::current() ?>" enctype="multipart/form-data" id="adminForm">
 
 <?php // Loading Templates in Tabs
 $tabarray = array();
@@ -45,8 +45,10 @@ AdminUIHelper::buildTabs ( $this,  $tabarray, $this->product->virtuemart_product
 
 
 <!-- Hidden Fields -->
+
 	<?php echo $this->addStandardHiddenToForm(); ?>
 <input type="hidden" name="virtuemart_product_id" value="<?php echo $this->product->virtuemart_product_id; ?>" />
 <input type="hidden" name="product_parent_id" value="<?php echo JRequest::getInt('product_parent_id', $this->product->product_parent_id); ?>" />
+
 </form>
 <?php AdminUIHelper::endAdminArea(); ?>

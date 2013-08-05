@@ -463,7 +463,7 @@ class VmMediaHandler {
 		 * @param string $effect alternative lightbox display
 		 * @param boolean $withDesc display the image media description
 		 */
-		function displayMediaThumb($imageArgs='',$lightbox=true,$effect="class='modal' rel='group'",$return = true,$withDescr = false,$absUrl = false, $width=0,$height=0){
+		function displayMediaThumb($imageArgs='',$lightbox=true,$effect="class='modalbox' rel='group'",$return = true,$withDescr = false,$absUrl = false, $width=0,$height=0){
 
 			if(empty($this->file_name)){
 
@@ -509,7 +509,7 @@ class VmMediaHandler {
 
 				//Here we need now to update the database field of $this->file_url_thumb to prevent dynamic thumbnailing in future
 				if(empty($this->_db)) $this->_db = JFactory::getDBO();
-				$query = 'UPDATE `#__virtuemart_medias` SET `file_url_thumb` = "'.$this->_db->getEscaped($this->file_url_thumb).'" WHERE `#__virtuemart_medias`.`virtuemart_media_id` = "'.(int)$this->virtuemart_media_id.'" ';
+				$query = 'UPDATE `#__virtuemart_medias` SET `file_url_thumb` = "'.$this->_db->escape($this->file_url_thumb).'" WHERE `#__virtuemart_medias`.`virtuemart_media_id` = "'.(int)$this->virtuemart_media_id.'" ';
 				$this->_db->setQuery($query);
 				$this->_db->query();
 			}
@@ -913,24 +913,22 @@ class VmMediaHandler {
 			VmConfig::loadJLang('com_virtuemart_media');
 			$html = $this->displayFileSelection($fileIds,$type);
 			$html .= $this->displayFileHandler();
-
+			$app = JFactory::getApplication();
+			$path = $app->isSite() ? juri::root().'' :'';
 			if(empty($this->_db)) $this->_db = JFactory::getDBO();
 			$this->_db->setQuery('SELECT FOUND_ROWS()');
 			$imagetotal = $this->_db->loadResult();
 			//vmJsApi::jQuery(array('easing-1.3.pack','mousewheel-3.0.4.pack','fancybox-1.3.4.pack'),'','fancybox');
+			
 			$j = '
 //<![CDATA[
 '; 
-			if (JVM_VERSION===1) {
-				$j .= "
-			jQuery(document).ready(function(){ jQuery('#ImagesContainer').vm2admin('media','".$type."','0') }); " ;
-			}
-			else $j .= "
+			$j .= "
 			jQuery(document).ready(function(){ jQuery('#ImagesContainer').vm2admin('media','".$type."','0') }); " ;
 
 			$j .="
 			jQuery(document).ready(function($){
-			var medialink = 'index.php?option=com_virtuemart&view=media&task=viewJson&format=json&mediatype=".$type."';
+			var medialink = '".$path."index.php?option=com_virtuemart&view=media&task=viewjson&format=json&mediatype=".$type."';
 			var media = $('#searchMedia').data();
 			var searchMedia = $('input#searchMedia');
 			searchMedia.click(function () {
@@ -940,10 +938,13 @@ class VmMediaHandler {
 
 				source: medialink,
 				select: function(event, ui){
+					if (ui.item.label == '".JText::_('COM_VIRTUEMART_ADMIN_CFG_NOIMAGEFOUND', true)."') return ;
 					$('#ImagesContainer').append(ui.item.label);
+					
 					//$(this).autocomplete( 'option' , 'source' , 'index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedcategories&row='+nextCustom )
 
 				},
+				appendTo: '#searchMedia-div',
 				minLength:1,
 				html: true
 			});
@@ -992,15 +993,18 @@ class VmMediaHandler {
 		public function displayFileSelection($fileIds,$type = 0){
 
 			$html='';
-			$html .= '<fieldset class="checkboxes">' ;
+			$html .= '<fieldset class="checkboxes radio btn-group">' ;
 			$html .= '<legend>'.JText::_('COM_VIRTUEMART_IMAGES').'</legend>';
 			$html .=  '<span class="hasTip always-left" title="'.JText::_('COM_VIRTUEMART_SEARCH_MEDIA_TIP').'">'.JText::_('COM_VIRTUEMART_SEARCH_MEDIA') . '</span>';
 			$html .=   '
-					<input type="text" name="searchMedia" id="searchMedia" data-start="0" value="' .JRequest::getString('searchMedia') . '" class="text_area always-left" />
-					<button class="reset-value fg-button">'.JText::_('COM_VIRTUEMART_RESET') .'</button>
-					<a class="js-pages js-previous fg-button ui-state-default fg-button-icon-left ui-corner-all" ><span class="ui-icon ui-icon-circle-minus" style="display:inline-block;"></span> 16 </a>
-					<a class="js-pages js-next fg-button ui-state-default fg-button-icon-right ui-corner-all"> 16 <span class="ui-icon ui-icon-circle-plus" style="display:inline-block;"></span></a>
-					<br class="clear"/>';
+				<div id="searchMedia-div">
+					<div class="input-append"><input type="text" name="searchMedia" id="searchMedia" data-start="0" value="' .JRequest::getString('searchMedia') . '" class="input-medium" />
+					<button class="reset-value btn">'.JText::_('COM_VIRTUEMART_RESET') .'</button>
+					<button class="js-pages js-previous btn" ><i class="icon-previous"></i> 16 </button>
+					<button class="js-pages js-next btn"> 16 <i class="icon-next"></i></button>
+					</div>
+					<br class="clear" />
+				</div>';
 			;
 			//$result = $this->getImagesList($type);
 			$html .= '<div id="ImagesContainer">';
@@ -1036,7 +1040,7 @@ class VmMediaHandler {
 				$image->msg =  'OK';
 				return  '<div  class="vm_thumb_image"><input type="hidden" value="'.$image->virtuemart_media_id.'" name="virtuemart_media_id[]">
 				<input class="ordering" type="hidden" name="mediaordering['.$image->virtuemart_media_id.']" value="'.$key.'">
-			<a class="vm_thumb" rel="group1" title ="'.$image->file_title.'"href="'.JURI::root(true).'/'.$image->file_url.'" >
+			<a class="vm_thumb" rel="group1" title ="'.$image->file_title.'" href="'.JURI::root(true).'/'.$image->file_url.'" >
 			'.JHTML::image($image->file_url_thumb, $image->file_title, '').'
 			</a><div class="vmicon vmicon-16-remove" title="'.JText::_('COM_VIRTUEMART_IMAGE_REMOVE').'"></div><div class="edit-24-grey" title="'.JText::_('COM_VIRTUEMART_IMAGE_EDIT_INFO').'"></div></div>';
 			} else {
@@ -1051,7 +1055,11 @@ class VmMediaHandler {
 
 			$Images = array();
 			$list = VmMediaHandler::getImagesList($types,$page,$max);
-			if (empty($list['images'])) return JText::_('COM_VIRTUEMART_ADMIN_CFG_NOIMAGEFOUND');
+			if (empty($list['images'])) {
+				$Images[0]['label'] = JText::_('COM_VIRTUEMART_ADMIN_CFG_NOIMAGEFOUND');
+				
+				return $Images ;
+			}
 
 			foreach ($list['images'] as $key =>$image) {
 				$htmlImages ='';
@@ -1091,7 +1099,7 @@ class VmMediaHandler {
 				$q .= ' AND `file_type` = "'.$type.'" ';
 			}
 			if ($search = JRequest::getString('term', false)){
-				$search = '"%' . $this->_db->getEscaped( $search, true ) . '%"' ;
+				$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 				$q .=  ' AND (`file_title` LIKE '.$search.' OR `file_description` LIKE '.$search.' OR `file_meta` LIKE '.$search.') ';
 			}
 			$q .= ' LIMIT '.(int)$page*$max.', '.(int)$max;
@@ -1143,7 +1151,7 @@ class VmMediaHandler {
 
 			$this->addHiddenByType();
 
-			$html = '<fieldset class="checkboxes">' ;
+			$html = '<fieldset>' ;
 			$html .= '<legend>'.JText::_('COM_VIRTUEMART_IMAGE_INFORMATION').'</legend>';
 			$html .= '<div class="vm__img_autocrop">';
 			$imageArgs = 'id="vm_display_image" ';
@@ -1164,7 +1172,7 @@ class VmMediaHandler {
 			//  The following was removed bacause the check box (publish/unpublish) was not functioning...
 			// 			$this->media_published = $this->published;
 			$html .= '<td class="labelcell">
-		<label for="published">'. JText::_('COM_VIRTUEMART_FILES_FORM_FILE_PUBLISHED') .'</label>
+		<label for="media_published">'. JText::_('COM_VIRTUEMART_FILES_FORM_FILE_PUBLISHED') .'</label>
 	</td>
 	<td>';
 		if(!class_exists('VmHTML')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'html.php');
@@ -1197,7 +1205,7 @@ class VmMediaHandler {
 
 			$html .= '<tr>
 					<td class="labelcell">'.JText::_('COM_VIRTUEMART_FILES_FORM_ROLE').'</td>
-					<td><fieldset class="checkboxes">'.JHTML::_('select.radiolist', $this->getOptions($this->_mRoles), 'media_roles'.$identify, '', 'value', 'text', $this->media_role).'</fieldset></td></tr>';
+					<td><fieldset class="checkboxes radio btn-group">'.JHTML::_('select.radiolist', $this->getOptions($this->_mRoles), 'media_roles'.$identify, '', 'value', 'text', $this->media_role).'</fieldset></td></tr>';
 
 			// 			$html .= '<tr><td class="labelcell">'.VmHTML::checkbox('file_is_forSale', $this->file_is_forSale);
 			// 			$html .= VmHTML::checkbox('file_is_downloadable', $this->file_is_downloadable);
@@ -1206,7 +1214,7 @@ class VmMediaHandler {
 
 				$html .= '<tr>
 						<td class="labelcell">'.JText::_('COM_VIRTUEMART_FILES_FORM_LOCATION').'</td>
-						<td><fieldset class="checkboxes">'.JText::_('COM_VIRTUEMART_FORM_MEDIA_SET_'.strtoupper($this->file_type)).'</fieldset></td></tr>';
+						<td><fieldset class="checkboxes radio btn-group">'.JText::_('COM_VIRTUEMART_FORM_MEDIA_SET_'.strtoupper($this->file_type)).'</fieldset></td></tr>';
 			} else {
 				$mediaattribtemp = $this->media_attributes;
 				if(empty($this->media_attributes)){
@@ -1214,7 +1222,7 @@ class VmMediaHandler {
 				}
 				$html .= '<tr>
 						<td class="labelcell">'.JText::_('COM_VIRTUEMART_FILES_FORM_LOCATION').'</td>
-						<td><fieldset class="checkboxes">'.JHTML::_('select.radiolist', $this->getOptions($this->_mLocation), 'media_attributes'.$identify, '', 'value', 'text', $mediaattribtemp).'</fieldset></td></tr>';
+						<td><fieldset class="checkboxes radio btn-group">'.JHTML::_('select.radiolist', $this->getOptions($this->_mLocation), 'media_attributes'.$identify, '', 'value', 'text', $mediaattribtemp).'</fieldset></td></tr>';
 			}
 			
 			// select language for image
@@ -1232,7 +1240,7 @@ class VmMediaHandler {
 
 			$this->addMediaActionByType();
 
-			$html .= '<fieldset class="checkboxes">' ;
+			$html .= '<fieldset class="checkboxes radio btn-group">' ;
 			$html .= '<legend>'.JText::_('COM_VIRTUEMART_FILE_UPLOAD').'</legend>';
 			$html .= JText::_('COM_VIRTUEMART_IMAGE_ACTION'). JHTML::_('select.radiolist', $this->getOptions($this->_actions), 'media_action'.$identify, '', 'value', 'text', 0).'<br /><br style="clear:both" />';
 

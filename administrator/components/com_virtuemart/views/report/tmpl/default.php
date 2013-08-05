@@ -1,5 +1,5 @@
 <?php
-if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not allowed.' );
+if( !defined( '_JEXEC' ) ) die();
 
 /**
 *
@@ -16,153 +16,53 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 *
 * http://virtuemart.org
 */
-
-AdminUIHelper::startAdminArea();
 /* Load some variables */
 $rows = count( $this->report );
 $intervalTitle = JRequest::getVar('intervals','day');
 if ( ($intervalTitle =='week') or ($intervalTitle =='month') ) $addDateInfo = true ;
 else $addDateInfo = false;
-
-// if( $this->pagination->limit < $rows ){
-	// if( ($this->pagination->limitstart + $this->pagination->limit) < $rows ) {
-		// $rows = $this->pagination->limitstart + $this->pagination->limit;
-	// }
-// }
-if ( JVM_VERSION == 2 )
-	JHtml::_('behavior.framework', true);
+// JHtml::_('behavior.framework', true);
 ?>
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-    <div id="header">
-        <h2><?php echo JText::sprintf('COM_VIRTUEMART_REPORT_TITLE', vmJsApi::date( $this->from_period, 'LC',true) , vmJsApi::date( $this->until_period, 'LC',true) ); ?></h2>
-        <div id="filterbox">
+	<?php AdminUIHelper::startAdminArea(); ?>
 
-            <table>
-                <tr>
-                    <td align="left" width="100%">
-						<?php echo JText::_('COM_VIRTUEMART_ORDERSTATUS') . $this->lists['state_list']; ?>
-						<?php echo JText::_('COM_VIRTUEMART_REPORT_INTERVAL') . $this->lists['intervals']; ?>
-                        <?php echo JText::_('COM_VIRTUEMART_REPORT_SET_PERIOD') . $this->lists['select_date'];
+ 	<div id="filter-bar" class="btn-toolbar">
+		<div class="btn-group pull-left">
+			<?php echo JText::_('COM_VIRTUEMART_ORDERSTATUS')?> <?php echo $this->lists['state_list']; ?>
+		</div>
+		<div class="btn-group pull-left">
+			<button type="submit" id="searchsubmit" class="btn hasTooltip" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT') ?>"><i class="icon-search"></i></button>
+		</div>
+		<div class="btn-group pull-right">
+			<?php echo JText::_('COM_VIRTUEMART_REPORT_INTERVAL') . $this->lists['intervals']; ?>
+		</div>
+		<?php
+		if(VmConfig::get('multix','none')!='none'){ ?>
+			<div class="btn-group pull-right">
+				<?php
+				$vendorId = JRequest::getInt('virtuemart_vendor_id',1);
+				echo ShopFunctions::renderVendorList($vendorId,false); ?>
+			</div>
+			<?php
+		} ?>
+		<div class="btn-group pull-right" style="clear:right;">
+		<?php echo vmJsApi::jDate($this->until_period, 'until_period', '', true , '', JText::_('COM_VIRTUEMART_REPORT_UNTIL_PERIOD') ); ?>
+		</div>
+		<div class="btn-group pull-right">
+		<?php echo vmJsApi::jDate($this->from_period, 'from_period' , '', true, '', JText::_('COM_VIRTUEMART_REPORT_FROM_PERIOD')); ?> 
+		</div>
+		<div class="btn-group pull-right">
+		<?php echo $this->lists['select_date']; ?>
+		</div>
 
-                    echo JText::_('COM_VIRTUEMART_REPORT_FROM_PERIOD') .  vmJsApi::jDate($this->from_period, 'from_period');
-                   echo JText::_('COM_VIRTUEMART_REPORT_UNTIL_PERIOD') . vmJsApi::jDate($this->until_period, 'until_period');
-                        if(VmConfig::get('multix','none')!='none'){
-                        	$vendorId = JRequest::getInt('virtuemart_vendor_id',1);
-                        	echo ShopFunctions::renderVendorList($vendorId,false);
-                        } ?>
-                        <button onclick="this.form.period.value='';this.form.submit();"><?php echo JText::_('COM_VIRTUEMART_GO'); ?>
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div id="resultscounter">
-            <?php echo $this->pagination->getResultsCounter();?>
-        </div>
-    </div>
-
-    <div id="editcell">
-        <table class="adminlist" cellspacing="0" cellpadding="0">
-            <thead>
-                <tr>
-                    <th>
-                        <?php echo $this->sort('created_on', 'COM_VIRTUEMART_'.$intervalTitle); ?>
-                    </th>
-                    <th>
-                        <?php echo $this->sort('o.virtuemart_order_id', 'COM_VIRTUEMART_REPORT_BASIC_ORDERS') ; ?>
-                    </th>
-                    <th>
-                        <?php echo $this->sort('product_quantity', 'COM_VIRTUEMART_REPORT_BASIC_TOTAL_ITEMS') ; ?>
-                    </th>
-                    <th>
-                        <?php echo $this->sort('order_subtotal_netto', 'COM_VIRTUEMART_REPORT_BASIC_REVENUE_NETTO') ; ?>
-                    </th>
-                    <th>
-		                <?php echo $this->sort('order_subtotal_brutto', 'COM_VIRTUEMART_REPORT_BASIC_REVENUE_BRUTTO') ; ?>
-                    </th>
-                <?php
-                    $intervals = JRequest::getWord ('intervals', 'day');
-	                if($intervals=='product_s'){
-		        ?>
-		            <th>
-                        <?php echo $this->sort('order_item_name', 'COM_VIRTUEMART_PRODUCT_NAME') ; ?>
-                    </th>
-                    <th>
-	                    <?php echo $this->sort('virtuemart_product_id', 'COM_VIRTUEMART_PRODUCT_ID') ; ?>
-                    </th>
-		        <?php
-	                }
-		        ?>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-	    $i = 0;
-	    for ($j =0; $j < $rows; ++$j ){
-	    	$r = $this->report[$j];
-
-	    	//$is = $this->itemsSold[$j];
-	    	$s = 0;
-	    	?>
-                <tr class="row<?php echo $i;?>">
-                    <td align="center">
-                        <?php echo $r['intervals'] ;
-						if ( $addDateInfo ) {
-							echo ' ('.substr ( $r['created_on'],0,4 ).')';
-						}
-                     ?>
-                    </td>
-                    <td align="center">
-                        <?php echo $r['count_order_id'];?>
-                    </td>
-                    <td align="center">
-                        <?php echo $r['product_quantity'];?>
-                    </td>
-                    <td align="right">
-                        <?php echo $r['order_subtotal_netto'];?>
-                    </td>
-                    <td align="right">
-		                <?php echo $r['order_subtotal_brutto'];?>
-                    </td>
-		    <?php   if($intervals=='product_s'){
-	                ?>
-	                <td align="center">
-		                <?php echo $r['order_item_name'];?>
-	                </td>
-	                <td align="center">
-		                <?php echo $r['virtuemart_product_id'];?>
-	                </td>
-
-	         <?php  }
-			    ?>
-
-                </tr>
-                <?php
-	    	$i = 1-$i;
-	    }
-	    ?>
-            </tbody>
-           <thead>
-                <tr>
-                    <th  class="right"><?php echo JText::_('COM_VIRTUEMART_TOTAL').' : '; ?></th>
-                    <th><?php echo $this->totalReport['number_of_ordersTotal']?></th>
-                    <th><?php echo $this->totalReport['itemsSoldTotal'];?></th>
-                    <th class="right"><?php echo $this->totalReport['revenueTotal_netto'];?></th>
-                    <th class="right"><?php echo $this->totalReport['revenueTotal_brutto'];?></th>
-				</tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <td colspan="10">
-                        <?php echo $this->pagination->getListFooter(); ?>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-
-	<?php echo $this->addStandardHiddenToForm(); ?>
+	</div>
+	<div class="clearfix"> </div>
+	<div id="results">
+		<?php 
+		// split to use ajax search
+		echo $this->loadTemplate('results'); ?>
+	</div>
+	<?php AdminUIHelper::endAdminArea(true); ?>
 </form>
 
-<?php AdminUIHelper::endAdminArea(); ?>
 

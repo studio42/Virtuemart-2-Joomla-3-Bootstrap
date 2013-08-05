@@ -23,9 +23,6 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_ORDERSTATUS_DETAILS');
 ?>
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-
-
-    <div class="col50">
 	<fieldset>
 	    <legend><?php echo JText::_('COM_VIRTUEMART_ORDERSTATUS_DETAILS'); ?></legend>
 	    <?php
@@ -53,8 +50,6 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_ORDERSTATUS_DETAILS');
 
 	    </table>
 	</fieldset>
-    </div>
-
     <input type="hidden" name="virtuemart_orderstate_id" value="<?php echo $this->orderStatus->virtuemart_orderstate_id; ?>" />
     <?php echo $this->addStandardHiddenToForm(); ?>
 </form>

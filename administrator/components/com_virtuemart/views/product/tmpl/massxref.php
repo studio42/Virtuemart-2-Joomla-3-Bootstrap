@@ -15,11 +15,16 @@
 * other free or open source software licenses.
 * @version $Id: product.php 3304 2011-05-20 06:57:27Z alatak $
 */
-
+// reset the layout to default and change path
+$this->setLayout('default');
 if($this->task=='massxref_cats' or $this->task=='massxref_cats_exe'){
-	include(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'category'.DS.'tmpl'.DS.'default.php');
+	$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'category'.DS.'tmpl');
+	echo $this->loadTemplate();
+	// $this->include(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'category'.DS.'tmpl'.DS.'default.php');
 }
 
 if($this->task=='massxref_sgrps' or $this->task=='massxref_sgrps_exe'){
-	include(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'shoppergroup'.DS.'tmpl'.DS.'default.php');
+	$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'shoppergroup'.DS.'tmpl');
+	echo $this->loadTemplate();
+	// include(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'shoppergroup'.DS.'tmpl'.DS.'default.php');
 }

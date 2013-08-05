@@ -47,7 +47,7 @@ AdminUIHelper::startAdminArea();
 			</td>
 			<td><fieldset class="radio">
 
-				<?php echo JHTML::_('select.booleanlist',  'published', 'class="inputbox"', $this->state->published); ?>
+				<?php echo VmHTML::booleanlist('published', $this->state->published); ?>
 
 			</fieldset></td>
 		</tr>

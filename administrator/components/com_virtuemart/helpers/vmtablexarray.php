@@ -85,7 +85,7 @@ class VmTableXarray extends VmTable {
 			;
 			$this->_db->setQuery( $query );
 
-			if (!$this->_db->query())
+			if (!$this->_db->execute())
 			{
 				$err = $this->_db->getErrorMsg();
 				JError::raiseError( 500, get_class( $this ).':: move '. $err );
@@ -168,7 +168,6 @@ class VmTableXarray extends VmTable {
 
     	$returnCode = true;
 		$this->setLoggableFieldsForStore();
-		$db = JFactory::getDBO();
 
         $pkey = $this->_pkey;
         $skey = $this->_skey;
@@ -193,7 +192,6 @@ class VmTableXarray extends VmTable {
 	            if(!is_array($this->_svalue)) $this->_svalue = array($this->_svalue);
 	            foreach($this->_svalue as $value) $newArray[] = array($pkey=>$this->_pvalue, $skey=>$value);
 		}
-
         // Inserts and Updates
         if(count($newArray)>0){
             $myOrdering = 1;
@@ -228,7 +226,7 @@ class VmTableXarray extends VmTable {
             $q  = 'DELETE FROM `'.$this->_tbl.'` WHERE `' . $pkey.'` = "'. $this->_pvalue .'" ';
             $this->_db->setQuery($q);
 
-            if(!$this->_db->query()){
+            if(!$this->_db->execute()){
                 $returnCode = false;
                 vmError(get_class( $this ).':: store '.$this->_db->getErrorMsg());
             }
@@ -245,7 +243,7 @@ class VmTableXarray extends VmTable {
                     // If the old row does not exist in the new rows, we will delete it
                     $q  = 'DELETE FROM `'.$this->_tbl.'` WHERE `' . $tblkey.'` = "'. $objList[$i]->$tblkey .'" ';
                     $this->_db->setQuery($q);
-                    if(!$this->_db->Query()){
+                    if(!$this->_db->execute()){
                         $returnCode = false;
                         vmError(get_class( $this ).':: store'.$this->_db->getErrorMsg());
                     }
@@ -285,7 +283,7 @@ class VmTableXarray extends VmTable {
     function deleteRelation(){
     	$q  = 'DELETE FROM `'.$this->_tbl.'` WHERE `'.$this->_pkey.'` = "'. $this->_pvalue.'" ';
     	$this->_db->setQuery($q);
-    	if(!$this->_db->Query()){
+    	if(!$this->_db->execute()){
     		vmError(get_class( $this ).':: store'.$this->_db->getErrorMsg(),'Couldnt delete relations');
     		return false;
     	}

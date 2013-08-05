@@ -19,100 +19,76 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 ?>
+<div class="well well-small">
+	<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_STATISTIC_STATISTICS') ?></div>
+	<div class="row-striped">
+		<div class="row-fluid">
+			<span class="badge <?php echo $this->nbrCustomers ? 'badge-info' : 'badge-warning' ?>"> <?php echo $this->nbrCustomers ?></span>
+			<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=user');?>">
+				<?php echo JText::_('COM_VIRTUEMART_STATISTIC_CUSTOMERS') ?>
+			</a>
+		</div>
+		<div class="row-fluid">
+			<span class="badge <?php echo $this->nbrActiveProducts ? 'badge-info' : 'badge-warning' ?>"> <?php echo $this->nbrActiveProducts ?></span>
+			<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=product&filter_order_Dir=DESC&filter_order=published');?>">
+				<?php echo JText::_('COM_VIRTUEMART_STATISTIC_ACTIVE_PRODUCTS') ?>
+			</a>
+		</div>
+		<div class="row-fluid">
+			<span class="badge <?php echo $this->nbrInActiveProducts ? 'badge-warning' : '' ?>"><?php  echo $this->nbrInActiveProducts ?></span>
+			<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=product&filter_order_Dir=ASC&filter_order=published');?>">
+			<?php echo JText::_('COM_VIRTUEMART_STATISTIC_INACTIVE_PRODUCTS') ?>
+			</a>
+		</div>
+		<div class="row-fluid">
+			<span class="badge <?php echo $this->nbrFeaturedProducts ? 'badge-success' : '' ?>"><?php echo $this->nbrFeaturedProducts ?></span>
+			<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=product&filter_order_Dir=DESC&filter_order=product_special');?>">
+				<?php echo JText::_('COM_VIRTUEMART_SHOW_FEATURED') ?>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="well well-small">
+	<div class="module-title nav-header">
+		<?php echo JText::_('COM_VIRTUEMART_ORDER_MOD') ?>
+	</div>
+	<div class="row-striped">
 
-<table class="adminlist" cellspacing="0" cellpadding="0">
-		<tr>
-			<th colspan="2" class="title"><?php echo JText::_('COM_VIRTUEMART_STATISTIC_STATISTICS') ?></th>
-		</tr>
-		<tr>
-		  	<td width="50%">
-		  		<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=user');?>">
-					<?php echo JText::_('COM_VIRTUEMART_STATISTIC_CUSTOMERS') ?>
-				</a>
-			</td>
-		  	<td width="50%"> <?php echo $this->nbrCustomers ?></td>
-		</tr>
-		<tr>
-		  	<td width="50%">
-		  		<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=product');?>">
-					<?php echo JText::_('COM_VIRTUEMART_STATISTIC_ACTIVE_PRODUCTS') ?>
-				</a>
-			</td>
-		  <td width="50%"> <?php echo $this->nbrActiveProducts ?> </td>
-		</tr>
-		<tr>
-		  <td width="50%"><?php echo JText::_('COM_VIRTUEMART_STATISTIC_INACTIVE_PRODUCTS') ?>:</td>
-		  <td width="50%"> <?php  echo $this->nbrInActiveProducts ?></td>
-		</tr>
-		<tr>
-			<td width="50%">
-		  		<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=product&group=featured');?>">
-					<?php echo JText::_('COM_VIRTUEMART_SHOW_FEATURED') ?>
-				</a>
-			</td>
-		  <td width="50%"><?php echo $this->nbrFeaturedProducts ?></td>
-		</tr>
-		<tr>
-			<th colspan="2" class="title">
-		  		<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=orders');?>">
-					<?php echo JText::_('COM_VIRTUEMART_ORDER_MOD') ?>
-				</a>
-			</th>
-		</tr>
-		<?php
-		$sum = 0;
-		for ($i=0, $n=count( $this->ordersByStatus ); $i < $n; $i++) {
-			$row = $this->ordersByStatus[$i];
-			$link = JROUTE::_('index.php?option=com_virtuemart&view=orders&show='.$row->order_status_code);
-			?>
-			<tr>
-		  		<td width="50%">
-		  			<a href="<?php echo $link; ?>"><?php echo $row->order_status_name; ?></a>
-				</td>
-		  		<td width="50%">
-		  			<?php echo $row->order_count; ?>
-		  		</td>
-			</tr>
-		<?php
-			$sum = $sum + $row->order_count;
-		} ?>
-		<tr>
-		  <td width="50%"><strong><?php echo JText::_('COM_VIRTUEMART_STATISTIC_SUM') ?>:</strong></td>
-		  <td width="50%"><strong><?php echo $sum ?></strong></td>
-		</tr>
-		<tr>
-			<th colspan="2" class="title"><?php echo JText::_('COM_VIRTUEMART_STATISTIC_NEW_ORDERS') ?></th>
-		</tr>
-		<?php
-		for ($i=0, $n=count($this->recentOrders); $i < $n; $i++) {
-			$row = $this->recentOrders[$i];
-			$link = JROUTE::_('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$row->virtuemart_order_id);
-			?>
-		  	<tr>
-				<td width="50%">
-					<a href="<?php echo $link; ?>"><?php echo $row->order_number; ?></a>
-			  	</td>
-				<td width="50%">
-					<?php echo $row->order_total ?>
-				</td>
-			</tr>
-			<?php
-		} ?>
-		<tr>
-		  <th colspan="2" class="title"><?php echo JText::_('COM_VIRTUEMART_STATISTIC_NEW_CUSTOMERS') ?></th>
-		</tr>
+	<?php
+	$sum = 0;
+	// var_dump($this->ordersByStatus);
+	foreach ( $this->ordersByStatus as $row ) {
+		$link = JROUTE::_('index.php?option=com_virtuemart&view=orders&show='.$row->code);
+		?>
+		<div class="row-fluid">
+			<span class="badge <?php echo $row->order_count ? 'badge-info' : '' ?>"><?php echo $row->order_count; ?></span>
+			<a href="<?php echo $link; ?>"><?php echo jText::_($row->order_status_name) ; ?></a>
+		</div>
+	<?php
+		$sum = $sum + $row->order_count;
+	} ?>
+		<div class="row-fluid">
+			<span class="badge"><strong><?php echo $sum ?></strong></span>
+			<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=orders');?>">
+				<?php echo JText::_('JALL') ?>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="well well-small">
+	<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_STATISTIC_NEW_CUSTOMERS') ?></div>
+	<div class="row-striped">
 		<?php
 		for ($i=0, $n=count($this->recentCustomers); $i < $n; $i++) {
 			$row = $this->recentCustomers[$i];
 			$link = JROUTE::_('index.php?option=com_virtuemart&view=user&virtuemart_user_id='.$row->virtuemart_user_id);
 			?>
-			<tr>
-		  		<td colspan="2">
-		  			<a href="<?php echo $link; ?>">
+			<div class="row-fluid">
+	  			<a href="<?php echo $link; ?>">
 		  				<?php echo   $row->first_name . ' ' . $row->last_name. ' (' . $row->order_number . ') '; ?>
-		  			</a>
-		  		</td>
-			</tr>
+	  			</a>
+			</div>
 		<?php
 		}?>
-	</table>
+	</div>
+</div>

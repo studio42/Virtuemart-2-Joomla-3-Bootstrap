@@ -77,7 +77,7 @@ static function vmGetCharset() {
 			    $args[] = &$passedArgs[$k];
 			}
 		$lang =JFactory::getLanguage();
-		$label = $lang->hasKey($label.'_TIP') ? '<span class="hasTip" title="'.JText::_($label.'_TIP').'">'.JText::_($label).'</span>' : JText::_($label) ;
+		$label = $lang->hasKey($label.'_TIP') ? '<span class="hasTooltip" title="'.JText::_($label.'_TIP').'">'.JText::_($label).'</span>' : JText::_($label) ;
 		$html = '
 		<tr>
 			<td class="key">
@@ -111,13 +111,17 @@ static function vmGetCharset() {
     static function checkbox($name, $value, $checkedValue=1, $uncheckedValue=0, $extraAttribs = '', $id = null) {
 		if (!$id) $id=$name ;
 	if ($value == $checkedValue) {
+		$active = ' active';
 	    $checked = 'checked="checked"';
+		$state = "publish";
 	}
 	else {
+		$active = '';
+		$state = "unpublish";
 	    $checked = '';
 	}
 	$htmlcode = '<input type="hidden" name="' . $name . '" value="' . $uncheckedValue . '">';
-	$htmlcode .= '<input '.$extraAttribs.' id="' . $id . '" type="checkbox" name="' . $name . '" value="' . $checkedValue . '" ' . $checked . ' />';
+	$htmlcode .= '<label class="btn btn-toggle btn-small'.$active.'"><i class="icon-'.$state.'"></i><input '.$extraAttribs.' id="' . $id . '" type="checkbox" name="' . $name . '" value="' . $checkedValue . '" ' . $checked . ' /></label>';
 	return $htmlcode;
     }
 
@@ -136,8 +140,8 @@ static function vmGetCharset() {
 	 * @param string $extra More attributes when needed
 	 * @return string HTML drop-down list
 	 */
-	static function selectList($name, $value, $arrIn, $size=1, $multiple="", $extra="") {
-
+	static function selectList($name, $value, $arrIn, $size=1, $multiple="", $extra="",$class='') {
+		if ($class) $class = ' class="'.$class.'"';
 		$html = '';
 		if( empty( $arrIn ) ) {
 			$arr = array();
@@ -150,7 +154,7 @@ static function vmGetCharset() {
 		}
 
 
-		$html = '<select class="inputbox" id="'.$name.'" name="'.$name.'" size="'.$size.'" '.$multiple.' '.$extra.'>';
+		$html = '<select'.$class.' id="'.$name.'" name="'.$name.'" size="'.$size.'" '.$multiple.' '.$extra.'>';
 
 		while (list($key, $val) = each($arr)) {
 //		foreach ($arr as $key=>$val){
@@ -237,13 +241,15 @@ static function vmGetCharset() {
 	 * @param string $extra
 	 * @return string
 	 */
-	static function radioList($name, $value, &$arr, $extra="") {
+	static function radioList($name, $value, &$arr, $extra="", $classlbl ="") {
 		$html = '';
 		if( empty( $arr ) ) {
 			$arr = array();
 		}
 		$html = '';
 		$i = 0;
+		if ($extra) $extra='class="'.$extra.'"';
+		if ($classlbl) $classlbl='class="'.$classlbl.'"';
 		foreach($arr as $key => $val) {
 			$checked = '';
 			if( is_array( $value )) {
@@ -256,11 +262,15 @@ static function vmGetCharset() {
 					$checked = 'checked="checked"';
 				}
 			}
-			$html .= '<input type="radio" name="'.$name.'" id="'.$name.$i.'" value="'.htmlspecialchars($key, ENT_QUOTES).'" '.$checked.' '.$extra." />\n";
-			$html .= '<label for="'.$name.$i++.'">'.$val."</label><br />\n";
+			$input = '<input type="radio" name="'.$name.'" id="'.$name.$i.'" value="'.htmlspecialchars($key, ENT_QUOTES).'" '.$checked.' '.$extra." />\n";
+			$html .= '<label for="'.$name.$i++.'" '.$classlbl.'>'.$input.$val."</label>\n";
 		}
 
 		return $html;
+	}
+	// enchanced radio list grouped for bootstrap
+	static function radioListGroup($name, $value, &$arr) {
+		return '<fieldset class="radio btn-group">'.self::radioList($name, $value, &$arr, "", 'radio btn').'<fieldset>';
 	}
 
 	/**
@@ -283,7 +293,7 @@ static function vmGetCharset() {
 	 *
 	 */
 	public static function booleanlist (  $name, $value,$class='class="inputbox"'){
-		return '<fieldset class="radio">'.JHTML::_( 'select.booleanlist',  $name , $class , $value).'</fieldset>' ;
+		return '<fieldset class="radio btn-group">'.JHTML::_( 'select.booleanlist',  $name , $class , $value).'</fieldset>' ;
 	}
 		/**
 	 * Creating rows with input fields
@@ -294,7 +304,11 @@ static function vmGetCharset() {
 	 * @param string $value
 	 */
 	public static function input($name,$value,$class='class="inputbox"',$readonly='',$size='37',$maxlength='255',$more=''){
-		return '<input type="text" '.$readonly.' '.$class.' id="'.$name.'" name="'.$name.'" size="'.$size.'" maxlength="'.$maxlength.'" value="'.htmlspecialchars($value).'" />'.$more;
+		if (strpos($more,'add-on')) {
+			$before ='<div class="input-append">';
+			$more .='</div>';
+		} else $before = '';
+		return $before.'<input type="text" '.$readonly.' '.$class.' id="'.$name.'" name="'.$name.'" size="'.$size.'" maxlength="'.$maxlength.'" value="'.htmlspecialchars($value).'" />'.$more;
 	}
 
 	/**
@@ -375,6 +389,36 @@ static function vmGetCharset() {
 		$html ='id="validate'.$validateID.'" class="validate['.$validTxt.']"';
 
 		return $html ;
+	}
+	/**
+	 * @author Patrick Kohl
+	 * converted from Joomla 3.0 featured(bootstrap style)
+	 * @param   int $value	The state value
+	 * @param   int $i
+	 */
+	public static function featured($value = 0, $i, $canChange = true)
+	{
+		JHtml::_('bootstrap.tooltip');
+
+		// Array of image, task, title, action
+		$states	= array(
+			0	=> array('star-empty',	'toggle.product_special.1',	'COM_VIRTUEMART_DISABLED',	'COM_VIRTUEMART_ENABLE_ITEM'),
+			1	=> array('star',		'toggle.product_special.0',	'COM_VIRTUEMART_FEATURED',		'COM_VIRTUEMART_DISABLE_ITEM'),
+		);
+		$state	= JArrayHelper::getValue($states, (int) $value, $states[1]);
+		$icon	= $state[0];
+		if ($canChange)
+		{
+			$html	= '<a href="#" data-task="'.$state[1].'" onclick="return Joomla.featuredJson( this, \'cb'.$i.'\')" class="btn btn-micro hasTooltip' . ($value == 1 ? ' active' : '') . '" title="'.JText::_($state[3]).'"><i class="icon-'
+					. $icon.'"></i></a>';
+		}
+		else
+		{
+			$html	= '<a class="btn btn-micro hasTooltip disabled' . ($value == 1 ? ' active' : '') . '" title="'.JText::_($state[2]).'"><i class="icon-'
+					. $icon.'"></i></a>';
+		}
+
+		return $html;
 	}
 
 }

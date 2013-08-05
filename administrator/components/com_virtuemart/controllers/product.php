@@ -79,7 +79,7 @@ class VirtuemartControllerProduct extends VmController {
 		$data = JRequest::get('get');
 		JRequest::setVar($data['token'], '1', 'post');
 
-		JRequest::checkToken() or jexit( 'Invalid Token save' );
+		JSession::checkToken() or jexit( 'Invalid Token save' );
 		$model = VmModel::getModel($this->_cname);
 		$id = $model->store($data);
 
@@ -146,8 +146,8 @@ class VirtuemartControllerProduct extends VmController {
 	public function createVariant(){
 
 		$data = JRequest::get('get');
-		JRequest::setVar($data['token'], '1', 'post');
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		// JRequest::setVar($data['token'], '1', 'post');
+		JSession::checkToken() or JSession::checkToken('get') or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 
 		$app = Jfactory::getApplication();
 
@@ -164,6 +164,7 @@ class VirtuemartControllerProduct extends VmController {
 // 			$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$cid;
 		} else {
 			if ($id=$model->createChild($cid)){
+				$msgtype='message';
 				$msg = JText::_('COM_VIRTUEMART_PRODUCT_CHILD_CREATED_SUCCESSFULLY');
 				$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$cid;
 			} else {
@@ -184,6 +185,7 @@ class VirtuemartControllerProduct extends VmController {
 
 	public function massxref_sgrps_exe(){
 
+		$db = JFactory::getDbo();
 		$virtuemart_shoppergroup_ids = JRequest::getVar('virtuemart_shoppergroup_id',array(),'', 'ARRAY');
 		JArrayHelper::toInteger($virtuemart_shoppergroup_ids);
 
@@ -195,29 +197,52 @@ class VirtuemartControllerProduct extends VmController {
 			$data = array('virtuemart_product_id' => $cid, 'virtuemart_shoppergroup_id' => $virtuemart_shoppergroup_ids);
 			$data = $productModel->updateXrefAndChildTables ($data, 'product_shoppergroups');
 		}
-
-		$this->massxref('massxref_sgrps');
+		$q = 'SELECT `shopper_group_name` FROM `#__virtuemart_shoppergroups` ';
+		$q .= ' WHERE `virtuemart_shoppergroup_id` IN ('. implode(',', $virtuemart_shoppergroup_ids). ')';
+		$db->setQuery($q);
+		$names = $db->loadColumn();
+		if (jRequest::getWord('format') == "json") $this->setRedirect(null, implode(',', $names) );
+		// this is always done in json, no need to go in another task
 	}
 
 	public function massxref_cats(){
 		$this->massxref('massxref');
 	}
+	// mass add
+	public function massxref_cats_add(){
+		$this->massxref_cats_exe(true);
+	}
 
-	public function massxref_cats_exe(){
+	//mass add or replace
+	public function massxref_cats_exe($add=false){
 
+		$db = JFactory::getDbo();
 		$virtuemart_cat_ids = JRequest::getVar('cid',array(),'', 'ARRAY');
 		JArrayHelper::toInteger($virtuemart_cat_ids);
 
 		$session = JFactory::getSession();
 		$cids = unserialize($session->get('vm_product_ids', array(), 'vm'));
-
 		$productModel = VmModel::getModel('product');
 		foreach($cids as $cid){
-			$data = array('virtuemart_product_id' => $cid, 'virtuemart_category_id' => $virtuemart_cat_ids);
+			// get old categries
+			if ($add) {
+				$q = 'SELECT `virtuemart_category_id` FROM `#__virtuemart_product_categories` ';
+				$q .= ' WHERE `virtuemart_product_id` ='.(int)$cid;
+				$db->setQuery($q);
+				if (!$old_ids = $db->loadColumn()) $old_ids = array();
+				$cat_ids = array_merge( $old_ids, $virtuemart_cat_ids);
+				$cat_ids = array_unique($cat_ids, SORT_NUMERIC) ;
+			} else $cat_ids = $virtuemart_cat_ids ;
+			$data = array('virtuemart_product_id' => $cid, 'virtuemart_category_id' => $cat_ids );
 			$data = $productModel->updateXrefAndChildTables ($data, 'product_categories',TRUE);
 		}
-
-		$this->massxref('massxref_cats');
+		$q = 'SELECT `category_name` FROM `#__virtuemart_categories_' . VMLANG . '` ';
+		$q .= ' WHERE `virtuemart_category_id` IN ('. implode(',', $virtuemart_cat_ids). ')';
+		$db->setQuery($q);
+		if ($results = $db->loadColumn()) $msg = (string)$add.' '.implode(',', $results+$cat_ids);
+		else $msg = 'no results';
+		if (jRequest::getWord('format') == "json") $this->setRedirect(null, $msg );
+		// this is always done in json, no need to go in another task
 	}
 
 	/**
@@ -225,7 +250,7 @@ class VirtuemartControllerProduct extends VmController {
 	 */
 	public function massxref($layoutName){
 
-		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 
 		$cids = JRequest::getVar('virtuemart_product_id',array(),'', 'ARRAY');
 		JArrayHelper::toInteger($cids);
@@ -244,18 +269,10 @@ class VirtuemartControllerProduct extends VmController {
 			$db = JFactory::getDbo();
 			$db->setQuery($q);
 
-			$productNames = $db->loadResultArray();
-
+			$productNames = $db->loadColumn();
 			vmInfo('COM_VIRTUEMART_PRODUCT_XREF_NAMES',implode(', ',$productNames));
 		}
-
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
-		$document = JFactory::getDocument();
-		$viewType = $document->getType();
-		$view = $this->getView($this->_cname, $viewType);
-
-		$view->setLayout($layoutName);
-
+		
 		$this->display();
 	}
 

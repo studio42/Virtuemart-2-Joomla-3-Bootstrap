@@ -71,16 +71,11 @@ class VirtuemartControllerRatings extends VmController {
 
 	/**
 	 * lits the reviews
-	 * @author Max Milbers
+	 * @author Max Milbers,Patrick Kohl
 	 */
 	public function listreviews(){
 
-		/* Create the view object */
-		$view = $this->getView('ratings', 'html');
-
-		$view->setLayout('list_reviews');
-
-		$view->display();
+		$this->display();
 	}
 
 	/**
@@ -88,7 +83,7 @@ class VirtuemartControllerRatings extends VmController {
 	 */
 	function publish(){
 
-		JRequest::checkToken() or jexit( 'Invalid Token save' );
+		JSession::checkToken() or jexit( 'Invalid Token save' );
 		$layout = JRequest::getString('layout','default');
 
 		if($layout=='list_reviews'){
@@ -108,7 +103,7 @@ class VirtuemartControllerRatings extends VmController {
 
 	function unpublish(){
 
-		JRequest::checkToken() or jexit( 'Invalid Token save' );
+		JSession::checkToken() or jexit( 'Invalid Token save' );
 		$layout = JRequest::getString('layout','default');
 
 		if($layout=='list_reviews'){
@@ -148,7 +143,7 @@ class VirtuemartControllerRatings extends VmController {
 
 
 	function storeReview($apply){
-		JRequest::checkToken() or jexit( 'Invalid Token save' );
+		JSession::checkToken() or jexit( 'Invalid Token save' );
 
 		if (empty($data)){
 			$data = JRequest::get ('post');

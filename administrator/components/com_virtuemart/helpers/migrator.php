@@ -1251,8 +1251,8 @@ $maxItems = 5;
 			return $this->mediaIdFilename[$type][$filename];
 		} else {
 			$q = 'SELECT `virtuemart_media_id` FROM `#__virtuemart_medias`
-										WHERE `file_title`="' .  $this->_db->getEscaped($filename) . '"
-										AND `file_type`="' . $this->_db->getEscaped($type) . '"';
+										WHERE `file_title`='.$this->_db->quote ($filename) . '
+										AND `file_type`= ' . $this->_db->quote($type) ;
 			$this->_db->setQuery($q);
 			$virtuemart_media_id = $this->_db->loadResult();
 			if($this->_db->getErrors()){
@@ -1543,7 +1543,7 @@ $maxItems = 5;
 		$currInt = '';
 		if(!empty($curr)){
 			$this->_db = JFactory::getDBO();
-			$q = 'SELECT `virtuemart_currency_id` FROM `#__virtuemart_currencies` WHERE `currency_code_3`="' . $this->_db->getEscaped($curr) . '"';
+			$q = 'SELECT `virtuemart_currency_id` FROM `#__virtuemart_currencies` WHERE `currency_code_3`= ' . $this->_db->quote($curr) ;
 			$this->_db->setQuery($q);
 			$currInt = $this->_db->loadResult();
 			if(empty($currInt)){
@@ -1626,7 +1626,7 @@ $maxItems = 5;
 		}
 
 		$q = 'SELECT `virtuemart_country_id` FROM `#__virtuemart_countries`
-				WHERE `' . $countryCode . '` = "' . $this->_db->getEscaped($name) . '" ';
+				WHERE `' . $countryCode . '` = "' . $this->_db->escape($name) . '" ';
 		$this->_db->setQuery($q);
 
 		return $this->_db->loadResult();
@@ -1651,7 +1651,7 @@ $maxItems = 5;
 		}
 
 		$q = 'SELECT `virtuemart_state_id` FROM `#__virtuemart_states`
-				WHERE `' . $code . '` = "' . $this->_db->getEscaped($name) . '" ';
+				WHERE `' . $code . '` = "' . $this->_db->escape($name) . '" ';
 		$this->_db->setQuery($q);
 
 		return $this->_db->loadResult();
@@ -1669,7 +1669,7 @@ $maxItems = 5;
 		}
 
 		$q = 'SELECT `virtuemart_currency_id` FROM `#__virtuemart_currencies`
-					WHERE `' . $code . '` = "' . $this->_db->getEscaped($name) . '" ';
+					WHERE `' . $code . '` = ' . $this->_db->quote($name) ;
 		$this->_db->setQuery($q);
 
 		return $this->_db->loadResult();

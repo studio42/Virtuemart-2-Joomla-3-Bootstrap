@@ -112,7 +112,7 @@ class TableMedias extends VmTable {
 			}
 
 			if (empty($this->virtuemart_media_id)) {
-				$q = 'SELECT `virtuemart_media_id`,`file_url` FROM `' . $this->_tbl . '` WHERE `file_url` = "' . $this->_db->getEscaped ($this->file_url) . '" ';
+				$q = 'SELECT `virtuemart_media_id`,`file_url` FROM `' . $this->_tbl . '` WHERE `file_url` = ' . $this->_db->quote ($this->file_url);
 				$this->_db->setQuery ($q);
 				$unique_id = $this->_db->loadAssocList ();
 
@@ -152,7 +152,7 @@ class TableMedias extends VmTable {
 			}
 
 			$q = 'SELECT * FROM `' . $this->_tbl . '` ';
-			$q .= 'WHERE `file_title`="' . $this->_db->getEscaped ($this->file_title) . '" AND `file_type`="' . $this->_db->getEscaped ($this->file_type) . '"';
+			$q .= 'WHERE `file_title`= ' . $this->_db->quote($this->file_title) . ' AND `file_type`= ' . $this->_db->quote($this->file_type);
 			$this->_db->setQuery ($q);
 			$unique_id = $this->_db->loadAssocList ();
 

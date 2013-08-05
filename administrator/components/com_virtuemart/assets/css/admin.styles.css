@@ -1,6 +1,6 @@
 /* Bootstrap fix j3 TODO, better trick or add another class ?*/
 @media (min-width: 767px) {
-	th.autosize {
+th.autosize,td.autosize {
 		max-width: 120px;
 		width: auto;
 		overflow: hidden;
@@ -11,22 +11,36 @@
 		margin-left: 1%;
 	}
 	td.key{min-width:100px;}
-
+	.status-change .row-fluid{
+		width: 180px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 
 }
 
-
 /* .ui-autocomplete {position : absolute;} */
 @media (max-width: 767px) {
-	th.autosize {
+	th.autosize,td.autosize {
 		max-width: 45px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 }
+a.btn.btn-inverse i,a.btn.btn.btn-primary i {
+    color: #FFFFFF;
+}
 
-td.key{min-width:60px;vertical-align:top;}
+/* #j-main-container{overflow-x: auto;} Break the chosen select list*/
+.order .table{background-color:#fff}
+.order .chzn-container{width:100px}
+.modal form{margin:0}
+.vm2admin .row-fluid .j-sidebar-container{margin-left:0}
+#j-main-container.span12{margin-left:0}
+
+td.key{min-width:60px;vertical-align:top;width:auto;float:none}
 table.admintable td.span6{width:50%}
 .chzn-container{width:200px}
 .btn-toggle input[type="checkbox"]{
@@ -43,7 +57,13 @@ opacity: 0.2;
 #sidebar-toggle:hover{
 	opacity: 0.9;
 }
+#sidebar-toggle i {color:#fff}
 .price-container{border:1px solid #ccc;margin-bottom:5px;}
+.vm2admin .table-key tr td:first-child {
+   font-weight:bold;
+   text-align:right;
+   vertical-align:top;
+}
 /* jqeury ui autocomplete */
 
 .ui-widget {
@@ -330,7 +350,7 @@ div.threecols ul   {
    padding:0;
 }
 
-.hasTip:after{
+/* .hasTip:after{
 	font:12px/1.4 Arial,Georgia,sans-serif;
 	content: attr(title);
 	display:none;
@@ -356,7 +376,7 @@ div.threecols ul   {
 	box-shadow: 0px 0px 4px #000; /* Opera 10.5, IE 9.0 */
 	filter:  progid:DXImageTransform.Microsoft.dropshadow(OffX=0px, OffY=0px, Color='#000'); /* IE6,IE7 */
 	-ms-filter: "progid:DXImageTransform.Microsoft.dropshadow(OffX=0px, OffY=0px, Color='#000')"; /* IE8 */
-}
+} */
 .media-pagination span{padding:6px; margin-left: 2px;
 	border:solid 1px #075698;
 	-moz-border-radius:6px;

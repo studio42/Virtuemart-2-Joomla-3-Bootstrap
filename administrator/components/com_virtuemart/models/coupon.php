@@ -38,31 +38,12 @@ class VirtueMartModelCoupon extends VmModel {
 	function __construct() {
 		parent::__construct();
 		$this->setMainTable('coupons');
+		$this->_selectedOrdering = 'coupon_code';
+		$this->_selectedOrderingDir = 'DESC';
+		$this->addvalidOrderingFieldName(
+			array('coupon_code', 'percent_or_total', 'coupon_type', 'coupon_value', 'coupon_start_date', 'coupon_expiry_date', 'coupon_value_valid', 'published'));
+
 	}
-
-    /**
-     * Retrieve the detail record for the current $id if the data has not already been loaded.
-     *
-     * @author RickG
-     */
-	function getCoupon()
-	{
-		$db = JFactory::getDBO();
-
-  		if (empty($this->_data)) {
-   			$this->_data = $this->getTable('coupons');
-   			$this->_data->load((int)$this->_id);
-  		}
-
-  		if (!$this->_data) {
-   			$this->_data = new stdClass();
-   			$this->_id = 0;
-   			$this->_data = null;
-  		}
-
-  		return $this->_data;
-	}
-
 
 	/**
 	 * Bind the post data to the coupon table and save it
@@ -95,11 +76,16 @@ class VirtueMartModelCoupon extends VmModel {
      * @author RickG
 	 * @return object List of coupon objects
 	 */
-	function getCoupons() {
+	function getCoupons($search='') {
 
 		$whereString = '';
 // 		if (count($where) > 0) $whereString = ' WHERE '.implode(' AND ', $where) ;
-
+		
+		if($search){
+			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
+			//$keyword = $this->_db->Quote($filterCountry, false);
+			$whereString = ' WHERE `coupon_code` LIKE '.$search;
+		}
 		return $this->_data = $this->exeSortSearchListQuery(0,'*',' FROM `#__virtuemart_coupons`',$whereString,'',$this->_getOrdering());
 
 	}

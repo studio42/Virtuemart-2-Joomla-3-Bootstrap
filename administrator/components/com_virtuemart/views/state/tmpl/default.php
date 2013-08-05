@@ -17,86 +17,22 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
-
-AdminUIHelper::startAdminArea();
-
+defined('_JEXEC') or die();
 ?>
-
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-    <div id="editcell">
-    <div><?php echo JHTML::_('link','index.php?option=com_virtuemart&view=country&virtuemart_country_id='.$this->virtuemart_country_id,JText::sprintf('COM_VIRTUEMART_STATES_COUNTRY',$this->country_name)); ?></div>
-	<table class="adminlist" cellspacing="0" cellpadding="0">
-	    <thead>
-		<tr>
-		    <th width="10">
-			<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count( $this->states ); ?>);" />
-		    </th>
-		    <th>
-			<?php echo   JText::_('COM_VIRTUEMART_STATE_NAME'); ?>
-		    </th>
-		    <th>
-			<?php echo JText::_('COM_VIRTUEMART_ZONE_ASSIGN_CURRENT_LBL'); ?>
-		    </th>
-		    <th>
-			<?php echo JText::_('COM_VIRTUEMART_STATE_2_CODE'); ?>
-		    </th>
-		    <th>
-			<?php echo JText::_('COM_VIRTUEMART_STATE_3_CODE'); ?>
-		    </th>
-		    <th width="20">
-			<?php echo JText::_('COM_VIRTUEMART_PUBLISH'); ?>
-		    </th>
-		</tr>
-	    </thead>
-	    <?php
-	    $k = 0;
+	<?php AdminUIHelper::startAdminArea(); ?>
 
-	    for ($i=0, $n=count( $this->states ); $i < $n; $i++) {
-		$row = $this->states[$i];
+    <div><?php echo JHTML::_('link','index.php?option=com_virtuemart&view=country&task=edit&cid[]='.$this->virtuemart_country_id,JText::sprintf('COM_VIRTUEMART_STATES_COUNTRY',$this->country_name)); ?></div>
+	<div class="btn-toolbar" id="filter-bar">
+		<?php echo $this->displayDefaultViewSearch() ?>
+	</div>
+	<div class="clearfix"> </div>
+	<div id="results">
+		<?php 
+		// split to use ajax search
+		echo $this->loadTemplate('results'); ?>
+	</div>
 
-		$checked = JHTML::_('grid.id', $i, $row->virtuemart_state_id,null,'virtuemart_state_id');
-		$published = JHTML::_('grid.published', $row, $i);
-		$editlink = JROUTE::_('index.php?option=com_virtuemart&view=state&task=edit&virtuemart_state_id=' . $row->virtuemart_state_id);
-
-		?>
-	    <tr class="row<?php echo $k ; ?>">
-		<td width="10">
-			<?php echo $checked; ?>
-		</td>
-		<td align="left">
-		    <a href="<?php echo $editlink; ?>"><?php echo $row->state_name; ?></a>
-		</td>
-		<td align="left">
-			<?php echo $row->virtuemart_worldzone_id; ?>
-		</td>
-		<td>
-			<?php echo $row->state_2_code; ?>
-		</td>
-		<td>
-			<?php echo $row->state_3_code; ?>
-		</td>
-		<td>
-			<?php echo $published; ?>
-		</td>
-	    </tr>
-		<?php
-		$k = 1 - $k;
-	    }
-	    ?>
-	    <tfoot>
-		<tr>
-		    <td colspan="10">
-			<?php echo $this->pagination->getListFooter(); ?>
-		    </td>
-		</tr>
-	    </tfoot>
-	</table>
-    </div>
-    <input type="hidden" name="virtuemart_country_id" value="<?php echo $this->virtuemart_country_id; ?>" />
-	<?php echo $this->addStandardHiddenToForm(); ?>
+	<?php AdminUIHelper::endAdminArea(true); ?>
 </form>
 
-
-
-<?php AdminUIHelper::endAdminArea(); ?>

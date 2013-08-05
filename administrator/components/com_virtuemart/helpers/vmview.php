@@ -12,6 +12,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
+ * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  * See /administrator/components/com_virtuemart/COPYRIGHT.php for copyright notices and details.
@@ -19,12 +20,19 @@
  * http://virtuemart.net
  */
 // Load the view framework
-jimport( 'joomla.application.component.view');
+jimport( 'joomla.application.component.viewlegacy');
+
+
 // Load default helpers
 if (!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
 if (!class_exists('AdminUIHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'adminui.php');
-if (!class_exists('JToolBarHelper')) require(JPATH_ADMINISTRATOR.DS.'includes'.DS.'toolbar.php');
-class VmView extends JView{
+if (!class_exists('JToolBarHelper')) {
+	// jimport( 'joomla.html.toolbar');
+	require(JPATH_VM_ADMINISTRATOR.'/helpers/front/button.php');
+	require(JPATH_VM_ADMINISTRATOR.'/helpers/front/toolbar.php');
+	require(JPATH_VM_ADMINISTRATOR.'/helpers/front/toolbarhelper.php');
+}
+class VmView extends JViewLegacy{
 
 	/**
 	 * Sets automatically the shortcut for the language and the redirect path
@@ -35,20 +43,26 @@ class VmView extends JView{
 		// parent::construct();
 	// }
 	var $lists = array();
-
-
+	function __construct() {
+		parent::__construct();
+	// var_dump($this);
+		//Template path and helper fix for Front-end editing
+		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.$this->_name.DS.'tmpl');
+		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
+	}
 	/*
 	 * set all commands and options for BE default.php views
 	* return $list filter_order and
 	*/
 	function addStandardDefaultViewCommands($showNew=true, $showDelete=true) {
 
-		JToolBarHelper::divider();
+
 		JToolBarHelper::publishList();
 		JToolBarHelper::unpublishList();
-		JToolBarHelper::editListX();
+		JToolBarHelper::divider();
+		JToolBarHelper::editList();
 		if ($showNew) {
-			JToolBarHelper::addNewX();
+			JToolBarHelper::addNew();
 		}
 		if ($showDelete) {
 			JToolBarHelper::deleteList();
@@ -71,16 +85,13 @@ class VmView extends JView{
 		$view = JRequest::getCmd('view', JRequest::getCmd('controller','virtuemart'));
 
 		$app = JFactory::getApplication();
-		$lists[$name] = $app->getUserStateFromRequest($option . '.' . $view . '.'.$name, $name, '', 'string');
-
-		$lists['filter_order'] = $this->getValidFilterOrder($app,$model,$view,$default_order);
+		$this->lists[$name] = $app->getUserStateFromRequest($option . '.' . $view . '.'.$name, $name, '', 'string');
+		$this->lists['filter_order'] = $this->getValidFilterOrder($app,$model,$view,$default_order);
 
 // 		if($default_dir===0){
 			$toTest = $app->getUserStateFromRequest( 'com_virtuemart.'.$view.'.filter_order_Dir', 'filter_order_Dir', $default_dir, 'cmd' );
 
-		$lists['filter_order_Dir'] = $model->checkFilterDir($toTest);
-
-		$this->assignRef('lists', $lists);
+		$this->lists['filter_order_Dir'] = $model->checkFilterDir($toTest);
 
 	}
 
@@ -104,59 +115,43 @@ class VmView extends JView{
 	* ??JText::_('COM_VIRTUEMART_NAME')
 	*/
 
-	function displayDefaultViewSearch($searchLabel='COM_VIRTUEMART_NAME',$name ='search') {
-		return JText::_('COM_VIRTUEMART_FILTER') . ' ' . JText::_($searchLabel) . ':
-		<input type="text" name="' . $name . '" id="' . $name . '" value="' .$this->lists[$name] . '" class="text_area" />
-		<button onclick="this.form.submit();">' . JText::_('COM_VIRTUEMART_GO') . '</button>
-		<button onclick="document.getElementById(\'' . $name . '\').value=\'\';this.form.submit();">' . JText::_('COM_VIRTUEMART_RESET') . '</button>';
+	function displayDefaultViewSearch($searchLabel='COM_VIRTUEMART_NAME',$name ='search',$id='search') {
+		return '<div class="filter-search btn-group pull-left">
+				<!--<label for="filter_search" class="element-invisible">'.JText::_($searchLabel).'</label>-->
+				<input type="text" name="' . $name . '" id="' . $id . '" placeholder="'.JText::_('COM_VIRTUEMART_FILTER') . ' ' . JText::_($searchLabel).'" value="'. $this->escape( $this->lists[$name] ).'" title="'.JText::_('COM_VIRTUEMART_FILTER') . ' '.JText::_($searchLabel).'" />
+			</div>
+			<div class="btn-group pull-left hidden-phone">
+				<button type="submit" id="searchsubmit" class="btn hasTooltip" title="'.JText::_('JSEARCH_FILTER_SUBMIT').'"><i class="icon-search"></i></button>
+				<button type="button" id="searchreset" class="btn hasTooltip" title="'.JText::_('JSEARCH_FILTER_CLEAR').'" onclick=\'document.id("' . $id . '").value="";this.form.submit();\'><i class="icon-remove"></i></button>
+			</div>';
 	}
 
 	function addStandardEditViewCommands($id = 0,$object = null) {
-		if (JRequest::getCmd('tmpl') =='component' ) {
-			if (!class_exists('JToolBarHelper')) require(JPATH_ADMINISTRATOR.DS.'includes'.DS.'toolbar.php');
-		} else {
+		// if (JRequest::getCmd('tmpl') =='component' ) {
+			// if (!class_exists('JToolBarHelper')) require(JPATH_ADMINISTRATOR.DS.'includes'.DS.'toolbarhelper.php');
+		// } else {
 // 		JRequest::setVar('hidemainmenu', true);
 		JToolBarHelper::divider();
 		JToolBarHelper::save();
 		JToolBarHelper::apply();
 		JToolBarHelper::cancel();
-		}
+		// }
 		// javascript for cookies setting in case of press "APPLY"
 		$document = JFactory::getDocument();
 
-		if (JVM_VERSION===1) {
-			$j = "
-//<![CDATA[
-	function submitbutton(pressbutton) {
-
-		jQuery( '#media-dialog' ).remove();
-		var options = { path: '/', expires: 2}
-		if (pressbutton == 'apply') {
-			var idx = jQuery('#tabs li.current').index();
-			jQuery.cookie('vmapply', idx, options);
-		} else {
-			jQuery.cookie('vmapply', '0', options);
-		}
-		 submitform(pressbutton);
-	};
-//]]>
-	" ;
-		}
-		else $j = "
-//<![CDATA[
-	Joomla.submitbutton=function(a){
-		var options = { path: '/', expires: 2}
-		if (a == 'apply') {
-			var idx = jQuery('#tabs li.current').index();
-			jQuery.cookie('vmapply', idx, options);
-		} else {
-			jQuery.cookie('vmapply', '0', options);
-		}
-		jQuery( '#media-dialog' ).remove();
-		Joomla.submitform(a);
-	};
-//]]>
-	" ;
+		$j = "
+			Joomla.submitbutton=function(a){
+				var options = { path: '/', expires: 2}
+				if (a == 'apply') {
+					var idx = jQuery('#tabs li.current').index();
+					jQuery.cookie('vmapply', idx, options);
+				} else {
+					jQuery.cookie('vmapply', '0', options);
+				}
+				jQuery( '#media-dialog' ).remove();
+				Joomla.submitform(a);
+			};
+		" ;
 		$document->addScriptDeclaration ( $j);
 
 		// LANGUAGE setting
@@ -164,7 +159,7 @@ class VmView extends JView{
 		$editView = JRequest::getWord('view',JRequest::getWord('controller','' ) );
 
 		$params = JComponentHelper::getParams('com_languages');
-		//$config =JFactory::getConfig();$config->getValue('language');
+		//$config =JFactory::getConfig();$config->get('language');
 		$selectedLangue = $params->get('site', 'en-GB');
 
 		$lang = strtolower(strtr($selectedLangue,'-','_'));
@@ -187,7 +182,7 @@ class VmView extends JView{
 
 
 
-			$token = JUtility::getToken();
+			$token = JSession::getFormToken();
 			$j = '
 			jQuery(function($) {
 				var oldflag = "";
@@ -253,11 +248,10 @@ class VmView extends JView{
 			$msg = ' <span style="color: #666666; font-size: large;">' . $msg . '</span>';
 		}
 		//$text = strtoupper('COM_VIRTUEMART_'.$name );
-		$viewText = JText::_('COM_VIRTUEMART_' . $name);
-		if (!$task = JRequest::getWord('task'))
-		$task = 'list';
-
-		$taskName = ' <small><small>[ ' . JText::_('COM_VIRTUEMART_' . $task) . ' ]</small></small>';
+		$viewText = JText::_('COM_VIRTUEMART').' '.ShopFunctions::altText($name);
+		if (!$task = JRequest::getWord('task')) $task = 'list';
+		$taskName = ShopFunctions::altText($task);
+		$taskName = ' <small><small>[ ' . $taskName . ' ]</small></small>';
 		JToolBarHelper::title($viewText . ' ' . $taskName . $msg, 'head vm_' . $view . '_48');
 		$document = JFactory::getDocument();
 		$title = $document->getTitle();
@@ -271,12 +265,15 @@ class VmView extends JView{
 	}
 
 	public function addStandardHiddenToForm($controller=null, $task=''){
-		if (!$controller)	$controller = JRequest::getCmd('view');
+		if (!$controller)	$controller = $this->_name;
 		$option = JRequest::getCmd('option','com_virtuemart' );
 		$hidden ='';
 		if (array_key_exists('filter_order',$this->lists)) $hidden ='
 			<input type="hidden" name="filter_order" value="'.$this->lists['filter_order'].'" />
 			<input type="hidden" name="filter_order_Dir" value="'.$this->lists['filter_order_Dir'].'" />';
+		// fix for front-end editing.
+		if (JRequest::getCmd('tmpl') =='component' ) 
+			 $hidden.='<input type="hidden" name="tmpl" value="component" />';
 		return  $hidden.'
 		<input type="hidden" name="task" value="'.$task.'" />
 		<input type="hidden" name="option" value="'.$option.'" />
@@ -293,16 +290,16 @@ class VmView extends JView{
 		$document->addStyleSheet('administrator/templates/system/css/system.css');
 		//now we add the necessary stylesheets from the administrator template
 		//in this case i make reference to the bluestork default administrator template in joomla 1.6
-		$document->addCustomTag(
-			'<link href="administrator/templates/bluestork/css/template.css" rel="stylesheet" type="text/css" />'."\n\n".
-			'<!--[if IE 7]>'."\n".
-			'<link href="administrator/templates/bluestork/css/ie7.css" rel="stylesheet" type="text/css" />'."\n".
-			'<![endif]-->'."\n".
-			'<!--[if gte IE 8]>'."\n\n".
-			'<link href="administrator/templates/bluestork/css/ie8.css" rel="stylesheet" type="text/css" />'."\n".
-			'<![endif]-->'."\n".
-			'<link rel="stylesheet" href="administrator/templates/bluestork/css/rounded.css" type="text/css" />'."\n"
-			);
+		// $document->addCustomTag(
+			// '<link href="administrator/templates/bluestork/css/template.css" rel="stylesheet" type="text/css" />'."\n\n".
+			// '<!--[if IE 7]>'."\n".
+			// '<link href="administrator/templates/bluestork/css/ie7.css" rel="stylesheet" type="text/css" />'."\n".
+			// '<![endif]-->'."\n".
+			// '<!--[if gte IE 8]>'."\n\n".
+			// '<link href="administrator/templates/bluestork/css/ie8.css" rel="stylesheet" type="text/css" />'."\n".
+			// '<![endif]-->'."\n".
+			// '<link rel="stylesheet" href="administrator/templates/bluestork/css/rounded.css" type="text/css" />'."\n"
+			// );
 		//load the JToolBar library and create a toolbar
 		jimport('joomla.html.toolbar');
 		JToolBarHelper::divider();
@@ -323,29 +320,37 @@ class VmView extends JView{
 	 *
 	 * @return string HTML code to write the toggle button
 	 */
-	function toggle( $field, $i, $toggle, $imgY = 'tick.png', $imgX = 'publish_x.png', $prefix='' )
+	function toggle( $field, $i, $toggle, $cando= true, $imgY = 'tick.png', $imgX = 'publish_x.png', $prefix='' )
 	{
-
+		// $cando= true;
 		$img 	= $field ? $imgY : $imgX;
 		if ($toggle == 'published') {
 			// Stay compatible with grid.published
 			$task 	= $field ? 'unpublish' : 'publish';
+			$ico = $field ? 'publish' : 'unpublish';
 			$alt 	= $field ? JText::_('COM_VIRTUEMART_PUBLISHED') : JText::_('COM_VIRTUEMART_UNPUBLISHED');
 			$action = $field ? JText::_('COM_VIRTUEMART_UNPUBLISH_ITEM') : JText::_('COM_VIRTUEMART_PUBLISH_ITEM');
 		} else {
 			$task 	= $field ? $toggle.'.0' : $toggle.'.1';
+			$ico = $field ? 'ok' : 'remove';
 			$alt 	= $field ? JText::_('COM_VIRTUEMART_PUBLISHED') : JText::_('COM_VIRTUEMART_DISABLED');
 			$action = $field ? JText::_('COM_VIRTUEMART_DISABLE_ITEM') : JText::_('COM_VIRTUEMART_ENABLE_ITEM');
 		}
+		if ($cando) {
+			return ('<a class="hasTooltip" data-task="'. $task .'" href="#" onclick="return Joomla.taskJson(this, \'cb'. $i .'\')" title="'. $action .'">'
+				.'<i class="icon-'.$ico.'"></i></a>');
+				// .JHTML::_('image', 'admin/' .$img, $alt, null, true) .'</a>');
+		} else return JHTML::_('image', 'admin/' .$img, $alt, 'style="opacity: 0.6;"', true) ;
 
-		if (JVM_VERSION>1) {
-			return ('<a href="javascript:void(0);" onclick="return listItemTask(\'cb'. $i .'\',\''. $task .'\')" title="'. $action .'">'
-				.JHTML::_('image', 'admin/' .$img, $alt, null, true) .'</a>');
-		} else {
-			return ('<a href="javascript:void(0);" onclick="return listItemTask(\'cb'. $i .'\',\''. $task .'\')" title="'. $action .'">'
-				.'<img src="images/'. $img .'" border="0" alt="'. $alt .'" /></a>');
-		}
-
+	}
+	
+	// readd missing javascripts in new results
+	// this must laways be after the RAW container
+	// PLZ only add this in "RAW" list views result
+	// @string  scripts  javascript to add after the results
+	function AjaxScripts($scripts='') {
+		// add ajax results script file
+		include('ajax/results.raw.php');
 	}
 
 }

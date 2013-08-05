@@ -37,16 +37,13 @@ defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
 $document->addScriptDeclaration($js);
 ?>
-<br />
-<table>
-    <tr><td valign="top">
-
-	    <fieldset>
+<div class="span6">
+	<fieldset >
 		<legend><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_CONFIGURATION') ?></legend>
-		<table class="admintable">
+		<table>
 		    <tr>
 			<td class="key">
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_SHOW_TAX_TIP'); ?>">
+			    <span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_SHOW_TAX_TIP'); ?>">
 			    <label for="show_tax"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_SHOW_TAX'); ?>
 			    </span>
 			</td>
@@ -56,8 +53,8 @@ $document->addScriptDeclaration($js);
 		    </tr>
 		   <tr>
             <td class="key">
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_ASKPRICE_TIP'); ?>">
-			    <label for="show_tax"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_ASKPRICE'); ?>
+			    <span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_ASKPRICE_TIP'); ?>">
+			    <label for="askprice"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_ASKPRICE'); ?>
 			    </span>
             </td>
             <td>
@@ -66,8 +63,8 @@ $document->addScriptDeclaration($js);
         </tr>
             <tr>
                 <td class="key">
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_RAPPENRUNDUNG_TIP'); ?>">
-			    <label for="show_tax"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_RAPPENRUNDUNG'); ?>
+			    <span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_RAPPENRUNDUNG_TIP'); ?>">
+			    <label for="rappenrundung"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_RAPPENRUNDUNG'); ?>
 			    </span>
                 </td>
                 <td>
@@ -76,8 +73,8 @@ $document->addScriptDeclaration($js);
             </tr>
             <tr>
                 <td class="key">
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_ROUNDINDIG_TIP'); ?>">
-			    <label for="show_tax"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_ROUNDINDIG'); ?>
+			    <span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_ROUNDINDIG_TIP'); ?>">
+			    <label for="roundindig"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_ROUNDINDIG'); ?>
 			    </span>
                 </td>
                 <td>
@@ -86,8 +83,8 @@ $document->addScriptDeclaration($js);
             </tr>
             <tr>
                 <td class="key">
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_CVARSWT_TIP'); ?>">
-			    <label for="show_tax"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_CVARSWT'); ?>
+			    <span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_CVARSWT_TIP'); ?>">
+			    <label for="cVarswT"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICE_CVARSWT'); ?>
 			    </span>
                 </td>
                 <td>
@@ -95,25 +92,24 @@ $document->addScriptDeclaration($js);
                 </td>
             </tr>
 		</table>
-	    </fieldset>
-
-	</td><td valign="top">
-
-	    <fieldset>
+	</fieldset>
+</div>
+<div class="span6">
+	<fieldset>
 		<legend><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICES') ?></legend>
-		<table class="admintable">
+		<table>
 			<tr>
-			<td class="key">
-			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SHOW_PRICES_EXPLAIN'); ?>">
+			<td class="key span6">
+			    <span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SHOW_PRICES_EXPLAIN'); ?>">
 			    <label for="show_prices"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SHOW_PRICES') ?></label>
 			    </span>
 			</td>
-			<td>
+			<td class="span6">
 			    <?php echo VmHTML::checkbox('show_prices', VmConfig::get('show_prices',1)); ?>
 			</td>
 			</tr>
-			</table>
-		    <table class="admintable" id="show_hide_prices">
+		</table>
+		<table id="show_hide_prices">
 			<tr>
 				<th></th>
 				<th><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICES_LABEL'); ?></th>
@@ -135,6 +131,5 @@ $document->addScriptDeclaration($js);
 			echo ShopFunctions::writePriceConfigLine($this->config,'unitPrice','COM_VIRTUEMART_ADMIN_CFG_PRICE_UNITPRICE');
 			?>
 		</table>
-	    </fieldset>
-	</td></tr>
-</table>
+	</fieldset>
+</div>

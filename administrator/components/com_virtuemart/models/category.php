@@ -238,7 +238,7 @@ class VirtueMartModelCategory extends VmModel {
 		}
 
 		if( !empty( $keyword ) ) {
-			$keyword = '"%' . $this->_db->getEscaped( $keyword, true ) . '%"' ;
+			$keyword = '"%' . $this->_db->escape( $keyword, true ) . '%"' ;
 			//$keyword = $this->_db->Quote($keyword, false);
 			$where[] = ' ( l.`category_name` LIKE '.$keyword.'
 							   OR l.`category_description` LIKE '.$keyword.') ';
@@ -493,7 +493,7 @@ class VirtueMartModelCategory extends VmModel {
 	 */
     public function store(&$data) {
 
-    	JRequest::checkToken() or jexit( 'Invalid Token, in store category');
+    	JSession::checkToken() or jexit( 'Invalid Token, in store category');
 
 		$table = $this->getTable('categories');
 
@@ -562,7 +562,7 @@ class VirtueMartModelCategory extends VmModel {
      */
     public function remove($cids) {
 
-    	JRequest::checkToken() or jexit( 'Invalid Token, in remove category');
+    	JSession::checkToken() or jexit( 'Invalid Token, in remove category');
 
 		$table = $this->getTable('categories');
 
@@ -810,7 +810,7 @@ class VirtueMartModelCategory extends VmModel {
 			$query .= " L.`virtuemart_category_id`=`#__virtuemart_category_categories`.`category_child_id` ";
 
 			if( !empty( $keyword ) ) {
-				$keyword = '"%' . $this->_db->getEscaped( $keyword, true ) . '%"' ;
+				$keyword = '"%' . $this->_db->escape( $keyword, true ) . '%"' ;
 				//$keyword = $this->_db->Quote($keyword, false);
 
 				$query .= 'AND ( `category_name` LIKE '.$keyword.'

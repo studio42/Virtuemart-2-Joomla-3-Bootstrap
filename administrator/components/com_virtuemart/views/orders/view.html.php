@@ -44,7 +44,7 @@ class VirtuemartViewOrders extends VmView {
 
 		$this->SetViewTitle( 'ORDER');
 
-		$orderModel = VmModel::getModel();
+		$model = VmModel::getModel();
 
 		$curTask = JRequest::getWord('task');
 		if ($curTask == 'edit') {
@@ -57,15 +57,13 @@ class VirtuemartViewOrders extends VmView {
 
 			// Get the data
 			$virtuemart_order_id = JRequest::getInt('virtuemart_order_id');
-			$order = $orderModel->getOrder($virtuemart_order_id);
+			$order = $model->getOrder($virtuemart_order_id);
 
-			$_orderID = $order['details']['BT']->virtuemart_order_id;
+			$this->orderID = $order['details']['BT']->virtuemart_order_id;
 			$orderbt = $order['details']['BT'];
 			$orderst = (array_key_exists('ST', $order['details'])) ? $order['details']['ST'] : $orderbt;
-			$orderbt ->invoiceNumber = $orderModel->getInvoiceNumber($orderbt->virtuemart_order_id);
-			$currency = CurrencyDisplay::getInstance('',$order['details']['BT']->virtuemart_vendor_id);
-
-			$this->assignRef('currency', $currency);
+			$orderbt ->invoiceNumber = $model->getInvoiceNumber($orderbt->virtuemart_order_id);
+			$this->currency = CurrencyDisplay::getInstance('',$order['details']['BT']->virtuemart_vendor_id);
 
 			$_userFields = $userFieldsModel->getUserFields(
 					 'account'
@@ -73,7 +71,7 @@ class VirtuemartViewOrders extends VmView {
 					, array('delimiter_userinfo','user_is_vendor' ,'username','password', 'password2', 'agreed', 'address_type') // Skips
 			);
 
-			$userfields = $userFieldsModel->getUserFieldsFilled(
+			$this->userfields = $userFieldsModel->getUserFieldsFilled(
 					 $_userFields
 					,$orderbt
 			);
@@ -84,7 +82,7 @@ class VirtuemartViewOrders extends VmView {
 					, array('delimiter_userinfo', 'username', 'email', 'password', 'password2', 'agreed', 'address_type') // Skips
 			);
 
-			$shipmentfields = $userFieldsModel->getUserFieldsFilled(
+			$this->shipmentfields = $userFieldsModel->getUserFieldsFilled(
 					 $_userFields
 					,$orderst
 			);
@@ -101,7 +99,7 @@ class VirtuemartViewOrders extends VmView {
 			$_itemStatusUpdateFields = array();
 			$_itemAttributesUpdateFields = array();
 			foreach($order['items'] as $_item) {
-				$_itemStatusUpdateFields[$_item->virtuemart_order_item_id] = JHTML::_('select.genericlist', $orderStates, "item_id[".$_item->virtuemart_order_item_id."][order_status]", 'class="selectItemStatusCode"', 'order_status_code', 'order_status_name', $_item->order_status, 'order_item_status'.$_item->virtuemart_order_item_id,true);
+				$_itemStatusUpdateFields[$_item->virtuemart_order_item_id] = JHTML::_('select.genericlist', $orderStates, "item_id[".$_item->virtuemart_order_item_id."][order_status]", 'class="selectItemStatusCode input-medium"', 'order_status_code', 'order_status_name', $_item->order_status, 'order_item_status'.$_item->virtuemart_order_item_id,true);
 
 			}
 
@@ -113,23 +111,18 @@ class VirtuemartViewOrders extends VmView {
 			}
 
 			/* Assign the data */
-			$this->assignRef('orderdetails', $order);
-			$this->assignRef('orderID', $_orderID);
-			$this->assignRef('userfields', $userfields);
-			$this->assignRef('shipmentfields', $shipmentfields);
-			$this->assignRef('orderstatuslist', $_orderStatusList);
-			$this->assignRef('itemstatusupdatefields', $_itemStatusUpdateFields);
-			$this->assignRef('itemattributesupdatefields', $_itemAttributesUpdateFields);
-			$this->assignRef('orderbt', $orderbt);
-			$this->assignRef('orderst', $orderst);
-			$this->assignRef('virtuemart_shipmentmethod_id', $orderbt->virtuemart_shipmentmethod_id);
+			$this->orderdetails = $order;
+			$this->orderstatuslist = $_orderStatusList;
+			$this->itemstatusupdatefields = $_itemStatusUpdateFields;
+			$this->itemattributesupdatefields = $_itemAttributesUpdateFields;
+			$this->orderbt = $orderbt;
+			$this->orderst = $orderst;
+			$this->virtuemart_shipmentmethod_id = $orderbt->virtuemart_shipmentmethod_id;
 
 			/* Data for the Edit Status form popup */
-			$_currentOrderStat = $order['details']['BT']->order_status;
+			$this->currentOrderStat = $order['details']['BT']->order_status;
 			// used to update all item status in one time
-			$_orderStatusSelect = JHTML::_('select.genericlist', $orderStates, 'order_status', '', 'order_status_code', 'order_status_name', $_currentOrderStat, 'order_items_status',true);
-			$this->assignRef('orderStatSelect', $_orderStatusSelect);
-			$this->assignRef('currentOrderStat', $_currentOrderStat);
+			$this->orderStatusSelect = JHTML::_('select.genericlist', $orderStates, 'order_status', '', 'order_status_code', 'order_status_name', $this->currentOrderStat, 'order_items_status',true);
 
 			/* Toolbar */
 			JToolBarHelper::custom( 'prev', 'back','','COM_VIRTUEMART_ITEM_PREVIOUS',false);
@@ -140,26 +133,19 @@ class VirtuemartViewOrders extends VmView {
 		else if ($curTask == 'editOrderItem') {
 			$this->loadHelper('calculationHelper');
 
-			$this->assignRef('orderstatuses', $orderStates);
+			$this->orderstatuses = $orderStates;
+			$this->virtuemart_order_id = JRequest::getString('orderId', '');
+			$this->virtuemart_order_item_id = JRequest::getVar('orderLineId', '');
 
-			$model = VmModel::getModel();
-			$orderId = JRequest::getString('orderId', '');
-			$orderLineItem = JRequest::getVar('orderLineId', '');
-			$this->assignRef('virtuemart_order_id', $orderId);
-			$this->assignRef('virtuemart_order_item_id', $orderLineItem);
+			$this->orderItem = $model->getOrderLineDetails($this->virtuemart_order_id, $this->virtuemart_order_item_id);
 
-			$orderItem = $model->getOrderLineDetails($orderId, $orderLineItem);
-			$this->assignRef('orderitem', $orderItem);
 		}
 		else {
-			$this->setLayout('orders');
-
-			$model = VmModel::getModel();
 			$this->addStandardDefaultViewLists($model,'created_on');
 			$this->lists['state_list'] = $this->renderOrderstatesList();
 			$orderslist = $model->getOrdersList();
 
-			$this->assignRef('orderstatuses', $orderStates);
+			$this->orderstatuses = $orderStates;
 
 			if(!class_exists('CurrencyDisplay'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
 
@@ -198,13 +184,12 @@ class VirtuemartViewOrders extends VmView {
 			 /* Toolbar */
 			JToolBarHelper::save('updatestatus', JText::_('COM_VIRTUEMART_UPDATE_STATUS'));
 
-			JToolBarHelper::deleteListX();
+			JToolBarHelper::deleteList();
 
 			/* Assign the data */
-			$this->assignRef('orderslist', $orderslist);
+			$this->orderslist = $orderslist ;
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 		}
 
@@ -221,7 +206,7 @@ class VirtuemartViewOrders extends VmView {
 			$db = JFactory::getDBO();
 		$db->setQuery($query);
 		$list = $db->loadObjectList();
-		return VmHTML::select( 'order_status_code', $list,  $orderstates,'class="inputbox" onchange="this.form.submit();"');
+		return VmHTML::select( 'order_status_code', $list,  $orderstates,'class="inputbox" onchange="Joomla.ajaxSearch(this); return false;"');
     }
 
 }

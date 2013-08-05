@@ -21,7 +21,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the model framework
-if(!class_exists('JModel')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
+// j3 FIX if(!class_exists('JModelLegacy ')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
 
 /**
  * Model class for shop configuration
@@ -31,7 +31,7 @@ if(!class_exists('JModel')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'applicati
  * @author Max Milbers
  * @author RickG
  */
-class VirtueMartModelConfig extends JModel {
+class VirtueMartModelConfig extends JModelLegacy  {
 
 
 	/**
@@ -52,11 +52,7 @@ class VirtueMartModelConfig extends JModel {
 		//This method does not work, we get the Template of the backend
 		//$app = JFactory::getApplication('site');
 		//$tplpath = $app->getTemplate();vmdebug('template',$tplpath);
-		if (JVM_VERSION === 2) {
-			$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id` ="0" AND `home`="1" ';
-		} else {
-			$q = 'SELECT `template` FROM `#__templates_menu` WHERE `client_id` ="0" ';
-		}
+		$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id` ="0" AND `home`="1" ';
 
 		$db = JFactory::getDBO();
 		$db->setQuery($q);
@@ -244,7 +240,11 @@ class VirtueMartModelConfig extends JModel {
 
 			$text = JText::_('COM_VIRTUEMART_'.strtoupper($fieldWithoutPrefix)) ;
 			if ($type == 'browse_orderby_fields' ) $searchFields->select[] =  JHTML::_('select.option', $field, $text) ;
-			$searchFields->checkbox .= '<li><input type="checkbox" id="' .$type.$fieldWithoutPrefix.$key. '" name="'.$type.'[]" value="' .$field. '" ' .$checked. ' /><label for="' .$type.$fieldWithoutPrefix.$key. '">' .$text. '</label></li>';
+			$searchFields->checkbox .= '<li><label class="btn-block btn btn-toggle'.($checked ? ' active' : '').'">
+					<i class="icon-'.($checked ? 'publish' : 'unpublish').'"></i> ' .$text. '
+					<input id="' . $type.$fieldWithoutPrefix.$key . '" type="checkbox" name="'.$type.'[]" value="' .$field. '" ' . $checked . ' />
+				</label></li>';
+			// $searchFields->checkbox .= '<li><input type="checkbox" id="' .$type.$fieldWithoutPrefix.$key. '" name="'.$type.'[]" value="' .$field. '" ' .$checked. ' /><label for="' .$type.$fieldWithoutPrefix.$key. '">' .$text. '</label></li>';
 		}
 		$searchFields->checkbox .='</ul></div>';
 		return $searchFields;
@@ -258,7 +258,7 @@ class VirtueMartModelConfig extends JModel {
 	 */
 	function store(&$data) {
 
-		JRequest::checkToken() or jexit( 'Invalid Token, in store config');
+		JSession::checkToken() or jexit( 'Invalid Token, in store config');
 
 		//$data['active_languages'] = strtolower(strtr($data['active_languages'],'-','_'));
 		//ATM we want to ensure that only one config is used
@@ -326,7 +326,7 @@ class VirtueMartModelConfig extends JModel {
 		}
 
 
-		$confData['config'] = $config->toString();
+		$confData['config'] = $config->toJson();
 		// 		vmdebug('config to store',$confData);
 		$confTable = $this->getTable('configs');
 		if (!$confTable->bindChecknStore($confData)) {

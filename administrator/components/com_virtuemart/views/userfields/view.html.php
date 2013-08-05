@@ -34,15 +34,12 @@ class VirtuemartViewUserfields extends VmView {
 
 	function display($tpl = null) {
 
-		$option = JRequest::getCmd( 'option');
-		$mainframe = JFactory::getApplication() ;
-
 		// Load the helper(s)
 
 
 		$this->loadHelper('html');
 
-		$layoutName = JRequest::getWord('layout', 'default');
+		$layoutName = JRequest::getWord('layout');
 		$model = VmModel::getModel();
 
 		// The list of fields which can't be toggled
@@ -53,9 +50,8 @@ class VirtuemartViewUserfields extends VmView {
 			$editor = JFactory::getEditor();
 
 			$userField = $model->getUserfield();
-                        $this->SetViewTitle('USERFIELD',$userField->name );
-                                $this->assignRef('viewName',$viewName);
-			$userFieldPlugin = '';
+			$this->SetViewTitle('USERFIELD',$userField->name );
+			$this->userFieldPlugin = '';
 			if ($userField->virtuemart_userfield_id < 1) { // Insert new userfield
 
 
@@ -68,7 +64,7 @@ class VirtuemartViewUserfields extends VmView {
 				$qry = 'SELECT ordering AS value, name AS text'
 					. ' FROM #__virtuemart_userfields'
 					. ' ORDER BY ordering';
-				$ordering = JHTML::_('list.specificordering',  $userField, $userField->virtuemart_userfield_id, $qry);
+				$ordering = JHTML::_('list.ordering',  $userField->ordering, $qry, '', $userField->virtuemart_userfield_id);
 				$this->assignRef('ordering', $ordering);
 
 				$userFieldValues = $model->getUserfieldValues();
@@ -76,9 +72,8 @@ class VirtuemartViewUserfields extends VmView {
 				$lists['type'] = $this->_getTypes($userField->type)
 					. '<input id="type" type="hidden" name="type" value="'.$userField->type.'" />';
 				if (strpos($userField->type, 'plugin') !==false) 
-					$userFieldPlugin = self::renderUserfieldPlugin(substr($userField->type, 6),$userField);
+					$this->userFieldPlugin = self::renderUserfieldPlugin(substr($userField->type, 6),$userField);
 			}
-			$this->assignRef('userFieldPlugin',	$userFieldPlugin);
 			JToolBarHelper::divider();
 			JToolBarHelper::save();
 			JToolBarHelper::apply();
@@ -146,24 +141,22 @@ class VirtuemartViewUserfields extends VmView {
 			$lists['readonly']     =  VmHTML::row('booleanlist','COM_VIRTUEMART_USERFIELDS_READONLY','readonly',$userField->readonly,$notoggle);
 
 
-			$this->assignRef('lists', $lists);
-			$this->assignRef('userField', $userField);
-			$this->assignRef('userFieldValues', $userFieldValues);
-			$this->assignRef('editor', $editor);
+			$this->lists = $lists;
+			$this->userField = $userField;
+			$this->userFieldValues = $userFieldValues;
+			$this->editor = $editor;
 		} else {
 			JToolBarHelper::title( JText::_('COM_VIRTUEMART_MANAGE_USER_FIELDS'));
-			JToolBarHelper::addNew();
-			JToolBarHelper::editList();
-			JToolBarHelper::divider();
-			JToolBarHelper::custom('toggle.required.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_REQUIRE');
-			JToolBarHelper::custom('toggle.required.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_UNREQUIRE');
-			JToolBarHelper::publishList();
-			JToolBarHelper::unpublishList();
-			JToolBarHelper::divider();
-			$barText = JText::_('COM_VIRTUEMART_FIELDMANAGER_SHOW_HIDE');
+			// JToolBarHelper::addNew();
+			// JToolBarHelper::editList();
+			// JToolBarHelper::divider();
+			// JToolBarHelper::publishList();
+			// JToolBarHelper::unpublishList();
+			// JToolBarHelper::divider();
+			// $barText = JText::_('COM_VIRTUEMART_FIELDMANAGER_SHOW_HIDE');
 
-			$bar= JToolBar::getInstance( 'toolbar' );
-			$bar->appendButton( 'Separator', '"><span class="bartext">'.$barText.'</span><hr style="display: none;' );
+			// $bar= JToolBar::getInstance( 'toolbar' );
+			// $bar->appendButton( 'Separator', '"><span class="bartext">'.$barText.'</span><hr style="display: none;' );
 //$bar->appendButton( 'publish', 'upload', $alt, '', 550, 400 );
 			JToolBarHelper::custom('toggle.registration.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_REGISTRATION');
 			JToolBarHelper::custom('toggle.registration.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_REGISTRATION');
@@ -172,20 +165,14 @@ class VirtuemartViewUserfields extends VmView {
 			JToolBarHelper::custom('toggle.account.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_ACCOUNT');
 			JToolBarHelper::custom('toggle.account.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_ACCOUNT');
 			JToolBarHelper::divider();
-			JToolBarHelper::deleteList();
-
+			// JToolBarHelper::deleteList();
+			JToolBarHelper::custom('toggle.required.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_REQUIRE');
+			JToolBarHelper::custom('toggle.required.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_UNREQUIRE');
+			$this->addStandardDefaultViewCommands();
 			$this->addStandardDefaultViewLists($model,'ordering','ASC');
 
-			$userfieldsList = $model->getUserfieldsList();
-			$this->assignRef('userfieldsList', $userfieldsList);
-
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
-
-			// search filter
-			$search = $mainframe->getUserStateFromRequest( $option.'search', 'search', '', 'string');
-			$search = JString::strtolower( $search );
-			$this->lists['search']= $search;
+			$this->userfieldsList = $model->getUserfieldsList();
+			$this->pagination = $model->getPagination();
 		}
 		$this->lists['coreFields'] = $lists['coreFields'];
 		parent::display($tpl);
@@ -196,11 +183,13 @@ class VirtuemartViewUserfields extends VmView {
 	 *
 	 * @return string HTML code to write the toggle button
 	 */
-	function toggle( $field, $i, $toggle, $untoggleable = false, $imgY = 'tick.png', $imgX = 'publish_x.png', $prefix='' )
+	function toggleOld( $field, $i, $toggle, $untoggleable = false, $imgY = 'tick.png', $imgX = 'publish_x.png', $prefix='' )
 	{
 
 		$img 	= $field ? $imgY : $imgX;
-		if ($toggle == 'published') { // Stay compatible with grid.published
+		// var_dump($toggle);
+		if ($toggle == 'toggle.published') { // Stay compatible with grid.published
+			return JHTML::_('grid.published', $field, $i, $imgY , $imgX , $prefix = 'toggle.') ;
 			$task 	= $field ? 'unpublish' : 'publish';
 			$alt 	= $field ? JText::_('COM_VIRTUEMART_PUBLISHED') : JText::_('COM_VIRTUEMART_UNPUBLISHED');
 			$action = $field ? JText::_('COM_VIRTUEMART_UNPUBLISH_ITEM') : JText::_('COM_VIRTUEMART_PUBLISH_ITEM');
@@ -210,15 +199,12 @@ class VirtuemartViewUserfields extends VmView {
 			$action = $field ? JText::_('COM_VIRTUEMART_DISABLE_ITEM') : JText::_('COM_VIRTUEMART_ENABLE_ITEM');
 		}
 
-		if (JVM_VERSION>1) {
-			$img = 'admin/' . $img;
-		}
-		  if ($untoggleable) {
+		if ($untoggleable) {
 			$attribs='style="opacity: 0.6;"';
 		} else {
 			$attribs='';
 		}
-		$retImgSrc =  JHTML::_('image.administrator', $img, '/images/', null, null, $alt, $attribs);
+		$retImgSrc =  JHTML::_('image', 'images/'.$img , null, null, $alt, $attribs);
 
 		if ($untoggleable) {
 			return ($retImgSrc);
@@ -298,18 +284,13 @@ class VirtuemartViewUserfields extends VmView {
 	{
 		$db = JFactory::getDBO();
 
-		if (JVM_VERSION===1) {
-			$table = '#__plugins';
-			$jelement = 'element';
-		} else {
-			$table = '#__extensions';
-			$jelement = 'element';
-		}
+		$table = '#__extensions';
+		$jelement = 'element';
 		$q = 'SELECT `params`,`element` FROM `' . $table . '` WHERE `' . $jelement . '` = "'.$element.'"';
 		$db ->setQuery($q);
 		$this->plugin = $db ->loadObject();
 		
-		$this->loadHelper('parameterparser');
+		// TOTO JPARAMETER $this->loadHelper('parameterparser');
 		$parameters = new vmParameters($params,  $this->plugin->element , 'plugin' ,'vmuserfield');
 		$lang = JFactory::getLanguage();
 		$filename = 'plg_vmuserfield_' .  $this->plugin->element;
@@ -321,15 +302,9 @@ class VirtuemartViewUserfields extends VmView {
 
 	function renderInstalledUserfieldPlugins(&$plugins){
 
-		if ( JVM_VERSION===1) {
-			$table = '#__plugins';
-			$ext_id = 'id';
-			$enable = 'published';
-		} else {
-			$table = '#__extensions';
-			$ext_id = 'extension_id';
-			$enable = 'enabled';
-		}
+		$table = '#__extensions';
+		$ext_id = 'extension_id';
+		$enable = 'enabled';
 
 		$db = JFactory::getDBO();
  		$q = 'SELECT * FROM `'.$table.'` WHERE `folder` = "vmuserfield" AND `'.$enable.'`="1" ';

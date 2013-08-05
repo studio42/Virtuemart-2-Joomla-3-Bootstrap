@@ -23,7 +23,7 @@ defined('_JEXEC') or die('Restricted access');
 // j3 FIX if(!class_exists('JModelLegacy ')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
 
 /**
- * Model for Macola
+ * Model for virtuemart admin Panel
  *
  * @package		VirtueMart
  */
@@ -38,8 +38,9 @@ class VirtueMartModelVirtueMart extends JModelLegacy  {
 	 * @return int Total number of customers in the database
 	 */
 	function getTotalCustomers() {
-		$query = 'SELECT `virtuemart_user_id`  FROM `#__virtuemart_userinfos` WHERE `address_type` = "BT"';
-        return $this->_getListCount($query);
+		$query = 'SELECT count(*) FROM `#__virtuemart_userinfos` WHERE `address_type` = "BT"';
+		$this->_db->setQuery($query);
+        return $this->_db->loadResult();
     }
 
 	/**
@@ -49,8 +50,9 @@ class VirtueMartModelVirtueMart extends JModelLegacy  {
 	 * @return int Total number of active products in the database
 	 */
 	function getTotalActiveProducts() {
-		$query = 'SELECT `virtuemart_product_id` FROM `#__virtuemart_products` WHERE `published`="1"';
-        return $this->_getListCount($query);
+		$query = 'SELECT count(*) FROM `#__virtuemart_products` WHERE `published`="1"';
+		$this->_db->setQuery($query);
+        return $this->_db->loadResult();
     }
 
 	/**
@@ -60,8 +62,9 @@ class VirtueMartModelVirtueMart extends JModelLegacy  {
 	 * @return int Total number of inactive products in the database
 	 */
 	function getTotalInActiveProducts() {
-		$query = 'SELECT `virtuemart_product_id` FROM `#__virtuemart_products` WHERE  `published`="0"';
-        return $this->_getListCount($query);
+		$query = 'SELECT count(*) FROM `#__virtuemart_products` WHERE  `published`="0"';
+		$this->_db->setQuery($query);
+        return $this->_db->loadResult();
     }
 
 	/**
@@ -71,22 +74,29 @@ class VirtueMartModelVirtueMart extends JModelLegacy  {
 	 * @return int Total number of featured products in the database
 	 */
 	function getTotalFeaturedProducts() {
-		$query = 'SELECT `virtuemart_product_id` FROM `#__virtuemart_products` WHERE `product_special`="1"';
-        return $this->_getListCount($query);
+		$query = 'SELECT count(*) FROM `#__virtuemart_products` WHERE `product_special`="1"';
+		$this->_db->setQuery($query);
+        return $this->_db->loadResult();
     }
 
 
 	/**
 	 * Gets the total number of orders with the given status
 	 *
+     * @author Patrick Kohl
      * @author RickG
 	 * @return int Total number of orders with the given status
 	 */
 	function getTotalOrdersByStatus() {
-		$query = 'SELECT `#__virtuemart_orderstates`.`order_status_name`, `#__virtuemart_orderstates`.`order_status_code`, ';
-		$query .= '(SELECT count(virtuemart_order_id) FROM `#__virtuemart_orders` WHERE `#__virtuemart_orders`.`order_status` = `#__virtuemart_orderstates`.`order_status_code`) as order_count ';
- 		$query .= 'FROM `#__virtuemart_orderstates`';
-        return $this->_getList($query);
+		$query = 'SELECT s.`order_status_name`, s.`order_status_code` as code, s.`order_stock_handle`, ';
+		$query .= '(SELECT count(*) FROM `#__virtuemart_orders` WHERE `#__virtuemart_orders`.`order_status` = code ) as order_count ';
+ 		$query .= 'FROM `#__virtuemart_orderstates` as s';
+		$this->_db->setQuery($query);
+		$status = $this->_db->loadObjectList('code');
+		foreach ($status as $state) {
+			$state->order_status_name = ShopFunctions::altText($state->order_status_name,'COM_VIRTUEMART_ORDER_STATUS');
+		}
+		return $status ;
     }
 
 
@@ -115,7 +125,7 @@ class VirtueMartModelVirtueMart extends JModelLegacy  {
 		$query .= 'JOIN `#__virtuemart_orders` as uo ON u.id = uo.virtuemart_user_id ';
 		$query .= 'WHERE `perms` <> "admin" ';
         $query .= 'AND `perms` <> "storeadmin" ';
-        // $query .= 'AND INSTR(`usertype`, "administrator") = 0 AND INSTR(`usertype`, "Administrator") = 0 ';
+        // J3 removed usertype $query .= 'AND INSTR(`usertype`, "administrator") = 0 AND INSTR(`usertype`, "Administrator") = 0 ';
         $query .= ' ORDER BY uo.`created_on` DESC';
         return $this->_getList($query, 0, $nbrCusts);
     }

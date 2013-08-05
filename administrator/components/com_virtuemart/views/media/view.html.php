@@ -35,13 +35,9 @@ class VirtuemartViewMedia extends VmView {
 		$this->loadHelper('html');
 		$this->loadHelper('permissions');
 		//@todo should be depended by loggedVendor
-		$vendorId=1;
-		$this->assignRef('vendorId', $vendorId);
+		$this->vendorId=1;
 
-		// TODO add icon for media view
-		$this->SetViewTitle();
-
-
+		$titleMsg ='';
 		$model = VmModel::getModel();
 		$perms = Permissions::getInstance();
 		$this->assignRef('perms', $perms);
@@ -69,28 +65,39 @@ class VirtuemartViewMedia extends VmView {
 
         }
         else {
-        	$virtuemart_product_id = JRequest::getInt('virtuemart_product_id',0);
-        	$cat_id = JRequest::getInt('virtuemart_category_id',0);
+			$this->cat_id = 0 ;
+        	if ($this->product_id = JRequest::getInt('virtuemart_product_id',0) ) {
+				$product = VmModel::getModel('product')->getProductSingle ($this->product_id, false, false );
+				$this->link = 'virtuemart_product_id='.$this->product_id;
+				$this->titleName = $product->product_name ;
+				$titleMsg = $this->titleName ;
 
-			JToolBarHelper::customX('synchronizeMedia', 'new', 'new', JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'),false);
+			} else if ($this->cat_id = JRequest::getInt('virtuemart_category_id',0) ) {
+				$category = VmModel::getModel('category')->getCategory($this->cat_id,false);
+				$this->titleName = $category->category_name ;
+				$this->link = '&virtuemart_category_id='.$this-cat_id;
+				$titleMsg = $this->titleName ;
+			}
+
+			JToolBarHelper::custom('synchronizeMedia', 'new', 'new', JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'),false);
 			$this->addStandardDefaultViewCommands();
 			$this->addStandardDefaultViewLists($model,null,null,'searchMedia');
-			$options = array( '' => JText::_('COM_VIRTUEMART_LIST_EMPTY_OPTION'),
+			$options = array( '' => '- '.JText::_('COM_VIRTUEMART_TYPE').' -',
 				'product' => JText::_('COM_VIRTUEMART_PRODUCT'),
 				'category' => JText::_('COM_VIRTUEMART_CATEGORY'),
 				'manufacturer' => JText::_('COM_VIRTUEMART_MANUFACTURER'),
 				'vendor' => JText::_('COM_VIRTUEMART_VENDOR')
 				);
-			$this->lists['search_type'] = VmHTML::selectList('search_type', JRequest::getVar('search_type'),$options,1,'','onchange="this.form.submit();"');
+			$this->lists['search_type'] = VmHTML::selectList('search_type', JRequest::getVar('search_type'),$options,1,'','onchange="Joomla.ajaxSearch(this); return false;"');
 
-			$files = $model->getFiles(false,false,$virtuemart_product_id,$cat_id);
-			$this->assignRef('files',	$files);
+			$this->files = $model->getFiles(false,false,$this->product_id,$this->cat_id);
 
 			$pagination = $model->getPagination();
 			$this->assignRef('pagination', $pagination);
 
 		}
-
+		// TODO add icon for media view
+		$this->SetViewTitle('',$titleMsg);
 		parent::display($tpl);
 	}
 

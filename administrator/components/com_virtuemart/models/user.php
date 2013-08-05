@@ -21,8 +21,9 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Hardcoded groupID of the Super Admin
-define ('__SUPER_ADMIN_GID', 25);
+// Hardcoded groupID of the Super Admin 
+// Note removed in joomla 2.5
+// define ('__SUPER_ADMIN_GID', 25);
 
 // Load the model framework
 jimport('joomla.version');
@@ -243,11 +244,7 @@ class VirtueMartModelUser extends VmModel {
 	 */
 
 	function get_object_id( $var_1 = null, $var_2 = null, $var_3 = null ) {
-		if ( JVM_VERSION === 2) {
 			$return		=	$var_2;
-		} else {
-			$return		=	$this->_acl->get_object_id( $var_1, $var_2, $var_3 );
-		}
 
 		return $return;
 	}
@@ -296,11 +293,7 @@ class VirtueMartModelUser extends VmModel {
 		foreach ( $selected as $k => $v ) {
 			if ( ! is_numeric( $v ) ) {
 				if ( ! $ps ) {
-					if ( JVM_VERSION === 2 ) {
-						$ps				=	array( 'Root' => 0 , 'Users' => 0 , 'Public' =>  1, 'Registered' =>  2, 'Author' =>  3, 'Editor' =>  4, 'Publisher' =>  5, 'Backend' => 0 , 'Manager' =>  6, 'Administrator' =>  7, 'Superadministrator' =>  8 );
-					} else {
-						$ps				=	array( 'Root' => 17, 'Users' => 28, 'Public' => 29, 'Registered' => 18, 'Author' => 19, 'Editor' => 20, 'Publisher' => 21, 'Backend' => 30, 'Manager' => 23, 'Administrator' => 24, 'Superadministrator' => 25 );
-					}
+					$ps				=	array( 'Root' => 0 , 'Users' => 0 , 'Public' =>  1, 'Registered' =>  2, 'Author' =>  3, 'Editor' =>  4, 'Publisher' =>  5, 'Backend' => 0 , 'Manager' =>  6, 'Administrator' =>  7, 'Superadministrator' =>  8 );
 				}
 				if ( array_key_exists( $v, $ps ) ) {
 					if ( $ps[$v] != 0 ) {
@@ -326,142 +319,54 @@ class VirtueMartModelUser extends VmModel {
 			$var_4						=	true;
 		}
 
-		if ( JVM_VERSION === 2 ) {
-			$query						=	'SELECT a.' . $_CB_database->NameQuote( 'id' ) . ' AS value'
-			.	', a.' . $_CB_database->NameQuote( 'title' ) . ' AS text'
-			.	', COUNT( DISTINCT b.' . $_CB_database->NameQuote( 'id' ) . ' ) AS level'
-			.	"\n FROM " . $_CB_database->NameQuote( '#__usergroups' ) . " AS a"
-			.	"\n LEFT JOIN " . $_CB_database->NameQuote( '#__usergroups' ) . " AS b"
-			.	' ON a.' . $_CB_database->NameQuote( 'lft' ) . ' > b.' . $_CB_database->NameQuote( 'lft' )
-			.	' AND a.' . $_CB_database->NameQuote( 'rgt' ) . ' < b.' . $_CB_database->NameQuote( 'rgt' )
-			.	"\n GROUP BY a." . $_CB_database->NameQuote( 'id' )
-			.	"\n ORDER BY a." . $_CB_database->NameQuote( 'lft' ) . " ASC";
-			$_CB_database->setQuery( $query );
-			$groups						=	$_CB_database->loadObjectList();
+		$query						=	'SELECT a.' . $_CB_database->NameQuote( 'id' ) . ' AS value'
+		.	', a.' . $_CB_database->NameQuote( 'title' ) . ' AS text'
+		.	', COUNT( DISTINCT b.' . $_CB_database->NameQuote( 'id' ) . ' ) AS level'
+		.	"\n FROM " . $_CB_database->NameQuote( '#__usergroups' ) . " AS a"
+		.	"\n LEFT JOIN " . $_CB_database->NameQuote( '#__usergroups' ) . " AS b"
+		.	' ON a.' . $_CB_database->NameQuote( 'lft' ) . ' > b.' . $_CB_database->NameQuote( 'lft' )
+		.	' AND a.' . $_CB_database->NameQuote( 'rgt' ) . ' < b.' . $_CB_database->NameQuote( 'rgt' )
+		.	"\n GROUP BY a." . $_CB_database->NameQuote( 'id' )
+		.	"\n ORDER BY a." . $_CB_database->NameQuote( 'lft' ) . " ASC";
+		$_CB_database->setQuery( $query );
+		$groups						=	$_CB_database->loadObjectList();
 
-			$user_groups				=	array();
+		$user_groups				=	array();
 
-			for ( $i = 0, $n = count( $groups ); $i < $n; $i++ ) {
-				$groups[$i]->text		=	str_repeat( '- ', $groups[$i]->level ) . JText::_( $groups[$i]->text );
+		for ( $i = 0, $n = count( $groups ); $i < $n; $i++ ) {
+			$groups[$i]->text		=	str_repeat( '- ', $groups[$i]->level ) . JText::_( $groups[$i]->text );
 
-				if ( $var_4 ) {
-					$user_groups[$i]	=	JHtml::_( 'select.option', $groups[$i]->value, $groups[$i]->text );
-				} else {
-					$user_groups[$i]	=	array( 'value' => $groups[$i]->value, 'text' => $groups[$i]->text );
-				}
+			if ( $var_4 ) {
+				$user_groups[$i]	=	JHtml::_( 'select.option', $groups[$i]->value, $groups[$i]->text );
+			} else {
+				$user_groups[$i]	=	array( 'value' => $groups[$i]->value, 'text' => $groups[$i]->text );
 			}
+		}
 
 			$return						=	$user_groups;
-		} else {
-			if ( ! $var_3 ) {
-				$var_3					=	true;
-			}
 
-			$return						=	$this->_acl->get_group_children_tree( $var_1, $var_2, $var_3, $var_4 );
-		}
 
 		return $return;
 	}
 
 	/**
 	 * Return a list with groups that can be set by the current user
-	 *
+	 * Note : TODO result is not good, what is the exepted result ????
+	 * core.admin can set all if core.manager have core right then he can set all to.
 	 * @return mixed Array with groups that can be set, or the groupname (string) if it cannot be changed.
 	 */
 	function getGroupList()
 	{
 
-		if(JVM_VERSION === 2) {
+		if (!JFactory::getUser()->authorise('core.admin')) return false ;
+		// $authGroups = JAccess::getGroupsByUser($user->id);
+		$db		= $this->getDbo();
+		$q = 'SELECT `id` as value,`title` as text FROM #__usergroups';
+			// WHERE `id` IN (' . implode(',', $authGroups) . ')';
 
-			//hm CB thing also not help
-			// 			$_grpList = $this->get_groups_below_me();
-			// 			return $_grpList;
-
-
-			/*			if(!class_exists('UsersModelUser')) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_users'.DS.'models'.DS.'user.php');
-			 $jUserModel = new UsersModelUser();
-			$list = $jUserModel->getGroups();
-
-			$user = JFactory::getUser();
-			if ($user->authorise('core.edit', 'com_users') && $user->authorise('core.manage', 'com_users'))
-			{
-			$model = JModelLegacy ::getInstance('Groups', 'UsersModel', array('ignore_request' => true));
-			return $model->getItems();
-			}
-			else
-			{
-			return null;
-			}*/
-			$user = JFactory::getUser();
-			$authGroups = JAccess::getGroupsByUser($user->id);
-			// 			$authGroups = $user->getAuthorisedGroups();
-			// 			vmdebug('getGroupList j17',$authGroups);
-
-			$db		= $this->getDbo();
-			$where = implode($authGroups,'" OR `id` = "').'"';
-			$q = 'SELECT `id` as value,`title` as text FROM #__usergroups WHERE `id` = "'.$where;
-
-			$db->setQuery($q);
-			$list = $db->loadAssocList();
-
-			// 			foreach($list as $item){
-			// 				vmdebug('getGroupList $item ',$item);
-			// 			}
-
-			// 			vmdebug('getGroupList $q '.$list);
-			return $list;
-		} else {
-
-			$_aclObject = JFactory::getACL();
-
-			if(empty($this->_data)) $this->getUser();
-
-			if (JVM_VERSION>1){
-				//TODO fix this latter. It's just an workarround to make it working on 1.6
-				$gids = $this->_data->JUser->get('groups');
-				return array_flip($gids);
-			}
-
-			$_usr = $_aclObject->get_object_id ('users', $this->_data->JUser->get('id'), 'ARO');
-			$_grp = $_aclObject->get_object_groups ($_usr, 'ARO');
-			$_grpName = strtolower ($_aclObject->get_group_name($_grp[0], 'ARO'));
-
-			$_currentUser = JFactory::getUser();
-			$_my_usr = $_aclObject->get_object_id ('users', $_currentUser->get('id'), 'ARO');
-			$_my_grp = $_aclObject->get_object_groups ($_my_usr, 'ARO');
-			$_my_grpName = strtolower ($_aclObject->get_group_name($_my_grp[0], 'ARO'));
-
-			// administrators can't change each other and frontend-only users can only see groupnames
-			if (( $_grpName == $_my_grpName && $_my_grpName == 'administrator' ) ||
-			!$_aclObject->is_group_child_of($_my_grpName, 'Public Backend')) {
-				return $_grpName;
-			} else {
-				$_grpList = $_aclObject->get_group_children_tree(null, 'USERS', false);
-
-				$_remGroups = $_aclObject->get_group_children( $_my_grp[0], 'ARO', 'RECURSE' );
-				if (!$_remGroups) {
-					$_remGroups = array();
-				}
-
-				// Make sure privs higher than my own can't be granted
-				if (in_array($_grp[0], $_remGroups)) {
-					// nor can privs of users with higher privs be decreased.
-					return $_grpName;
-				}
-				$_i = 0;
-				$_j = count($_grpList);
-				while ($_i <  $_j) {
-					if (in_array($_grpList[$_i]->value, $_remGroups)) {
-						array_splice( $_grpList, $_i, 1 );
-						$_j = count($_grpList);
-					} else {
-						$_i++;
-					}
-				}
-
-				return $_grpList;
-			}
-		}
+		$db->setQuery($q);
+		$list = $db->loadAssocList();
+		return $list;
 	}
 
 	/**
@@ -478,8 +383,8 @@ class VirtueMartModelUser extends VmModel {
 		$message = '';
 		$user = '';
 		$newId = 0;
-
-		JRequest::checkToken() or jexit( 'Invalid Token, while trying to save user' );
+		
+		JSession::checkToken() or JSession::checkToken('get') or jexit( 'Invalid Token, while trying to save user' );
 		$mainframe = JFactory::getApplication() ;
 
 		if(empty($data)){
@@ -581,26 +486,16 @@ class VirtueMartModelUser extends VmModel {
 				JError::raiseError( 403, JText::_('COM_VIRTUEMART_ACCESS_FORBIDDEN'));
 				return;
 			}
-			$authorize	= JFactory::getACL();
+			// $authorize	= JFactory::getACL();
 
 			// Initialize new usertype setting
 			$newUsertype = $usersConfig->get( 'new_usertype' );
 			if (!$newUsertype) {
-				if ( JVM_VERSION===1){
-					$newUsertype = 'Registered';
-
-				} else {
-					$newUsertype=2;
-				}
+				$newUsertype=2;
 			}
 			// Set some initial user values
-			$user->set('usertype', $newUsertype);
-
-			if ( JVM_VERSION===1){
-				$user->set('gid', $authorize->get_group_id( '', $newUsertype, 'ARO' ));
-			} else {
-				$user->groups[] = $newUsertype;
-			}
+			// $user->set('usertype', $newUsertype); NOTE : j1.5
+			$user->groups[] = $newUsertype;
 
 			$date = JFactory::getDate();
 			$user->set('registerDate', $date->toSql());
@@ -608,14 +503,8 @@ class VirtueMartModelUser extends VmModel {
 			// If user activation is turned on, we need to set the activation information
 			$useractivation = $usersConfig->get( 'useractivation' );
 			$doUserActivation=false;
-			if ( JVM_VERSION===1){
-				if ($useractivation == '1' ) {
-					$doUserActivation=true;
-				}
-			} else {
-				if ($useractivation == '1' or $useractivation == '2') {
-					$doUserActivation=true;
-				}
+			if ($useractivation == '1' or $useractivation == '2') {
+				$doUserActivation=true;
 			}
 			vmdebug('user',$useractivation , $doUserActivation);
 			if ($doUserActivation )
@@ -628,8 +517,8 @@ class VirtueMartModelUser extends VmModel {
 		}
 
 		$option = JRequest::getCmd( 'option');
-		// If an exising superadmin gets a new group, make sure enough admins are left...
-		if (!$new && $user->get('gid') != $gid && $gid == __SUPER_ADMIN_GID) {
+		// If an exising superadmin gets a new group, make sure enough admins are left... j1.5+
+		if (!$new && $user->authorise('core.admin') && !in_array( '8' , $user->groups ) ) {
 			if ($this->getSuperAdminCount() <= 1) {
 				vmError(JText::_('COM_VIRTUEMART_USER_ERR_ONLYSUPERADMIN'));
 				return false;
@@ -1248,13 +1137,8 @@ class VirtueMartModelUser extends VmModel {
 
 		if ($doUserActivation) {
 			jimport('joomla.user.helper');
-			if(JVM_VERSION === 2) {
-				$com_users = 'com_users';
-				$activationLink = 'index.php?option='.$com_users.'&task=registration.activate&token='.$user->get('activation');
-			} else {
-				$com_users = 'com_user';
-				$activationLink = 'index.php?option='.$com_users.'&task=activate&activation='.$user->get('activation');
-			}
+			$com_users = 'com_users';
+			$activationLink = 'index.php?option='.$com_users.'&task=registration.activate&token='.$user->get('activation');
 			$vars['activationLink'] = $activationLink;
 		}
 		$vars['doVendor']=true;
@@ -1263,13 +1147,13 @@ class VirtueMartModelUser extends VmModel {
 
 		//get all super administrator
 		$query = 'SELECT name, email, sendEmail' .
-				' FROM #__users' .
-				' WHERE LOWER( usertype ) = "super administrator"';
+				' FROM #__users as u left join #_user_usergroup_map as m on u.id=m.user_id' .
+				' WHERE group_id = 8';
 		$this->_db->setQuery( $query );
 		$rows = $this->_db->loadObjectList();
 
 		$vars['doVendor']=false;
-		// get superadministrators id
+		// get superadministrators id . Is this obselete ?
 		foreach ( $rows as $row )
 		{
 			if ($row->sendEmail)
@@ -1305,7 +1189,7 @@ class VirtueMartModelUser extends VmModel {
 				if ($this->getSuperAdminCount() <= 1) {
 					// Prevent deletion of the only Super Admin
 					//$_u = JUser::getInstance($userId);
-					if ($_JUser->get('gid') == __SUPER_ADMIN_GID) {
+					if ($_JUser->authorise('core.admin')) {
 						vmError(JText::_('COM_VIRTUEMART_USER_ERR_LASTSUPERADMIN'));
 						$_status = false;
 						continue;
@@ -1313,7 +1197,7 @@ class VirtueMartModelUser extends VmModel {
 				}
 
 				if(Permissions::getInstance()->check('storeadmin')) {
-					if ($_JUser->get('gid') == __SUPER_ADMIN_GID) {
+					if ($_JUser->authorise('core.admin')) {
 						vmError(JText::_('COM_VIRTUEMART_USER_ERR_LASTSUPERADMIN'));
 						$_status = false;
 						continue;
@@ -1360,13 +1244,14 @@ class VirtueMartModelUser extends VmModel {
 			, ju.name AS name
 			, ju.username AS username
 			, ju.email AS email
-			, ju.usertype AS usertype
+			, m.group_id AS usergroup
 			, IFNULL(vmu.user_is_vendor,"0") AS is_vendor
 			, IFNULL(sg.shopper_group_name, "") AS shopper_group_name ';
 		$joinedTables = ' FROM #__users AS ju
 			LEFT JOIN #__virtuemart_vmusers AS vmu ON ju.id = vmu.virtuemart_user_id
 			LEFT JOIN #__virtuemart_vmuser_shoppergroups AS vx ON ju.id = vx.virtuemart_user_id
-			LEFT JOIN #__virtuemart_shoppergroups AS sg ON vx.virtuemart_shoppergroup_id = sg.virtuemart_shoppergroup_id ';
+			LEFT JOIN #__virtuemart_shoppergroups AS sg ON vx.virtuemart_shoppergroup_id = sg.virtuemart_shoppergroup_id 
+			LEFT JOIN #__user_usergroup_map as m on ju.id=m.user_id';
 
 		return $this->_data = $this->exeSortSearchListQuery(0,$select,$joinedTables,$this->_getFilter(),' GROUP BY ju.id',$this->_getOrdering());
 
@@ -1381,7 +1266,7 @@ class VirtueMartModelUser extends VmModel {
 	function _getFilter()
 	{
 		if ($search = JRequest::getWord('search', false)) {
-			$search = '"%' . $this->_db->getEscaped( $search, true ) . '%"' ;
+			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 			//$search = $this->_db->Quote($search, false);
 
 			$where = ' WHERE `name` LIKE '.$search.' OR `username` LIKE ' .$search.' OR `email` LIKE ' .$search.' OR `perms` LIKE ' .$search.' OR `usertype` LIKE ' .$search.' OR `shopper_group_name` LIKE ' .$search;
@@ -1436,13 +1321,13 @@ class VirtueMartModelUser extends VmModel {
 
 	/**
 	 * Get the number of active Super Admins
-	 *
+	 * note : user_usergroup_map is for j2.5+
 	 * @return integer
 	 */
 	function getSuperAdminCount()
 	{
-		$this->_db->setQuery('SELECT COUNT(id) FROM #__users'
-		. ' WHERE gid = ' . __SUPER_ADMIN_GID . ' AND block = 0');
+		$this->_db->setQuery('SELECT COUNT(*) FROM #__user_usergroup_map'
+		. ' WHERE group_id = 8' );
 		return ($this->_db->loadResult());
 	}
 
@@ -1461,19 +1346,11 @@ class VirtueMartModelUser extends VmModel {
 	function getAclGroupIndentedTree()
 	{
 
-		//TODO check this out
-		if (JVM_VERSION===1) {
-			$name = 'name';
-			$as = '` AS `title`';
-			$table = '#__core_acl_aro_groups';
-			$and = 'AND `parent`.`lft` > 2 ';
-		}
-		else {
-			$name = 'title';
-			$as = '`';
-			$table = '#__usergroups';
-			$and = '';
-		}
+		$name = 'title';
+		$as = '`';
+		$table = '#__usergroups';
+		$and = '';
+
 		//Ugly thing, produces Select_full_join
 		$query = 'SELECT `node`.`' . $name . $as . ', CONCAT(REPEAT("&nbsp;&nbsp;&nbsp;", (COUNT(`parent`.`' . $name . '`) - 1)), `node`.`' . $name . '`) AS `text` ';
 		$query .= 'FROM `' . $table . '` AS node, `' . $table . '` AS parent ';

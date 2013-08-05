@@ -15,18 +15,21 @@
  * @version $Id: order_editstatus.php 6468 2012-09-18 22:00:43Z Milbo $
  */
 ?>
-
 <form action="index.php" method="post" name="orderStatForm" id="orderStatForm">
-<fieldset>
-<table class="admintable" width="100%">
+<div class="modal-header"> <button type="button" class="close" aria-hidden="true">&times;</button>
+	<h3><?php echo JText::_('COM_VIRTUEMART_ORDER_UPDATE_STATUS') ?></h3>
+</div>
+
+<div>
+<table width="100%">
 	<tr>
 		<td align="center" colspan="2">
-		<h1><?php echo JText::_('COM_VIRTUEMART_ORDER_UPDATE_STATUS') ?></h1>
+		
 		</td>
 	</tr>
 	<tr>
 		<td class="key"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PO_STATUS') ?></td>
-		<td><?php echo $this->orderStatSelect; ?>
+		<td><?php echo $this->orderStatusSelect; ?>
 		</td>
 	</tr>
 	<tr>
@@ -51,23 +54,23 @@
 		<?php echo VmHTML::checkbox('orders['.$this->orderID.'][update_lines]', true); ?>
 		</td>
 	</tr>
-	<tr>
-		<td colspan="2" align="center" class="key">
-		<a href="#" class="orderStatFormSubmit" >
-			<span class="icon-nofloat vmicon vmicon-16-save"></span>&nbsp;<?php echo JText::_('COM_VIRTUEMART_SAVE'); ?></a>&nbsp;&nbsp;&nbsp;
-		<a href="#" title="<?php echo JText::_('COM_VIRTUEMART_CANCEL'); ?>" onClick="javascript:document.orderStatForm.reset();" class="show_element[updateOrderStatus]">
-			<span class="icon-nofloat vmicon vmicon-16-remove"></span>&nbsp;<?php echo JText::_('COM_VIRTUEMART_CANCEL'); ?></a>
-		</td>
-<!--
+<!--	<tr>
+
 		<input type="submit" value="<?php echo JText::_('COM_VIRTUEMART_SAVE');?>" style="font-size: 10px" />
 		<input type="button"
 			onclick="javascript: window.parent.document.getElementById( 'sbox-window' ).close();"
 			value="<?php echo JText::_('COM_VIRTUEMART_CANCEL');?>" style="font-size: 10px" /></td>
- -->
-	</tr>
-</table>
-</fieldset>
 
+	</tr> -->
+</table>
+</div>
+<div class="modal-footer">
+	<a href="#" class="orderStatFormSubmit btn" >
+		<span class="icon-nofloat vmicon vmicon-16-save"></span>&nbsp;<?php echo JText::_('COM_VIRTUEMART_SAVE'); ?>
+	</a>&nbsp;&nbsp;&nbsp;
+	<button type="reset" title="<?php echo JText::_('COM_VIRTUEMART_CANCEL'); ?>" class="orderStatFormReset btn">
+		<span class="icon-nofloat vmicon vmicon-16-remove"></span>&nbsp;<?php echo JText::_('COM_VIRTUEMART_CANCEL'); ?>
+	</button>
 <!-- Hidden Fields -->
 <input type="hidden" name="task" value="updatestatus" />
 <input type="hidden" name="last_task" value="updatestatus" />
@@ -76,4 +79,6 @@
 <input type="hidden" name="current_order_status" value="<?php echo $this->currentOrderStat; ?>" />
 <input type="hidden" name="virtuemart_order_id" value="<?php echo $this->orderID; ?>" />
 <?php echo JHTML::_( 'form.token' ); ?>
+
+</div>
 </form>

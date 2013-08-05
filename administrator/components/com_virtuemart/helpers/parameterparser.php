@@ -160,18 +160,9 @@ class vmParameters extends JParameter {
 		$lang = JFactory::getLanguage();
 		$lang->load('plg_'.$pluginfolder.'_' . $element,JPATH_ADMINISTRATOR);
 
-		if (JVM_VERSION === 2) {
-			$path = JPATH_PLUGINS . DS . $pluginfolder . DS . basename($element). DS . basename($element) . '.xml';
-		} else {
-			$path = JPATH_PLUGINS . DS . $pluginfolder . DS . basename($element) . '.xml';
-		}
+		$path = JPATH_PLUGINS . DS . $pluginfolder . DS . basename($element). DS . basename($element) . '.xml';
 		parent::__construct($element, $path);
 		$this->_type = $type;
-		if (JVM_VERSION === 2) {
-
-		} else {
-
-		}
 // 		$this->_raw = $data;
 		$this->bind($data);
 	}
@@ -186,12 +177,7 @@ class vmParameters extends JParameter {
 	 */
 	function render($name = 'params', $group = '_default') {
 
-// 		vmdebug('render',$this);
-		//             if (JVM_VERSION === 2) {
 		$parameters = $this->vmRender($name, $group);
-		//             } else {
-		//                 $parameters = parent::render($name, $group);
-		//             }
 
 		return $parameters;
 	}
@@ -208,9 +194,6 @@ class vmParameters extends JParameter {
 	{
 		//get the type of the parameter
 		$type = $node->attributes('type');
-
-		//remove any occurance of a mos_ prefix
-		$type = str_replace('mos_', '', $type);
 
 		$element = $this->loadElement($type);
 
@@ -461,13 +444,13 @@ class vmParameters extends JParameter {
 		$sorting = strtoupper($node->attributes('sorting')) == 'DESC' ? 'DESC' : 'ASC';
 		$multiselect = $node->attributes('multiselect');
 
-		$query = "SELECT `" . $db->getEscaped($valuefield) . '`, `' . $db->getEscaped($textfield) . "`"
-		. "\n FROM `" . $db->getEscaped($table) . "`";
+		$query = 'SELECT ' . $db->quote($valuefield) . ', ' . $db->quote($textfield) 
+		. ' FROM '. $db->quoteName($table) ;
 		if ($condition != '') {
-			$query .= "\n WHERE " . $condition;
+			$query .= ' WHERE ' . $condition;
 		}
 		if ($orderfield) {
-			$query .= "\n ORDER BY `" . $db->getEscaped($orderfield) . "` " . $sorting;
+			$query .= ' ORDER BY ' . $db->quote($orderfield) . ' ' . $sorting;
 		}
 		$db->setQuery($query);
 		$array = $db->loadColumn();

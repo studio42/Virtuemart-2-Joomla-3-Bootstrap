@@ -53,6 +53,7 @@ class VirtuemartViewReport extends VmView {
 		$revenueBasic = $model->getRevenue();
 
 		if($revenueBasic){
+			$totalReport = array();
 			$totalReport['revenueTotal_brutto']= $totalReport['revenueTotal_netto']= $totalReport['number_of_ordersTotal'] = $totalReport['itemsSoldTotal'] = 0 ;
 			foreach($revenueBasic as &$j){
 				vmdebug('VirtuemartViewReport revenue',$j);
@@ -93,11 +94,9 @@ class VirtuemartViewReport extends VmView {
 		$this->lists['select_date'] = $model->renderDateSelectList();
 		$this->lists['state_list'] = $model->renderOrderstatesList();
 		$this->lists['intervals'] = $model->renderIntervalsList();
-		$this->assignRef('from_period', $model->from_period);
-		$this->assignRef('until_period', $model->until_period);
-
-		$pagination = $model->getPagination();
-		$this->assignRef('pagination', $pagination);
+		$this->from_period = $model->from_period;
+		$this->until_period = $model->until_period;
+		$this->pagination = $model->getPagination();
 
 		parent::display($tpl);
 	}

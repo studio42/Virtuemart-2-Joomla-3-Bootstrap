@@ -71,9 +71,9 @@ abstract class vmPlugin extends JPlugin {
 
 		VmConfig::loadJLang($filename);
 
-		if (!class_exists ('JParameter')) {
-			require(JPATH_VM_LIBRARIES . DS . 'joomla' . DS . 'html' . DS . 'parameter.php');
-		}
+		// if (!class_exists ('JParameter')) {
+			// require(JPATH_VM_LIBRARIES . DS . 'joomla' . DS . 'html' . DS . 'parameter.php');
+		// }
 
 		$this->_tablename = '#__virtuemart_' . $this->_psType . '_plg_' . $this->_name;
 		$this->_tableChecked = FALSE;
@@ -89,11 +89,7 @@ abstract class vmPlugin extends JPlugin {
 
 	function getOwnUrl(){
 
-		if(JVM_VERSION!=1){
-			$url = '/plugins/'.$this->_type.'/'.$this->_name;
-		} else{
-			$url = '/plugins/'.$this->_type;
-		}
+		$url = '/plugins/'.$this->_type.'/'.$this->_name;
 		return $url;
 	}
 
@@ -170,18 +166,10 @@ abstract class vmPlugin extends JPlugin {
 		else {
 			$db = JFactory::getDBO ();
 
-			if (JVM_VERSION === 1) {
-				$q = 'SELECT vm.* FROM `' . $this->_configTable . '` AS vm,
-							#__plugins AS j WHERE vm.`' . $this->_idName . '` = "' . $id . '"
-							AND vm.' . $this->_psType . '_jplugin_id = j.id
-							AND j.element = "' . $this->_name . '"';
-			}
-			else {
-				$q = 'SELECT vm.* FROM `' . $this->_configTable . '` AS vm,
-							#__extensions AS j WHERE vm.`' . $this->_idName . '` = "' . $id . '"
-							AND vm.' . $this->_psType . '_jplugin_id = j.extension_id
-							AND j.element = "' . $this->_name . '"';
-			}
+			$q = 'SELECT vm.* FROM `' . $this->_configTable . '` AS vm,
+				#__extensions AS j WHERE vm.`' . $this->_idName . '` = "' . $id . '"
+				AND vm.' . $this->_psType . '_jplugin_id = j.extension_id
+				AND j.element = "' . $this->_name . '"';
 
 			$db->setQuery ($q);
 			if (!$res = $db->loadObject ()) {
@@ -209,18 +197,10 @@ abstract class vmPlugin extends JPlugin {
 		else {
 			$db = JFactory::getDBO ();
 
-			if (JVM_VERSION === 1) {
-				$q = 'SELECT vm.* FROM `' . $this->_configTable . '` AS vm,
-							#__plugins AS j WHERE vm.`' . $this->_psType . '_jplugin_id`  = "' . $jplugin_id . '"
-							AND vm.' . $this->_psType . '_jplugin_id = j.id
-							AND j.`element` = "' . $this->_name . '"';
-			}
-			else {
-				$q = 'SELECT vm.* FROM `' . $this->_configTable . '` AS vm,
-							#__extensions AS j WHERE vm.`' . $this->_psType . '_jplugin_id`  = "' . $jplugin_id . '"
-							AND vm.`' . $this->_psType . '_jplugin_id` = j.extension_id
-							AND j.`element` = "' . $this->_name . '"';
-			}
+			$q = 'SELECT vm.* FROM `' . $this->_configTable . '` AS vm,
+				#__extensions AS j WHERE vm.`' . $this->_psType . '_jplugin_id`  = "' . $jplugin_id . '"
+				AND vm.`' . $this->_psType . '_jplugin_id` = j.extension_id
+				AND j.`element` = "' . $this->_name . '"';
 
 			$db->setQuery ($q);
 			if (!$res = $db->loadObject ()) {
@@ -245,14 +225,8 @@ abstract class vmPlugin extends JPlugin {
 		}
 		$db = JFactory::getDBO ();
 
-		if (JVM_VERSION === 1) {
-			$q = 'SELECT j.`id` AS c FROM #__plugins AS j
-					WHERE j.element = "' . $this->_name . '" AND j.folder = "' . $this->_type . '"';
-		}
-		else {
 			$q = 'SELECT j.`extension_id` AS c FROM #__extensions AS j
-					WHERE j.element = "' . $this->_name . '" AND j.`folder` = "' . $this->_type . '"';
-		}
+				WHERE j.element = "' . $this->_name . '" AND j.`folder` = "' . $this->_type . '"';
 
 		$db->setQuery ($q);
 		$this->_jid = $db->loadResult ();
@@ -556,14 +530,8 @@ abstract class vmPlugin extends JPlugin {
 	private function _getLayoutPath ($pluginName, $group, $layout = 'default') {
 		$app = JFactory::getApplication ();
 		// get the template and default paths for the layout
-		if (JVM_VERSION === 2) {
-			$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . $group . DS . $pluginName . DS . $layout . '.php';
-			$defaultPath = JPATH_SITE . DS . 'plugins' . DS . $group . DS . $pluginName . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
-		}
-		else {
-			$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . $group . DS . $pluginName . DS . $layout . '.php';
-			$defaultPath = JPATH_SITE . DS . 'plugins' . DS . $group . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
-		}
+		$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . $group . DS . $pluginName . DS . $layout . '.php';
+		$defaultPath = JPATH_SITE . DS . 'plugins' . DS . $group . DS . $pluginName . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
 
 		// if the site template has a layout override, use it
 		jimport ('joomla.filesystem.file');

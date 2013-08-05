@@ -93,7 +93,7 @@ class VirtuemartControllerUser extends VmController {
 		$_currentUser = JFactory::getUser();
 // TODO sortout which check is correctt.....
 //		if (!$_currentUser->authorize('administration', 'manage', 'components', 'com_users')) {
-		if (!$_currentUser->authorize('com_users', 'manage')) {
+		if (!$_currentUser->authorise('com_users', 'manage')) {
 			$msg = JText::_(_NOT_AUTH);
 		} else {
 			$model = VmModel::getModel('user');

@@ -25,8 +25,6 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_COUNTRY_DETAILS');
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
 
-
-<div class="col50">
 	<fieldset>
 	<legend><?php echo JText::_('COM_VIRTUEMART_COUNTRY_DETAILS'); ?></legend>
 	<table class="admintable">
@@ -52,8 +50,6 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_COUNTRY_DETAILS');
 		<?php echo VmHTML::row('input','COM_VIRTUEMART_COUNTRY_2_CODE','country_2_code',$this->country->country_2_code); ?>
 	</table>
 	</fieldset>
-</div>
-
 	<input type="hidden" name="virtuemart_country_id" value="<?php echo $this->country->virtuemart_country_id; ?>" />
 
 	<?php echo $this->addStandardHiddenToForm(); ?>

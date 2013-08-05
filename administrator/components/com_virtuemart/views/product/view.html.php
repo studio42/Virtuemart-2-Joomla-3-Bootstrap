@@ -34,7 +34,11 @@ class VirtuemartViewProduct extends VmView {
 		// Get the task
 		$task = JRequest::getWord('task',$this->getLayout());
 		vmdebug('VirtuemartViewProduct '.$task);
-		$this->assignRef('task', $task);
+		$this->task = $task;
+
+		//Template and helper path fix for Front-end editing
+		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'product'.DS.'tmpl');
+		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
 
 		// Load helpers
 		$this->loadHelper('currencydisplay');
@@ -42,15 +46,14 @@ class VirtuemartViewProduct extends VmView {
 		$this->loadHelper('image');
 
 		$model = VmModel::getModel();
-
 		// Handle any publish/unpublish
 		switch ($task) {
 			case 'add':
 			case 'edit':
 
-				//this was in the controller for the edit tasks, I dont know if it is still needed,
-				$this->addTemplatePath(JPATH_COMPONENT_ADMINISTRATOR.DS.'views'.DS.'product'.DS.'tmpl');
 
+				// url fix for front-end editing Json request.
+				$this->jsonPath = JFactory::getApplication ()->isSite () ? juri::root() :'';
 				$virtuemart_product_id = JRequest::getVar('virtuemart_product_id', array());
 
 				if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
@@ -64,12 +67,12 @@ class VirtuemartViewProduct extends VmView {
 
 				$mf_model = VmModel::getModel('manufacturer');
 				$manufacturers = $mf_model->getManufacturerDropdown($product->virtuemart_manufacturer_id);
-				$this->assignRef('manufacturers',	$manufacturers);
+				$this->manufacturers = $manufacturers;
 
 				// Get the category tree
 				if (isset($product->categories)) $category_tree = ShopFunctions::categoryListTree($product->categories);
 				else $category_tree = ShopFunctions::categoryListTree();
-				$this->assignRef('category_tree', $category_tree);
+				$this->category_tree = $category_tree;
 
 				//Get the shoppergoup list - Cleanshooter Custom Shopper Visibility
 				if (isset($product->shoppergroups)) $shoppergroupList = ShopFunctions::renderShopperGroupList($product->shoppergroups);
@@ -228,45 +231,43 @@ class VirtuemartViewProduct extends VmView {
 
 			case 'massxref_cats':
 			case 'massxref_cats_exe':
+				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'category'.DS.'tmpl');
 				$this->SetViewTitle('PRODUCT_MASSXREF');
-
+				// $this->setLayout('massxref');
 				$this->loadHelper('permissions');
-				$showVendors = Permissions::getInstance()->check('admin');
-				$this->assignRef('showVendors',$showVendors);
+				$this->perms = Permissions::getInstance();
+				$this->showVendors = $this->perms->check('admin');
 
 				$keyWord ='';
 				$catmodel = VmModel::getModel('category');
-				$this->assignRef('catmodel',	$catmodel);
+				$this->catmodel = $catmodel;
 				//$this->addStandardDefaultViewCommands();
 				$this->addStandardDefaultViewLists($catmodel,'category_name');
 
-				$categories = $catmodel->getCategoryTree(0,0,false,$this->lists['search']);
-				$this->assignRef('categories', $categories);
+				$this->categories = $catmodel->getCategoryTree(0,0,false,$this->lists['search']);
+				$this->pagination = $catmodel->getPagination();
 
-				$catpagination = $catmodel->getPagination();
-				$this->assignRef('catpagination', $catpagination);
-
-				//$this->addStandardDefaultViewCommands();
-				$this->setLayout('massxref');
-
-				JToolBarHelper::custom('massxref_cats_exe', 'new', 'new', JText::_('COM_VIRTUEMART_PRODUCT_XREF_CAT_EXE'), false);
-
+				// restore icon is good but not the word
+				JToolBarHelper::custom('display','restore', 'restore', JText::_('JTOOLBAR_BACK'), false);
+				JToolBarHelper::custom('massxref_cats_exe', 'assign', 'assign', JText::_('COM_VIRTUEMART_MASS_REPLACE'), false);
+				JToolBarHelper::custom('massxref_cats_add', 'new', 'new', JText::_('COM_VIRTUEMART_MASS_ADD'), true);
 				break;
 
 			case 'massxref_sgrps':
 			case 'massxref_sgrps_exe':
+				$this->SetViewTitle('PRODUCT_MASSXREF');
+				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'shoppergroup'.DS.'tmpl');
+				$this->loadHelper('permissions');
+				$this->perms = Permissions::getInstance();
+				$this->showVendors = $this->perms->check('admin');
 				$sgrpmodel = VmModel::getModel('shoppergroup');
 				$this->addStandardDefaultViewLists($sgrpmodel);
 
-				$shoppergroups = $sgrpmodel->getShopperGroups(false, true);
-				$this->assignRef('shoppergroups',	$shoppergroups);
+				$this->shoppergroups = $sgrpmodel->getShopperGroups(false, true);
 
-				$sgrppagination = $sgrpmodel->getPagination();
-				$this->assignRef('sgrppagination', $sgrppagination);
+				$this->pagination = $sgrpmodel->getPagination();
 
-				$this->setLayout('massxref');
-
-				JToolBarHelper::custom('massxref_sgrps_exe', 'new', 'new', JText::_('COM_VIRTUEMART_PRODUCT_XREF_SGRPS_EXE'), false);
+				JToolBarHelper::custom('massxref_sgrps_exe', 'groups-add', 'new', JText::_('COM_VIRTUEMART_PRODUCT_XREF_SGRPS_EXE'), false);
 
 				break;
 
@@ -291,7 +292,7 @@ class VirtuemartViewProduct extends VmView {
 
 			$this->SetViewTitle($title, $msg );
 
-			$this->addStandardDefaultViewLists($model,'created_on');
+			$this->addStandardDefaultViewLists($model,'created_on', 'DESC', 'filter_product');
 
 			/* Get the list of products */
 			$productlist = $model->getProductListing(false,false,false,false,true);
@@ -341,13 +342,13 @@ class VirtuemartViewProduct extends VmView {
 							'price' => JText::_('COM_VIRTUEMART_PRODUCT_LIST_SEARCH_BY_DATE_TYPE_PRICE'),
 							'withoutprice' => JText::_('COM_VIRTUEMART_PRODUCT_LIST_SEARCH_BY_DATE_TYPE_WITHOUTPRICE')
 			);
-			$this->lists['search_type'] = VmHTML::selectList('search_type', JRequest::getVar('search_type'),$options);
+			$this->lists['search_type'] = VmHTML::selectList('search_type', JRequest::getVar('search_type'),$options,1,'','onchange="Joomla.ajaxSearch(this); return false;"','input-medium');
 
 			/* Search order */
 			$options = array( 'bf' => JText::_('COM_VIRTUEMART_PRODUCT_LIST_SEARCH_BY_DATE_BEFORE'),
 								  'af' => JText::_('COM_VIRTUEMART_PRODUCT_LIST_SEARCH_BY_DATE_AFTER')
 			);
-			$this->lists['search_order'] = VmHTML::selectList('search_order', JRequest::getVar('search_order'),$options);
+			$this->lists['search_order'] = VmHTML::selectList('search_order', JRequest::getVar('search_order'),$options,1,'','','input-small');
 
 			// Toolbar
 
@@ -366,7 +367,7 @@ class VirtuemartViewProduct extends VmView {
 
 			break;
 		}
-
+// echo $task.' '.$this->getLayout();
 		parent::display($tpl);
 	}
 
@@ -388,8 +389,8 @@ class VirtuemartViewProduct extends VmView {
 	 *
 	 * @author Max Milbers
 	 */
-	function renderDiscountList($selected,$name='product_discount_id'){
-
+	function renderDiscountList($selected,$name='product_discount_id',$id=null){
+		if ($id ===null) $id = $name ;
 		if(!class_exists('VirtueMartModelCalc')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'calc.php');
 		$discounts = VirtueMartModelCalc::getDiscounts();
 
@@ -400,7 +401,7 @@ class VirtuemartViewProduct extends VmView {
 		foreach($discounts as $discount){
 			$discountrates[] = JHTML::_('select.option', $discount->virtuemart_calc_id, $discount->calc_name, 'product_discount_id');
 		}
-		$listHTML = JHTML::_('Select.genericlist', $discountrates, $name, '', 'product_discount_id', 'text', $selected );
+		$listHTML = JHTML::_('Select.genericlist', $discountrates, $name, '', 'product_discount_id', 'text', $selected, $id);
 		return $listHTML;
 
 	}
@@ -411,17 +412,17 @@ class VirtuemartViewProduct extends VmView {
 		$this->db->setQuery(' SELECT COUNT( * ) FROM `#__virtuemart_products` WHERE `product_parent_id` ='.$product_id);
 		if ($result = $this->db->loadResult()){
 			$result = JText::sprintf('COM_VIRTUEMART_X_CHILD_PRODUCT', $result);
-			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_id.'&option=com_virtuemart'), $result, array('title' => JText::sprintf('COM_VIRTUEMART_PRODUCT_LIST_X_CHILDREN',$product_name) ));
+			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_id.'&option=com_virtuemart'), '<div class="small">'.$result.'</div>', array('title' => JText::sprintf('COM_VIRTUEMART_PRODUCT_LIST_X_CHILDREN',$product_name) ));
 		}
 	}
 
 	function displayLinkToParent($product_parent_id) {
 
 		//$this->db = JFactory::getDBO();
-		$this->db->setQuery(' SELECT * FROM `#__virtuemart_products_'.VMLANG.'` as l JOIN `#__virtuemart_products` using (`virtuemart_product_id`) WHERE `virtuemart_product_id` = '.$product_parent_id);
-		if ($parent = $this->db->loadObject()){
-			$result = JText::sprintf('COM_VIRTUEMART_LIST_CHILDREN_FROM_PARENT', $parent->product_name);
-			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_parent_id.'&option=com_virtuemart'), $parent->product_name, array('title' => $result));
+		$this->db->setQuery(' SELECT `product_name` FROM `#__virtuemart_products_'.VMLANG.'` as l JOIN `#__virtuemart_products` using (`virtuemart_product_id`) WHERE `virtuemart_product_id` = '.$product_parent_id);
+		if ($product_name = $this->db->loadResult()){
+			$result = JText::sprintf('COM_VIRTUEMART_LIST_CHILDREN_FROM_PARENT', $product_name);
+			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_parent_id.'&option=com_virtuemart'), '<div class="small">'.$product_name.'</div>', array('title' => $result));
 		}
 	}
 

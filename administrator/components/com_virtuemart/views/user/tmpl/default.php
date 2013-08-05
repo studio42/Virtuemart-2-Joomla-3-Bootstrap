@@ -17,105 +17,21 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
-
-AdminUIHelper::startAdminArea();
-
+defined('_JEXEC') or die();
 ?>
-<form action="<?php echo JRoute::_( 'index.php' );?>" method="post" name="adminForm" id="adminForm">
-	<div id="header">
-	<div id="filterbox">
-		<table>
-			<tr>
-				<td width="100%">
-					<?php echo JText::_('COM_VIRTUEMART_FILTER'); ?>:
-					<input type="text" name="search" id="search" value="<?php echo $this->lists['search'];?>" class="text_area" onchange="document.adminForm.submit();" />
-					<button onclick="this.form.submit();"><?php echo JText::_('COM_VIRTUEMART_GO'); ?></button>
-					<button onclick="document.adminForm.search.value='';this.form.submit();"><?php echo JText::_('COM_VIRTUEMART_RESET'); ?></button>
-				</td>
-			</tr>
-		</table>
+<form action="index.php" method="post" name="adminForm" id="adminForm">
+	<?php AdminUIHelper::startAdminArea(); ?>
+
+	<div id="filter-bar" class="btn-toolbar">
+		<?php echo $this->displayDefaultViewSearch() ?>
 	</div>
-	<div id="resultscounter"><?php echo $this->pagination->getResultsCounter();?></div>
+	<div class="clearfix"> </div>
+	<div id="results">
+		<?php 
+		// split to use ajax search
+		echo $this->loadTemplate('results'); ?>
 	</div>
-	<div id="editcell">
-		<table class="adminlist" cellspacing="0" cellpadding="0">
-		<thead>
-		<tr>
-			<th width="10">
-				<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->userList); ?>);" />
-			</th>
 
-			<th><?php echo $this->sort('ju.username', 'COM_VIRTUEMART_USERNAME')  ?></th>
-			<th><?php echo $this->sort('ju.name', 'COM_VIRTUEMART_USER_DISPLAYED_NAME')  ?></th>
-			<th><?php echo JText::_('COM_VIRTUEMART_EMAIL'); ?></th>
-			<th><?php echo JText::_('COM_VIRTUEMART_USER_GROUP'); ?></th>
-			<th><?php echo $this->sort('shopper_group_name', 'COM_VIRTUEMART_SHOPPERGROUP')  ?></th>
-			<?php if(Vmconfig::get('multix','none')!=='none'){ ?>
-			<th width="80"><?php echo JText::_('COM_VIRTUEMART_USER_IS_VENDOR'); ?></th>
-			<?php } ?>
-			<th><?php echo  JText::_('COM_VIRTUEMART_ID') ?></th>
-		</tr>
-		</thead>
-		<?php
-		$k = 0;
-		for ($i = 0, $n = count($this->userList); $i < $n; $i++) {
-			$row = $this->userList[$i];
-			$checked = JHTML::_('grid.id', $i, $row->id);
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=user&task=edit&virtuemart_user_id[]=' . $row->id);
-			$is_vendor = $this->toggle($row->is_vendor, $i, 'toggle.user_is_vendor');
-		?>
-			<tr class="row<?php echo $k ; ?>">
-				<td>
-					<?php echo $checked; ?>
-				</td>
-
-				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->username; ?></a>
-				</td>
-				<td align="left">
-					<?php echo $row->name; ?>
-				</td>
-				<td align="left">
-					<?php echo $row->email; ?>
-				</td>
-				<td align="left">
-					<?php
-					echo $this->perm->getPermissions($row->id);
-				//	if(empty($row->perms)) $row->perms = 'shopper';
-				//	echo $row->perms . ' / (' . $row->usertype . ')';
-					?>
-				</td>
-				<td align="left">
-					<?php
-					if(empty($row->shopper_group_name)) $row->shopper_group_name = $this->defaultShopperGroup;
-					echo $row->shopper_group_name;
-					?>
-				</td>
-				<?php if(Vmconfig::get('multix','none')!=='none'){ ?>
-				<td align="center">
-					<?php echo $is_vendor; ?>
-				</td>
-				<?php } ?>
-				<td align="right">
-					<?php echo $row->id; ?>
-				</td>
-			</tr>
-			<?php
-			$k = 1 - $k;
-		}
-		?>
-		<tfoot>
-			<tr>
-				<td colspan="11">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
-</div>
-
-	<?php echo $this->addStandardHiddenToForm(); ?>
+	<?php AdminUIHelper::endAdminArea(true); ?>
 </form>
 
-<?php AdminUIHelper::endAdminArea(); ?>

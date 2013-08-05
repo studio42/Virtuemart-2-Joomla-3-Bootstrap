@@ -17,14 +17,15 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-AdminUIHelper::startAdminArea();
-AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_ORDER_PRINT_PO_LBL');
-
 // Get the plugins
 JPluginHelper::importPlugin('vmpayment');
 JPluginHelper::importPlugin('vmshopper');
 JPluginHelper::importPlugin('vmshipment');
+?>
+<div class="virtuemart-admin-area row-fluid order">
+<?php 
+AdminUIHelper::startAdminArea();
+AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_ORDER_PRINT_PO_LBL');
 
 ?>
 
@@ -35,13 +36,14 @@ JPluginHelper::importPlugin('vmshipment');
 		<input type="hidden" name="virtuemart_order_id" value="<?php echo $this->orderID; ?>" />
 		<?php echo JHTML::_( 'form.token' ); ?>
 		</form>
-<table class="adminlist" style="table-layout: fixed;">
-	<tr>
-		<td valign="top">
-		<table class="adminlist" cellspacing="0" cellpadding="0">
+<div class="row-fluid">
+	<div class="span6">
+		<table class="table table-condensed" cellspacing="0" cellpadding="0">
+			<thead>
 			<tr>
 				<th colspan="2"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PO_LBL') ?></th>
 			</tr>
+			</thead>
 			<?php
 			    $print_url = juri::root().'index.php?option=com_virtuemart&view=invoice&layout=invoice&tmpl=component&virtuemart_order_id=' . $this->orderbt->virtuemart_order_id . '&order_number=' .$this->orderbt->order_number. '&order_pass=' .$this->orderbt->order_pass;
 			    $print_link = "<a title=\"".JText::_('COM_VIRTUEMART_PRINT')."\" href=\"javascript:void window.open('$print_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
@@ -100,9 +102,9 @@ JPluginHelper::importPlugin('vmshipment');
 			</tr>
 			<?php } ?>
 		</table>
-		</td>
-		<td valign="top">
-		<table class="adminlist" cellspacing="0" cellpadding="0">
+	</div>
+	<div class="span6">
+		<table class="table table-striped table-condensed" cellspacing="0" cellpadding="0">
 			<thead>
 				<tr>
 					<th><?php echo JText::_('COM_VIRTUEMART_ORDER_HISTORY_DATE_ADDED') ?></th>
@@ -135,9 +137,9 @@ JPluginHelper::importPlugin('vmshipment');
 			?>
 			<tr>
 				<td colspan="4">
-				<a href="#" class="show_element"><span class="vmicon vmicon-16-editadd"></span><?php echo JText::_('COM_VIRTUEMART_ORDER_UPDATE_STATUS') ?></a>
-				<div style="display: none; background: white;"
-					class="element-hidden vm-absolute"
+				<a href="#updateOrderStatus" class="show_element btn btn-block"><span class="vmicon vmicon-16-editadd"></span><?php echo JText::_('COM_VIRTUEMART_ORDER_UPDATE_STATUS') ?></a>
+				<div style="display: none;"
+					class="modal"
 					id="updateOrderStatus"><?php echo $this->loadTemplate('editstatus'); ?>
 				</div>
 				</td>
@@ -161,31 +163,19 @@ JPluginHelper::importPlugin('vmshipment');
 			?>
 
 		</table>
-		</td>
-	</tr>
-	<?php if ($this->orderbt->customer_note) { ?>
-	<tr>
+	</div>
+</div>
+<?php if ($this->orderbt->customer_note) { ?>
+	<div class="row-fluid">
 		<!-- Customer Note -->
-		<td valign="top" width="30%" colspan="2">
-		<table class="adminlist" cellspacing="0" cellpadding="0">
-			<thead>
-				<tr>
-					<th><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_CUSTOMER_NOTE') ?></th>
-				</tr>
-			</thead>
-			<tr>
-				<td valign="top" align="left" width="50%"><?php echo $this->orderbt->customer_note; ?></td>
-			</tr>
-		</table>
-		</td>
-	</tr>
-	<?php } ?>
-</table>
+		<h4 class="span6"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_CUSTOMER_NOTE') ?></h4>
+		<div class="span6"><?php echo $this->orderbt->customer_note; ?></div>
+	</div>
+<?php } ?>
 &nbsp;
-<table width="100%">
-	<tr>
-		<td width="50%" valign="top">
-		<table class="adminlist" width="100%">
+<div class="row-fluid">
+	<div class="span6">
+		<table class="table table-condensed" width="100%">
 			<thead>
 				<tr>
 					<th  style="text-align: center;" colspan="2"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_BILL_TO_LBL') ?></th>
@@ -206,9 +196,9 @@ JPluginHelper::importPlugin('vmshipment');
 			?>
 
 		</table>
-		</td>
-		<td width="50%" valign="top">
-		<table class="adminlist" width="100%">
+	</div>
+	<div class="span6">
+		<table class="table table-condensed" width="100%">
 			<thead>
 				<tr>
 					<th   style="text-align: center;" colspan="2"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SHIP_TO_LBL') ?></th>
@@ -229,19 +219,14 @@ JPluginHelper::importPlugin('vmshipment');
 			?>
 
 		</table>
-		</td>
-	</tr>
-</table>
+	</div>
+</div>
 
-<table width="100%">
-	<tr>
-		<td colspan="2">
 		<form action="index.php" method="post" name="orderItemForm" id="orderItemForm"><!-- Update linestatus form -->
-		<table class="adminlist" cellspacing="0" cellpadding="0">
+		<table class="table table-condensed table-striped" cellspacing="0" cellpadding="0">
 			<thead>
 				<tr>
 					<!--<th class="title" width="5%" align="left"><?php echo JText::_('COM_VIRTUEMART_ORDER_EDIT_ACTIONS') ?></th> -->
-					<th class="title" width="3" align="left">&nbsp;</th>
 					<th class="title" width="47" align="left"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_QUANTITY') ?></th>
 					<th class="title" width="*" align="left"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_NAME') ?></th>
 					<th class="title" width="10%" align="left"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SKU') ?></th>
@@ -263,9 +248,6 @@ JPluginHelper::importPlugin('vmshipment');
 
 					<a href="javascript:enableItemEdit(<?php echo $item->virtuemart_order_item_id; ?>)"> <?php echo JHTML::_('image',  'administrator/components/com_virtuemart/assets/images/icon_16/icon-16-category.png', "Edit", NULL, "Edit"); ?></a>
 				</td> -->
-				<td>
-
-				</td>
 				<td>
 					<?php echo $item->product_quantity; ?>
 				</td>
@@ -357,14 +339,14 @@ JPluginHelper::importPlugin('vmshipment');
 		<?php } ?>
 			<tr id="updateOrderItemStatus">
 
-					<td colspan="5">
-						&nbsp;						<a class="updateOrderItemStatus" href="#"><span class="icon-nofloat vmicon vmicon-16-save"></span><?php echo JText::_('COM_VIRTUEMART_SAVE'); ?></a>
+					<td colspan="6">
+						&nbsp;						<a class="updateOrderItemStatus btn" href="#"><span class="icon-nofloat vmicon vmicon-16-save"></span><?php echo JText::_('COM_VIRTUEMART_SAVE'); ?></a>
 						&nbsp;&nbsp;&nbsp;
-						<a href="#" onClick="javascript:resetForm(0);"><span class="icon-nofloat vmicon vmicon-16-remove"></span><?php echo '&nbsp;'. JText::_('COM_VIRTUEMART_CANCEL'); ?></a>
+						<a href="#" onClick="javascript:resetForm(0);" class="btn"><span class="icon-nofloat vmicon vmicon-16-remove"></span><?php echo '&nbsp;'. JText::_('COM_VIRTUEMART_CANCEL'); ?></a>
 					</td>
 
 
-					<td colspan="6">
+					<td colspan="4">
 						<?php // echo JHTML::_('image',  'administrator/components/com_virtuemart/assets/images/vm_witharrow.png', 'With selected'); $this->orderStatSelect; ?>
 						&nbsp;&nbsp;&nbsp;
 
@@ -382,7 +364,7 @@ JPluginHelper::importPlugin('vmshipment');
 				<td align="left" colspan="1"><?php $editLineLink=JRoute::_('index.php?option=com_virtuemart&view=orders&orderId='.$this->orderbt->virtuemart_order_id.'&orderLineId=0&tmpl=component&task=editOrderItem'); ?>
 				<!-- <a href="<?php echo $editLineLink; ?>" class="modal"> <?php echo JHTML::_('image',  'administrator/components/com_virtuemart/assets/images/icon_16/icon-16-editadd.png', "New Item"); ?>
 				New Item </a>--></td>
-				<td align="right" colspan="4">
+				<td align="right" colspan="3">
 				<div align="right"><strong> <?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SUBTOTAL') ?>:
 				</strong></div>
 				</td>
@@ -400,7 +382,7 @@ JPluginHelper::importPlugin('vmshipment');
 				if ($this->orderbt->coupon_discount > 0 || $this->orderbt->coupon_discount < 0) {
 					?>
 			<tr>
-				<td align="right" colspan="5"><strong><?php echo JText::_('COM_VIRTUEMART_COUPON_DISCOUNT') ?></strong></td>
+				<td align="right" colspan="4"><strong><?php echo JText::_('COM_VIRTUEMART_COUPON_DISCOUNT') ?></strong></td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
@@ -419,7 +401,7 @@ JPluginHelper::importPlugin('vmshipment');
 		foreach($this->orderdetails['calc_rules'] as $rule){
 			if ($rule->calc_kind== 'DBTaxRulesBill') { ?>
 			<tr >
-				<td colspan="5"  align="right"  ><?php echo $rule->calc_rule_name ?> </td>
+				<td colspan="4"  align="right"  ><?php echo $rule->calc_rule_name ?> </td>
 				<td align="right" colspan="3" > </td>
 
 				<td align="right"> </td>
@@ -429,7 +411,7 @@ JPluginHelper::importPlugin('vmshipment');
 			<?php
 			} elseif ($rule->calc_kind == 'taxRulesBill') { ?>
 			<tr >
-				<td colspan="5"  align="right"  ><?php echo $rule->calc_rule_name ?> </td>
+				<td colspan="4"  align="right"  ><?php echo $rule->calc_rule_name ?> </td>
 				<td align="right" colspan="3" > </td>
 				<td align="right"> </td>
 				<td align="right"><?php    ?> </td>
@@ -438,7 +420,7 @@ JPluginHelper::importPlugin('vmshipment');
 			<?php
 			 } elseif ($rule->calc_kind == 'DATaxRulesBill') { ?>
 			<tr >
-				<td colspan="5"   align="right"  ><?php echo $rule->calc_rule_name ?> </td>
+				<td colspan="4"   align="right"  ><?php echo $rule->calc_rule_name ?> </td>
 				<td align="right" colspan="3" > </td>
 
 				<td align="right"> </td>
@@ -455,7 +437,7 @@ JPluginHelper::importPlugin('vmshipment');
 
 
 			<tr>
-				<td align="right" colspan="5"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SHIPPING') ?>:</strong></td>
+				<td align="right" colspan="4"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SHIPPING') ?>:</strong></td>
 				<td  align="right" style="padding-right: 5px;"><?php echo $this->currency->priceDisplay($this->orderbt->order_shipment); ?></td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
@@ -465,7 +447,7 @@ JPluginHelper::importPlugin('vmshipment');
 
 			</tr>
 			 <tr>
-				<td align="right" colspan="5"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PAYMENT') ?>:</strong></td>
+				<td align="right" colspan="4"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PAYMENT') ?>:</strong></td>
 				<td  align="right" style="padding-right: 5px;"><?php echo $this->currency->priceDisplay($this->orderbt->order_payment); ?></td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
@@ -477,7 +459,7 @@ JPluginHelper::importPlugin('vmshipment');
 
 
 			<tr>
-				<td align="right" colspan="5"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_TOTAL') ?>:</strong></td>
+				<td align="right" colspan="4"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_TOTAL') ?>:</strong></td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
@@ -488,7 +470,7 @@ JPluginHelper::importPlugin('vmshipment');
 			</tr>
 <?php if ($this->orderbt->user_currency_rate != 1.0) { ?>
 		<tr>
-				<td align="right" colspan="5"><em><?php echo JText::_('COM_VIRTUEMART_ORDER_USER_CURRENCY_RATE') ?>:</em></td>
+				<td align="right" colspan="4"><em><?php echo JText::_('COM_VIRTUEMART_ORDER_USER_CURRENCY_RATE') ?>:</em></td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
@@ -499,12 +481,9 @@ JPluginHelper::importPlugin('vmshipment');
 			<?php }
 			?>
 		</table>
-		</td>
-	</tr>
-</table>
 &nbsp;
-<table width="100%">
-	<tr>
+<div class="row-fluid">
+	<div class="span6">
 		<td valign="top" width="50%"><?php
 		JPluginHelper::importPlugin('vmshipment');
 		$_dispatcher = JDispatcher::getInstance();
@@ -515,8 +494,8 @@ JPluginHelper::importPlugin('vmshipment');
 			}
 		}
 		?>
-		</td>
-		<td valign="top"><?php
+	</div>
+	<div class="span6"><?php
 		JPluginHelper::importPlugin('vmpayment');
 		$_dispatcher = JDispatcher::getInstance();
 		$_returnValues = $_dispatcher->trigger('plgVmOnShowOrderBEPayment',array( $this->orderID,$this->orderbt->virtuemart_paymentmethod_id, $this->orderdetails));
@@ -525,21 +504,21 @@ JPluginHelper::importPlugin('vmshipment');
 				echo $_returnValue;
 			}
 		}
-		?></td>
-	</tr>
+		?>
+	</div>
 
-</table>
+</div>
 
 
 
 <?php
 AdminUIHelper::imitateTabs('end');
 AdminUIHelper::endAdminArea(); ?>
-
+</div>
 <script type="text/javascript">
 
-jQuery('.show_element').click(function() {
-  jQuery('.element-hidden').toggle();
+jQuery('.show_element,.orderStatFormReset,#updateOrderStatus .close').click(function() {
+  jQuery('#updateOrderStatus').toggle();
   return false
 });
 // jQuery('select#order_items_status').change(function() {

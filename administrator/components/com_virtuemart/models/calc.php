@@ -125,7 +125,7 @@ class VirtueMartModelCalc extends VmModel {
 
 		if($search){
 			$db = JFactory::getDBO();
-			$search = '"%' . $db->getEscaped( $search, true ) . '%"' ;
+			$search = '"%' . $db->escape( $search, true ) . '%"' ;
 			$where[] = ' `calc_name` LIKE '.$search.' OR `calc_descr` LIKE '.$search.' OR `calc_value` LIKE '.$search.' ';
 		}
 
@@ -172,7 +172,7 @@ class VirtueMartModelCalc extends VmModel {
 	 */
     public function store(&$data) {
 
-		JRequest::checkToken() or jexit( 'Invalid Token, in store calc');
+		JSession::checkToken() or jexit( 'Invalid Token, in store calc');
 
 		$table = $this->getTable('calcs');
 
@@ -261,8 +261,8 @@ class VirtueMartModelCalc extends VmModel {
 		}
 		$q=substr($q,0,-3);
 
-		$q .= 'AND ( publish_up = "' . $db->getEscaped($nullDate) . '" OR publish_up <= "' . $db->getEscaped($now) . '" )
-				AND ( publish_down = "' . $db->getEscaped($nullDate) . '" OR publish_down >= "' . $db->getEscaped($now) . '" ) ';
+		$q .= 'AND ( publish_up = ' . $db->quote($nullDate) . ' OR publish_up <= ' . $db->quote($now) . ' )
+				AND ( publish_down = ' . $db->quote($nullDate) . ' OR publish_down >= ' . $db->quote($now) . ' ) ';
 
 
 		$db->setQuery($q);
@@ -283,7 +283,7 @@ class VirtueMartModelCalc extends VmModel {
 	*/
 	public function remove($cids) {
 
-		JRequest::checkToken() or jexit( 'Invalid Token, in remove category');
+		JSession::checkToken() or jexit( 'Invalid Token, in remove category');
 
 		$table = $this->getTable($this->_maintablename);
 		$cat = $this->getTable('calc_categories');

@@ -102,18 +102,21 @@ class VirtuemartViewUser extends VmView {
 			// User details
 			$_contactDetails = $model->getContactDetails();
 			$_groupList = $model->getGroupList();
-
+			
+			// this list is not used, note : Juser->get('gid') is obselete
+			$userGroups = JAccess::getGroupsByUser($userDetails->JUser->get('id'));
+			$defaultGroup = '2';
 			if (!is_array($_groupList)) {
-				$this->lists['gid'] = '<input type="hidden" name="gid" value="'. $userDetails->JUser->get('gid') .'" /><strong>'. JText::_($_groupList) .'</strong>';
+				$this->lists['gid'] = '<input type="hidden" name="gid" value="'. $defaultGroup  .'" /><strong>'. JText::_('JDEFAULT') .'</strong>';
 			} else {
-				$this->lists['gid'] 	= JHTML::_('select.genericlist', $_groupList, 'gid', 'size="10"', 'value', 'text', $userDetails->JUser->get('gid'));
+				$this->lists['gid'] 	= JHTML::_('select.genericlist', $_groupList, 'gid', 'size="10"', 'value', 'text', $userGroups);
 			}
 
-			$this->lists['canBlock'] = ($currentUser->authorize('com_users', 'block user')
+			$this->lists['canBlock'] = ($currentUser->authorise('com_users', 'block user')
 			&& ($userDetails->JUser->get('id') != $currentUser->get('id'))); // Can't block myself
-			$this->lists['canSetMailopt'] = $currentUser->authorize('workflow', 'email_events');
-			$this->lists['block'] = JHTML::_('select.booleanlist', 'block',      'class="inputbox"', $userDetails->JUser->get('block'),     'COM_VIRTUEMART_YES', 'COM_VIRTUEMART_NO');
-			$this->lists['sendEmail'] = JHTML::_('select.booleanlist', 'sendEmail',  'class="inputbox"', $userDetails->JUser->get('sendEmail'), 'COM_VIRTUEMART_YES', 'COM_VIRTUEMART_NO');
+			$this->lists['canSetMailopt'] = $currentUser->authorise('workflow', 'email_events');
+			$this->lists['block'] = VmHTML::booleanlist( 'block', $userDetails->JUser->get('block') );
+			$this->lists['sendEmail'] = VmHTML::booleanlist('sendEmail', $userDetails->JUser->get('sendEmail') );
 			$this->lists['params'] = $userDetails->JUser->getParameters(true);
 
 			// Shopper info
@@ -140,13 +143,15 @@ class VirtuemartViewUser extends VmView {
 			// Load the required scripts
 			if (count($userFieldsBT['scripts']) > 0) {
 				foreach ($userFieldsBT['scripts'] as $_script => $_path) {
-					JHTML::script($_script, $_path);
+					// TODO some test j3 path has to be in first param
+					JHTML::script($_path.'/'.$_script );
 				}
 			}
 			// Load the required stylesheets
 			if (count($userFieldsBT['links']) > 0) {
 				foreach ($userFieldsBT['links'] as $_link => $_path) {
-					JHTML::stylesheet($_link, $_path);
+					// TODO some test j3
+					JHTML::stylesheet( $_path.'/'.$_link);
 				}
 			}
 

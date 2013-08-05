@@ -22,21 +22,21 @@ defined('_JEXEC') or die('Restricted access');
 AdminUIHelper::startAdminArea();
 
 // Implement Joomla's form validation
-JHTML::_('behavior.formvalidation')
+JHTML::_('behavior.formvalidation');
+//note : unkow use
+$document = JFactory::getDocument();
+$document->addStyleDeclaration('
+	.invalid {
+		border-color: #f00;
+		background-color: #ffd;
+		color: #000;
+	}
+	label.invalid {
+		background-color: #fff;
+		color: #f00;
+	}');
+
 ?>
-<style type="text/css">
-.invalid {
-	border-color: #f00;
-	background-color: #ffd;
-	color: #000;
-}
-label.invalid {
-	background-color: #fff;
-	color: #f00;
-}
-</style>
-
-
 <form method="post" id="adminForm" name="adminForm" action="index.php" enctype="multipart/form-data" class="form-validate" onSubmit="return myValidator(this);">
 <?php
 

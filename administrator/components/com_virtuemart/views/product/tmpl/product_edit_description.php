@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');?>
 <fieldset>
 	<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_S_DESC') ?></legend>		
-	<textarea class="inputbox" name="product_s_desc" id="product_s_desc" cols="65" rows="3" ><?php echo $this->product->product_s_desc; ?></textarea>
+	<textarea class="inputbox span12" name="product_s_desc" id="product_s_desc" cols="65" rows="3" ><?php echo $this->product->product_s_desc; ?></textarea>
 </fieldset>
 			
 <fieldset>
@@ -36,13 +36,13 @@ defined('_JEXEC') or die('Restricted access');?>
 				<div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_CUSTOM_PAGE_TITLE'); ?> </div>
 			</td>
 			<td valign="top">
-				<input type="text" class="inputbox" size="70" name="customtitle" value="<?php echo $this->product->customtitle ?>" />
+				<input type="text" class="inputbox span12" size="70" name="customtitle" value="<?php echo $this->product->customtitle ?>" />
 			</td>
 		</tr>
 		<tr>
 			<td valign="top"><div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_METADESC'); ?> </div></td>
 			<td valign="top">
-				<textarea class="inputbox" name="metadesc" id="metadesc" cols="60" rows="6"><?php echo $this->product->metadesc; ?></textarea>
+				<textarea class="inputbox span12" name="metadesc" id="metadesc" cols="60" rows="6"><?php echo $this->product->metadesc; ?></textarea>
 			</td>
 		</tr>
 		<tr>
@@ -50,7 +50,7 @@ defined('_JEXEC') or die('Restricted access');?>
 				<div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_METAKEY'); ?> </div>
 			</td>
 			<td valign="top">
-				<textarea class="inputbox" name="metakey" id="metakey" cols="60" rows="6"><?php echo $this->product->metakey; ?></textarea>
+				<textarea class="inputbox span12" name="metakey" id="metakey" cols="60" rows="6"><?php echo $this->product->metakey; ?></textarea>
 			</td>
 		</tr>
 		<tr>
@@ -58,7 +58,7 @@ defined('_JEXEC') or die('Restricted access');?>
 				<div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_METAROBOT'); ?> </div>
 			</td>
 			<td valign="top">
-				<input type="text" class="inputbox" size="60" name="metarobot" value="<?php echo $this->product->metarobot ?>" />
+				<input type="text" class="inputbox span12" size="60" name="metarobot" value="<?php echo $this->product->metarobot ?>" />
 			</td>
 		</tr>
 		<tr>
@@ -66,7 +66,7 @@ defined('_JEXEC') or die('Restricted access');?>
 				<div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_METAAUTHOR'); ?> </div>
 			</td>
 			<td valign="top">
-				<input type="text" class="inputbox" size="60" name="metaauthor" value="<?php echo $this->product->metaauthor ?>" />
+				<input type="text" class="inputbox span12" size="60" name="metaauthor" value="<?php echo $this->product->metaauthor ?>" />
 			</td>
 		</tr>
 	</table>

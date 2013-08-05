@@ -139,7 +139,6 @@ class VirtueMartModelCustomfields extends VmModel {
 		if(!empty($varsToPush)){
 			VmTable::bindParameterable($table,'custom_param',$varsToPush);
 		}
-
 	}
 
 
@@ -276,7 +275,13 @@ class VirtueMartModelCustomfields extends VmModel {
 		}
 		// only input when not set else display
 		if ($datas->field_type) {
-			$html .= VmHTML::row ('value', 'COM_VIRTUEMART_CUSTOM_FIELD_TYPE', $datas->field_types[$datas->field_type]);
+			if ($datas->field_type =='E') {
+				if ( jText::_('custom_'.$datas->custom_element) !== 'vmcustom_'.$datas->custom_element )
+					$plugin = ' ('.jText::_('vmcustom_'.$datas->custom_element).')';
+				else $plugin = ' ('.$datas->custom_element.')' ;
+			} else $plugin='';
+			$typeName = jText::_($datas->field_types[$datas->field_type]).$plugin;
+			$html .= VmHTML::row ('value', 'COM_VIRTUEMART_CUSTOM_FIELD_TYPE', $typeName );
 		}
 		else {
 			$html .= VmHTML::row ('select', 'COM_VIRTUEMART_CUSTOM_FIELD_TYPE', 'field_type', $this->getOptions ($datas->field_types), $datas->field_type, VmHTML::validate ('R'));
@@ -292,7 +297,8 @@ class VirtueMartModelCustomfields extends VmModel {
 		$html .= VmHTML::row ('input', 'COM_VIRTUEMART_CUSTOM_LAYOUT_POS', 'layout_pos', $datas->layout_pos);
 		//$html .= VmHTML::row('booleanlist','COM_VIRTUEMART_CUSTOM_PARENT','custom_parent_id',$this->getCustomsList(),  $datas->custom_parent_id,'');
 		$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_CUSTOM_ADMIN_ONLY', 'admin_only', $datas->admin_only);
-		$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_CUSTOM_IS_LIST', 'is_list', $datas->is_list);
+		if ($datas->field_type !=='E')
+			$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_CUSTOM_IS_LIST', 'is_list', $datas->is_list);
 		$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_CUSTOM_IS_HIDDEN', 'is_hidden', $datas->is_hidden);
 
 		// $html .= '</table>';  removed
@@ -452,7 +458,7 @@ class VirtueMartModelCustomfields extends VmModel {
 	public function storeProductCustomfields($table,$datas, $id) {
 
 		//vmdebug('storeProductCustomfields',$datas);
-		JRequest::checkToken() or jexit( 'Invalid Token, in store customfields');
+		JSession::checkToken() or jexit( 'Invalid Token, in store customfields');
 		//Sanitize id
 		$id = (int)$id;
 
@@ -460,10 +466,9 @@ class VirtueMartModelCustomfields extends VmModel {
 		$tableWhiteList = array('product','category','manufacturer');
 		if(!in_array($table,$tableWhiteList)) return false;
 
-
 		// Get old IDS
 		$this->_db->setQuery( 'SELECT `virtuemart_customfield_id` FROM `#__virtuemart_'.$table.'_customfields` as `PC` WHERE `PC`.virtuemart_'.$table.'_id ='.$id );
-		$old_customfield_ids = $this->_db->loadResultArray();
+		$old_customfield_ids = $this->_db->loadColumn();
 
 		if (isset ( $datas['custom_param'] )) $params = true ;
 		else $params = false ;
@@ -519,7 +524,6 @@ class VirtueMartModelCustomfields extends VmModel {
 			foreach ($datas['field'] as $key => $plugin_param ) {
 				
 				if ($plugin_param['field_type'] !=='E') continue;
-				// var_dump($datas); jexit();
 				$datas['plugin_param'] = $datas['field'] ;
 				$dispatcher->trigger('plgVmOnCloneProduct', array($datas, $plugin_param,$datas['cloned_product_id'] ));
 			}
@@ -545,12 +549,11 @@ class VirtueMartModelCustomfields extends VmModel {
 			$vendor = $vendor_model->getVendor();
 			$currency_model = VmModel::getModel('currency');
 			$vendor_currency = $currency_model->getCurrency($vendor->vendor_currency);
-			$priceInput = '<span style="white-space: nowrap;"><input type="text" size="12" style="text-align:right;" value="' . (isset($field->custom_price) ?  $field->custom_price : '0') . '" name="field[' . $row . '][custom_price]" /> '.$vendor_currency->currency_symbol."</span>";
+			$priceInput = '<div class="input-append"><input class="input-mini" type="text" size="4" style="text-align:right;" value="' . (isset($field->custom_price) ?  $field->custom_price : '0') . '" name="field[' . $row . '][custom_price]" /><span class="add-on">'.$vendor_currency->currency_symbol."</span></div>";
 		}
 		else {
 			$priceInput = ' ';
 		}
-
 		if ($field->is_list) {
 			$options = array();
 			$values = explode (';', $field->value);
@@ -590,7 +593,7 @@ class VirtueMartModelCustomfields extends VmModel {
 					break;
 				// variants
 				case 'V':
-					return '<input type="text" value="' . $field->custom_value . '" name="field[' . $row . '][custom_value]" /></td><td>' . $priceInput;
+					return '<input type="text" class="input-medium" value="' . $field->custom_value . '" name="field[' . $row . '][custom_value]" /></td><td>' . $priceInput;
 					break;
 				/*
 									 * Stockable (group of) child variants
@@ -618,12 +621,12 @@ class VirtueMartModelCustomfields extends VmModel {
 					break;
 				case 'T':
 					//TODO Patrick
-					return '<input type="text" value="' . $field->custom_value . '" name="field[' . $row . '][custom_value]" /></td><td>' . $priceInput;
+					return '<input type="text" class="input-medium" value="' . $field->custom_value . '" name="field[' . $row . '][custom_value]" /></td><td>' . $priceInput;
 					break;
 				/* string or integer */
 				case 'S':
 				case 'I':
-					return '<input type="text" value="' . $field->custom_value . '" name="field[' . $row . '][custom_value]" /></td><td>' . $priceInput;
+					return '<input type="text" class="input-medium" value="' . $field->custom_value . '" name="field[' . $row . '][custom_value]" /></td><td>' . $priceInput;
 					break;
 				//'X'=>'COM_VIRTUEMART_CUSTOM_EDITOR',
 				case 'X':
@@ -692,7 +695,7 @@ class VirtueMartModelCustomfields extends VmModel {
 						$thumb = $this->displayCustomMedia ($media_id);
 					}
 					$title= $related->product_s_desc?  $related->product_s_desc :'';
-					return $display . JHTML::link (JRoute::_ ('index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id=' . $field->custom_value), $thumb . '<br /> ' . $related->product_name, array('title' => $title));
+					return $display . JHTML::link (JRoute::_ ('index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id=' . $field->custom_value), $thumb . '<br /> ' . $related->product_name, array('title' => htmlspecialchars($title) ));
 					break;
 				/* image */
 				case 'M':

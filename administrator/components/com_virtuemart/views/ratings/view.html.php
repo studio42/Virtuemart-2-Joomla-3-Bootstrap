@@ -31,12 +31,7 @@ class VirtuemartViewRatings extends VmView {
 
 	function display($tpl = null) {
 
-		$mainframe = Jfactory::getApplication();
-		$option = JRequest::getWord('option');
-
 		//Load helpers
-
-
 		$this->loadHelper('html');
 
 		/* Get the review IDs to retrieve (input variable may be cid, cid[] or virtuemart_rating_review_id */
@@ -46,13 +41,11 @@ class VirtuemartViewRatings extends VmView {
 		}
 		if ($cids && !is_array($cids)) $cids = array($cids);
 
-
 		jimport( 'joomla.utilities.arrayhelper' );
 		JArrayHelper::toInteger($cids);
 
 		// Figure out maximum rating scale (default is 5 stars)
 		$this->max_rating = VmConfig::get('vm_maximum_rating_scale',5);
-		$this->assignRef('max_rating', $this->max_rating);
 
 		$model = VmModel::getModel();
 		$this->SetViewTitle('REVIEW_RATE' );
@@ -63,63 +56,46 @@ class VirtuemartViewRatings extends VmView {
 		switch ($task) {
 			case 'listreviews':
 				/* Get the data */
-				$this->addStandardDefaultViewLists($model);
+				$this->addStandardDefaultViewLists($model,0,'ASC','filter_ratings');
+				//TODO note this is not assigned, old code ?
+				// $lists = array();
+				// $lists['filter_order'] = $mainframe->getUserStateFromRequest($option.'filter_order', 'filter_order', '', 'cmd');
+				// $lists['filter_order_Dir'] = $mainframe->getUserStateFromRequest($option.'filter_order_Dir', 'filter_order_Dir', '', 'word');
+				$this->setLayout('listreviews');
 				$virtuemart_product_id = JRequest::getInt('virtuemart_product_id',0);
-				$reviewslist = $model->getReviews($virtuemart_product_id);
-
-				$lists = array();
-				$lists['filter_order'] = $mainframe->getUserStateFromRequest($option.'filter_order', 'filter_order', '', 'cmd');
-				$lists['filter_order_Dir'] = $mainframe->getUserStateFromRequest($option.'filter_order_Dir', 'filter_order_Dir', '', 'word');
-
-				$this->assignRef('reviewslist', $reviewslist);
-
-				$pagination = $model->getPagination();
-				$this->assignRef('pagination', $pagination);
-
+				$this->reviewslist = $model->getReviews($virtuemart_product_id);
+				$this->pagination = $model->getPagination();
 				$this->addStandardDefaultViewCommands(false,true);
+
 				break;
-
 			case 'edit':
+			case 'add':
 				/* Get the data */
-				$rating = $model->getRating($cids);
+				$this->rating = $model->getRating($cids);
 				$this->addStandardEditViewCommands();
-
-				/* Assign the data */
-				$this->assignRef('rating', $rating);
-
 				break;
 			case 'edit_review':
-
 				JToolBarHelper::divider();
 
 				/* Get the data */
 				$rating = $model->getReview($cids);
 				if(!empty($rating)){
 					$this->SetViewTitle('REVIEW_RATE',$rating->product_name." (". $rating->customer.")" );
-
-					JToolBarHelper::customX('saveReview', 'save', 'save',  JText::_('COM_VIRTUEMART_SAVE'), false);
-					JToolBarHelper::customX('applyReview', 'apply', 'apply',  JText::_('COM_VIRTUEMART_APPLY'), false);
-
+					JToolBarHelper::custom('saveReview', 'save', 'save',  JText::_('COM_VIRTUEMART_SAVE'), false);
+					JToolBarHelper::custom('applyReview', 'apply', 'apply',  JText::_('COM_VIRTUEMART_APPLY'), false);
 				} else {
 					$this->SetViewTitle('REVIEW_RATE','ERROR' );
 				}
-
-				JToolBarHelper::customX('cancelEditReview', 'cancel', 'cancel',  JText::_('COM_VIRTUEMART_CANCEL'), false);
+				JToolBarHelper::custom('cancelEditReview', 'cancel', 'cancel',  JText::_('COM_VIRTUEMART_CANCEL'), false);
 
 				/* Assign the data */
-				$this->assignRef('rating', $rating);
-
+				$this->rating = $rating ;
 				break;
 			default:
-
 				$this->addStandardDefaultViewCommands(false, true);
-				$this->addStandardDefaultViewLists($model);
-
-				$ratingslist = $model->getRatings();
-				$this->assignRef('ratingslist', $ratingslist);
-
-				$pagination = $model->getPagination();
-				$this->assignRef('pagination', $pagination);
+				$this->addStandardDefaultViewLists($model,0,'ASC','filter_ratings');
+				$this->ratingslist = $model->getRatings();
+				$this->pagination = $model->getPagination();
 
 				break;
 		}

@@ -57,13 +57,12 @@ class VirtuemartViewMedia extends JViewLegacy {
 		else {
 			$this->loadHelper('mediahandler');
 			$start = JRequest::getInt('start',0);
-
 			$type = JRequest::getWord('mediatype',0);
 			$list = VmMediaHandler::displayImages($type,$start );
 			echo @json_encode($list);
 		}
 
-		jExit();
+		// jExit();
 	}
 
 

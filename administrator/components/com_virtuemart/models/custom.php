@@ -55,18 +55,53 @@ class VirtueMartModelCustom extends VmModel {
 //     		JTable::addIncludePath(JPATH_VM_ADMINISTRATOR.DS.'tables');
     		$this->_data = $this->getTable('customs');
     		$this->_data->load($this->_id);
+			if (!$this->_id) {
+				
+				$field_type = JRequest::getWord('field_type', 0) ;
+				if (!empty( $field_type ) ) {
+				$this->_data->field_type = $field_type[0];
+				} else {
+					var_dump($this->_data);
+					var_dump(jrequest::getVar('params'));
+					jexit('program faillure');
+				}
 
+				if ( $this->_data->custom_jplugin_id = JRequest::getInt('custom_jplugin_id', 0) ) {
+					$q = 'SELECT `element` FROM `#__extensions` WHERE `folder` = "vmcustom" AND `enabled`=1 ';
+					$q .= ' AND `extension_id` = '.$this->_data->custom_jplugin_id ;
+					$this->_db->setQuery($q);
+					$this->_data->custom_element = $this->_db->loadResult();
+				}
+			}
 		    $customfields = VmModel::getModel('Customfields');
 		    $this->_data->field_types = $customfields->getField_types() ;
 
     		//    		vmdebug('getCustom $data',$this->_data);
-    		if(!empty($this->_data->custom_jplugin_id)){
+    		if(!empty($this->_data->custom_element)){
+				// set params
+				$registry = new JRegistry;
+				$registry->loadString($this->_data->custom_params);
+				$this->_data->params = $registry->toArray();
     			JPluginHelper::importPlugin('vmcustom');
     			$dispatcher = JDispatcher::getInstance();
     			//    			$varsToPushParam = $dispatcher->trigger('plgVmDeclarePluginParams',array('custom',$this->_data->custom_element,$this->_data->custom_jplugin_id));
     			$retValue = $dispatcher->trigger('plgVmDeclarePluginParamsCustom',array('custom',$this->_data->custom_element,$this->_data->custom_jplugin_id,&$this->_data));
+				// Get the payment XML.
+				$path	= JPath::clean( JPATH_PLUGINS.'/vmcustom/' . $this->_data->custom_element . '/' . $this->_data->custom_element . '.xml');
+				if (file_exists($path))
+				{
 
+					$this->_data->form = JForm::getInstance('plgForm', $path, array(),true, '//config');
+					// $this->_data->xml = simplexml_load_file($path);
+					$this->_data->form->bind($this->_data);
+				}
+				else
+				{
+					$this->_data->form = null;
+				}
+				
     		} else {
+				$this->_data->form = null;
 			    //Todo this is not working, because the custom is using custom_params, while the customfield is using custom_param !
 			    //VirtueMartModelCustomfields::bindParameterableByFieldType($this->_data);
 		    }
@@ -87,41 +122,60 @@ class VirtueMartModelCustom extends VmModel {
 	 */
     function getCustoms($custom_parent_id,$search = false){
 
-    	vmdebug('for model');
-		$query='* FROM `#__virtuemart_customs` WHERE field_type <> "R" AND field_type <> "Z" AND field_type <> "G" ';
+    	// vmdebug('for model');
+		$query='* FROM `#__virtuemart_customs` WHERE field_type <> "R" AND field_type <> "Z" AND field_type <> "G"';
 		if($custom_parent_id){
-			$query .= 'AND `custom_parent_id` ='.(int)$custom_parent_id;
+			$query .= ' AND `custom_parent_id` ='.(int)$custom_parent_id;
 		}
 
 		if($search){
-			$search = '"%' . $this->_db->getEscaped( $search, true ) . '%"' ;
-			$query .= 'AND `custom_title` LIKE '.$search;
+			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
+			$query .= ' AND `custom_title` LIKE '.$search;
 		}
 	    $datas = new stdClass();
-		$datas->items = $this->exeSortSearchListQuery(0, $query, '');
+		$datas->items = $this->exeSortSearchListQuery(0, $query, '', $this->_getOrdering());
 
 		$customfields = VmModel::getModel('Customfields');
 
 		if (!class_exists('VmHTML')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'html.php');
 		$datas->field_types = $customfields->getField_types() ;
+		if ($datas->items) {
+			foreach ($datas->items as $key => & $data) {
+				if (!empty($data->custom_parent_id)) $data->custom_parent_title = $customfields->getCustomParentTitle($data->custom_parent_id);
+				else {
+					$data->custom_parent_title =  '-' ;
+				}
+				if(!empty($datas->field_types[$data->field_type ])){
+					$data->field_type_display = JText::_( $datas->field_types[$data->field_type ] );
+				} else {
+					$data->field_type_display = 'not valid, delete this line';
+					vmError('The field with id '.$data->virtuemart_custom_id.' and title '.$data->custom_title.' is not longer valid, please delete it from the list');
+				}
 
-		foreach ($datas->items as $key => & $data) {
-	  		if (!empty($data->custom_parent_id)) $data->custom_parent_title = $customfields->getCustomParentTitle($data->custom_parent_id);
-			else {
-				$data->custom_parent_title =  '-' ;
 			}
-			if(!empty($datas->field_types[$data->field_type ])){
-				$data->field_type_display = JText::_( $datas->field_types[$data->field_type ] );
-			} else {
-				$data->field_type_display = 'not valid, delete this line';
-				vmError('The field with id '.$data->virtuemart_custom_id.' and title '.$data->custom_title.' is not longer valid, please delete it from the list');
-			}
-
 		}
-		$datas->customsSelect=$customfields->displayCustomSelection();
+		// this display all. Here parent only needed
+		//$datas->customsSelect=$customfields->displayCustomSelection();
 
+		// only parent.
+		$datas->customsSelect= $this->parentsList();
+		
 		return $datas;
     }
+	function parentsList() {
+		$vendorId = 1;
+		$value = JRequest::getInt ('custom_parent_id', 0);
+		// get custom parents
+		$q = 'SELECT c.`virtuemart_custom_id` as value ,c.`custom_title` as text FROM `#__virtuemart_customs` as c';
+		$q .=' JOIN `#__virtuemart_customs` as cc on c.`virtuemart_custom_id` = cc.`custom_parent_id`';
+		$q .=' WHERE c.`custom_parent_id`=0 group by value';
+		//if (isset($this->virtuemart_custom_id)) $q.=' and virtuemart_custom_id !='.$this->virtuemart_custom_id;
+		$this->_db->setQuery ($q);
+		$result = $this->_db->loadObjectList();
+		$emptyOption = JHTML::_ ('select.option', '', '- '.JText::_ ('COM_VIRTUEMART_CUSTOM_PARENT').' -', 'value', 'text');
+		array_unshift ($result, $emptyOption);
+		return VmHTML::select('custom_parent_id', $result, $value,'onchange="Joomla.ajaxSearch(this); return false;"','value' ,'text',false);
+	}
 
 	/**
 	 * Creates a clone of a given custom id
@@ -152,7 +206,7 @@ class VirtueMartModelCustom extends VmModel {
 	 **/
 	public function saveChildCustomRelation($table,$datas) {
 
-		JRequest::checkToken() or jexit( 'Invalid Token, in store customfields');
+		JSession::checkToken() or jexit( 'Invalid Token, in store customfields');
 		//Table whitelist
 		$tableWhiteList = array('product','category','manufacturer');
 		if(!in_array($table,$tableWhiteList)) return false;
@@ -184,8 +238,9 @@ class VirtueMartModelCustom extends VmModel {
 			foreach($data['params'] as $k=>$v){
 				$data[$k] = $v;
 			}
+			$data['custom_params'] = $data['params'];
 		}
-
+// var_dump($data); jexit();
 		if(empty($data['virtuemart_vendor_id'])){
 			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
 			$data['virtuemart_vendor_id'] = VirtueMartModelVendor::getLoggedVendor();
@@ -194,13 +249,9 @@ class VirtueMartModelCustom extends VmModel {
 		}
 
 		// missing string FIX, Bad way ?
-		if (JVM_VERSION===1) {
-			$tb = '#__plugins';
-			$ext_id = 'id';
-		} else {
-			$tb = '#__extensions';
-			$ext_id = 'extension_id';
-		}
+		$tb = '#__extensions';
+		$ext_id = 'extension_id';
+
 		$q = 'SELECT `element` FROM `' . $tb . '` WHERE `' . $ext_id . '` = "'.$data['custom_jplugin_id'].'"';
 		$this->_db->setQuery($q);
 		$data['custom_element'] = $this->_db->loadResult();

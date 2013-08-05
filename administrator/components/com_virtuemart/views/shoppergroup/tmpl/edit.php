@@ -76,7 +76,8 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_SHOPPERGROUP_NAME');
     			</label>
     		    </td>
     		    <td>
-    			<img src="templates/khepri/images/menu/icon-16-default.png" alt="<?php echo JText::_('Default'); ?>" />
+    				<?php echo JHtml::_('image','menu/icon-16-default.png', JText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT'), NULL, true);
+					?>
     		    </td>
     		</tr>
 		    <?php } ?>
@@ -117,6 +118,7 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_SHOPPERGROUP_NAME');
 			<th><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICES_ROUNDING'); ?></th>
 		    </tr>
 <?php
+
 echo ShopFunctions::writePriceConfigLine($this->shoppergroup->price_display, 'basePrice', 'COM_VIRTUEMART_ADMIN_CFG_PRICE_BASEPRICE');
 echo ShopFunctions::writePriceConfigLine($this->shoppergroup->price_display, 'variantModification', 'COM_VIRTUEMART_ADMIN_CFG_PRICE_VARMOD');
 echo ShopFunctions::writePriceConfigLine($this->shoppergroup->price_display, 'basePriceVariant', 'COM_VIRTUEMART_ADMIN_CFG_PRICE_BASEPRICE_VAR');

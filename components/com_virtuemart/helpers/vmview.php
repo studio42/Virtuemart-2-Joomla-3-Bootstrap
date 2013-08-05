@@ -23,15 +23,15 @@ defined('_JEXEC') or die('');
 jimport( 'joomla.application.component.view');
 // Load default helpers
 
-class VmView extends JView{
+class VmView extends JViewLegacy{
 
 	function linkIcon($link,$altText ='',$boutonName,$verifyConfigValue=false, $modal = true, $use_icon=true,$use_text=false){
 		if ($verifyConfigValue) {
 			if ( !VmConfig::get($verifyConfigValue, 0) ) return '';
 		}
-		$folder = (JVM_VERSION===1) ? '/images/M_images/' : '/media/system/images/';
+		$folder = '/media/system/images/'; // use of relative path, $folder is not needed in j3
 		$text='';
-		if ( $use_icon ) $text .= JHtml::_('image.site', $boutonName.'.png', $folder, null, null, JText::_($altText));
+		if ( $use_icon ) $text .= JHtml::_('image', $boutonName.'.png', JText::_($altText),  null, true);
 		if ( $use_text ) $text .= '&nbsp;'. JText::_($altText);
 		if ( $text=='' )  $text .= '&nbsp;'. JText::_($altText);
 		if ($modal) return '<a class="modal" rel="{handler: \'iframe\', size: {x: 700, y: 550}}" title="'. JText::_($altText).'" href="'.JRoute::_($link).'">'.$text.'</a>';

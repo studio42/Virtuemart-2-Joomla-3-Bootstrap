@@ -43,6 +43,8 @@ class VmController extends JControllerLegacy{
 		$this->_cname = strtolower(substr(get_class( $this ), 20));
 		$this->mainLangKey = JText::_('COM_VIRTUEMART_'.strtoupper($this->_cname));
 		$this->redirectPath = 'index.php?option=com_virtuemart&view='.$this->_cname;
+		if (JRequest::getWord( 'tmpl') === 'component') 
+			$this->redirectPath .= '&tmpl=component' ;
 		$task = explode ('.',JRequest::getCmd( 'task'));
 		if ($task[0] == 'toggle') {
 			$val = (isset($task[2])) ? $task[2] : NULL;
@@ -69,17 +71,11 @@ class VmController extends JControllerLegacy{
 	{
 		$document	= JFactory::getDocument();
 		$viewType	= $document->getType();
-		if(JVM_VERSION==2){
-			$viewName	= JRequest::getCmd('view', $this->default_view);
-			$viewLayout	= JRequest::getCmd('layout', 'default');
+		$viewName	= JRequest::getCmd('view', $this->default_view);
+		$viewLayout	= JRequest::getCmd('layout', 'default');
 
-			$view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath));
-		} else {
-			$viewName	= JRequest::getCmd('view', '');
-			$viewLayout	= JRequest::getCmd('layout', 'default');
+		$view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath));
 
-			$view = $this->getView($viewName, $viewType, '', array('base_path' => $this->_basePath));
-		}
 
 		// Set the layout
 		$view->setLayout($viewLayout);
@@ -154,7 +150,7 @@ class VmController extends JControllerLegacy{
 	 */
 	function save($data = 0){
 
-		JRequest::checkToken() or jexit( 'Invalid Token save' );
+		JSession::checkToken() or jexit( 'Invalid Token save' );
 
 		if($data===0)$data = JRequest::get('post');
 
@@ -164,7 +160,7 @@ class VmController extends JControllerLegacy{
 		$errors = $model->getErrors();
 		if(empty($errors)) {
 			$msg = JText::sprintf('COM_VIRTUEMART_STRING_SAVED',$this->mainLangKey);
-			$type = 'save';
+			$type = 'message';
 		}
 		else $type = 'error';
 		foreach($errors as $error){
@@ -175,7 +171,7 @@ class VmController extends JControllerLegacy{
 		//vmInfo($msg);
 		if(JRequest::getCmd('task') == 'apply'){
 
-			$redir .= '&task=edit&'.$this->_cidName.'[]='.$id;
+			$redir .= '&task=edit&'.$this->_cidName.'='.$id;
 		} //else $this->display();
 
 		$this->setRedirect($redir, $msg,$type);
@@ -188,7 +184,7 @@ class VmController extends JControllerLegacy{
 	 */
 	function remove(){
 
-		JRequest::checkToken() or jexit( 'Invalid Token remove' );
+		JSession::checkToken() or jexit( 'Invalid Token remove' );
 
 		$ids = JRequest::getVar($this->_cidName, JRequest::getVar('cid',array(),'', 'ARRAY'), '', 'ARRAY');
 		jimport( 'joomla.utilities.arrayhelper' );
@@ -223,7 +219,7 @@ class VmController extends JControllerLegacy{
 	 */
 	public function cancel(){
 		$msg = JText::sprintf('COM_VIRTUEMART_STRING_CANCELLED',$this->mainLangKey); //'COM_VIRTUEMART_OPERATION_CANCELED'
-		$this->setRedirect($this->redirectPath, $msg,'cancel');
+		$this->setRedirect($this->redirectPath, $msg,'notice');
 	}
 
 	/**
@@ -234,7 +230,7 @@ class VmController extends JControllerLegacy{
 
 	public function toggle($field,$val=null){
 
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 
 		$model = VmModel::getModel($this->_cname);
 		if (!$model->toggle($field,$val,$this->_cidName)) {
@@ -253,7 +249,7 @@ class VmController extends JControllerLegacy{
 	 */
 	public function publish($cidname=0,$table=0,$redirect = 0){
 
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 
 		$model = VmModel::getModel($this->_cname);
 
@@ -278,7 +274,7 @@ class VmController extends JControllerLegacy{
 	 */
 	function unpublish($cidname=0,$table=0,$redirect = 0){
 
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 
 		$model = VmModel::getModel($this->_cname);
 
@@ -297,7 +293,7 @@ class VmController extends JControllerLegacy{
 
 	function orderup() {
 
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 
 		$model = VmModel::getModel($this->_cname);
 		$model->move(-1);
@@ -307,7 +303,7 @@ class VmController extends JControllerLegacy{
 
 	function orderdown() {
 
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 
 		$model = VmModel::getModel($this->_cname);
 		$model->move(1);
@@ -317,7 +313,7 @@ class VmController extends JControllerLegacy{
 
 	function saveorder() {
 
-		JRequest::checkToken() or jexit( 'Invalid Token' );
+		JSession::checkToken() or jexit( 'Invalid Token' );
 
 		$cid 	= JRequest::getVar( $this->_cidName, JRequest::getVar('cid',array(0)), 'post', 'array' );
 		$order 	= JRequest::getVar( 'order', array(), 'post', 'array' );
@@ -341,5 +337,49 @@ class VmController extends JControllerLegacy{
 		if(empty($name)) $name = false;
 		return VmModel::getModel($name);
 	}
+	/**
+	 * Set a URL for browser redirection.
+	 * Use type 'error' if the message is an error message
+	 * @param   string  $url   URL to redirect to.
+	 * @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
+	 * @param   string  $type  Message type. Optional, defaults to 'message' or the type set by a previous call to setMessage.
+	 *
+	 * @return  JController  This object to support chaining.
+	 *
+	 * @since   11.1
+	 */
+	public function setRedirect($url, $msg = null, $type = null)
+	{
+		
+		$format = JRequest::getWord('format');
+		if ($format !== 'json') return parent::setRedirect($url, $msg , $type );
+		if ($msg !== null)
+		{
+			// Controller may have set this directly
+			$this->json->message = $msg;
+		}
 
+		// Ensure the type is not overwritten by a previous call to setMessage.
+		if (empty($type))
+		{
+			if (empty($this->messageType))
+			{
+				$this->messageType = 'message';
+			}
+		}
+		// If the type is explicitly set, set it.
+		else
+		{
+			$this->messageType = $type;
+		}
+		if ($this->messageType == 'message') $this->json->type = 'alert-info';
+		else if ($this->messageType == 'error') $this->json->type = 'alert-error';
+		else $this->json->type = 'alert-'.$this->messageType;
+		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); 
+		header("Cache-Control: no-cache, must-revalidate"); 
+		header("Pragma: no-cache");
+		header("Content-type: application/json;; charset=utf-8");
+		echo json_encode($this->json);
+		jexit();
+	}
 }

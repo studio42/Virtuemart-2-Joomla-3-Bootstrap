@@ -23,11 +23,8 @@ if (isset($this->product->customfields_fromParent)) { ?>
 <?php } else {
 	?> <input type="hidden" name="save_customfields" value="1" />
 <?php }  ?>
-<table id="customfieldsTable" width="100%">
-	<tr>
-		<td valign="top" width="%100">
-
-		<?php
+<div id="customfieldsTable" width="100%">
+	<?php
 			$i=0;
 			$tables= array('categories'=>'','products'=>'','fields'=>'','customPlugins'=>'',);
 			if (isset($this->product->customfields)) {
@@ -55,15 +52,16 @@ if (isset($this->product->customfields_fromParent)) { ?>
 					} elseif ($customfield->field_type == 'G') {
 						// no display (group of) child , handled by plugin;
 					} elseif ($customfield->field_type == 'E'){
+						if ($customfield->custom_tip) $tip = ' class="hasTip" title="'.$customfield->custom_tip.'"';
+						else $tip ='';
 						$tables['fields'] .= '<tr class="removable">
-							<td>'.JText::_($customfield->custom_title).'</td>
-							<td>'.$customfield->custom_tip.'</td>
+							<td><span '.$tip.'>'.JText::_($customfield->custom_title).'<span></td>
 							<td>'.$customfield->display.'</td>
 							<td>'.
 							VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
 							.'</td>
 							<td>'.JText::_('COM_VIRTUEMART_CUSTOM_EXTENSION').'</td>
-							<td>
+							<td class="hidden-phone">
 							<span class="vmicon vmicon-16-'.$cartIcone.'"></span>
 							</td>
 							<td><span class="vmicon vmicon-16-remove"></span><input class="ordering" type="hidden" value="'.$customfield->ordering.'" name="field['.$i .'][ordering]" /></td>
@@ -77,14 +75,18 @@ if (isset($this->product->customfields_fromParent)) { ?>
 								<span class="vmicon vmicon-16-remove"></span>
 							</tr>';*/
 					} else {
+
+						if ($customfield->custom_tip) $tip = ' class="hasTip" title="'.$customfield->custom_tip.'"';
+						else $tip ='';
 						$tables['fields'] .= '<tr class="removable">
-							<td>'.JText::_($customfield->custom_title).'</td>
-							<td>'.$customfield->custom_tip.'</td>
+							<td class="key"><div '.$tip.'>'.JText::_($customfield->custom_title).'<div>'.
+							($customfield->custom_field_desc ? '<small>'.$customfield->custom_field_desc.'</small>' :'' ). '
+							</td>
 							<td>'.$customfield->display.'</td>
 							<td>'.JText::_($this->fieldTypes[$customfield->field_type]).
 							VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
 							.'</td>
-							<td>
+							<td class="hidden-phone">
 							<span class="vmicon vmicon-16-'.$cartIcone.'"></span>
 							</td>
 							<td><span class="vmicon vmicon-16-remove"></span><input class="ordering" type="hidden" value="'.$customfield->ordering.'" name="field['.$i .'][ordering]" /></td>
@@ -100,39 +102,38 @@ if (isset($this->product->customfields_fromParent)) { ?>
 					<td colspan="7">'.JText::_( 'COM_VIRTUEMART_CUSTOM_NO_TYPES').'</td>
 				<tr>';
 			?>
-			<fieldset style="background-color:#F9F9F9;">
+			<fieldset>
 				<legend><?php echo JText::_('COM_VIRTUEMART_RELATED_CATEGORIES'); ?></legend>
 				<?php echo JText::_('COM_VIRTUEMART_CATEGORIES_RELATED_SEARCH'); ?>
-				<div class="jsonSuggestResults" style="width: auto;">
+				<div class="jsonSuggestResults input-append" style="width: 100%" id="relatedcategories-div">
 					<input type="text" size="40" name="search" id="relatedcategoriesSearch" value="" />
-					<button class="reset-value"><?php echo JText::_('COM_VIRTUEMART_RESET') ?></button>
+					<button class="reset-value btn"><?php echo JText::_('COM_VIRTUEMART_RESET') ?></button>
 				</div>
 				<div id="custom_categories"><?php echo  $tables['categories']; ?></div>
 			</fieldset>
-			<fieldset style="background-color:#F9F9F9;">
+			<fieldset>
 				<legend><?php echo JText::_('COM_VIRTUEMART_RELATED_PRODUCTS'); ?></legend>
 				<?php echo JText::_('COM_VIRTUEMART_PRODUCT_RELATED_SEARCH'); ?>
-				<div class="jsonSuggestResults" style="width: auto;">
+				<div class="jsonSuggestResults input-append" style="width: 100%" id="relatedproducts-div">
 					<input type="text" size="40" name="search" id="relatedproductsSearch" value="" />
-					<button class="reset-value"><?php echo JText::_('COM_VIRTUEMART_RESET') ?></button>
+					<button class="reset-value btn"><?php echo JText::_('COM_VIRTUEMART_RESET') ?></button>
 				</div>
 				<div id="custom_products"><?php echo  $tables['products']; ?></div>
 			</fieldset>
 
-			<fieldset style="background-color:#F9F9F9;">
+			<fieldset >
 				<legend><?php echo JText::_('COM_VIRTUEMART_CUSTOM_FIELD_TYPE' );?></legend>
 				<div class="inline"><?php echo  $this->customsList; ?></div>
 
-				<table id="custom_fields" class="adminlist" cellspacing="0" cellpadding="0">
+				<table id="custom_fields" class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 					<thead>
 					<tr class="row1">
 						<th><?php echo JText::_('COM_VIRTUEMART_TITLE');?></th>
-						<th><?php echo JText::_('COM_VIRTUEMART_CUSTOM_TIP');?></th>
 						<th><?php echo JText::_('COM_VIRTUEMART_VALUE');?></th>
 						<th><?php echo JText::_('COM_VIRTUEMART_CART_PRICE');?></th>
 						<th><?php echo JText::_('COM_VIRTUEMART_TYPE');?></th>
-						<th><?php echo JText::_('COM_VIRTUEMART_CUSTOM_IS_CART_ATTRIBUTE');?></th>
-						<th><?php echo JText::_('COM_VIRTUEMART_DELETE'); ?></th>
+						<th class="autosize hidden-phone" width="1%"><?php echo JText::_('COM_VIRTUEMART_CUSTOM_IS_CART_ATTRIBUTE');?></th>
+						<th width="1%"><span class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_DELETE'); ?></span></th>
 					</tr>
 					</thead>
 					<tbody id="custom_field">
@@ -147,14 +148,10 @@ if (isset($this->product->customfields_fromParent)) { ?>
 				<legend><?php echo JText::_('COM_VIRTUEMART_CUSTOM_EXTENSION'); ?></legend>
 				<div id="custom_customPlugins"><?php echo  $tables['customPlugins']; ?></div>
 			</fieldset-->
-		</td>
-
-	</tr>
-</table>
 
 
 <div style="clear:both;"></div>
-
+</div>
 
 <script type="text/javascript">
 	nextCustom = <?php echo $i ?>;
@@ -173,7 +170,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 	});
 	jQuery('select#customlist').chosen().change(function() {
 		selected = jQuery(this).find( 'option:selected').val() ;
-		jQuery.getJSON('index.php?option=com_virtuemart&view=product&task=getData&format=json&type=fields&id='+selected+'&row='+nextCustom+'&virtuemart_product_id=<?php echo $this->product->virtuemart_product_id; ?>',
+		jQuery.getJSON('<?php echo $this->jsonPath ?>index.php?option=com_virtuemart&view=product&task=getData&format=json&type=fields&id='+selected+'&row='+nextCustom+'&virtuemart_product_id=<?php echo $this->product->virtuemart_product_id; ?>',
 		function(data) {
 			jQuery.each(data.value, function(index, value){
 				jQuery("#custom_field").append(value);
@@ -192,6 +189,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 			jQuery(this).autocomplete( "option" , 'source' , 'index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedproducts&row='+nextCustom )
 			jQuery('input#relatedproductsSearch').autocomplete( "option" , 'source' , 'index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedproducts&row='+nextCustom )
 		},
+		appendTo: "#relatedproducts-div",
 		minLength:1,
 		html: true
 	});
@@ -204,6 +202,8 @@ if (isset($this->product->customfields_fromParent)) { ?>
 			jQuery(this).autocomplete( "option" , 'source' , 'index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedcategories&row='+nextCustom )
 			jQuery('input#relatedcategoriesSearch').autocomplete( "option" , 'source' , 'index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedcategories&row='+nextCustom )
 		},
+		appendTo: "#relatedcategories-div",
+		// position: { my : "right top", at: "right bottom" },
 		minLength:1,
 		html: true
 	});

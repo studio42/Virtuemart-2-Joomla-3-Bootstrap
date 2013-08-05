@@ -17,98 +17,51 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
-
-AdminUIHelper::startAdminArea();
-
+defined('_JEXEC') or die();
 ?>
-
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-  <div id="editcell">
-	  <table class="adminlist" cellspacing="0" cellpadding="0">
-	    <thead>
-		    <tr>
-				<th width="10">
-					<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->shoppergroups); ?>);" />
-				</th>
-				<th>
-					<?php echo JText::_('COM_VIRTUEMART_SHOPPERGROUP_NAME'); ?>
-				</th>
-				<th>
-					<?php echo JText::_('COM_VIRTUEMART_SHOPPERGROUP_DESCRIPTION'); ?>
-				</th>
-				<th width="20">
-					<?php echo JText::_('COM_VIRTUEMART_DEFAULT'); ?>
-				</th>
-				<th width="30px" >
-					<?php echo JText::_('COM_VIRTUEMART_PUBLISHED'); ?>
-				</th>
-				<?php if((Vmconfig::get('multix','none')!='none') && $this->showVendors){ ?>
-				<th>
-					<?php echo JText::_('COM_VIRTUEMART_VENDOR'); ?>
-				</th>
-				<?php } ?>
-					  <th><?php echo $this->sort('virtuemart_shoppergroup_id', 'COM_VIRTUEMART_ID')  ?></th>
+	<?php AdminUIHelper::startAdminArea(); ?>
 
-		    </tr>
-	    </thead><?php
+	<div id="results">
+		<?php 
+		// split to use ajax search
+		echo $this->loadTemplate('results'); ?>
+	</div>
 
-	    $k = 0;
-	    for ($i = 0, $n = count( $this->shoppergroups ); $i < $n; $i++) {
-		    $row = $this->shoppergroups[$i];
-			$published = JHTML::_('grid.published', $row, $i );
-		    $checked = JHTML::_('grid.id', $i, $row->virtuemart_shoppergroup_id,null,'virtuemart_shoppergroup_id');
-		    $editlink = JROUTE::_('index.php?option=com_virtuemart&view=shoppergroup&task=edit&virtuemart_shoppergroup_id[]=' . $row->virtuemart_shoppergroup_id); ?>
+	<?php AdminUIHelper::endAdminArea(true); ?>
+</form>
+<?php if ($this->task == 'massxref_sgrps') { ?>
+<script type="text/javascript">
+		Joomla.submitbutton = function(pressbutton) {
+			if (pressbutton == 'massxref_sgrps_exe') {
+				var text = "<?php echo jText::_('COM_VIRTUEMART_SHOPPERGROUP_S',true) ?>",
+					f = document.adminForm,
+					oldTask = f.task.value,
+					url = jQuery('#adminForm').attr('action'), inputs ;	
+					f.task.value = pressbutton;
+					inputs = jQuery(f).serialize();
+				jQuery.post( url, inputs+'&format=json',
+					function(data, status) {
+						// console.log(data);
+						var $alert =jQuery('<div class="alert '+data.type+' fade in">'+
+							'<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+							data.message+' ('+text+')'+
+							'</div>');
+						jQuery('#results').before($alert);
+						$alert.alert().bind('closed', function () {
+							clearTimeout(t);
+						});
+						var t=setTimeout(function(){$alert.alert('close')},5000);
+						f.task.value = oldTask;
 
-	      <tr class="row<?php echo $k ; ?>">
-			    <td width="10">
-				    <?php echo $checked; ?>
-			    </td>
-			    <td align="left">
-			      <a href="<?php echo $editlink; ?>"><?php echo $row->shopper_group_name; ?></a>
-			    </td>
-			    <td align="left">
-				    <?php echo $row->shopper_group_desc; ?>
-			    </td>
-			    <td>
-					<?php
-					if ($row->default == 1) {
-					    if (JVM_VERSION===1) {
-						?>
-						<img src="templates/khepri/images/menu/icon-16-default.png" alt="<?php echo JText::_( 'COM_VIRTUEMART_SHOPPERGROUP_DEFAULT' ); ?>" />
-						<?php
-					    }  else {
-						echo JHtml::_('image','menu/icon-16-default.png', JText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT'), NULL, true);
-						}
-					} else {
-						?>
-						&nbsp;
-						<?php
-					} ?>
-			    </td>
-				<td><?php echo $published; ?></td>
-				<?php if((Vmconfig::get('multix','none')!='none') && $this->showVendors){ ?>
-			    <td align="left">
-            <?php echo $row->virtuemart_vendor_id; ?>
-          	</td>
-          	<?php } ?>
-		 <td align="left">
-            <?php echo $row->virtuemart_shoppergroup_id; ?>
-          	</td>
+					}
+					, "json" );
+				return false;
 
-	      </tr><?php
-		    $k = 1 - $k;
-	    } ?>
-	    <tfoot>
-		    <tr>
-		      <td colspan="10">
-			      <?php echo $this->sgrppagination->getListFooter(); ?>
-		      </td>
-		    </tr>
-	    </tfoot>
-	  </table>
-  </div>
-
-	<?php echo $this->addStandardHiddenToForm($this->_name,$this->task); ?>
-</form><?php
-AdminUIHelper::endAdminArea(); ?>
+			} else {
+				Joomla.submitform( pressbutton );
+				return;
+			}
+		}
+</script>
+<?php } ?>

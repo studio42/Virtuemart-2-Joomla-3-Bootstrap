@@ -17,83 +17,17 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
-
-AdminUIHelper::startAdminArea();
+defined('_JEXEC') or die();
 
 ?>
-
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-	<div id="editcell">
-		<table class="adminlist" cellspacing="0" cellpadding="0">
-		<thead>
-		<tr>
-			<th width="10">
-				<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->manufacturerCategories); ?>);" />
-			</th>
-			<th>
-				<?php echo  JText::_('COM_VIRTUEMART_MANUFACTURER_CATEGORY_NAME'); ?>
-			</th>
-			<th>
-				<?php echo  JText::_('COM_VIRTUEMART_MANUFACTURER_CATEGORY_DESCRIPTION'); ?>
-			</th>
-			<th>
-				<?php echo  JText::_('COM_VIRTUEMART_MANUFACTURER_CATEGORY_LIST'); ?>
-			</th>
-			<th width="20">
-				<?php echo JText::_('COM_VIRTUEMART_PUBLISH'); ?>
-			</th>
-			   <th><?php echo $this->sort('virtuemart_manufacturercategories_id', 'COM_VIRTUEMART_ID')  ?></th>
-		</tr>
-		</thead>
-		<?php
-		$k = 0;
-		for ($i=0, $n=count( $this->manufacturerCategories ); $i < $n; $i++) {
-			$row = $this->manufacturerCategories[$i];
+	<?php AdminUIHelper::startAdminArea(); ?>
 
-			$checked = JHTML::_('grid.id', $i, $row->virtuemart_manufacturercategories_id);
-			$published = JHTML::_('grid.published', $row, $i);
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=manufacturercategories&task=edit&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id);
-			$manufacturersList = JROUTE::_('index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id);
+	<div id="results">
+		<?php 
+		// split to use ajax search
+		echo $this->loadTemplate('results'); ?>
+	</div>
 
-			?>
-			<tr class="row<?php echo $k ; ?>">
-				<td width="10">
-					<?php echo $checked; ?>
-				</td>
-				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->mf_category_name; ?></a>
-
-				</td>
-				<td>
-					<?php echo JText::_($row->mf_category_desc); ?>
-				</td>
-				<td>
-					<a title="<?php echo JText::_('COM_VIRTUEMART_MANUFACTURER_SHOW'); ?>" href="<?php echo $manufacturersList; ?>"><?php echo JText::_('COM_VIRTUEMART_SHOW'); ?></a>
-				</td>
-				<td align="center">
-					<?php echo $published; ?>
-				</td>
-				<td align="right">
-		    <?php echo $row->virtuemart_manufacturercategories_id; ?>
-		</td>
-			</tr>
-			<?php
-			$k = 1 - $k;
-		}
-		?>
-		<tfoot>
-			<tr>
-				<td colspan="10">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
-</div>
-
-	<?php echo $this->addStandardHiddenToForm(); ?>
+	<?php AdminUIHelper::endAdminArea(true); ?>
 </form>
-
-
-<?php AdminUIHelper::endAdminArea(); ?>

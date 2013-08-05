@@ -71,7 +71,7 @@ class AdminUIHelper {
 			}
 
 			$('#content-box [title]').vm2admin('tips',tip_image);
-			$('.modal').fancybox();
+			$('.modalbox').fancybox();
 			$('.reset-value').click( function(e){
 				e.preventDefault();
 				none = '';

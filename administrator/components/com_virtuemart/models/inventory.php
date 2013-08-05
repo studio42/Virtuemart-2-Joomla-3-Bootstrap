@@ -76,7 +76,7 @@ class VirtueMartModelInventory extends VmModel {
     	/* Check some filters */
      	$filters = array();
      	if ($search = JRequest::getVar('filter_inventory', false)){
-     		$search = '"%' . $this->_db->getEscaped( $search, true ) . '%"' ;
+     		$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 			//$search = $this->_db->Quote($search, false);
      		$filters[] = '`#__virtuemart_products`.`product_name` LIKE '.$search;
      	}

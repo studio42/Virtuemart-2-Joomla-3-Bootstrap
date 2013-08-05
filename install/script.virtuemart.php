@@ -753,20 +753,15 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$vmInstall = new com_virtuemartInstallerScript();
 		$upgrade = $vmInstall->checkIfUpdate();
 
-		if(version_compare(JVERSION,'1.6.0','ge')) {
+		// if(version_compare(JVERSION,'1.6.0','ge')) {
 			// Joomla! 1.6 code here
-		} else {
+		// } else {
 			// Joomla! 1.5 code here
-			$method = ($upgrade) ? 'update' : 'install';
-			$vmInstall->$method();
-			$vmInstall->postflight($method);
-		}
+			// $method = ($upgrade) ? 'update' : 'install';
+			// $vmInstall->$method();
+			// $vmInstall->postflight($method);
+		// }
 
-		/*		if ((JVM_VERSION===1)) {
-			$method = ($upgrade) ? 'update' : 'install';
-		$vmInstall->$method();
-		$vmInstall->postflight($method);
-		}*/
 
 		return true;
 	}
@@ -781,17 +776,12 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$vmInstall = new com_virtuemartInstallerScript();
 		// 		$vmInstall->preflight('uninstall');
 
-		if(version_compare(JVERSION,'1.6.0','ge')) {
+		// if(version_compare(JVERSION,'1.6.0','ge')) {
 			// Joomla! 1.6 code here
-		} else {
-			$vmInstall->uninstall();
-			$vmInstall->postflight('uninstall');
-		}
-
-		/*		if (JVM_VERSION===1) {
-			$vmInstall->uninstall();
-		$vmInstall->postflight('uninstall');
-		}*/
+		// } else {
+			// $vmInstall->uninstall();
+			// $vmInstall->postflight('uninstall');
+		// }
 
 		return true;
 	}

@@ -21,14 +21,13 @@ defined('_JEXEC') or die();
 
 define('USE_SQL_CALC_FOUND_ROWS' , true);
 
-if(!class_exists('JModel')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
+// j3 FIX if(!class_exists('JModelLegacy ')) require JPATH_VM_LIBRARIES.DS.'joomla'.DS.'application'.DS.'component'.DS.'model.php';
 
-class VmModel extends JModel {
+class VmModel extends JModelLegacy  {
 
 	var $_id 			= 0;
 	var $_data			= null;
 	var $_query 		= null;
-
 	var $_total			= null;
 	var $_pagination 	= 0;
 	var $_limit			= 0;
@@ -288,7 +287,7 @@ class VmModel extends JModel {
 	public function getTotal() {
 
 		if (empty($this->_total)) {
-			$query = 'SELECT `'.$this->_db->getEscaped($this->_idName).'` FROM `'.$this->_db->getEscaped($this->_maintable).'`';;
+			$query = 'SELECT '.$this->_db->quote($this->_idName).' FROM '.$this->_db->quoteName($this->_maintable);
 			$this->_db->setQuery( $query );
 			if(!$this->_db->query()){
 				if(empty($this->_maintable)) vmError('Model '.get_class( $this ).' has no maintable set');
@@ -362,7 +361,7 @@ class VmModel extends JModel {
  	//	vmdebug('exeSortSearchListQuery '.$orderBy .$filter_order_Dir,$q);
 
 		if($object == 2){
-			 $this->ids = $this->_db->loadResultArray();
+			 $this->ids = $this->_db->loadColumn();
 		} else if($object == 1 ){
 			 $this->ids = $this->_db->loadAssocList();
 		} else {
@@ -389,7 +388,7 @@ class VmModel extends JModel {
 				$limitStart = floor($count/$limit);
 				$this->_db->setQuery($q,$limitStart,$limit);
 				if($object == 2){
-					$this->ids = $this->_db->loadResultArray();
+					$this->ids = $this->_db->loadColumn();
 				} else if($object == 1 ){
 					$this->ids = $this->_db->loadAssocList();
 				} else {
@@ -612,11 +611,14 @@ jimport('joomla.html.pagination');
 class VmPagination extends JPagination {
 
 	private $_perRow = 5;
-
+	var $_viewall 		= null;
+	
 	function __construct($total, $limitstart, $limit, $perRow=5){
 		if($perRow!==0){
 			$this->_perRow = $perRow;
 		}
+		$this->total = $total; 
+		$this->limit = $limit;
 		parent::__construct($total, $limitstart, $limit);
 	}
 
@@ -666,11 +668,7 @@ class VmPagination extends JPagination {
 				$limits[] = JHTML::_('select.option', $this->_perRow * 80);
 	// 			vmdebug('getLimitBox',$this->_perRow);
 			}
-
-			$namespace = '';
-			if (JVM_VERSION!==1) {
-				$namespace = 'Joomla.';
-			}
+			$namespace = 'Joomla.';
 
 			$html = JHTML::_('select.genericlist',  $limits, 'limit', 'class="inputbox" size="1" onchange="'.$namespace.'submitform();"', 'value', 'text', $selected);
 		} else {
@@ -719,5 +717,306 @@ class VmPagination extends JPagination {
 		return $html;
 	}
 
+	/**
+	 * Return the pagination footer.
+	 *
+	 * @return  string   Pagination footer.
+	 *
+	 * @since   11.1
+	 */
+	public function getListFooter()
+	{
+		$app = JFactory::getApplication();
+		if (JVM_VERSION === 3 || ($app->isSite() && jrequest::getVar('tmpl') !=='component') ) return parent:: getListFooter();
 
+		$list = array();
+		$list['prefix'] = $this->prefix;
+		$list['limit'] = $this->limit;
+		$list['limitstart'] = $this->limitstart;
+		$list['total'] = $this->total;
+		$list['limitfield'] = $this->getLimitBox();
+		$list['pagescounter'] = $this->getPagesCounter();
+		$list['pageslinks'] = $this->getPagesLinks();
+
+		// Initialise variables.
+		$lang = JFactory::getLanguage();
+		$html = "<div class='pagination'>\n";
+
+		// TODO $html .= "\n<div class=\"limit\">".JText::_('JGLOBAL_DISPLAY_NUM').$list['limitfield']."</div>";
+		$html .= $list['pageslinks'];
+		// TODO $html .= "\n<div class=\"limit\">".$list['pagescounter']."</div>";
+
+		$html .= "\n<input type='hidden' name=\"" . $list['prefix'] . "limitstart\" value=\"".$list['limitstart']."\" />";
+		$html .= "\n</div>";
+
+		return $html;
+	}
+	/**
+	 * Create and return the pagination page list string, ie. Previous, Next, 1 2 3 ... x.
+	 *
+	 * @return  string  Pagination page list string.
+	 *
+	 * @since   11.1
+	 * overide to use bootstrap in j2.5
+	 */
+	public function getPagesLinks()
+	{
+		$app = JFactory::getApplication();
+		if (JVM_VERSION === 3 || ( $app->isSite() && jrequest::getVar('tmpl') !=='component' )  ) return parent:: getPagesLinks();
+
+		// Build the page navigation list.
+		$data = $this->_buildDataObject();
+
+		$list = array();
+		$list['prefix'] = $this->prefix;
+
+		$itemOverride = false;
+
+		// Build the select list
+		if ($data->all->base !== null)
+		{
+			$list['all']['active'] = true;
+			$list['all']['data'] = $this->pagination_item_active($data->all);
+		}
+		else
+		{
+			$list['all']['active'] = false;
+			$list['all']['data'] = $this->pagination_item_inactive($data->all);
+		}
+
+		if ($data->start->base !== null)
+		{
+			$list['start']['active'] = true;
+			$list['start']['data'] = $this->pagination_item_active($data->start);
+		}
+		else
+		{
+			$list['start']['active'] = false;
+			$list['start']['data'] = $this->pagination_item_inactive($data->start) ;
+		}
+		if ($data->previous->base !== null)
+		{
+			$list['previous']['active'] = true;
+			$list['previous']['data'] = $this->pagination_item_active($data->previous) ;
+		}
+		else
+		{
+			$list['previous']['active'] = false;
+			$list['previous']['data'] = $this->pagination_item_inactive($data->previous) ;
+		}
+
+		$list['pages'] = array(); //make sure it exists
+		foreach ($data->pages as $i => $page)
+		{
+			if ($page->base !== null)
+			{
+				$list['pages'][$i]['active'] = true;
+				$list['pages'][$i]['data'] = $this->pagination_item_active($page);
+			}
+			else
+			{
+				$list['pages'][$i]['active'] = false;
+				$list['pages'][$i]['data'] = $this->pagination_item_inactive($page) ;
+			}
+		}
+
+		if ($data->next->base !== null)
+		{
+			$list['next']['active'] = true;
+			$list['next']['data'] = $this->pagination_item_active($data->next) ;
+		}
+		else
+		{
+			$list['next']['active'] = false;
+			$list['next']['data'] = $this->pagination_item_inactive($data->next) ;
+		}
+
+		if ($data->end->base !== null)
+		{
+			$list['end']['active'] = true;
+			$list['end']['data'] = $this->pagination_item_active($data->end) ;
+		}
+		else
+		{
+			$list['end']['active'] = false;
+			$list['end']['data'] = $this->pagination_item_inactive($data->end) ;
+		}
+
+		if ($this->total > $this->limit)
+		{
+			return $this->pagination_list_render($list);
+		}
+		else
+		{
+			return '';
+		}
+	}
+	/*
+	 * item active replacement using bootstrap
+	 */
+	function __pagination_item_active(&$item)
+	{
+		if ($item->base>0)
+			return "<a href=\"#\" title=\"".$item->text."\" onclick=\"document.adminForm." . $item->prefix . "limitstart.value=".$item->base."; Joomla.submitform();return false;\">".$item->text."</a>";
+		else
+			return "<a href=\"#\" title=\"".$item->text."\" onclick=\"document.adminForm." . $item->prefix . "limitstart.value=0; Joomla.submitform();return false;\">".$item->text."</a>";
+	}
+	function __pagination_item_inactive(&$item)
+	{
+		return "<span>".$item->text."</span>";
+	}
+	/**
+	 * Renders an active item in the pagination block
+	 *
+	 * @param   JPaginationObject  $item  The current pagination object
+	 *
+	 * @return  string  HTML markup for active item
+	 *
+	 * @since   3.0
+	 */
+	function pagination_item_active(&$item)
+	{
+		// Check for "Start" item
+		if ($item->text == JText::_('JLIB_HTML_START'))
+		{
+			$display = '<i class="icon-first"></i>&nbsp;';
+		}
+
+		// Check for "Prev" item
+		if ($item->text == JText::_('JPREV'))
+		{
+			$display = '<i class="icon-previous"></i>&nbsp;';
+		}
+
+		// Check for "Next" item
+		if ($item->text == JText::_('JNEXT'))
+		{
+			$display = '&nbsp;<i class="icon-next"></i>';
+		}
+
+		// Check for "End" item
+		if ($item->text == JText::_('JLIB_HTML_END'))
+		{
+			$display = '&nbsp;<i class="icon-last"></i>';
+		}
+
+		// If the display object isn't set already, just render the item with its text
+		if (!isset($display))
+		{
+			$display = $item->text;
+		}
+
+		if ($item->base > 0)
+		{
+			$limit = 'limitstart.value=' . $item->base;
+		}
+		else
+		{
+			$limit = 'limitstart.value=0';
+		}
+
+		return '<li><a href="#" title="' . $item->text . '" onclick="document.adminForm.' . $item->prefix . $limit . '; Joomla.submitform();return false;">' . $display . '</a></li>';
+	}
+	/**
+	 * Renders an inactive item in the pagination block
+	 *
+	 * @param   JPaginationObject  $item  The current pagination object
+	 *
+	 * @return  string  HTML markup for inactive item
+	 *
+	 * @since   3.0
+	 */
+	function pagination_item_inactive(&$item)
+	{
+		// Check for "Start" item
+		if ($item->text == JText::_('JLIB_HTML_START'))
+		{
+			return '<li class="disabled"><a><i class="icon-first"></i>&nbsp;</a></li>';
+		}
+
+		// Check for "Prev" item
+		if ($item->text == JText::_('JPREV'))
+		{
+			return '<li class="disabled"><a><i class="icon-previous"></i>&nbsp;</a></li>';
+		}
+
+		// Check for "Next" item
+		if ($item->text == JText::_('JNEXT'))
+		{
+			return '<li class="disabled"><a>&nbsp;<i class="icon-next"></i>&nbsp;</a></li>';
+		}
+
+		// Check for "End" item
+		if ($item->text == JText::_('JLIB_HTML_END'))
+		{
+			return '<li class="disabled"><a>&nbsp;<i class="icon-last"></i>&nbsp;</a></li>';
+		}
+
+		// Check if the item is the active page
+		if (isset($item->active) && ($item->active))
+		{
+			return '<li class="active"><a>' . $item->text . '</a></li>';
+		}
+
+		// Doesn't match any other condition, render a normal item
+		return '<li class="disabled"><a>' . $item->text . '</a></li>';
+	}
+	/**
+	 * Renders the pagination list
+	 *
+	 * @param   array  $list  Array containing pagination information
+	 *
+	 * @return  string  HTML markup for the full pagination object
+	 *
+	 * @since   3.0
+	 */
+	function pagination_list_render($list)
+	{
+		// Calculate to display range of pages
+		$currentPage = 1;
+		$range = 1;
+		$step = 5;
+		foreach ($list['pages'] as $k => $page)
+		{
+			if (!$page['active'])
+			{
+				$currentPage = $k;
+			}
+		}
+		if ($currentPage >= $step)
+		{
+			if ($currentPage % $step == 0)
+			{
+				$range = ceil($currentPage / $step) + 1;
+			}
+			else
+			{
+				$range = ceil($currentPage / $step);
+			}
+		}
+
+		$html = '<ul class="pagination-list">';
+		$html .= $list['start']['data'];
+		$html .= $list['previous']['data'];
+
+		foreach ($list['pages'] as $k => $page)
+		{
+			if (in_array($k, range($range * $step - ($step + 1), $range * $step)))
+			{
+				if (($k % $step == 0 || $k == $range * $step - ($step + 1)) && $k != $currentPage && $k != $range * $step - $step)
+				{
+					$page['data'] = preg_replace('#(<a.*?>).*?(</a>)#', '$1...$2', $page['data']);
+				}
+			}
+
+			$html .= $page['data'];
+		}
+
+		$html .= $list['next']['data'];
+		$html .= $list['end']['data'];
+
+		$html .= '</ul>';
+
+		return $html;
+	}
 }

@@ -252,8 +252,7 @@ class VmTable extends JTable{
 
 
 			//We store in UTC time, dont touch it!
-			$date = JFactory::getDate();
-			$today = $date->toSql();
+			$today = JFactory::getDate()->toSql();
 			//vmdebug('my today ',$date);
 			$user = JFactory::getUser();
 
@@ -304,7 +303,6 @@ class VmTable extends JTable{
 		} else {
 			$k = $this->_pkey;
 		}
-
 
 		if ($oid !== null) {
 			$this->$k = $oid;
@@ -441,7 +439,6 @@ class VmTable extends JTable{
 	 * @author Max Milbers
 	 */
 	function store($updateNulls = false){
-
 		$this->setLoggableFieldsForStore();
 
 		$this->storeParams();
@@ -455,15 +452,19 @@ class VmTable extends JTable{
 		if(!empty($this->_xParams)){
 			$paramFieldName = $this->_xParams;
 			$this->$paramFieldName = '';
+			 
 			foreach($this->_varsToPushParam as $key=>$v){
 
 				if(isset($this->$key)){
-					$this->$paramFieldName .= $key.'='.json_encode($this->$key).'|';
-				} else {
-					$this->$paramFieldName .= $key.'='.json_encode($v[0]).'|';
+					$this->_json->$key = $this->$key ;
 				}
+					// $this->$paramFieldName .= $key.'='.json_encode($this->$key).'|';
+				// } else {
+					// $this->$paramFieldName .= $key.'='.json_encode($v[0]).'|';
+				// }
 				unset($this->$key);
 			}
+			$this->$paramFieldName = json_encode($this->_json);
 		}
 		return true;
 	}
@@ -488,8 +489,7 @@ class VmTable extends JTable{
 			
 			if(!empty($existingSlugName)){
 				if($i==0){
-					if(JVM_VERSION===1) $this->$name = $this->$name . JFactory::getDate()->toFormat("%Y-%m-%d-%H-%M-%S").'_';
-					else $this->$name = $this->$name . JFactory::getDate()->format('Y-m-d-H-i-s').'_';
+					$this->$name = $this->$name . JFactory::getDate()->format('Y-m-d-H-i-s').'_';
 				} else{
 					$this->$name = $this->$name.rand(1,9);
 				}
@@ -538,8 +538,7 @@ class VmTable extends JTable{
 
 			//$lang = JFactory::getLanguage();
 			//$this->$slugName = $lang->transliterate($this->$slugName);
-			if(JVM_VERSION===1) $this->$slugName = JFilterOutput::stringURLSafe($this->$slugName);
-			else $this->$slugName = JApplication::stringURLSafe($this->$slugName);
+			$this->$slugName = JApplication::stringURLSafe($this->$slugName);
 
 			$valid = $this->checkCreateUnique($checkTable,$slugName);
 			if(!$valid){
@@ -1066,7 +1065,7 @@ class VmTable extends JTable{
 			
 			$query = 'UPDATE ' . $this->_tbl
 			. ' SET `' . $this->_orderingKey . '` = ' . (int)$this->$orderingKey
-			. ' WHERE ' . $this->_tbl_key . ' = "' . $this->_db->getEscaped($this->$k) . '" LIMIT 1'
+			. ' WHERE ' . $this->_tbl_key . ' = ' . $this->_db->quote($this->$k) . ' LIMIT 1'
 			;
 			$this->_db->setQuery($query);
 		
@@ -1086,8 +1085,8 @@ class VmTable extends JTable{
 	 */
 	function getNextOrder($where='', $orderingkey = 0){
 
-		$where = $this->_db->getEscaped($where);
-		$orderingkey = $this->_db->getEscaped($orderingkey);
+		$where = $this->_db->escape($where);
+		$orderingkey = $this->_db->escape($orderingkey);
 
 		if(!empty($orderingkey))
 		$this->_orderingKey = $orderingkey;
@@ -1121,8 +1120,8 @@ class VmTable extends JTable{
 	 */
 	function reorder($where='', $orderingkey = 0){
 
-		$where = $this->_db->getEscaped($where);
-		$orderingkey = $this->_db->getEscaped($orderingkey);
+		$where = $this->_db->escape($where);
+		$orderingkey = $this->_db->escape($orderingkey);
 
 		if(!empty($orderingkey))
 		$this->_orderingKey = $orderingkey;
@@ -1156,8 +1155,8 @@ class VmTable extends JTable{
 				if($orders[$i]->$orderingKey != $i + 1){
 					$orders[$i]->$orderingKey = $i + 1;
 					$query = 'UPDATE ' . $this->_tbl
-					. ' SET `' . $this->_orderingKey . '` = "' . $this->_db->getEscaped($orders[$i]->$orderingKey) . '"
-					 WHERE ' . $k . ' = "' . $this->_db->getEscaped($orders[$i]->$k) . '"'
+					. ' SET `' . $this->_orderingKey . '` = "' . $this->_db->escape($orders[$i]->$orderingKey) . '"
+					 WHERE ' . $k . ' = "' . $this->_db->escape($orders[$i]->$k) . '"'
 					;
 					$this->_db->setQuery($query);
 					$this->_db->query();
@@ -1193,8 +1192,8 @@ class VmTable extends JTable{
 		$time = $date->toMysql();
 
 		$query = 'UPDATE ' . $this->_db->nameQuote($this->_tbl) .
-	' SET locked_by = ' . (int)$who . ', locked_on = "' . $this->_db->getEscaped($time) . '"
-			 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->getEscaped($this->$k) . '"';
+	' SET locked_by = ' . (int)$who . ', locked_on = "' . $this->_db->escape($time) . '"
+			 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->escape($this->$k) . '"';
 		$this->_db->setQuery($query);
 
 		$this->locked_by = $who;
@@ -1229,8 +1228,8 @@ class VmTable extends JTable{
 		}
 
 		$query = 'UPDATE ' . $this->_db->nameQuote($this->_tbl) .
-	' SET locked_by = 0, locked_on = "' . $this->_db->getEscaped($this->_db->getNullDate()) . '"
-				 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->getEscaped($this->$k) . '"';
+	' SET locked_by = 0, locked_on = "' . $this->_db->escape($this->_db->getNullDate()) . '"
+				 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->escape($this->$k) . '"';
 		$this->_db->setQuery($query);
 
 		$this->locked_by = 0;

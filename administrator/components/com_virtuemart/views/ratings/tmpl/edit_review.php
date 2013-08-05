@@ -41,13 +41,16 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_REVIEW_DETAILS');
 		<?php
 		$rating_options = array();
 		for ($i=0;$i<=$this->max_rating;$i++) {
-
-            $title = (JText::_("COM_VIRTUEMART_RATING_TITLE").' : '. $i . '/' . $this->max_rating) ;
-			$stars  = '<span class="floatleft vmiconFE vm2-stars'.$i.'" title="'.$title.'"></span>';
-			$rating_options[] = JHTML::_('select.option',$i,$stars);
+			// Rating Stars output
+			$ratingwidth = $i * 24;
+			$stars  = '<span title="'.JText::_("COM_VIRTUEMART_RATING_TITLE").' '. $i . '/' . $this->max_rating .'" class="ratingbox" style="display:inline-block;">
+				<span class="stars-orange" style="width:'.$ratingwidth.'px">
+				</span>
+			</span>';
+			$rating_options[$i] =$stars;
 
 		}
-		echo JHTML::_('select.radiolist', $rating_options, 'vote', 'id="vote" class="inputbox"', 'value', 'text', $this->rating->vote);
+		echo VmHTML::radioList( 'vote', $this->rating->vote,$rating_options,  '','radio');
 		?>
 		</fieldset></td>
 	</tr>
@@ -57,7 +60,7 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_REVIEW_DETAILS');
 			<?php echo JTEXT::_('COM_VIRTUEMART_REVIEW'); ?>
         	</td>
 		<td width="76%" align="left">
-			<textarea onblur="refresh_counter();" onfocus="refresh_counter();" onkeypress="refresh_counter();" rows="20" cols="60" name="comment"><?php echo $this->rating->comment; ?></textarea>
+			<textarea class="input-block-level" onblur="refresh_counter();" onfocus="refresh_counter();" onkeypress="refresh_counter();" rows="20" cols="60" name="comment"><?php echo $this->rating->comment; ?></textarea>
 		</td>
 	</tr>
 	<tr>
@@ -89,7 +92,7 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_REVIEW_DETAILS');
 			<?php echo JText::_('COM_VIRTUEMART_PUBLISHED'); ?>
 		</td>
 		<td><fieldset class="radio">
-			<?php echo JHTML::_('select.booleanlist', 'published', '', $this->rating->published); ?>
+			<?php echo VmHTML::booleanlist( 'published', $this->rating->published); ?>
 		</fieldset></td>
 	</tr>
 </table>

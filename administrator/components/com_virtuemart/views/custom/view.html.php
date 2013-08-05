@@ -33,24 +33,20 @@ class VirtuemartViewCustom extends VmView {
 	function display($tpl = null) {
 
 		// Load the helper(s)
-
-
 		$this->loadHelper('html');
 		$this->loadHelper('vmcustomplugin');
 		$model = VmModel::getModel();
 		$this->loadHelper('permissions');
+		$this->customfields = VmModel::getModel('customfields');
 		// TODO Make an Icon for custom
-		$this->SetViewTitle('PRODUCT_CUSTOM_FIELD');
-
-
-
 		$layoutName = JRequest::getWord('layout', 'default');
 		if ($layoutName == 'edit') {
+
 			$this->addStandardEditViewCommands();
 			$customPlugin = '';
-			$this->loadHelper('parameterparser');
+			// TOTO JPARAMETER $this->loadHelper('parameterparser');
 			$custom = $model->getCustom();
-			$customfields = VmModel::getModel('customfields');
+			
 // 			vmdebug('VirtuemartViewCustom',$custom);
 			JPluginHelper::importPlugin('vmcustom');
 			$dispatcher = JDispatcher::getInstance();
@@ -62,16 +58,13 @@ class VirtuemartViewCustom extends VmView {
 			if(!empty($custom->custom_jplugin_id)) {
 				$selected = $custom->custom_jplugin_id;
 			}
-			$pluginList = self::renderInstalledCustomPlugins($selected);
-			$this->assignRef('customPlugin',	$customPlugin);
-
-			$this->assignRef('pluginList',$pluginList);
-			$this->assignRef('custom',	$custom);
-			$this->assignRef('customfields',	$customfields);
+			// $this->pluginList = $this->renderInstalledCustomPlugins($selected);
+			$this->customPlugin = $customPlugin;
+			$this->custom = $custom ;
 
         }
         else {
-
+			$this->SetViewTitle('PRODUCT_CUSTOM_FIELD');
 			JToolBarHelper::custom('createClone', 'copy', 'copy',  JText::_('COM_VIRTUEMART_CLONE'), true);
 			JToolBarHelper::custom('toggle.admin_only.1', 'publish','', JText::_('COM_VIRTUEMART_TOGGLE_ADMIN'), true);
 			JToolBarHelper::custom('toggle.admin_only.0', 'unpublish','', JText::_('COM_VIRTUEMART_TOGGLE_ADMIN'), true);
@@ -79,46 +72,36 @@ class VirtuemartViewCustom extends VmView {
 			JToolBarHelper::custom('toggle.is_hidden.0', 'unpublish','', JText::_('COM_VIRTUEMART_TOGGLE_HIDDEN'), true);
 
 			$this->addStandardDefaultViewCommands();
-			$this->addStandardDefaultViewLists($model);
-
-			$customs = $model->getCustoms(JRequest::getInt('custom_parent_id'),JRequest::getWord('keyword'));
-			$this->assignRef('customs',	$customs);
-
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
-
+			$this->addStandardDefaultViewLists($model, 0, 'DESC', 'keyword');
+			$this->customfieldTypes = $this->customfields->getField_types();
+			$this->installedCustoms = $this->renderInstalledCustomPlugins(null, true);
+			
+			$this->customs = $model->getCustoms(JRequest::getInt('custom_parent_id'),JRequest::getWord('keyword'));
+			$this->pagination = $model->getPagination();
 
 		}
 
 		parent::display($tpl);
 	}
 
-	function renderInstalledCustomPlugins($selected)
+	function renderInstalledCustomPlugins($selected,$resultOnly= null )
 	{
 		$db = JFactory::getDBO();
-
-		if (JVM_VERSION===1) {
-			$table = '#__plugins';
-			$enable = 'published';
-			$ext_id = 'id';
-		}
-		else {
-			$table = '#__extensions';
-			$enable = 'enabled';
-			$ext_id = 'extension_id';
-		}
-		$q = 'SELECT * FROM `'.$table.'` WHERE `folder` = "vmcustom" AND `'.$enable.'`="1" ';
+		$q = 'SELECT * FROM `#__extensions` WHERE `folder` = "vmcustom" AND `enabled`="1" ';
 		$db->setQuery($q);
 
-		$results = $db->loadAssocList($ext_id);
-        $lang =JFactory::getLanguage();
+		$results = $db->loadAssocList('extension_id');
+        $this->lang =JFactory::getLanguage();
 		foreach ($results as &$result) {
-        $filename = 'plg_' .strtolower ( $result['name']).'.sys';
-
-        $lang->load($filename, JPATH_ADMINISTRATOR);
+        $filename = 'plg_vmcustom_' .strtolower ( $result['element']).'.sys';
+        $this->lang->load($filename, JPATH_ADMINISTRATOR);
 		//print_r($lang);
 		}
-		return VmHTML::select( 'custom_jplugin_id', $results, $selected,"",$ext_id, 'name');
+		// set all types for "NEW" custom field modal 
+		if ($resultOnly) {
+			return $results;
+		}
+		return VmHTML::select( 'custom_jplugin_id', $results, $selected,"",'extension_id', 'name');
 
 		//return JHtml::_('select.genericlist', $result, 'custom_jplugin_id', null, $ext_id, 'name', $selected);
 	}

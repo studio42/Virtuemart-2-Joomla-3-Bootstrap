@@ -18,23 +18,62 @@
  
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access'); 
-
+$admin = JFactory::getUser()->authorise('core.admin');
 // Include ALU System
-require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'liveupdate'.DS.'liveupdate.php';
+if ($admin) require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'liveupdate'.DS.'liveupdate.php';
 
 ?> 
 
-<div id="cpanel">
+<div class="well well-small hidden-phone">
+	<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_CONTROL_PANEL') ?></div>
+	<div class="row-striped">
+		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=product&task=add'), 'vmicon vmicon-16-editadd icon-nofloat', JText::_('COM_VIRTUEMART_PRODUCT').'<small>('.JText::_('COM_VIRTUEMART_ADD').')</small>'); ?>
+		</div>
+		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=product'), 'vmicon vmicon-16-camera icon-nofloat', JText::_('COM_VIRTUEMART_PRODUCT_S')); ?>
+		</div>
+		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=category'), 'vmicon vmicon-16-folder_camera icon-nofloat', JText::_('COM_VIRTUEMART_CATEGORY_S')); ?>
+		</div>
+		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=orders'), 'vmicon vmicon-16-page_white_stack icon-nofloat', JText::_('COM_VIRTUEMART_ORDER_S')); ?>
+		</div>
+		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=paymentmethod'), 'vmicon vmicon-16-creditcards icon-nofloat', JText::_('COM_VIRTUEMART_PAYMENTMETHOD_S')); ?>
+		</div>
+		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=user'), 'vmicon vmicon-16-user icon-nofloat', JText::_('COM_VIRTUEMART_USER_S')); ?>
+		</div>
+		<?php if ($admin) { ?>
+			<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=config'), 'icon-cog', JText::_('COM_VIRTUEMART_CONFIG')); ?>
+			</div>
+		<?php } ?>
+		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=user&task=editshop'), 'vmicon vmicon-16-reseller_account_template icon-nofloat', JText::_('COM_VIRTUEMART_STORE')); ?>
+		</div>
+		<div class="row-fluid"><?php VmImage::displayImageButton('http://http://docs.virtuemart.net/', 'icon-question-sign', JText::_('COM_VIRTUEMART_DOCUMENTATION')); ?>
+		</div>
+	</div>
 
-	<div class="icon"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=product'), 'vm_shop_products_48', JText::_('COM_VIRTUEMART_PRODUCT_S')); ?></div>
-	<div class="icon"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=category'), 'vm_shop_categories_48', JText::_('COM_VIRTUEMART_CATEGORY_S')); ?></div>
-	<div class="icon"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=orders'), 'vm_shop_orders_48', JText::_('COM_VIRTUEMART_ORDER_S')); ?></div>
-	<div class="icon"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=paymentmethod'), 'vm_shop_payment_48', JText::_('COM_VIRTUEMART_PAYMENTMETHOD_S')); ?></div>
-	<div class="icon"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=user'), 'vm_shop_users_48', JText::_('COM_VIRTUEMART_USER_S')); ?></div>
-	<div class="icon"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=config'), 'vm_shop_configuration_48', JText::_('COM_VIRTUEMART_CONFIG')); ?></div>
-	<div class="icon"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=user&task=editshop'), 'vm_shop_mart_48', JText::_('COM_VIRTUEMART_STORE')); ?></div>
-	<div class="icon"><?php VmImage::displayImageButton('http://virtuemart.org/index.php?option=com_content&amp;task=view&amp;id=248&amp;Itemid=125', 'vm_shop_help_48', JText::_('COM_VIRTUEMART_DOCUMENTATION')); ?></div>
-	<div class="icon"><?php echo LiveUpdate::getIcon(array(),'url'); ?></div>
+</div>
+<div class="well well-small">	
+	<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_STATISTIC_NEW_ORDERS') ?></div>
+	<div class="row-striped">
+		<?php
+		for ($i=0, $n=count($this->recentOrders); $i < $n; $i++) {
+			$row = $this->recentOrders[$i];
+			$link = JROUTE::_('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$row->virtuemart_order_id);
+			$state = &$this->ordersByStatus[$row->order_status];
+			if ($state->order_stock_handle === 'R')
+				$badgeColor ='badge-info' ;//reserved
+			else if ($state->order_stock_handle === 'O')
+				$badgeColor ='badge-success' ;//Delivered most of time
+			else $badgeColor ='badge-warning' ;//cancelled/removed
 
-<div class="clear"></div>
+			?>
+			<div class="row-fluid">
+				<div class="span6"><span class="badge"><?php echo $row->order_total ?></span> 
+					<a href="<?php echo $link; ?>"><?php echo $row->order_number; ?></a>
+				</div>
+				<div class="span5">
+					<span class="label <?php echo $badgeColor ?>"><?php echo $this->ordersByStatus[$row->order_status]->order_status_name ?></span>
+				</div>
+			</div>
+			<?php
+		} ?>
+	</div>
 </div>

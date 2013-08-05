@@ -155,6 +155,8 @@
     var methods = {
 
         tabs:function (cookie) {
+		// console.log(cookie);
+		return;
             var tabscount = this.find('div.tabs').length;
             if ($.cookie(cookie) == null || cookie == "product0" || tabscount == 1) var idx = 0;
             else var idx = $.cookie(cookie);
@@ -193,31 +195,18 @@
             return this;
         },
         accordeon:function () {
-            var idx = $.cookie('accordeon'),
-                options = { path:'/', expires:2},
-                div = this.children('div') ,
-                h3 = this.children('h3'),
-                A = this.find('.menu-list a');
-            if (idx == null) idx = 0;
-            div.hide();
-            h3.eq(idx).addClass('current');
-            div.eq(idx).show();
-
-            h3.click(
-                function () {
-                    var menu = $(this);
-                    if (menu.not(".current")) {
-                        menu.siblings('h3.current').removeClass("current").next().slideUp(200);
-                        menu.addClass("current").next().slideDown(200);
-                        $.cookie('accordeon', h3.index(this), options);
-                    }
-                }
-            );
-            A.click(
-                function () {
-                    $.cookie('vmapply', '0', options);
-                }
-            );
+			var last=$.cookie('vmmenuActiveAccordion');
+			if (last!=null) {
+				//remove default collapse settings
+				$("#vmmenu .collapse").removeClass('in');
+				//show the last visible group
+				$("#"+last).collapse("show");
+			}
+			//when a group is shown, save it as the active accordion group
+			$("#vmmenu").bind('shown', function() {
+				var active=$("#vmmenu .in").attr('id');
+				$.cookie('vmmenuActiveAccordion', active);
+			});
         },
         media:function (mediatype, total) {
             var page = 0,
@@ -269,13 +258,20 @@
 
             });
 
-            jQuery("#admin-ui-tabs").delegate("div.vmicon-16-remove", "click", function () {
+            jQuery("#adminForm").delegate("div.vmicon-16-remove", "click", function () {
                 jQuery(this).closest(".vm_thumb_image").fadeOut("500", function () {
                     jQuery(this).remove()
                 });
             });
-            jQuery("#admin-ui-tabs").delegate("span.vmicon-16-remove", "click", function () {
-                jQuery(this).closest(".removable").fadeOut("500", function () {
+            jQuery("#adminForm").delegate("span.vmicon-16-remove", "click", function () {
+				var removable = jQuery(this).closest(".removable") ;
+				parent = removable.parent();
+				console.log(parent.children().length,parent.data("lastrowunremovable"));
+				if (parent.data('lastrowunremovable') == true && parent.children().length == 1 ) {
+					alert('Last item cannot be removed');
+					return ;
+				}
+                removable.fadeOut("500", function () {
                     jQuery(this).remove()
                 });
             });
@@ -294,7 +290,7 @@
             container.delegate(".edit-24-grey", "click", function () {
 
                 var data = jQuery(this).parent().find("input").val();
-                jQuery.getJSON("index.php?option=com_virtuemart&view=media&task=viewJson&format=json&virtuemart_media_id=" + data,
+                jQuery.getJSON( vmBaseUrl+"index.php?option=com_virtuemart&view=media&task=viewjson&format=json&virtuemart_media_id=" + data,
                     function (datas, textStatus) {
                         if (datas.msg == "OK") {
                             jQuery("#vm_display_image").attr("src", datas.file_root + datas.file_url);
@@ -359,7 +355,7 @@
                     //var cache = this.cache ;
                     var start = this.page;
                     if (typeof display.cache[start] == "undefined") {
-                        jQuery.getJSON("index.php?option=com_virtuemart&view=media&task=viewJson&format=json&mediatype=" + mediatype + "&start=" + start,
+                        jQuery.getJSON( vmBaseUrl+"index.php?option=com_virtuemart&view=media&task=viewjson&format=json&mediatype=" + mediatype + "&start=" + start,
                             function (data) {
                                 if (data.imageList != "ERROR") {
                                     display.cache[start] = data.imageList;
@@ -376,43 +372,6 @@
                     $('.media-pagination').children().eq(start + 3).addClass('media-page-selected');
                 }
             }
-        },
-        tips:function (image) {
-            var xOffset = -20; // x distance from mouse
-            var yOffset = 10; // y distance from mouse
-            tip = this;
-            tip.unbind().hover(
-                function (e) {
-                    tip.t = this.title;
-                    this.title = '';
-                    tip.top = (e.pageY + yOffset);
-                    tip.left = (e.pageX + xOffset);
-                    $('body').append('<p id="vtip"><img id="vtipArrow" /><B>' + $(this).html() + '</B><br/ >' + tip.t + '</p>');
-                    $('#vtip #vtipArrow').attr("src", image);
-                    $('#vtip').css("top", tip.top + "px").css("left", tip.left + "px").fadeIn("slow");
-                },
-                function () {
-                    this.title = tip.t;
-                    $("#vtip").fadeOut("slow").remove();
-                }
-            ).mousemove(
-                function (e) {
-                    tip.top = (e.pageY + yOffset);
-                    tip.left = (e.pageX + xOffset);
-                    $("#vtip").css("top", tip.top + "px").css("left", tip.left + "px");
-                }
-            ).mousedown(
-                function (e) {
-                    this.title = tip.t;
-                    $("#vtip").fadeOut("slow").remove();
-                }
-            ).mouseup(
-                function (e) {
-                    this.title = tip.t;
-                    $("#vtip").fadeOut("slow").remove();
-                }
-            );
-
         },
         toggle:function () {
             var options = { path:'/', expires:2};
@@ -601,3 +560,70 @@
 
 // load defaut scripts 
 jQuery.noConflict();
+jQuery(document).ready(function($) {
+    function updateBtnState(btn, input, updateRadios) {
+        btn.toggleClass('active', input.prop('checked'));
+		btn.find('i').toggleClass('icon-unpublish icon-publish');
+        btn.toggleClass('disabled', input.prop('disabled'));
+    }
+
+    $(document).live('change', '.btn-toggle input', function(e) {
+        var input = $(e.target);
+        // radio button that are automatically unchecked dont trigger a change event
+        if (input.is(':radio')) {
+            var selector = 'input[type="radio"][name="' + input.attr('name') + '"]';
+            $(selector).each(function() {
+                var input = $(this),
+                    btn = input.parents('.btn-toggle');
+                updateBtnState(btn, input);
+            });
+        } else {
+            var btn = input.parents('.btn-toggle');
+            updateBtnState(btn, input);
+        }
+    });
+	var sidebarHide=$.cookie('sidebarHide');
+
+    $('#sidebar-toggle').click(function(){
+		$(this).find('i').toggleClass('icon-chevron-left icon-chevron-right');
+		$('.j-sidebar-container').slideToggle().toggleClass('span3');
+		$('#j-main-container').toggleClass('span12 span9');
+		if (sidebarHide=="1") sidebarHide="0";
+		else sidebarHide="1";
+		$.cookie('sidebarHide', sidebarHide);
+		console.log(sidebarHide);
+	});
+	if (sidebarHide == "1") {
+		// hide it
+		sidebarHide = "0";
+		 $('#sidebar-toggle').trigger('click');
+	}
+
+
+    // $('.btn-toggle').each(function() {
+        // var btn = $(this),
+            // input = btn.find('input');
+        // updateBtnState(btn, input);
+    // });
+});
+// TODO toggle sidebar
+// $('a.toggles').click(function() {
+    // $('a.toggles i').toggleClass('icon-chevron-left icon-chevron-right');
+
+    // $('#sidebar').animate({
+        // width: 'toggle'
+    // }, 100);
+    // $('#content').toggleClass('span12 span9');
+// });
+
+// $('#content').toggle(
+
+// function() {
+    // $(this).css({
+        // 'margin-left': '0'
+    // });
+// }, function() {
+    // $(this).css({
+        // 'margin-left': '2.127659574%'
+    // });
+// });
