@@ -15,7 +15,7 @@ All is converted to Bootstrap
 
 THe code is joomla 3.0 compatible(tested on joomla 3.1 and joomla 2.5)
 
-All List are now updated withou complet page reload.
+All List are now updated without complet page reload.
 
 Tasks in lists view, publishing ..., only reload 60 Octets (the message itself) and not 80 Kb.
 
