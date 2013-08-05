@@ -40,6 +40,20 @@ Of course, use the Joomla installer to include all in your website.
 
 If you want better PDF, then look the full explain at http://studio42.github.io/joomla-pdf-document-view/index.html. But you have to update the original virtuemart with this repository to use another PDF class.
 
+Plugin Update
+------------
+To update your plugin, simply use this minimal tutorial
+XML Manifest tags to change
+`<install>` to `<extension>`
+`<params>` to `<fields><fieldsets>`
+and `<param>` to `<field>`
+Now all plugins are compatible with this release and joomla 3.0
+
+If you use old element with a path then replace
+eg. for virtuemart elements
+ ```<params addpath="/administrator/components/com_virtuemart/elements" /> ```  
+to
+ ```<fieldset name="options" addfieldpath="/administrator/components/com_virtuemart/models/fields"> ```
 
 
 Not all fix (but most) listed here are fixed
