@@ -9,20 +9,20 @@ VIrtuemart 2 is a online shop solution for joomla 2.5.
 
 New features
 ------------
-Full Shop Front-end administration
+**Full Shop Front-end administration**
 
-All is converted to Bootstrap
+All is converted to **Bootstrap**
 
-THe code is joomla 3.0 compatible(tested on joomla 3.1 and joomla 2.5)
+THe code is **joomla 3.0** compatible(tested on joomla 3.1 and joomla 2.5)
 
-All List are now updated without complet page reload.
+All List are now updated **without complet page reload**.
 
-Tasks in lists view, publishing ..., only reload 60 Octets (the message itself) and not 80 Kb.
+Tasks in lists view, publishing ..., only reload **60 Octets** (the message itself) and **not 80 Kbs**.
 
-Old parameters(jparameter) are removed and use now New joomla formFields.
+Old parameters(jparameter) are removed and use now **New joomla formFields**.
 
 
-Commit update include some bug fix, i applied and share to the user.    
+Commit update include many bug fix, i applied and share to the user.    
 Most of this fix are not included in Official release.
 
 info
