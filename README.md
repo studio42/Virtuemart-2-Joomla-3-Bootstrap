@@ -21,6 +21,9 @@ Tasks in lists view, publishing ..., only reload **60 Octets** (the message itse
 
 Old parameters(jparameter) are removed and use now **New joomla formFields**.
 
+Compatible with most **PDF Engines***
+
+Clone product **with plugin** correctly, if the method is in the plugin.
 
 Commit update include many bug fix, i applied and share to the user.    
 Most of this fix are not included in Official release.
