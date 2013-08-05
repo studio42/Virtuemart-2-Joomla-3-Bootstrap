@@ -1,11 +1,26 @@
-Virtuemart 2.0 Joomla 3
+Virtuemart 2.0 Joomla 3 Bootstrapped
 =============
 This repositry is from original 2.0.20.b stable zip package from virtuemart 2 Official site (without aditional languages & files).
 See http://dev.virtuemart.net/projects/virtuemart/files for all packages.
 
-**This branch is an unofficial ALPHA convertion for joomla 3.0**
+**This is an convertion for joomla 3.0**
 
 VIrtuemart 2 is a online shop solution for joomla 2.5.
+
+New features
+------------
+Full Shop Front-end administration
+
+All is converted to Bootstrap
+
+THe code is joomla 3.0 compatible(tested on joomla 3.1 and joomla 2.5)
+
+All List are now updated withou complet page reload.
+
+Tasks in lists view, publishing ..., only reload 60 Octets (the message itself) and not 80 Kb.
+
+Old parameters(jparameter) are removed and use now New joomla formFields.
+
 
 Commit update include some bug fix, i applied and share to the user.    
 Most of this fix are not included in Official release.
