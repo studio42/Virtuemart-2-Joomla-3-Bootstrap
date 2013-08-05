@@ -13,6 +13,10 @@ All is converted to **Bootstrap**
 
 THe code is **joomla 3.0** compatible(tested on joomla 3.1 and joomla 2.5)
 
+**New dashboard**
+
+**Simplified and more advanced** Virtuemart plugin settings.
+
 All List are now updated **without complet page reload**.
 
 Tasks in lists view, publishing ..., only reload **60 Octets** (the message itself) and **not 80 Kbs**.
