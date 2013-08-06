@@ -16,14 +16,18 @@ class LiveUpdateView extends JViewLegacy
 {
 	public function display($tpl = null)
 	{
+		if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
+		VmConfig::loadConfig();
 		// Load the CSS
 		$config = LiveUpdateConfig::getInstance();
 		$this->assign('config', $config);
+		if (JVM_VERSION===2 ) JHtml::_('bootstrap.loadCss') ;
 		if(!$config->addMedia()) {
 			// No custom CSS overrides were set; include our own
-			$document = JFactory::getDocument();
-			$url = JURI::base().'/components/'.JRequest::getCmd('option','').'/liveupdate/assets/liveupdate.css';
-			$document->addStyleSheet($url, 'text/css');
+			
+			// $document = JFactory::getDocument();
+			// $url = JURI::base().'/components/'.JRequest::getCmd('option','').'/liveupdate/assets/liveupdate.css';
+			// $document->addStyleSheet($url, 'text/css');
 		}
 		
 		$requeryURL = 'index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&force=1';

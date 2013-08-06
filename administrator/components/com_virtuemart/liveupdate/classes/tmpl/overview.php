@@ -8,11 +8,11 @@
 defined('_JEXEC') or die();
 ?>
 
-<div class="liveupdate">
+<div class="liveupdate vm2admin">
 
 	<?php if(!$this->updateInfo->supported): ?>
-	<div class="liveupdate-notsupported">
-		<h3><?php echo JText::_('LIVEUPDATE_NOTSUPPORTED_HEAD') ?></h3>
+	<div class="alert alert-error">
+		<h3><i class="icon-cancel"></i><?php echo JText::_('LIVEUPDATE_NOTSUPPORTED_HEAD') ?></h3>
 
 		<p><?php echo JText::_('LIVEUPDATE_NOTSUPPORTED_INFO'); ?></p>
 		<p class="liveupdate-url">
@@ -20,25 +20,24 @@ defined('_JEXEC') or die();
 		</p>
 		<p><?php echo JText::sprintf('LIVEUPDATE_NOTSUPPORTED_ALTMETHOD', $this->escape($this->updateInfo->extInfo->title)); ?></p>
 		<p class="liveupdate-buttons">
-			<button onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?></button>
+			<button class="btn" onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?></button>
 		</p>
 	</div>
 
 	<?php elseif($this->updateInfo->stuck):?>
-	<div class="liveupdate-stuck">
-		<h3><?php echo JText::_('LIVEUPDATE_STUCK_HEAD') ?></h3>
+	<div class="alert alert-error">
+		<h3><i class="icon-cancel"></i><?php echo JText::_('LIVEUPDATE_STUCK_HEAD') ?></h3>
 
 		<p><?php echo JText::_('LIVEUPDATE_STUCK_INFO'); ?></p>
 		<p><?php echo JText::sprintf('LIVEUPDATE_NOTSUPPORTED_ALTMETHOD', $this->escape($this->updateInfo->extInfo->title)); ?></p>
 
 		<p class="liveupdate-buttons">
-			<button onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?></button>
+			<button class="btn" onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?></button>
 		</p>
 	</div>
-
-	<?php else: ?>
-	<?php
+	<?php else: 
 		$class = $this->updateInfo->hasUpdates ? 'hasupdates' : 'noupdates';
+		$ico = $this->updateInfo->hasUpdates ? 'info' : 'notice';
 		$auth = $this->config->getAuthorization();
 		$auth = empty($auth) ? '' : '?'.$auth;
 	?>
@@ -47,37 +46,37 @@ defined('_JEXEC') or die();
 		<?php echo JText::_('LIVEUPDATE_ERROR_NEEDSAUTH'); ?>
 	</p>
 	<?php endif; ?>
-	<div class="liveupdate-<?php echo $class?>">
-		<h3><?php echo JText::_('LIVEUPDATE_'.strtoupper($class).'_HEAD') ?></h3>
-		<div class="liveupdate-infotable">
-			<div class="liveupdate-row row1">
+	<div >
+		<h3  class="alert alert-<?php echo $ico?>"><?php echo JText::_('LIVEUPDATE_'.strtoupper($class).'_HEAD') ?></h3>
+		<div class="liveupdate-infotable row-striped">
+			<div class="liveupdate-row row-fluid">
 				<span ><?php echo JText::_('LIVEUPDATE_CONSIDER_COMPATIBILITY') ?></span>
 			</div>
-			<div class="liveupdate-row row0">
+			<div class="liveupdate-row row-fluid">
 				<span ><?php echo JText::_('LIVEUPDATE_REMEMBER_TO_UPDATE_AIO') ?></span>
 			</div>
-			<div class="liveupdate-row row1">
-				<span class="liveupdate-label"><?php echo JText::_('LIVEUPDATE_CURRENTVERSION') ?></span>
-				<span class="liveupdate-data"><?php echo $this->updateInfo->extInfo->version ?></span>
+			<div class="liveupdate-row row-fluid">
+				<span class="liveupdate-label span4"><?php echo JText::_('LIVEUPDATE_CURRENTVERSION') ?></span>
+				<span class="liveupdate-data span8"><?php echo $this->updateInfo->extInfo->version ?></span>
 			</div>
-			<div class="liveupdate-row row0">
-				<span class="liveupdate-label"><?php echo JText::_('LIVEUPDATE_LATESTVERSION') ?></span>
-				<span class="liveupdate-data"><?php echo $this->updateInfo->version ?></span>
+			<div class="liveupdate-row row-fluid">
+				<span class="liveupdate-label span4"><?php echo JText::_('LIVEUPDATE_LATESTVERSION') ?></span>
+				<span class="liveupdate-data span8"><?php echo $this->updateInfo->version ?></span>
 			</div>
-			<div class="liveupdate-row row1">
-				<span class="liveupdate-label"><?php echo JText::_('LIVEUPDATE_LATESTRELEASED') ?></span>
-				<span class="liveupdate-data"><?php echo $this->updateInfo->date ?></span>
+			<div class="liveupdate-row row-fluid">
+				<span class="liveupdate-label span4"><?php echo JText::_('LIVEUPDATE_LATESTRELEASED') ?></span>
+				<span class="liveupdate-data span8"><?php echo $this->updateInfo->date ?></span>
 			</div>
-			<div class="liveupdate-row row0">
-				<span class="liveupdate-label"><?php echo JText::_('LIVEUPDATE_DOWNLOADURL') ?></span>
-				<span class="liveupdate-data"><a href="<?php echo $this->updateInfo->downloadURL.$auth?>"><?php echo $this->escape($this->updateInfo->downloadURL)?></a></span>
+			<div class="liveupdate-row row-fluid">
+				<span class="liveupdate-label span4"><?php echo JText::_('LIVEUPDATE_DOWNLOADURL') ?></span>
+				<span class="liveupdate-data span8"><a href="<?php echo $this->updateInfo->downloadURL.$auth?>"><?php echo $this->escape($this->updateInfo->downloadURL)?></a></span>
 			</div>
-			<div class="liveupdate-row row1">
-			<?php require_once(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart'.DS.'version.php'); ?>
+			<div class="liveupdate-row row-fluid">
+			<?php require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart'.DS.'version.php'); ?>
 				<span ><?php echo $myVersion ?></span>
 			</div>
-			<div class="liveupdate-row row0">
-			<iframe src="http://virtuemart.net/index.php?option=com_content&id=416&tmpl=component" width="90%" height="400" name="Live update information">
+			<div class="liveupdate-row row-fluid">
+			<iframe src="http://virtuemart.net/index.php?option=com_content&id=416&tmpl=component" width="100%" height="400" name="Live update information">
   <p>Your browser blocks to display iFrames, please use the following link instead: <a href="http://virtuemart.net/index.php?option=com_content&id=416&tmpl=component">Live update information</a></p>
 </iframe>
 			</div>
@@ -86,9 +85,9 @@ defined('_JEXEC') or die();
 		<p class="liveupdate-buttons">
 			<?php if($this->updateInfo->hasUpdates):?>
 			<?php $disabled = $this->needsAuth ? 'disabled="disabled"' : ''?>
-			<button <?php echo $disabled?> onclick="window.location='<?php echo $this->runUpdateURL ?>'" ><?php echo JText::_('LIVEUPDATE_DO_UPDATE') ?></button>
+			<button class="btn" <?php echo $disabled?> onclick="window.location='<?php echo $this->runUpdateURL ?>'" ><?php echo JText::_('LIVEUPDATE_DO_UPDATE') ?></button>
 			<?php endif;?>
-			<button onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?></button>
+			<button class="btn" onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?></button>
 		</p>
 	</div>
 

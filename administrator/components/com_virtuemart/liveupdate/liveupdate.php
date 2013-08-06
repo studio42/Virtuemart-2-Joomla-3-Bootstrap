@@ -95,28 +95,28 @@ class LiveUpdate
 		$updateInfo = self::getUpdateInformation();
 		if(!$updateInfo->supported) {
 			// Unsupported
-			$class = 'liveupdate-icon-notsupported';
-			$img .= 'nosupport-32.png';
+			$class = 'alert alert-error';
+			$img = 'icon-cancel';
 			$lbl = JText::_('LIVEUPDATE_ICON_UNSUPPORTED');
 		} elseif($updateInfo->stuck) {
 			// Stuck
-			$class = 'liveupdate-icon-crashed';
-			$img .= 'nosupport-32.png';
+			$class = 'alert alert-error';
+			$img = 'icon-cancel';
 			$lbl = JText::_('LIVEUPDATE_ICON_CRASHED');
 		} elseif($updateInfo->hasUpdates) {
 			// Has updates
-			$class = 'liveupdate-icon-updates';
-			$img .= 'update-32.png';
+			$class = 'alert';
+			$img = 'icon-download';
 			$lbl = JText::_('LIVEUPDATE_ICON_UPDATES');
 		} else {
 			// Already in the latest release
-			$class = 'liveupdate-icon-noupdates';
-			$img .= 'current-32.png';
+			$class = 'well well-small';
+			$img = 'icon-ok';
 			$lbl = JText::_('LIVEUPDATE_ICON_CURRENT');
 		}
 		
-		return '<div class="icon"><a href="'.$url.'">'.
-			'<div><img src="'.$img.'" width="32" height="32" border="0" align="middle" style="float: none" /></div>'.
-			'<span class="'.$class.'">'.$lbl.'</span></a></div>';
+		return '<div class="'.$class.'"><a href="'.$url.'">'.
+			'<i class="'.$img.'"></i> '.
+			'<span >'.$lbl.'</span></a><small> '.@$c['current'].'</small></div>';
 	}
 }

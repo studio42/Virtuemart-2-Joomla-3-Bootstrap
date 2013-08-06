@@ -100,6 +100,6 @@ class LiveUpdateStorageComponent extends LiveUpdateStorage
 		}
 
 		$db->setQuery($sql);
-		$db->query();
+		$db->execute();
 	}
 } 
