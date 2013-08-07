@@ -277,7 +277,8 @@ class VirtuemartViewProduct extends VmView {
 
 				if($product_parent){
 					$title='PRODUCT_CHILDREN_LIST' ;
-					$link_to_parent =  JHTML::_('link', JRoute::_('index.php?view=product&task=edit&virtuemart_product_id='.$product_parent->virtuemart_product_id.'&option=com_virtuemart'), $product_parent->product_name, array('title' => JText::_('COM_VIRTUEMART_EDIT_PARENT').' '.$product_parent->product_name));
+					$link_to_parent =  JHTML::_('link', JRoute::_('index.php?view=product&task=edit&virtuemart_product_id='.$product_parent->virtuemart_product_id.'&option=com_virtuemart'), $product_parent->product_name, 
+						array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT_PARENT').' '.$product_parent->product_name));
 					$msg= JText::_('COM_VIRTUEMART_PRODUCT_OF'). " ".$link_to_parent;
 				} else {
 					$title='PRODUCT_CHILDREN_LIST' ;
@@ -412,7 +413,9 @@ class VirtuemartViewProduct extends VmView {
 		$this->db->setQuery(' SELECT COUNT( * ) FROM `#__virtuemart_products` WHERE `product_parent_id` ='.$product_id);
 		if ($result = $this->db->loadResult()){
 			$result = JText::sprintf('COM_VIRTUEMART_X_CHILD_PRODUCT', $result);
-			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_id.'&option=com_virtuemart'), '<div class="small">'.$result.'</div>', array('title' => JText::sprintf('COM_VIRTUEMART_PRODUCT_LIST_X_CHILDREN',$product_name) ));
+			if ($this->frontEdit) $front = "&tmpl=component";
+			else $front="";
+			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_id.'&option=com_virtuemart'.$front), '<div class="small">'.$result.'</div>', array('class'=> 'hasTooltip', 'title' => JText::sprintf('COM_VIRTUEMART_PRODUCT_LIST_X_CHILDREN',$product_name) ));
 		}
 	}
 
@@ -422,7 +425,9 @@ class VirtuemartViewProduct extends VmView {
 		$this->db->setQuery(' SELECT `product_name` FROM `#__virtuemart_products_'.VMLANG.'` as l JOIN `#__virtuemart_products` using (`virtuemart_product_id`) WHERE `virtuemart_product_id` = '.$product_parent_id);
 		if ($product_name = $this->db->loadResult()){
 			$result = JText::sprintf('COM_VIRTUEMART_LIST_CHILDREN_FROM_PARENT', $product_name);
-			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_parent_id.'&option=com_virtuemart'), '<div class="small">'.$product_name.'</div>', array('title' => $result));
+			if ($this->frontEdit) $front = "&tmpl=component";
+			else $front="";
+			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_parent_id.'&option=com_virtuemart'.$front ), '<div class="small">'.$product_name.'</div>', array('class'=> 'hasTooltip', 'title' => $result));
 		}
 	}
 

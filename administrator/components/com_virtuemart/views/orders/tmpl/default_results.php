@@ -53,16 +53,14 @@ defined ('_JEXEC') or die();
 				<!-- Checkbox -->
 				<td><?php echo $checked; ?></td>
 				<!-- Order id -->
-				<?php
-				$link = 'index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $order->virtuemart_order_id;
-				?>
-				<td><?php echo JHTML::_ ('link', JRoute::_ ($link), $order->order_number, array('title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_NUMBER') . ' ' . $order->order_number)); ?></td>
-
+				<td>
+					<?php echo $this->editLink(	$order->virtuemart_order_id, $order->order_name, 'virtuemart_order_id',
+						array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_NUMBER') . ' ' .  $order->order_number) ) ?>
 				<td>
 					<?php
 					if ($order->virtuemart_user_id) {
-						$userlink = JROUTE::_ ('index.php?option=com_virtuemart&view=user&task=edit&virtuemart_user_id[]=' . $order->virtuemart_user_id);
-						echo JHTML::_ ('link', JRoute::_ ($userlink), $order->order_name, array('title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_USER') . ' ' .  $order->order_name));
+						<?php echo $this->editLink(	$order->virtuemart_user_id,	$order->order_name, 'virtuemart_user_id[]',
+							array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_USER') . ' ' .  $order->order_name),'user')	) ?>
 					} else {
 						echo $order->order_name;
 					}
@@ -80,17 +78,17 @@ defined ('_JEXEC') or die();
 				/* Print view URL */
 				$print_url = juri::root () . 'index.php?option=com_virtuemart&view=invoice&layout=invoice&tmpl=component&virtuemart_order_id=' . $order->virtuemart_order_id . '&order_number=' . $order->order_number . '&order_pass=' . $order->order_pass;
 				$print_link = "<a class='btn btn-mini' href=\"javascript:void window.open('$print_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
-				$print_link .= '<span class="hasTip print_24" title="' . JText::_ ('COM_VIRTUEMART_PRINT') . '">&nbsp;</span></a>';
+				$print_link .= '<span class="hasTooltip print_24" title="' . JText::_ ('COM_VIRTUEMART_PRINT') . '">&nbsp;</span></a>';
 				$invoice_link = '';
 
 				if (!$order->invoiceNumber) {
 					$invoice_url = juri::root () . 'index.php?option=com_virtuemart&view=invoice&layout=invoice&format=pdf&tmpl=component&virtuemart_order_id=' . $order->virtuemart_order_id . '&order_number=' . $order->order_number . '&order_pass=' . $order->order_pass . '&create_invoice=1';
 					$invoice_link = "<a class='btn btn-mini' href=\"javascript:void window.open('$invoice_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
-					$invoice_link .= '<span class="hasTip invoicenew_24" title="' . JText::_ ('COM_VIRTUEMART_INVOICE_CREATE') . '"></span></a>';
+					$invoice_link .= '<span class="hasTooltip invoicenew_24" title="' . JText::_ ('COM_VIRTUEMART_INVOICE_CREATE') . '"></span></a>';
 				} elseif (!shopFunctions::InvoiceNumberReserved ($order->invoiceNumber)) {
 					$invoice_url = juri::root () . 'index.php?option=com_virtuemart&view=invoice&layout=invoice&format=pdf&tmpl=component&virtuemart_order_id=' . $order->virtuemart_order_id . '&order_number=' . $order->order_number . '&order_pass=' . $order->order_pass;
 					$invoice_link = "<a class='btn btn-mini' href=\"javascript:void window.open('$invoice_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
-					$invoice_link .= '<span class="hasTip invoice_24" title="' . JText::_ ('COM_VIRTUEMART_INVOICE') . '"></span></a>';
+					$invoice_link .= '<span class="hasTooltip invoice_24" title="' . JText::_ ('COM_VIRTUEMART_INVOICE') . '"></span></a>';
 				}
 
 
@@ -121,7 +119,7 @@ defined ('_JEXEC') or die();
 				</td>
 				<!-- Total -->
 				<td><?php echo $order->order_total; ?></td>
-				<td><?php echo JHTML::_ ('link', JRoute::_ ($link), $order->virtuemart_order_id, array('title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_ID') . ' ' . $order->virtuemart_order_id)); ?></td>
+				<td><?php echo JHTML::_ ('link', JRoute::_ ($link), $order->virtuemart_order_id, array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_ID') . ' ' . $order->virtuemart_order_id)); ?></td>
 
 			</tr>
 				<?php

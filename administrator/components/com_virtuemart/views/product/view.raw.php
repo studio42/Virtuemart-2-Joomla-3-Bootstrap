@@ -163,6 +163,7 @@ class VirtuemartViewProduct extends VmView {
 		}
 		$tpl = 'results';
 		parent::display($tpl);
+		echo $this->AjaxScripts();
 	}
 
 	function displayLinkToChildList($product_id, $product_name) {

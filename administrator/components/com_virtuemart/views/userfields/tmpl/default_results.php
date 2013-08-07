@@ -68,13 +68,12 @@ defined('_JEXEC') or die();
 			$image = 'admin/checked_out.png';
 			$image = JHtml::_('image', $image, '/images/', null, null, JText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD'));
 			$checked = '<div style="position: relative;">'.JHTML::_('grid.id', $i, $row->virtuemart_userfield_id);
-			if ($coreField) $checked.='<span class="hasTip" style="position: absolute; margin-left:-3px;" title="'. JText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>';
+			if ($coreField) $checked.='<span class="hasTooltip" style="position: absolute; margin-left:-3px;" title="'. JText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>';
 			$checked .= '</div>';
 			// There is no reason not to allow moving of the core fields. We only need to disable deletion of them
 			// ($coreField) ?
-			// 	'<span class="hasTip" title="'. JText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>' :
+			// 	'<span class="hasTooltip" title="'. JText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>' :
 				
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=userfields&task=edit&virtuemart_userfield_id=' . $row->virtuemart_userfield_id);
 			$required = $this->toggle($row->required, $i, 'toggle.required', $coreField);
 //			$published = $this->toggle( $row->published, $i, 'published');
 			$published = $this->toggle($row->published, $i, 'toggle.published', $coreField);
@@ -90,7 +89,7 @@ defined('_JEXEC') or die();
 				</td>
 
 				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo JText::_($row->name); ?></a>
+					<?php echo $this->editLink($row->virtuemart_userfield_id, JText::_($row->name), 'virtuemart_userfield_id') ; ?>
 					<div class="small"><?php echo JText::_($row->title); ?></div>
 				</td>
 				<td align="left">

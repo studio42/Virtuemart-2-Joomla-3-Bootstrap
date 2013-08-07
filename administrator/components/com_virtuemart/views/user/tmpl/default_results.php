@@ -43,7 +43,6 @@ defined('_JEXEC') or die();
 		for ($i = 0, $n = count($this->userList); $i < $n; $i++) {
 			$row = $this->userList[$i];
 			$checked = JHTML::_('grid.id', $i, $row->id);
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=user&task=edit&virtuemart_user_id[]=' . $row->id);
 			$is_vendor = $this->toggle($row->is_vendor, $i, 'toggle.user_is_vendor');
 		?>
 			<tr >
@@ -52,7 +51,7 @@ defined('_JEXEC') or die();
 				</td>
 
 				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->username; ?></a>
+					<?php echo $this->editLink($row->id, $row->username, 'virtuemart_user_id[]');  ?>">
 				</td>
 				<td align="left">
 					<?php echo $row->name; ?>

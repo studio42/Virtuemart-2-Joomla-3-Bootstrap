@@ -51,7 +51,6 @@ $states = JText::_('COM_VIRTUEMART_STATE_S');
 
 		$checked = JHTML::_('grid.id', $i, $row->virtuemart_country_id);
 		$published = $this->toggle( $row->published, $i, 'published');
-		$editlink = JROUTE::_('index.php?option=com_virtuemart&view=country&task=edit&cid[]=' . $row->virtuemart_country_id);
 		$statelink	= JROUTE::_('index.php?option=com_virtuemart&view=state&view=state&virtuemart_country_id=' . $row->virtuemart_country_id);
 		?>
 	    <tr >
@@ -62,7 +61,7 @@ $states = JText::_('COM_VIRTUEMART_STATE_S');
 			<?php
 			$prefix="COM_VIRTUEMART_COUNTRY_";
 			$country_string= Jtext::_($prefix.$row->country_3_code); ?>
-		    <a href="<?php echo $editlink; ?>"><?php echo $row->country_name ?> </a>&nbsp;
+		    <?php echo $this->editLink($row->virtuemart_country_id, $row->country_name) ?>&nbsp;
 			<?php
 			$lang =JFactory::getLanguage();
 			if ($lang->hasKey($prefix.$row->country_3_code)) {

@@ -51,6 +51,7 @@ class VirtuemartViewCategory extends VmView {
 		//we need a function of the FE shopfunctions helper to cut the category descriptions
 		// NOTE : Why here ?
 		jimport('joomla.filter.output');
+
 		parent::display('results');
 		echo $this->AjaxScripts();
 	}

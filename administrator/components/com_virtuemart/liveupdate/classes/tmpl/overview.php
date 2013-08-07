@@ -85,9 +85,9 @@ defined('_JEXEC') or die();
 		<p class="liveupdate-buttons">
 			<?php if($this->updateInfo->hasUpdates):?>
 			<?php $disabled = $this->needsAuth ? 'disabled="disabled"' : ''?>
-			<button class="btn" <?php echo $disabled?> onclick="window.location='<?php echo $this->runUpdateURL ?>'" ><?php echo JText::_('LIVEUPDATE_DO_UPDATE') ?></button>
+			<button class="btn" <?php echo $disabled?> onclick="window.location='<?php echo $this->runUpdateURL ?>'" ><i class="icon-box-add"></i> <?php echo JText::_('LIVEUPDATE_DO_UPDATE') ?></button>
 			<?php endif;?>
-			<button class="btn" onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?></button>
+			<button class="btn" onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?> <i class="icon-loop"></i></button>
 		</p>
 	</div>
 

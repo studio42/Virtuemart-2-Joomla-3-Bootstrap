@@ -65,10 +65,10 @@ defined('_JEXEC') or die('Restricted access');
 				<!-- Checkbox -->
 				<td><?php echo $checked; ?></td>
 				<!-- Product name -->
-				<?php
-				$link = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$product->virtuemart_product_id.'&product_parent_id='.$product->product_parent_id;
-				?>
-				<td><?php echo JHTML::_('link', JRoute::_($link), $product->product_name, array('title' => JText::_('COM_VIRTUEMART_EDIT').' '.$product->product_name)); ?></td>
+				<td>
+					<?php echo $this->editLink($product->virtuemart_product_id, $product->product_name, 'virtuemart_product_id',
+						array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$product->product_name), 'product') ?>
+				</td>
 				<td><?php echo $product->product_sku; ?></td>
 				<td width="5%"><span class="label <?php echo $stockstatut ?>"><?php echo $product->product_in_stock; ?></span></td>
 				<td width="5%"><span class="label <?php echo $orderedLabel ?>"><?php echo $product->product_ordered; ?></span></td>

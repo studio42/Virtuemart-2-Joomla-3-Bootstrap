@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_VIRTUEMART_PRODUCT_VIEW_DEFAULT_TITLE">
+		<message><![CDATA[COM_VIRTUEMART_PRODUCT_VIEW_DEFAULT_DESC]]></message>
+	</layout>
+	<state>
+		<name>COM_VIRTUEMART_PRODUCT_VIEW_DEFAULT_TITLE</name>
+		<description><![CDATA[COM_VIRTUEMART_PRODUCT_VIEW_DEFAULT_DESC]]></description>
+	</state>
+	<fields name="request">
+		<fieldset name="request">
+			<field name="tmpl" type="hidden" default="component" hidden="true"/>
+		</fieldset>
+	</fields>
+</metadata>
+

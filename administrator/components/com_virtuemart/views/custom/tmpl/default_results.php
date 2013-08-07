@@ -71,17 +71,19 @@ $customs = $this->customs->items;
 					if ($custom->custom_parent_id) {
 						$link = "index.php?view=custom&keyword=".urlencode($keyword)."&custom_parent_id=".$custom->custom_parent_id."&option=".$option;
 						$text = $lang->hasKey($custom->custom_parent_title) ? JText::_($custom->custom_parent_title) : $custom->custom_parent_title;
-						echo JHTML::_('link', JRoute::_($link),'<div class="small">'.$text.'</div>', array('title' => JText::_('COM_VIRTUEMART_FILTER_BY').' '.$text));
+						echo JHTML::_('link', JRoute::_($link),'<div class="small">'.$text.'</div>', array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_FILTER_BY').' '.$text));
 					}
 					?>
 				</td>
 				<!-- Product name -->
 				<?php
-				$link = "index.php?option=com_virtuemart&view=custom&task=edit&virtuemart_custom_id=".$custom->virtuemart_custom_id;
 				if ($custom->is_cart_attribute) $cartIcon=  'default';
 							 else  $cartIcon= 'default-off';
 				?>
-				<td><?php echo JHTML::_('link', JRoute::_($link), $custom->custom_title, array('title' => JText::_('COM_VIRTUEMART_EDIT').' '.$custom->custom_title)); ?>
+				<td>
+					<?php echo $this->editLink($custom->virtuemart_custom_id, $custom->custom_title, 'virtuemart_custom_id',
+						array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$custom->custom_title) ) ?>
+				<?php echo JHTML::_('link', JRoute::_($link), $custom->custom_title, array('class'=> 'hasTooltip', 'title' => JText::_(
 					<?php if ($custom->custom_field_desc) echo '<div class="small">'.$custom->custom_field_desc.'</div>' ?>
 				</td>
 				<td><?php echo $custom->field_type_display; ?></td>

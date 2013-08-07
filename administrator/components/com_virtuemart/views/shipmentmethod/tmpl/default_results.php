@@ -58,7 +58,7 @@ defined('_JEXEC') or die();
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<?php echo JHTML::_('link', $editlink, JText::_($row->shipment_name)); ?>
+					<?php echo $this->editLink($row->virtuemart_shipmentmethod_id, JText::_($row->shipment_name)) ?>
 					<?php if ($row->shipment_desc) echo 'div class="small">'.$row->shipment_desc.'</div>' ?>
 				</td>
 				<td>

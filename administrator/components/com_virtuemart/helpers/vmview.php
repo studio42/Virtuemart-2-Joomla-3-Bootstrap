@@ -49,6 +49,7 @@ class VmView extends JViewLegacy{
 		//Template path and helper fix for Front-end editing
 		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.$this->_name.DS.'tmpl');
 		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
+		$this->frontEdit = jRequest::getvar('tmpl') ==='component' ? true : false ;
 	}
 	/*
 	 * set all commands and options for BE default.php views
@@ -111,7 +112,8 @@ class VmView extends JViewLegacy{
 	/*
 	 * Add simple search to form
 	* @param $searchLabel text to display before searchbox
-	* @param $name 		 lists and id name
+	* @param $name 	lists and id name
+	* @param $id 	alternative HTML Id
 	* ??JText::_('COM_VIRTUEMART_NAME')
 	*/
 
@@ -343,7 +345,23 @@ class VmView extends JViewLegacy{
 		} else return JHTML::_('image', 'admin/' .$img, $alt, 'style="opacity: 0.6;"', true) ;
 
 	}
-	
+
+	/*
+	 * render a Link to edit an item, auto add the Front-end Editing parameters
+	 * @param $id the Id of the item
+	 * @param $name 	alternative id name
+	 * @param $view 	alternative view
+	 * @param $attrib 	jhtml link attributes
+	 */
+
+	function editLink($id, $text, $name="cid[]",$attrib='',$view = null) {
+		if ($view === null) $view = $this->_name;
+		$editlink = $name. ' = ' . $id;		
+		if ($this->frontEdit) $editlink .= "&tmpl=component";
+		$link = JROUTE::_('index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$editlink) ;
+		// echo 'index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$editlink ;
+		return JHTML::_('link', $link, $text, $attrib);
+	}
 	// readd missing javascripts in new results
 	// this must laways be after the RAW container
 	// PLZ only add this in "RAW" list views result

@@ -52,10 +52,10 @@ jimport('joomla.filesystem.file');
 				<!-- Checkbox -->
 				<td><?php echo $checked;   ?></td>
 				<!-- File name -->
-				<?php
-				$link = 'index.php?option=com_virtuemart&view=media&task=edit&virtuemart_media_id[]='.$media->virtuemart_media_id;
-				?>
-				<td><?php echo JHTML::_('link', JRoute::_($link), $media->file_title, array('title' => JText::_('COM_VIRTUEMART_EDIT').' '.$media->file_title)); ?></td>
+				<td>
+					<?php echo $this->editLink(	$media->virtuemart_media_id, $media->file_title, 'virtuemart_media_id[]',
+						array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$media->file_title) ) ?>
+				</td>
 				<!-- File role -->
 				<td><?php
 					//Just to have something, we could make this nicer with Icons

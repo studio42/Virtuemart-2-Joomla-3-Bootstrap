@@ -122,9 +122,12 @@ else $front = '';
 						</td>
 						<?php
 					} ?>
-				<td class="hidden-phone"><?php echo JHTML::_('link', JRoute::_('index.php?option=com_virtuemart&view=manufacturer&task=edit&virtuemart_manufacturer_id[]='.$product->virtuemart_manufacturer_id.$front), $product->mf_name); ?></td>
+				<td class="hidden-phone">
+					<?php echo $this->editLink(	$product->virtuemart_manufacturer_id, $product->mf_name, 		'virtuemart_manufacturer_id[]',
+					array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$product->mf_name,'product'), 'manufacturer') ?>
+				</td>
 				<!-- Reviews -->
-				<?php $link = 'index.php?option=com_virtuemart&view=ratings&task=listreviews&virtuemart_product_id='.$product->virtuemart_product_id; ?>
+				<?php $link = 'index.php?option=com_virtuemart&view=ratings&task=listreviews&virtuemart_product_id='.$product->virtuemart_product_id.$front; ?>
 				<td align="center" ><?php echo JHTML::_('link', $link, $product->reviews); ?></td>
 				<td align="center" class="hidden-phone">
 					<?php

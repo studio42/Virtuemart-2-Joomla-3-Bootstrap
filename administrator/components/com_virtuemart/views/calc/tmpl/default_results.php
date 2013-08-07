@@ -76,7 +76,7 @@ defined('_JEXEC') or die();
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->calc_name; ?></a>
+					<?php echo $this->editLink($row->virtuemart_calc_id, $row->calc_name) ?>
 					<?php if($row->calc_descr) echo '<div class="small">'.$row->calc_descr.'</div>' ?>
 				</td>
 				<?php  if((Vmconfig::get('multix','none')!='none') && $this->perms->check( 'admin' )){ ?>

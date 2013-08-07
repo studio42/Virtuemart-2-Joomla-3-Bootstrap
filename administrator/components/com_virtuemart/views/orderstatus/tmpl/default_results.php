@@ -55,19 +55,16 @@ defined('_JEXEC') or die();
 			$checked = JHTML::_('grid.id', $i, $row->virtuemart_orderstate_id);
 			$coreStatus = (in_array($row->order_status_code, $this->lists['vmCoreStatusCode']));
 			$checked = ($coreStatus) ?
-				'<span class="hasTip" title="'. JText::_('COM_VIRTUEMART_ORDER_STATUS_CODE_CORE').'">'. $image .'</span>' :
+				'<span class="hasTooltip" title="'. JText::_('COM_VIRTUEMART_ORDER_STATUS_CODE_CORE').'">'. $image .'</span>' :
 				JHTML::_('grid.id', $i, $row->virtuemart_orderstate_id);
 
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=orderstatus&task=edit&cid[]=' . $row->virtuemart_orderstate_id);
-			$deletelink	= JROUTE::_('index.php?option=com_virtuemart&view=orderstatus&task=remove&cid[]=' . $row->virtuemart_orderstate_id);
-			$ordering = $row->ordering ;
 		?>
 			<tr >
 				<td width="10">
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->order_status_name; ?></a>
+					<?php echo $this->editLink($row->virtuemart_orderstate_id, $row->order_status_name, 'virtuemart_user_id[]') ?>
 					<?php
 						echo " (".ShopFunctions::altText($row->order_status_name,'COM_VIRTUEMART_ORDER_STATUS').")";
 					?>

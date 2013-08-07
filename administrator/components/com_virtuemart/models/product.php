@@ -896,8 +896,8 @@ class VirtueMartModelProduct extends VmModel {
 					}
 					if (!empty($product->categories) and is_array ($product->categories)) {
 						$categories = $this->getProductCategories ($this->_id, TRUE);   //only published
-						if(!is_array($categories)) $categories = (array)$categories;
-						$canonCatLink = $categories[0];
+						// if(!is_array($categories)) $categories = (array)$categories;
+						$canonCatLink = isset($categories[0]) ?$categories[0] : 0;
 					}
 					//We must first check if we come from another category, due the canoncial link we would have always the same catgory id for a product
 					//But then we would have wrong neighbored products / category and product layouts

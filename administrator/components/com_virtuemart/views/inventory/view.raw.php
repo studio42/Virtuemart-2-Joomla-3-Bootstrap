@@ -64,9 +64,9 @@ class VirtuemartViewInventory extends VmView {
 		$options[] = JHTML::_('select.option', 'stockout', JText::_('COM_VIRTUEMART_STOCK_LEVEL_OUT'));
 		$this->lists['stockfilter'] = JHTML::_('select.genericlist', $options, 'search_type', 'onChange="Joomla.ajaxSearch(this); return false;"', 'value', 'text', JRequest::getVar('search_type'));
 		$this->lists['filter_product'] = JRequest::getVar('filter_product');
-		// $this->assignRef('lists', $lists);
 
 		parent::display('results');
+		echo $this->AjaxScripts();
 	}
 
 }

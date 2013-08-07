@@ -21,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
 if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
-jimport('joomla.html.pane');
+
 /**
  * HTML View class for maintaining the list of manufacturers
  *

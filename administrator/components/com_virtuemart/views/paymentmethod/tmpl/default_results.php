@@ -69,7 +69,6 @@ $cols = $multiX ? 10 : 9 ;
 			$row = $this->payments[$i];
 			$checked = JHTML::_('grid.id', $i, $row->virtuemart_paymentmethod_id);
 			$published = $this->toggle( $row->published, $i, 'published');
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=paymentmethod&task=edit&cid[]=' . $row->virtuemart_paymentmethod_id);
 			?>
 			<tr class="<?php echo "row".$k; ?>">
 
@@ -77,7 +76,7 @@ $cols = $multiX ? 10 : 9 ;
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->payment_name; ?></a>
+					<?php echo $this->editLink($row->virtuemart_paymentmethod_id, $row->payment_name) ?>">
 				</td>
 				 <td align="left">
 					<?php echo $row->payment_desc; ?>

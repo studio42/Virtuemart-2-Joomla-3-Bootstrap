@@ -49,7 +49,6 @@ defined('_JEXEC') or die();
 
 			$checked = JHTML::_('grid.id', $i, $row->virtuemart_manufacturercategories_id);
 			$published = $this->toggle( $row->published, $i, 'published');
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=manufacturercategories&task=edit&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id);
 			$manufacturersList = JROUTE::_('index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id);
 
 			?>
@@ -58,7 +57,7 @@ defined('_JEXEC') or die();
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->mf_category_name; ?></a>
+					<?php echo $this->editLink($row->virtuemart_manufacturercategories_id, $row->mf_category_name, 'virtuemart_manufacturercategories_id') ?>
 
 				</td>
 				<td>

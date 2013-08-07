@@ -53,14 +53,14 @@ defined('_JEXEC') or die();
 		    $row = $this->shoppergroups[$i];
 			$published = $this->toggle( $row->published, $i, 'published');
 		    $checked = JHTML::_('grid.id', $i, $row->virtuemart_shoppergroup_id,null,'virtuemart_shoppergroup_id');
-		    $editlink = JROUTE::_('index.php?option=com_virtuemart&view=shoppergroup&task=edit&virtuemart_shoppergroup_id[]=' . $row->virtuemart_shoppergroup_id); ?>
+			?>
 
 		  <tr>
 				<td width="10">
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-				  <a href="<?php echo $editlink; ?>"><?php echo $row->shopper_group_name; ?></a>
+				  <?php echo $this->editLink($row->virtuemart_shoppergroup_id, $row->shopper_group_name, 'virtuemart_shoppergroup_id[]') ?>
 				</td>
 				<td align="left">
 					<?php echo $row->shopper_group_desc; ?>

@@ -65,14 +65,13 @@ defined('_JEXEC') or die();
 
 		$checked = JHTML::_('grid.id', $i, $row->virtuemart_currency_id);
 		$published = $this->toggle( $row->published, $i, 'published');
-		$editlink = JROUTE::_('index.php?option=com_virtuemart&view=currency&task=edit&cid[]=' . $row->virtuemart_currency_id);
 		?>
 	    <tr >
 		<td align="center">
 			<?php echo $checked; ?>
 		</td>
 		<td align="left">
-		    <a href="<?php echo $editlink; ?>"><?php echo $row->currency_name; ?></a>
+		    <?php echo $this->editLink($row->virtuemart_currency_id, $row->currency_name) ?>
 		</td>
 		<td align="left">
 			<?php echo $row->currency_exchange_rate; ?>

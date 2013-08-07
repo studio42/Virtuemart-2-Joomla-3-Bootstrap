@@ -41,7 +41,6 @@ defined('_JEXEC') or die();
 			$row = $this->usergroups[$i];
 			$checked = JHTML::_('grid.id', $i, $row->virtuemart_shoppergroup_id);
 //			$published = $this->toggle( $row->published, $i, 'published');
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=usergroups&task=edit&cid[]=' . $row->virtuemart_shoppergroup_id);
 			?>
 			<tr class="<?php echo "row".$k; ?>">
 				<td width="10" align="right">
@@ -51,7 +50,7 @@ defined('_JEXEC') or die();
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->group_name; ?></a>
+					<?php echo $this->editLink($row->virtuemart_shoppergroup_id,$row->group_name); ?>">
 				</td>
 				<td>
 					<?php echo JText::_($row->group_level); ?>

@@ -37,7 +37,7 @@ function virtuemartBuildRoute(&$query) {
 		return $segments;
 	}
 
-	if ($helper->edit) return $segments;
+	// if ($helper->edit) return $segments;
 
 	/* Full route , heavy work*/
 	// $lang = $helper->lang ;
@@ -310,6 +310,13 @@ function virtuemartParseRoute($segments) {
 	}
 	if (empty($segments)) {
 		return $vars;
+	}
+	
+	// remove edit task from router
+	$last = end($segments);
+	if ($last ==='edit') {
+		$vars['task'] = $last ;
+		array_pop($segments);
 	}
 	//$lang = $helper->lang ;
 	// revert '-' (Joomla change - to :) //
@@ -672,7 +679,7 @@ class vmrouterHelper {
 			$this->use_id = VmConfig::get('seo_use_id', false);
 			$this->seo_sufix = VmConfig::get('seo_sufix', '-detail');
 			$this->seo_sufix_size = strlen($this->seo_sufix) ;
-			$this->edit = ('edit' == JRequest::getCmd('task') );
+			// $this->edit = ('edit' == JRequest::getCmd('task') );
 			// if language switcher we must know the $query
 			$this->query = $query;
 		}

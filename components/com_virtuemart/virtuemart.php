@@ -63,31 +63,6 @@ if($offline && !$admin){
 		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, null, true);
 		$basePath = JPATH_VM_ADMINISTRATOR;
 	}
-	elseif ( ($_controller == 'product' || $_controller == 'category' || $_controller == 'media' ||$_controller == 'manufacturer') && $admin ) {
-		
-		if ($_controller == 'product' || ( ($_controller == 'category' ||$_controller == 'manufacturer') && jRequest::getVar('tmpl') == 'component') ) {
-			$app = JFactory::getApplication();
-			if	($admin) {
-				$jlang =JFactory::getLanguage();
-				$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, null, true);
-				$basePath = JPATH_VM_ADMINISTRATOR;
-				// tmpl=component are used to acces BE html views
-				//if (!jRequest::getVar('format') )  
-				jRequest::setVar('tmpl','component');
-				// $trigger = 'onVmAdminController';
-
-			}
-			else 
-			
-			{
-				// why redirecting? let joomla do it.
-				// $app->redirect('index.php?option=com_virtuemart', jText::_('COM_VIRTUEMART_RESTRICTED_ACCESS') );
-			}
-		}
-		if ($task == 'viewjson' && $_controller == 'media' && $admin){
-				$basePath = JPATH_VM_ADMINISTRATOR;
-		}
-	}
 }
 
 /* Create the controller name */
