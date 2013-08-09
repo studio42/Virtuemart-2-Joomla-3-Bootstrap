@@ -7,7 +7,8 @@ VIrtuemart 2 is a online shop solution for joomla 2.5.
 
 New features
 ------------
-**Full Shop Front-end administration**
+**Full Shop Front-end administration** not only product or category.
+**direct** edit link for products,categories and manufacturers.
 
 All is converted to **Bootstrap**
 
@@ -19,7 +20,7 @@ THe code is **joomla 3.0** compatible(tested on joomla 3.1 and joomla 2.5)
 
 All List are now updated **without complet page reload**.
 
-Tasks in lists view, publishing ..., only reload **60 Octets** (the message itself) and **not 80 Kbs**.
+Tasks in lists view, publishing ..., only reload **260 Octets** (the message itself) and **not 80 Kbs**.
 
 Old parameters(jparameter) are removed and use now **New joomla formFields**.
 
@@ -30,8 +31,10 @@ Clone product **with plugin** correctly, if the method is in the plugin.
 Commit update include many bug fix, i applied and share to the user.    
 Most of this fix are not included in Official release.
 
-This repositry is from original 2.0.20.b stable zip package from virtuemart 2 Official site (without aditional languages & files).
+This repositry is a derivated work from original 2.0.22a stable zip package from virtuemart 2 Official site (without aditional languages & files).
 See http://dev.virtuemart.net/projects/virtuemart/files for original packages without this changes and fixes.
+You can install new languages from original release.
+
 info
 ------------
 This release have to use joomla-pdf-document-view from github to make the orders PDF.  
