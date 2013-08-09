@@ -45,7 +45,7 @@ class VirtuemartViewManufacturercategories extends VmView {
 		if ($layoutName == 'edit') {
 
 			$manufacturerCategory = $model->getData();
-			$this->assignRef('manufacturerCategory',	$manufacturerCategory);
+			$this->manufacturerCategory = $manufacturerCategory ;
 
 			$this->addStandardEditViewCommands($manufacturerCategory->virtuemart_manufacturercategories_id);
 
@@ -54,11 +54,8 @@ class VirtuemartViewManufacturercategories extends VmView {
         	$this->addStandardDefaultViewCommands();
         	$this->addStandardDefaultViewLists($model);
 
-			$manufacturerCategories = $model->getManufacturerCategories();
-			$this->assignRef('manufacturerCategories',	$manufacturerCategories);
-
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->manufacturerCategories = $model->getManufacturerCategories();
+			$this->pagination = $model->getPagination();
 
 		}
 		parent::display($tpl);

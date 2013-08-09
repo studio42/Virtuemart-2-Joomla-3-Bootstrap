@@ -60,7 +60,7 @@ class TableUserinfos extends VmTableData {
 
 	/**
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db
 	 */
 	function __construct($db) {
 
@@ -156,7 +156,7 @@ class TableUserinfos extends VmTableData {
 		}
 		// Implicit else
 		$this->_db->setQuery('DELETE from `#__virtuemart_userinfos` WHERE `virtuemart_user_id` = ' . $id);
-		if ($this->_db->query() === false) {
+		if ($this->_db->execute() === false) {
 			vmError($this->_db->getError());
 			return false;
 		}

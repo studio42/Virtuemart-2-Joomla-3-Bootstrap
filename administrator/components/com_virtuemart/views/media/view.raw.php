@@ -38,14 +38,16 @@ class VirtuemartViewMedia extends VmView {
 		$this->vendorId=1;
 		$titleMsg ='';
 		$model = VmModel::getModel();
-		$perms = Permissions::getInstance();
-		$this->assignRef('perms', $perms);
+		$this->perms = Permissions::getInstance();
+		
 		if (!$this->product_id = JRequest::getInt('virtuemart_product_id',0)) {
 			$this->cat_id = JRequest::getInt('virtuemart_category_id',0); 
 		} else $this->cat_id = 0 ;
+
 		$this->addStandardDefaultViewLists($model,null,null,'searchMedia');
 		$this->files = $model->getFiles(false,false,$this->product_id,$this->cat_id);
 		$this->pagination = $model->getPagination();
+
 		parent::display('results');
 		$script = "jQuery('.fb-modal-toggle,.modalbox').fancybox()";
 		echo $this->AjaxScripts($script );

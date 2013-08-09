@@ -26,7 +26,7 @@ class TableCategory_categories extends VmTableData {
 
 	/**
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDatabase $db connector object
 	 */
 	function __construct(&$db){
 		parent::__construct('#__virtuemart_category_categories', 'id', $db);

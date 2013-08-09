@@ -128,6 +128,6 @@ abstract class CouponHelper
 		$_q = 'DELETE FROM `#__virtuemart_coupons` '
 			. 'WHERE `coupon_code` = "' . $_db->getEscaped($_code) . '"';
 		$_db->setQuery($_q);
-		return ($_db->query() !== false);
+		return ($_db->execute() !== false);
 	}
 }

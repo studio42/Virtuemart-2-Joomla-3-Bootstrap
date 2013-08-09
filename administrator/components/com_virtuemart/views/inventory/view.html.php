@@ -47,8 +47,7 @@ class VirtuemartViewInventory extends VmView {
 
 		$inventorylist = $model->getProductListing(false,false);
 
-		$pagination = $model->getPagination();
-		$this->assignRef('pagination', $pagination);
+		$this->pagination = $model->getPagination();
 
 		// Apply currency
 		$currencydisplay = CurrencyDisplay::getInstance();
@@ -59,7 +58,7 @@ class VirtuemartViewInventory extends VmView {
 			$product->product_price_display = $currencydisplay->priceDisplay($product->product_price,'',1,false);
 			$product->weigth_unit_display= ShopFunctions::renderWeightUnit($product->product_weight_uom);
 		}
-		$this->assignRef('inventorylist', $inventorylist);
+		$this->inventorylist = $inventorylist ;
 
 
 		$options = array();
@@ -68,7 +67,6 @@ class VirtuemartViewInventory extends VmView {
 		$options[] = JHTML::_('select.option', 'stockout', JText::_('COM_VIRTUEMART_STOCK_LEVEL_OUT'));
 		$this->lists['stockfilter'] = JHTML::_('select.genericlist', $options, 'search_type', 'onChange="Joomla.ajaxSearch(this); return false;"', 'value', 'text', JRequest::getVar('search_type'));
 		$this->lists['filter_product'] = JRequest::getVar('filter_product');
-		// $this->assignRef('lists', $lists);
 
 		/* Toolbar */
 		$this->SetViewTitle('PRODUCT_INVENTORY');

@@ -29,46 +29,7 @@ defined('_JEXEC') or die('Restricted access');?>
 </fieldset>
 
 <fieldset>
-	<legend><?php echo JText::_('COM_VIRTUEMART_META_INFORMATION') ?></legend>
-	<table>
-<tr>
-			<td >
-				<div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_CUSTOM_PAGE_TITLE'); ?> </div>
-			</td>
-			<td valign="top">
-				<input type="text" class="inputbox span12" size="70" name="customtitle" value="<?php echo $this->product->customtitle ?>" />
-			</td>
-		</tr>
-		<tr>
-			<td valign="top"><div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_METADESC'); ?> </div></td>
-			<td valign="top">
-				<textarea class="inputbox span12" name="metadesc" id="metadesc" cols="60" rows="6"><?php echo $this->product->metadesc; ?></textarea>
-			</td>
-		</tr>
-		<tr>
-			<td >
-				<div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_METAKEY'); ?> </div>
-			</td>
-			<td valign="top">
-				<textarea class="inputbox span12" name="metakey" id="metakey" cols="60" rows="6"><?php echo $this->product->metakey; ?></textarea>
-			</td>
-		</tr>
-		<tr>
-			<td >
-				<div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_METAROBOT'); ?> </div>
-			</td>
-			<td valign="top">
-				<input type="text" class="inputbox span12" size="60" name="metarobot" value="<?php echo $this->product->metarobot ?>" />
-			</td>
-		</tr>
-		<tr>
-			<td >
-				<div style="text-align:right;font-weight:bold;"><?php echo JText::_('COM_VIRTUEMART_METAAUTHOR'); ?> </div>
-			</td>
-			<td valign="top">
-				<input type="text" class="inputbox span12" size="60" name="metaauthor" value="<?php echo $this->product->metaauthor ?>" />
-			</td>
-		</tr>
-	</table>
+	<legend><?php echo JText::_('COM_VIRTUEMART_METAINFO') ?></legend>
+	<?php echo shopFunctions::renderMetaEdit($this->product); ?>
 </fieldset>
 

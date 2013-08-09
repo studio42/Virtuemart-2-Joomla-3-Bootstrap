@@ -18,9 +18,6 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-
-$mainframe = JFactory::getApplication();
  echo $this->langList ?>
 <fieldset>
 	<legend><?php echo JText::_('COM_VIRTUEMART_FORM_GENERAL'); ?></legend>
@@ -41,19 +38,15 @@ $mainframe = JFactory::getApplication();
 		</tr>
 		-->
 		<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_NAME','category_name',$this->category->category_name); ?>
-		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISH','published',$this->category->published); ?>
+		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISHED','published',$this->category->published); ?>
 		<?php echo VmHTML::row('input','COM_VIRTUEMART_SLUG','slug',$this->category->slug); ?>
 		<?php echo VmHTML::row('editor','COM_VIRTUEMART_DESCRIPTION','category_description',$this->category->category_description); ?>
-		<?php if(Vmconfig::get('multix','none')!=='none' && $this->perms->check('admin') ){
-			echo VmHTML::row('raw','COM_VIRTUEMART_VENDOR', $this->vendorList );
-		} ?>
-
 	</table>
 </fieldset>
-<div class="row-fluid">
+<div class=row-fluid">
 <fieldset class="span6">
 	<legend><?php echo JText::_('COM_VIRTUEMART_DETAILS'); ?></legend>
-	<table class="adminform">
+	<table>
 		<?php echo VmHTML::row('raw','COM_VIRTUEMART_ORDERING', ShopFunctions::getEnumeratedCategories(true, true, $this->parent->virtuemart_category_id, 'ordering', '', 'ordering', 'category_name', $this->category->ordering) ); ?>
 		<?php $categorylist = '
 			<select name="category_parent_id" id="category_parent_id" class="inputbox">
@@ -61,24 +54,20 @@ $mainframe = JFactory::getApplication();
 				'.$this->categorylist.'
 			</select>';
 			echo VmHTML::row('raw','COM_VIRTUEMART_CATEGORY_ORDERING', $categorylist ); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_FORM_PRODUCTS_PER_ROW','products_per_row',$this->category->products_per_row,'class="inputbox input-mini"'); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_FORM_LIMIT_LIST_START','limit_list_start',$this->category->limit_list_start,'class="inputbox input-mini"'); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_FORM_LIMIT_LIST_STEP','limit_list_step',$this->category->limit_list_step,'class="inputbox input-mini"'); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_FORM_LIMIT_LIST_MAX','limit_list_max',$this->category->limit_list_max,'class="inputbox input-mini"'); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_FORM_INITIAL_DISPLAY_RECORDS','limit_list_initial',$this->category->limit_list_initial,'class="inputbox input-mini"'); ?>
-		<?php echo VmHTML::row('select','COM_VIRTUEMART_CATEGORY_FORM_TEMPLATE', 'category_template', $this->jTemplateList ,$this->category->category_template,'','directory', 'name',false) ; ?>
-		<?php echo VmHTML::row('select','COM_VIRTUEMART_CATEGORY_FORM_BROWSE_LAYOUT', 'category_layout', $this->categoryLayouts ,$this->category->category_layout,'','value', 'text',false) ; ?>
-		<?php echo VmHTML::row('select','COM_VIRTUEMART_CATEGORY_FORM_FLYPAGE', 'category_product_layout', $this->productLayouts ,$this->category->category_product_layout,'','value', 'text',false) ; ?>
+					<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_FORM_PRODUCTS_PER_ROW','products_per_row',$this->category->products_per_row); ?>
+					<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_FORM_LIMIT_LIST_STEP','limit_list_step',$this->category->limit_list_step); ?>
+					<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_FORM_INITIAL_DISPLAY_RECORDS','limit_list_initial',$this->category->limit_list_initial); ?>
+					<?php echo VmHTML::row('select','COM_VIRTUEMART_CATEGORY_FORM_TEMPLATE', 'category_template', $this->jTemplateList ,$this->category->category_template,'','directory', 'name',false) ; ?>
+					<?php echo VmHTML::row('select','COM_VIRTUEMART_CATEGORY_FORM_BROWSE_LAYOUT', 'category_layout', $this->categoryLayouts ,$this->category->category_layout,'','value', 'text',false) ; ?>
+					<?php echo VmHTML::row('select','COM_VIRTUEMART_CATEGORY_FORM_FLYPAGE', 'category_product_layout', $this->productLayouts ,$this->category->category_product_layout,'','value', 'text',false) ; ?>
 	</table>
 </fieldset>
 <fieldset class="span6">
-	<legend><?php echo JText::_('COM_VIRTUEMART_META_INFORMATION'); ?></legend>
-	<table class="adminform">
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_CUSTOM_PAGE_TITLE','customtitle',$this->category->customtitle); ?>
-		<?php echo VmHTML::row('textarea','COM_VIRTUEMART_META_DESC','metadesc',$this->category->metadesc); ?>
-		<?php echo VmHTML::row('textarea','COM_VIRTUEMART_META_KEYWORDS','metakey',$this->category->metakey); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_META_ROBOTS','metarobot',$this->category->metarobot); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_METAAUTHOR','metaauthor',$this->category->metaauthor); ?>
-	</table>
+	<legend><?php echo JText::_('COM_VIRTUEMART_METAINFO'); ?></legend>
+
+	<?php echo shopFunctions::renderMetaEdit($this->category); ?>
 </fieldset>
 </div>
+		<?php if(Vmconfig::get('multix','none')!=='none' && $this->perms->check('admin') ){
+			echo VmHTML::row('raw','COM_VIRTUEMART_VENDOR', $this->vendorList );
+		} ?>

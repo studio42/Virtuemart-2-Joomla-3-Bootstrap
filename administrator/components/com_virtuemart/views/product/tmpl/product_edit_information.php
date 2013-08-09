@@ -385,11 +385,13 @@ $i=0;
 		// icon exit but order is not saved in price table
 		$('#pricesort').sortable({handle: ".vmicon-16-move"});
 		// little hidden input switcher
-		$('.toggle-hiden').click(function() {
+		$('.productPriceTable .toggle-hiden').click(function() {
 			var clicked = $(this), input = clicked.children('input'), on = input.val();
 			clicked.find('i').toggleClass('icon-unpublish icon-publish');
-			if (on == "1" ) on = "0" ; else on = "1";
+			if (on == "1" ) on = "0" ; 
+			else on = "1";
 			input.val(on);
+			return false;
 		});
     });
 

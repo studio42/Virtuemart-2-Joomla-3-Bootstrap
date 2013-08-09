@@ -27,28 +27,19 @@ AdminUIHelper::startAdminArea();
 $option = JRequest::getWord('option');
 ?>
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-<div id="header">
 	<div id="filterbox">
-	<table>
-	  <tr>
-		 <td align="left" width="100%">
 			<?php echo JText::_('COM_VIRTUEMART_FILTER'); ?>:
 			<input type="text" name="filter_ratings" value="<?php echo JRequest::getVar('filter_ratings', ''); ?>" />
 			<button onclick="this.form.submit();"><?php echo JText::_('COM_VIRTUEMART_GO'); ?></button>
 			<button onclick="document.adminForm.filter_ratings.value='';"><?php echo JText::_('COM_VIRTUEMART_RESET'); ?></button>
-		 </td>
-	  </tr>
-	</table>
 	</div>
-	<div id="resultscounter"><?php echo $this->pagination->getResultsCounter();?></div>
-</div>
-
-
-<div style="text-align: left;">
-	<table class="adminlist" cellspacing="0" cellpadding="0">
+<div id="resultscounter"><?php echo $this->pagination->getResultsCounter();?></div>
+<table class="table table-striped">
 	<thead>
 	<tr>
-		<th width="20"><input type="checkbox" name="toggle" value="" onclick="checkAll('<?php echo count($this->reviewslist); ?>')" /></th>
+		<th width="20">
+			<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
+		</th>
 		<th><?php echo $this->sort('pr.created_on', 'COM_VIRTUEMART_DATE') ; ?></th>
 		<th><?php echo $this->sort('product_name') ; ?></th>
 		<th><?php echo $this->sort('vote', 'COM_VIRTUEMART_RATE_NOM') ; ?></th>
@@ -107,7 +98,6 @@ $option = JRequest::getWord('option');
 		</tr>
 	</tfoot>
 	</table>
-</div>
 <!-- Hidden Fields -->
 	<input type="hidden" name="layout" value="list_reviews" />
 	<input type="hidden" name="virtuemart_product_id" value="<?php echo JRequest::getVar('virtuemart_product_id', 0); ?>" />

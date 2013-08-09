@@ -55,7 +55,7 @@ class VmView extends JViewLegacy{
 	 * set all commands and options for BE default.php views
 	* return $list filter_order and
 	*/
-	function addStandardDefaultViewCommands($showNew=true, $showDelete=true) {
+	function addStandardDefaultViewCommands($showNew=true, $showDelete=true, $showHelp=true) {
 
 
 		JToolBarHelper::publishList();
@@ -68,6 +68,7 @@ class VmView extends JViewLegacy{
 		if ($showDelete) {
 			JToolBarHelper::deleteList();
 		}
+		self::showHelp ( $showHelp);
 	}
 
 	/*
@@ -346,6 +347,32 @@ class VmView extends JViewLegacy{
 
 	}
 
+	function showhelp(){
+		/* http://docs.joomla.org/Help_system/Adding_a_help_button_to_the_toolbar */
+
+			$task=JRequest::getWord('task', '');
+			$view=JRequest::getWord('view', '');
+			if ($task) {
+				if ($task=="add") {
+					$task="edit";
+				}
+				$task ="_".$task;
+			}
+			if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
+			VmConfig::loadConfig();
+			VmConfig::loadJLang('com_virtuemart_help');
+ 		    $lang = JFactory::getLanguage();
+ 	        $key=  'COM_VIRTUEMART_HELP_'.$view.$task;
+	         if ($lang->hasKey($key)) {
+					$help_url  = JTEXT::_($key)."?tmpl=component";
+ 		            $bar = JToolBar::getInstance('toolbar');
+					// echo $help_url;
+					$bar->appendButton( 'Popup', 'help', 'JTOOLBAR_HELP', $help_url, 960, 400 );
+	        }
+
+	}
+
+
 	/*
 	 * render a Link to edit an item, auto add the Front-end Editing parameters
 	 * @param $id the Id of the item
@@ -356,7 +383,7 @@ class VmView extends JViewLegacy{
 
 	function editLink($id, $text, $name="cid[]",$attrib='',$view = null) {
 		if ($view === null) $view = $this->_name;
-		$editlink = $name. ' = ' . $id;		
+		$editlink = $name. '=' . $id;	
 		if ($this->frontEdit) $editlink .= "&tmpl=component";
 		$link = JROUTE::_('index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$editlink) ;
 		// echo 'index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$editlink ;

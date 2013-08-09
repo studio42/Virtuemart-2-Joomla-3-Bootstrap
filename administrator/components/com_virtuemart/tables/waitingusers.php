@@ -40,7 +40,7 @@ class TableWaitingUsers extends VmTable {
 
 	/**
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db
 	 */
 	function __construct(&$db) {
 		parent::__construct('#__virtuemart_waitingusers', 'virtuemart_waitinguser_id', $db);

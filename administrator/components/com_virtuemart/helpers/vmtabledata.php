@@ -41,7 +41,6 @@ class VmTableData extends VmTable {
 		$tblKey = $this->_tbl_key;
 		$pKey = $this->_pkey;
 
-
 		if($tblKey == $pKey){
 			$res = false;
 			if(!empty($this->$tblKey)){

@@ -64,7 +64,7 @@ class VirtuemartViewOrderstatus extends VmView {
 				$qry = 'SELECT ordering AS value, order_status_name AS text'
 				. ' FROM #__virtuemart_orderstates'
 				. ' ORDER BY ordering';
-				$ordering = JHTML::_('list.ordering',  $orderStatus->ordering, $qry, '', $orderStatus->virtuemart_orderstate_id);
+				$ordering = JHTML::_('list.specificordering',  $orderStatus, $orderStatus->virtuemart_orderstate_id, $qry);
 				$this->assignRef('ordering', $ordering);
 
 
@@ -93,8 +93,7 @@ class VirtuemartViewOrderstatus extends VmView {
 
 			$this->assignRef('stockHandelList', $stockHandelList);
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 		}
 
 		parent::display($tpl);

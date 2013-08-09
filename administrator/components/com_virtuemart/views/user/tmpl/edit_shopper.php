@@ -286,7 +286,7 @@ function gotocontact(id) {
 		</tr>
 		<tr>
 			<td>
-				<?php echo JText::_('COM_VIRTUEMART_USER_FORM_CONTACTDETAILS_FAX'); ?>:
+				<?php echo JText::_('COM_VIRTUEMART_SHOPPER_FORM_FAX'); ?>:
 			</td>
 			<td >
 				<strong><?php echo $this->contactDetails->fax;?></strong>

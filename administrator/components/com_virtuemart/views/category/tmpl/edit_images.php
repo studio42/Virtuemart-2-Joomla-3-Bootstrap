@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 
 ?>
-<div class="col50">
 	<div class="selectimage">
 			<?php
 				//echo $this->category->images[0]->displayFilesHandler($this->category->virtuemart_media_id);
@@ -30,4 +29,3 @@ defined('_JEXEC') or die('Restricted access');
 				else echo $this->category->images[0]->displayFilesHandler(null,'category');
 			?>
 	</div>
-</div>

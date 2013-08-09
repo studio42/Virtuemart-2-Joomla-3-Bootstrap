@@ -52,7 +52,7 @@ else $front = '';
 			<?php if(Vmconfig::get('multix','none')!=='none' and $this->perms->check('admin') ){ ?>
             <th width="20" class="autosize">
 
-				<?php echo $this->sort( 'cx.shared' , 'COM_VIRTUEMART_SHARED') ?>
+				<?php echo $this->sort( 'cx.category_shared' , 'COM_VIRTUEMART_SHARED') ?>
             </th width="20">
 			<?php } ?>
 
@@ -84,8 +84,7 @@ else $front = '';
 
 			$checked = JHTML::_('grid.id', $i, $cat->virtuemart_category_id);
 			$published = $this->toggle( $cat->published, $i, 'published');
-			$editlink = JRoute::_('index.php?option=com_virtuemart&view=category&task=edit&cid=' . $cat->virtuemart_category_id.$front);
-// 			$statelink	= JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $cat->virtuemart_category_id);
+
 			$showProductsLink = JRoute::_('index.php?option=com_virtuemart&view=product&virtuemart_category_id=' . $cat->virtuemart_category_id.$front);
 			$shared = $this->toggle($cat->shared, $i, 'toggle.shared');
 

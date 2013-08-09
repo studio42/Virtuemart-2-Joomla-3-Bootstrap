@@ -54,11 +54,25 @@ class TableVendors extends VmTableData {
     var $vendor_accepted_currencies = array();
 
     var $vendor_params = '';
-
+	/** @var string Meta description */
+	var $metadesc	= '';
+    /** @var string Meta keys */
+	var $metakey	= '';
+ 	/** @var string Meta robot */
+	var $metarobot	= '';
+	/** @var string Meta author */
+	var $metaauthor	= '';
+	var $customtitle ='';
     var $vendor_legal_info = '';
+    /** @var text Vendor letter CSS */
+    var $vendor_letter_css = '';
+    /** @var text Vendor letter header */
+    var $vendor_letter_header_html = '';
+    /** @var text Vendor letter footer */
+    var $vendor_letter_footer_html = '';
 
-    /* @author RickG, Max Milbers
-     * @param $db A database connector object
+    /** @author RickG, Max Milbers
+     * @param JDataBase $db
      */
     function __construct(&$db) {
 		parent::__construct('#__virtuemart_vendors', 'virtuemart_vendor_id', $db);
@@ -66,14 +80,45 @@ class TableVendors extends VmTableData {
 		$this->setUniqueName('vendor_name');
 		$this->setSlug('vendor_store_name'); //Attention the slug autoname MUST be also in the translatable, if existing
 		$this->setLoggable();
-		$this->setTranslatable(array('vendor_store_name','vendor_phone','vendor_store_desc','vendor_terms_of_service','vendor_legal_info','vendor_url'));
+		$this->setTranslatable(array('vendor_store_name','vendor_phone','vendor_store_desc','vendor_terms_of_service','vendor_legal_info','vendor_url','metadesc','metakey','customtitle','vendor_letter_css', 'vendor_letter_header_html', 'vendor_letter_footer_html'));
 
 		$varsToPushParam = array(
 		    				'vendor_min_pov'=>array(0.0,'float'),
 		    				'vendor_min_poq'=>array(1,'int'),
 		    				'vendor_freeshipment'=>array(0.0,'float'),
 		    				'vendor_address_format'=>array('','string'),
-		    				'vendor_date_format'=>array('','string'));
+		    				'vendor_date_format'=>array('','string'),
+
+		    				'vendor_letter_format'=>array('A4','string'),
+		    				'vendor_letter_orientation'=>array('P','string'),
+
+		    				'vendor_letter_margin_top'=>array(45,'int'),
+		    				'vendor_letter_margin_left'=>array(25,'int'),
+		    				'vendor_letter_margin_right'=>array(25,'int'),
+		    				'vendor_letter_margin_bottom'=>array(25,'int'),
+		    				'vendor_letter_margin_header'=>array(12,'int'),
+		    				'vendor_letter_margin_footer'=>array(20,'int'),
+
+		    				'vendor_letter_font'=>array('helvetica','string'),
+		    				'vendor_letter_font_size'=>array(8, 'int'),
+		    				'vendor_letter_header_font_size'=>array(7, 'int'),
+		    				'vendor_letter_footer_font_size'=>array(6, 'int'),
+		    				
+		    				'vendor_letter_header'=>array(1,'int'),
+		    				'vendor_letter_header_line'=>array(1,'int'),
+		    				'vendor_letter_header_line_color'=>array("#000000",'string'),
+		    				'vendor_letter_header_image'=>array(1,'int'),
+		    				'vendor_letter_header_imagesize'=>array(60,'int'),
+		    				'vendor_letter_header_cell_height_ratio'=>array(1,'float'),
+
+		    				'vendor_letter_footer'=>array(1,'int'),
+		    				'vendor_letter_footer_line'=>array(1,'int'),
+		    				'vendor_letter_footer_line_color'=>array("#000000",'string'),
+		    				'vendor_letter_footer_cell_height_ratio'=>array(1,'float'),
+		    				
+		    				'vendor_letter_add_tos' => array(0,'int'),
+		    				'vendor_letter_add_tos_newpage' => array(1,'int'),
+		    			);
 
 		$this->setParameterable('vendor_params',$varsToPushParam);
 

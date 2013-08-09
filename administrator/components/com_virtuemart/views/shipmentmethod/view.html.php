@@ -58,30 +58,25 @@ class VirtuemartViewShipmentmethod extends VmView {
 			 if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
 			 $vendor_id = 1;
 			 $currency=VirtueMartModelVendor::getVendorCurrency ($vendor_id);
-			 $this->assignRef('vendor_currency', $currency->currency_symbol);
+			 $this->vendor_currency = $currency->currency_symbol;
 
 			 if(Vmconfig::get('multix','none')!=='none'){
-					$vendorList= ShopFunctions::renderVendorList($shipment->virtuemart_vendor_id);
-					$this->assignRef('vendorList', $vendorList);
+					$this->vendorList= ShopFunctions::renderVendorList($shipment->virtuemart_vendor_id);
 			 }
 
-			$this->assignRef('pluginList', self::renderInstalledShipmentPlugins($shipment->shipment_jplugin_id));
-			$this->assignRef('shipment',	$shipment);
-			$this->assignRef('shopperGroupList', ShopFunctions::renderShopperGroupList($shipment->virtuemart_shoppergroup_ids,true));
+			$this->pluginList = self::renderInstalledShipmentPlugins($shipment->shipment_jplugin_id);
+			$this->shipment = $shipment;
+			$this->shopperGroupList = ShopFunctions::renderShopperGroupList($shipment->virtuemart_shoppergroup_ids,true);
 
 			$this->addStandardEditViewCommands($shipment->virtuemart_shipmentmethod_id);
 
 		} else {
 			JToolBarHelper::custom('cloneshipment', 'copy', 'copy', JText::_('COM_VIRTUEMART_SHIPMENT_CLONE'), true);
-
 			$this->addStandardDefaultViewCommands();
 			$this->addStandardDefaultViewLists($model);
 
-			$shipments = $model->getShipments();
-			$this->assignRef('shipments', $shipments);
-
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->shipments = $model->getShipments();
+			$this->pagination = $model->getPagination();
 			$this->installedShipments = $this->shipmentsPlgList();
 		}
 

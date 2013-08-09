@@ -159,9 +159,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this->recurse_copy($src,$dst);
 
-			$params = JComponentHelper::getParams('com_languages');
-			$lang = $params->get('site', 'en-GB');//use default joomla
-			$lang = strtolower(strtr($lang,'-','_'));
 			if(!class_exists('GenericTableUpdater')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
 			$updater = new GenericTableUpdater();
 			$updater->createLanguageTables();
@@ -243,9 +240,20 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				'product_price_edate' => ' `product_price_publish_down` DATETIME NULL DEFAULT NULL AFTER `product_price_publish_up`'
 			));
 
-			$this->alterTable('#__virtuemart_medias',array(
-				'file_params' => '`file_params` varchar(17500)'
-			));
+			$this->alterTable('#__virtuemart_medias',
+				 array(
+					'file_url' => '`file_url` varchar(900) NOT NULL DEFAULT ""',
+					'file_params' => '`file_params` varchar(17500)',
+					'file_url_thumb' => '`file_url_thumb` varchar(900) NOT NULL DEFAULT ""',
+   				)
+ 			);
+
+			$this->alterTable('#__virtuemart_order_items',
+				array(
+					'product_discountedPriceWithoutTax' => '',
+				),
+				'DROP'
+			);
 
 			$this->deleteReCreatePrimaryKey('#__virtuemart_userinfos','virtuemart_userinfo_id');
 
@@ -262,9 +270,35 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->adjustDefaultOrderStates();
 
 			$this->fixOrdersVendorId();
+
+			$this->fixConfigValues();
 			if($loadVm) $this->displayFinished(true);
 
 			return true;
+		}
+
+		private function fixConfigValues(){
+			if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
+			VmConfig::loadConfig();
+
+			$data = array();
+			$list_limit = VmConfig::get('list_limit',0);
+			if(!empty($list_limit)){
+				$data['llimit_init_BE'] = $list_limit;
+				$data['llimit_init_FE'] = $list_limit;
+			}
+			$pagseq = VmConfig::get('pagination_sequence',0);
+			if(!empty($pagseq)){
+				$data['pagseq'] = $pagseq;
+				$data['pagseq_1'] = $pagseq;
+				$data['pagseq_2'] = $pagseq;
+				$data['pagseq_3'] = $pagseq;
+				$data['pagseq_4'] = $pagseq;
+				$data['pagseq_5'] = $pagseq;
+			}
+
+			$configModel = VmModel::getModel('config');
+			$configModel->store($data);
 		}
 
 		private function fixOrdersVendorId(){
@@ -285,14 +319,14 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					//vmdebug('fixOrdersVendorId ',$res);
 					$q = 'UPDATE #__virtuemart_orders SET `virtuemart_vendor_id`=1 WHERE virtuemart_vendor_id = "0" ';
 					$this->_db->setQuery($q);
-					$res = $this->_db->query();
+					$res = $this->_db->execute();
 					$err = $this->_db->getErrorMsg();
 					if(!empty($err)){
 						vmError('fixOrdersVendorId update orders '.$err);
 					}
 					$q = 'UPDATE #__virtuemart_order_items SET `virtuemart_vendor_id`=1 WHERE virtuemart_vendor_id = "0" ';
 					$this->_db->setQuery($q);
-					$res = $this->_db->query();
+					$res = $this->_db->execute();
 					$err = $this->_db->getErrorMsg();
 					if(!empty($err)){
 						vmError('fixOrdersVendorId update order_item '.$err);
@@ -317,13 +351,13 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 				$q = 'SELECT `order_stock_handle` FROM `#__virtuemart_orderstates`';
 				$this->_db->setQuery($q);
-				$res = $this->_db->query();
+				$res = $this->_db->execute();
 				$err = $this->_db->getErrorMsg();
 				if(empty($res) and empty($err) ){
 					$q = 'UPDATE `#__virtuemart_orderstates` SET `order_stock_handle`="'.$v.'" WHERE  `order_status_code`="'.$k.'" ;';
 					$this->_db->setQuery($q);
 
-					if(!$this->_db->query()){
+					if(!$this->_db->execute()){
 						$app = JFactory::getApplication();
 						$app->enqueueMessage('Error: Install alterTable '.$this->_db->getErrorMsg() );
 						$ok = false;
@@ -360,7 +394,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					$query = 'ALTER TABLE `'.$tablename.'` '.$command.' COLUMN `'.$fieldname.'` '.$alterCommand;
 
 					$this->_db->setQuery($query);
-					if(!$this->_db->query()){
+					if(!$this->_db->execute()){
 						$app = JFactory::getApplication();
 						$app->enqueueMessage('Error: Install alterTable '.$this->_db->getErrorMsg() );
 						$ok = false;
@@ -390,7 +424,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 				$query = 'ALTER TABLE `'.$table.'` ADD '.$field.' '.$fieldType;
 				$this->_db->setQuery($query);
-				if(!$this->_db->query()){
+				if(!$this->_db->execute()){
 					$app = JFactory::getApplication();
 					$app->enqueueMessage('Error: Install checkAddFieldToTable '.$this->_db->getErrorMsg() );
 					return false;
@@ -412,7 +446,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$result = $this->db->loadResult();
 			if(empty($result) || !$result ){
 				$this->db->setQuery($insert);
-				if(!$this->db->query()){
+				if(!$this->db->execute()){
 					$app = JFactory::getApplication();
 					$app->enqueueMessage('Install addToRequired '.$this->db->getErrorMsg() );
 				}
@@ -424,7 +458,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			//Does not work, the keys must be regenerated
 // 			$query = 'ALTER TABLE `#__virtuemart_userinfos`  CHANGE COLUMN `virtuemart_userinfo_id` `virtuemart_userinfo_id` INT(1) NOT NULL AUTO_INCREMENT FIRST';
 // 			$this->_db->setQuery($query);
-// 			if(!$this->_db->query()){
+// 			if(!$this->_db->execute()){
 
 // 			} else {
 // 				$query = 'ALTER TABLE `#__virtuemart_userinfos` AUTO_INCREMENT = 1';
@@ -453,7 +487,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 						//Yes it should be primary, ohh it gets sorted, great
 						$q = 'ALTER TABLE `'.$tablename.'` ADD KEY (`'.$fieldname.'`)';
 						$this->_db->setQuery($q);
-						if(!$this->_db->query()){
+						if(!$this->_db->execute()){
 							$app = JFactory::getApplication();
 							$app->enqueueMessage('Error: deleteReCreatePrimaryKey add KEY '.$this->_db->getErrorMsg() );
 						}
@@ -465,13 +499,13 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 						//Great, now it actually takes the attribute being a primary
 						$q = 'ALTER TABLE `'.$tablename.'` ADD PRIMARY KEY (`'.$fieldname.'`)';
 						$this->_db->setQuery($q);
-						if(!$this->_db->query()){
+						if(!$this->_db->execute()){
 							$app = JFactory::getApplication();
 							$app->enqueueMessage('Error: deleteReCreatePrimaryKey final add Primary '.$this->_db->getErrorMsg() );
 						} else {
 							$q = 'ALTER TABLE `'.$tablename.'`  DROP INDEX `'.$fieldname.'`';
 							$this->_db->setQuery($q);
-							if(!$this->_db->query()){
+							if(!$this->_db->execute()){
 								$app->enqueueMessage('Error: deleteReCreatePrimaryKey final add Primary '.$this->_db->getErrorMsg() );
 							}
 						}
@@ -500,7 +534,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$q = "INSERT INTO `#__virtuemart_shoppergroups` (`virtuemart_shoppergroup_id`, `virtuemart_vendor_id`, `shopper_group_name`, `shopper_group_desc`, `default`, `shared`) VALUES
 								(NULL, 1, '-default-', 'This is the default shopper group.', 1, 1);";
 				$this->_db->setQuery($q);
-				$this->_db->query();
+				$this->_db->execute();
 			}
 
 			$q = 'SELECT `virtuemart_shoppergroup_id` FROM `#__virtuemart_shoppergroups` WHERE `default` = "2" ';
@@ -512,7 +546,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$q = "INSERT INTO `#__virtuemart_shoppergroups` (`virtuemart_shoppergroup_id`, `virtuemart_vendor_id`, `shopper_group_name`, `shopper_group_desc`, `default`, `shared`) VALUES
 								(NULL, 1, '-anonymous-', 'Shopper group for anonymous shoppers', 2, 1);";
 				$this->_db->setQuery($q);
-				$this->_db->query();
+				$this->_db->execute();
 			}
 
 		}
@@ -728,6 +762,11 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					<br /><?php echo JText::_('COM_VIRTUEMART_INSTALL_GO_SHOP') ?>
 				</a>
 				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo JText::sprintf('COM_VIRTUEMART_MORE_LANGUAGES','http://virtuemart.net/community/translations'); ?>
 			</td>
 		</tr>
 	</table>

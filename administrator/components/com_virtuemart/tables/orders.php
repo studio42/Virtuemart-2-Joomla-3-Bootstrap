@@ -40,7 +40,7 @@ class TableOrders extends VmTable {
 	/** @var int Order number */
 	var $order_number = NULL;
 	var $order_pass = NULL;
-
+	var $customer_number = NULL;
 	/** @var decimal Order total */
 	var $order_total = 0.00000;
 	/** @var decimal Products sales prices */
@@ -88,6 +88,8 @@ class TableOrders extends VmTable {
 	var $customer_note = 0;
 	/** @var string Users IP Address */
 	var $ip_address = 0;
+	/** @var char Order language */
+	var $order_language = NULL;
 
 
 	/**
@@ -132,7 +134,7 @@ class TableOrders extends VmTable {
 	function delete( $id=null , $where = 0 ){
 
 		$this->_db->setQuery('DELETE from `#__virtuemart_order_userinfos` WHERE `virtuemart_order_id` = ' . $id);
-		if ($this->_db->query() === false) {
+		if ($this->_db->execute() === false) {
 			vmError($this->_db->getError());
 			return false;
 		}
@@ -142,7 +144,7 @@ class TableOrders extends VmTable {
 		$paymentTable = '#__virtuemart_payment_plg_'. $this->_db->loadResult();
 
 		$this->_db->setQuery('DELETE from `'.$paymentTable.'` WHERE `virtuemart_order_id` = ' . $id);
-		if ($this->_db->query() === false) {
+		if ($this->_db->execute() === false) {
 			vmError($this->_db->getError());
 			return false;
 		}		/*vm_order_shipment NOT EXIST  have to find the table name*/
@@ -155,13 +157,14 @@ class TableOrders extends VmTable {
 			//Can we securely prevent this just using
 		//	'SELECT `shipment_element` FROM `#__virtuemart_shipmentmethods` , `#__virtuemart_orders`
 		//	WHERE `#__virtuemart_shipmentmethods`.`virtuemart_shipmentmethod_id` = `#__virtuemart_orders`.`virtuemart_shipmentmethod_id` AND `virtuemart_order_id` = ' . $id );
-		}
+		} else {
 		$shipmentTable = '#__virtuemart_shipment_plg_'. $shipmentName;
 
 		$this->_db->setQuery('DELETE from `'.$shipmentTable.'` WHERE `virtuemart_order_id` = ' . $id);
-		if ($this->_db->query() === false) {
+		if ($this->_db->execute() === false) {
 			vmError('TableOrders delete Order shipmentTable = '.$shipmentTable.' `virtuemart_order_id` = '.$id.' dbErrorMsg '.$this->_db->getError());
 			return false;
+		}
 		}
 
 		$_q = 'INSERT INTO `#__virtuemart_order_histories` ('
@@ -181,7 +184,7 @@ class TableOrders extends VmTable {
 			.')';
 
 		$this->_db->setQuery($_q);
-		$this->_db->query(); // Ignore error here
+		$this->_db->execute(); // Ignore error here
 		return parent::delete($id);
 
 	}

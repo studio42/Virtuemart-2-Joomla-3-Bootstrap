@@ -53,14 +53,11 @@ class TableCategories extends VmTable {
 	var $ordering		= 0;
 
 	var $shared 		= 0;
-	/** @var int category limit start*/
-	var $limit_list_start 	 = 0;
+
 	/** @var int category limit step*/
-	var $limit_list_step 	 = 10;
-	/** @var int category limit max */
-	var $limit_list_max	= 0;
+	var $limit_list_step 	 = 0;
 	/** @var int category limit initial */
-	var $limit_list_initial	= 10;
+	var $limit_list_initial	= 0;
 	/** @var string Meta description */
 	var $metadesc	= '';
 	/** @var string custom title */
@@ -72,13 +69,13 @@ class TableCategories extends VmTable {
 	/** @var string Meta author */
 	var $metaauthor	= '';
         /** @var integer Category publish or not */
-	var $published			= 1;
+	var $published			= 0;
 
 	/**
 	 * Class contructor
 	 *
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param $db database connector object
 	 */
 	public function __construct($db) {
 		parent::__construct('#__virtuemart_categories', 'virtuemart_category_id', $db);
@@ -92,6 +89,20 @@ class TableCategories extends VmTable {
 		$this->setTableShortCut('c');
 	}
 
+	public function check(){
+
+		$csValue = $this->limit_list_step;
+		if(!empty($csValue)){
+			$sequenceArray = explode(',', $csValue);
+			foreach($sequenceArray as &$csV){
+				$csV = (int)trim($csV);
+			}
+			$this->limit_list_step = implode(',',$sequenceArray);
+			vmdebug('my check',$this->limit_list_step);
+		}
+
+		return parent::check();
+	}
 
 	/**
 	 * Overwrite method
@@ -150,7 +161,7 @@ class TableCategories extends VmTable {
 			;
 			$this->_db->setQuery( $query );
 
-			if (!$this->_db->query())
+			if (!$this->_db->execute())
 			{
 				$err = $this->_db->getErrorMsg();
 				JError::raiseError( 500, 'TableCategories move isset row this->k '.$err );
@@ -162,7 +173,7 @@ class TableCategories extends VmTable {
 			;
 			$this->_db->setQuery( $query );
 
-			if (!$this->_db->query())
+			if (!$this->_db->execute())
 			{
 				$err = $this->_db->getErrorMsg();
 				JError::raiseError( 500, 'TableCategories move isset row $row->$k '.$err );
@@ -178,7 +189,7 @@ class TableCategories extends VmTable {
 			;
 			$this->_db->setQuery( $query );
 
-			if (!$this->_db->query())
+			if (!$this->_db->execute())
 			{
 				$err = $this->_db->getErrorMsg();
 				JError::raiseError( 500, 'TableCategories move update '.$err );
@@ -232,7 +243,7 @@ class TableCategories extends VmTable {
 					. ' WHERE '. $k .' = '. $this->_db->Quote($orders[$i]->$k)
 					;
 					$this->_db->setQuery( $query);
-					$this->_db->query();
+					$this->_db->execute();
 				}
 			}
 		}

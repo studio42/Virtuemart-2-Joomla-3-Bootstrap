@@ -20,14 +20,14 @@
 defined('_JEXEC') or die('Restricted access'); ?>
 <fieldset>
 				<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PRODUCT_STATUS_LBL'); ?></legend>
-<table class="adminform" width="100%">
-	<tr class="row0">
+<table class="table-striped">
+	<tr>
 		<td width="25%" >
 			<div style="text-align:right;font-weight:bold;">
 			<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_IN_STOCK') ?></div>
 		</td>
 		<td width="20%">
-			<input  type="text" class="inputbox js-change-stock"  name="product_in_stock" value="<?php echo $this->product->product_in_stock; ?>" size="10" />
+			<input  type="text" class="input-mini js-change-stock"  name="product_in_stock" value="<?php echo $this->product->product_in_stock; ?>" size="10" />
 
 			<?php 
 			/*if (isset($this->waitinglist) && count($this->waitinglist) > 0) { 
@@ -46,10 +46,10 @@ defined('_JEXEC') or die('Restricted access'); ?>
 			<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_ORDERED_STOCK') ?></div>
 		</td>
 		<td colspan="2">
-			<input type="text" class="inputbox js-change-stock"  name="product_ordered" value="<?php echo $this->product->product_ordered; ?>" size="10" />
+			<input type="text" class="input-mini js-change-stock"  name="product_ordered" value="<?php echo $this->product->product_ordered; ?>" size="10" />
 		</td>
 	</tr>
-	<tr class="row1">
+	<tr>
 	<!-- low stock notification -->
 		<td>
 			<div style="text-align:right;font-weight:bold;">
@@ -57,7 +57,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 			</div>
 		</td>
 		<td>
-			<input type="text" class="inputbox" name="low_stock_notification" value="<?php echo $this->product->low_stock_notification; ?>" size="3" />
+			<input type="text" class="input-mini" name="low_stock_notification" value="<?php echo $this->product->low_stock_notification; ?>" size="3" />
 		</td>
 		<td>
 			<div style="text-align:right;font-weight:bold;">
@@ -65,18 +65,18 @@ defined('_JEXEC') or die('Restricted access'); ?>
 			</div>
 		</td>
 		<td>
-			<input type="text" class="inputbox"  name="step_order_level" value="<?php echo $this->product->step_order_level; ?>" size="10" />
+			<input type="text" class="input-mini"  name="step_order_level" value="<?php echo $this->product->step_order_level; ?>" size="10" />
 		</td>
 	<!-- end low stock notification -->
 	</tr>
-	<tr class="row0">
+	<tr>
 		<td>
 			<div style="text-align:right;font-weight:bold;">
 				<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_MIN_ORDER') ?>
 			</div>
 		</td>
 		<td>
-			<input type="text" class="inputbox"  name="min_order_level" value="<?php echo $this->product->min_order_level; ?>" size="10" />
+			<input type="text" class="input-mini"  name="min_order_level" value="<?php echo $this->product->min_order_level; ?>" size="10" />
 		</td>
 		<td>
 			<div style="text-align:right;font-weight:bold;">
@@ -84,10 +84,10 @@ defined('_JEXEC') or die('Restricted access'); ?>
 			</div>
 		</td>
 		<td>
-			<input type="text" class="inputbox"  name="max_order_level" value="<?php echo $this->product->max_order_level; ?>" size="10" />
+			<input type="text" class="input-mini"  name="max_order_level" value="<?php echo $this->product->max_order_level; ?>" size="10" />
 		</td>
 	</tr>
-	<tr class="row1">
+	<tr>
 		<td >
 			<div style="text-align:right;font-weight:bold;">
 				<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_AVAILABLE_DATE') ?>
@@ -99,16 +99,16 @@ defined('_JEXEC') or die('Restricted access'); ?>
 			echo vmJsApi::jDate($this->product->product_available_date, 'product_available_date'); ?>
 		</td>
 	</tr>
-	<tr class="row0">
+	<tr>
 		<td valign="top" >
 			<div style="text-align:right;font-weight:bold;">
 				<?php echo JText::_('COM_VIRTUEMART_AVAILABILITY') ?>
 			</div>
 		</td>
 		<td colspan="2">
-			<input type="text" class="inputbox" id="product_availability" name="product_availability" value="<?php echo $this->product->product_availability; ?>" />
-			<span class="icon-nofloat vmicon vmicon-16-info tooltip" title="<?php echo '<b>'.JText::_('COM_VIRTUEMART_AVAILABILITY').'</b><br/ >'.JText::_('COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP1') ?>"></span>
-
+			<input type="text" class="input-mini" id="product_availability" name="product_availability" value="<?php echo $this->product->product_availability; ?>" />
+			<span class="icon-nofloat vmicon vmicon-16-info hasTooltip" title="<?php echo '<b>'.JText::_('COM_VIRTUEMART_AVAILABILITY').'</b><br/ >'.JText::_('COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP1') ?>"></span>
+			<div class="clearfix"></div>
 			<?php echo JHTML::_('list.images', 'image', $this->product->product_availability, " ", $this->imagePath); ?>
 			<span class="icon-nofloat vmicon vmicon-16-info tooltip" title="<?php echo '<b>'.JText::_('COM_VIRTUEMART_AVAILABILITY').'</b><br/ >'.JText::sprintf('COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP2',  $this->imagePath ) ?>"></span>
 		</td>

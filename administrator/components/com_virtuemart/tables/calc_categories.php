@@ -32,7 +32,7 @@ class TableCalc_categories extends VmTableXarray {
 
 	/**
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db database connector object
 	 */
 	function __construct(&$db){
 		parent::__construct('#__virtuemart_calc_categories', 'id', $db);

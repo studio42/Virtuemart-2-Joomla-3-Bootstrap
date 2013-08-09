@@ -33,7 +33,6 @@ class VmController extends JControllerLegacy{
 	 */
 	public function __construct($cidName='cid', $config=array()) {
 		parent::__construct($config);
-
 		 $this->_cidName = $cidName;
 
 		$this->registerTask( 'add',  'edit' );

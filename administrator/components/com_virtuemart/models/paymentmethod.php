@@ -82,13 +82,6 @@ class VirtueMartModelPaymentmethod extends VmModel{
 			$this->_db->setQuery($q);
 			$this->_data->virtuemart_shoppergroup_ids = $this->_db->loadColumn();
 
-			//// NEVER USED , Data are from XML file or from payment table !!!
-			// $table = '#__extensions';
-			// $ext_id = 'extension_id';
-			// $q = 'SELECT `params` FROM `' . $table . '` WHERE `' . $ext_id . '` = "'.$this->_data->payment_jplugin_id.'"';
-			// $this->_db->setQuery($q);
-
-			// $this->_data->param = $this->_db->loadResult();
 			// Convert the params field to an array.
 			// set params array.
 			$registry = new JRegistry;
@@ -100,7 +93,6 @@ class VirtueMartModelPaymentmethod extends VmModel{
 			if (file_exists($path))
 			{
 				$this->_data->form = JForm::getInstance('plgForm', $path, array(),true, '//config');
-				// $this->_data->xml = simplexml_load_file($path);
 				$this->_data->form->bind($this->_data);
 			}
 			else
@@ -176,6 +168,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 	  	   	if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
 	   		$data['virtuemart_vendor_id'] = VirtueMartModelVendor::getLoggedVendor();
 	  	} else {
+// Not set from data ????
 			$data['virtuemart_vendor_id'] = (int) $data['virtuemart_vendor_id'];
 		}
 
@@ -271,7 +264,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 
 			$this->_db->setQuery($query);
 
-			if( !$this->_db->query() ){
+			if( !$this->_db->execute() ){
 				vmError( $this->_db->getErrorMsg() );
 				return false;
 			}

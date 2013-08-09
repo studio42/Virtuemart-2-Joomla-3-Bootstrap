@@ -37,7 +37,8 @@ class VirtuemartViewCategory extends VmView {
 		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'category'.DS.'tmpl');
 		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
 		$this->loadHelper('html');
-
+		if (!class_exists ('shopFunctionsF'))
+			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		$model = VmModel::getModel();
 
 		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
@@ -45,11 +46,10 @@ class VirtuemartViewCategory extends VmView {
 		$this->catmodel = $model;
 		$this->addStandardDefaultViewCommands();
 		$this->addStandardDefaultViewLists($model,'category_name');
-
+		$this->task = JRequest::getWord('task','');
 		$this->categories = $model->getCategoryTree(0,0,false,$this->lists['search']);
 		$this->pagination = $model->getPagination();
 		//we need a function of the FE shopfunctions helper to cut the category descriptions
-		// NOTE : Why here ?
 		jimport('joomla.filter.output');
 
 		parent::display('results');

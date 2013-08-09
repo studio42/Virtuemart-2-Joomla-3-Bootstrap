@@ -228,20 +228,22 @@ abstract class JHtmlBootstrap
 	{
 		// Ensure the behavior is loaded
 		self::modal($selector, $params);
-
-		$html = "<div class=\"modal hide fade\" id=\"" . $selector . "\">\n";
+		//$html = "<div class=\"modal hide fade\" id=\"" . $selector . "\">\n";
+		$html = "<div class=\"modal hide\" id=\"" . $selector . "\">\n";
 		$html .= "<div class=\"modal-header\">\n";
 		$html .= "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">×</button>\n";
 		$html .= "<h3>" . $params['title'] . "</h3>\n";
 		$html .= "</div>\n";
 		$html .= "<div id=\"" . $selector . "-container\">\n";
+		$html .="<div class=\"modal-body\"></div>";
 		$html .= "</div>\n";
+		$html .= $footer;
 		$html .= "</div>\n";
 
 		$html .= "<script>";
 		$html .= "jQuery('#" . $selector . "').on('show', function () {\n";
-		$html .= "document.getElementById('" . $selector . "-container').innerHTML = '<div class=\"modal-body\"><iframe class=\"iframe\" src=\""
-			. $params['url'] . "\" height=\"" . $params['height'] . "\" width=\"" . $params['width'] . "\"></iframe></div>" . $footer . "';\n";
+		$html .= "jQuery('#" . $selector . "-container .modal-body').html( '<iframe class=\"iframe\" src=\""
+			. $params['url'] . "\" height=\"" . $params['height'] . "\" width=\"" . $params['width'] . "\"></iframe>');\n";
 		$html .= "});\n";
 		$html .= "</script>";
 

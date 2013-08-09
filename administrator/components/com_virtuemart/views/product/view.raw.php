@@ -103,13 +103,11 @@ class VirtuemartViewProduct extends VmView {
 			$productlist = $model->getProductListing(false,false,false,false,true);
 
 			//The pagination must now always set AFTER the model load the listing
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 			/* Get the category tree */
 			$categoryId = $model->virtuemart_category_id; //OSP switched to filter in model, was JRequest::getInt('virtuemart_category_id');
-			$category_tree = ShopFunctions::categoryListTree(array($categoryId));
-			$this->assignRef('category_tree', $category_tree);
+			$this->category_tree = ShopFunctions::categoryListTree(array($categoryId));
 
 			/* Load the product price */
 			if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'calculationh.php');
@@ -136,8 +134,7 @@ class VirtuemartViewProduct extends VmView {
 			}
 
 			$mf_model = VmModel::getModel('manufacturer');
-			$manufacturers = $mf_model->getManufacturerDropdown();
-			$this->assignRef('manufacturers',	$manufacturers);
+			$this->manufacturers = $mf_model->getManufacturerDropdown();
 
 			/* add Search filter in lists*/
 			/* Search type */
@@ -155,10 +152,9 @@ class VirtuemartViewProduct extends VmView {
 			);
 			$this->lists['search_order'] = VmHTML::selectList('search_order', JRequest::getVar('search_order'),$options,1,'','','input-small');
 
-			$this->assignRef('productlist', $productlist);
-			$this->assignRef('virtuemart_category_id', $categoryId);
-			$this->assignRef('model', $model);
-			$tpl = 'results';
+			$this->productlist = $productlist;
+			$this->virtuemart_category_id = $categoryId;
+			$this->model = $model;
 			break;
 		}
 		$tpl = 'results';
@@ -172,7 +168,9 @@ class VirtuemartViewProduct extends VmView {
 		$this->db->setQuery(' SELECT COUNT( * ) FROM `#__virtuemart_products` WHERE `product_parent_id` ='.$product_id);
 		if ($result = $this->db->loadResult()){
 			$result = JText::sprintf('COM_VIRTUEMART_X_CHILD_PRODUCT', $result);
-			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_id.'&option=com_virtuemart'), $result, array('title' => JText::sprintf('COM_VIRTUEMART_PRODUCT_LIST_X_CHILDREN',$product_name) ));
+			if ($this->frontEdit) $front = "&tmpl=component";
+			else $front="";
+			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_id.'&option=com_virtuemart'.$front), '<div class="small">'.$result.'</div>', array('class'=> 'hasTooltip', 'title' => JText::sprintf('COM_VIRTUEMART_PRODUCT_LIST_X_CHILDREN',$product_name) ));
 		}
 	}
 
@@ -182,7 +180,9 @@ class VirtuemartViewProduct extends VmView {
 		$this->db->setQuery(' SELECT `product_name` FROM `#__virtuemart_products_'.VMLANG.'` as l JOIN `#__virtuemart_products` using (`virtuemart_product_id`) WHERE `virtuemart_product_id` = '.$product_parent_id);
 		if ($product_name = $this->db->loadResult()){
 			$result = JText::sprintf('COM_VIRTUEMART_LIST_CHILDREN_FROM_PARENT', $product_name);
-			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_parent_id.'&option=com_virtuemart'), $product_name, array('title' => $result));
+			if ($this->frontEdit) $front = "&tmpl=component";
+			else $front="";
+			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_parent_id.'&option=com_virtuemart'.$front ), '<div class="small">'.$product_name.'</div>', array('class'=> 'hasTooltip', 'title' => $result));
 		}
 	}
 

@@ -61,6 +61,7 @@ if($offline && !$admin){
 	if (jRequest::getVar('tmpl') == 'component' && $admin ) {
 		$jlang =JFactory::getLanguage();
 		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, null, true);
+		$jlang->load('', JPATH_ADMINISTRATOR, null, true);
 		$basePath = JPATH_VM_ADMINISTRATOR;
 	}
 }
@@ -83,7 +84,7 @@ else {
 
 if (class_exists($_class)) {
     $controller = new $_class();
-
+	if ($basePath === JPATH_VM_ADMINISTRATOR) $controller->addViewPath(JPATH_VM_ADMINISTRATOR . DS . 'views'); 
 	// try plugins
 	JPluginHelper::importPlugin('vmuserfield');
 	$dispatcher = JDispatcher::getInstance();

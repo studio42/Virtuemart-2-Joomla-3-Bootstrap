@@ -98,9 +98,19 @@ else $front = '';
 				</td>
 				<?php
 					/* Create URL */
-					$link = JRoute::_('index.php?view=media&virtuemart_product_id='.$product->virtuemart_product_id.'&option=com_virtuemart');
+					$link = JRoute::_('index.php?view=media&virtuemart_product_id='.$product->virtuemart_product_id.'&option=com_virtuemart'.$front);
 				?>
-				<td align="center"  class="hidden-phone"><?php echo JHTML::_('link', $link, '<span class="icon-nofloat vmicon vmicon-16-media"></span> ('.$product->mediaitems.')', 'class="hasTooltip" title ="'. JText::_('COM_VIRTUEMART_MEDIA_MANAGER').'" ' );
+				<td align="center"  class="hidden-phone">
+					<?php // We show the images only when less than 31 products are displayeed -->
+					$mediaLimit = (int)VmConfig::get('mediaLimit',30);
+					if($this->pagination->limit<=$mediaLimit or $total<=$mediaLimit){
+						// Product list should be ordered
+						$this->model->addImages($product,1);
+						$img = '<span >('.$product->mediaitems.')</span>'.$product->images[0]->displayMediaThumb('class="vm_mini_image"',false );
+					} else {
+						$img = '<span class="icon-nofloat vmicon vmicon-16-media"></span> ('.$product->mediaitems.')';
+					}
+					echo JHTML::_('link', $link, $img,  array('class' => 'hasTooltip thumbnail' ,'title' => JText::_('COM_VIRTUEMART_MEDIA_MANAGER').' '.$product->product_name));
 				 ?></td>
 				<!--<td class="hidden-phone"><?php echo $product->product_sku; ?></td>-->
 				<td align="right" ><?php echo isset($product->product_price_display)? $product->product_price_display:JText::_('COM_VIRTUEMART_NO_PRICE_SET') ?></td>
@@ -115,6 +125,7 @@ else $front = '';
 						$ordering = true;
 						?>
 						<td class="order">
+						<span class="vmicon vmicon-16-move"></span>
 							<span><?php echo $this->pagination->orderUpIcon( $i, true, 'orderup', JText::_('COM_VIRTUEMART_MOVE_UP'), $ordering ); ?></span>
 							<span><?php echo $this->pagination->orderDownIcon( $i, $total , true, 'orderdown', JText::_('COM_VIRTUEMART_MOVE_DOWN'), $ordering ); ?></span>
 							<input class="ordering input-mini" type="text" name="order[<?php echo $product->id?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $product->ordering; ?>" style="text-align: center" />

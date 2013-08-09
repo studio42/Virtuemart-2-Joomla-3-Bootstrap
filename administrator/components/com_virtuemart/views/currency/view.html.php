@@ -53,26 +53,18 @@ class VirtuemartViewCurrency extends VmView {
 			}
 
 			$model->setId($cid);
-			$currency = $model->getCurrency();
-			$this->SetViewTitle('',$currency->currency_name);
-			$this->assignRef('currency',	$currency);
+			$this->currency = $model->getCurrency();
 
+			$this->SetViewTitle('',$currency->currency_name);
 			$this->addStandardEditViewCommands();
 
 		} else {
-
 			$this->SetViewTitle();
 			$this->addStandardDefaultViewCommands();
-
 			$this->addStandardDefaultViewLists($model,0,'ASC');
 
-			$currencies = $model->getCurrenciesList(JRequest::getWord('search', false));
-			$this->assignRef('currencies',	$currencies);
-
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
-
-
+			$this->currencies = $model->getCurrenciesList(JRequest::getWord('search', false));
+			$this->pagination = $model->getPagination();
 		}
 
 		parent::display($tpl);

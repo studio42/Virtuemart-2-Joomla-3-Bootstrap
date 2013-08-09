@@ -174,12 +174,18 @@ class VirtueMartModelUserfields extends VmModel {
 	/**
 	 * Retrieve the detail record for the current $id if the data has not already been loaded.
 	 */
-	function getUserfield()
+	function getUserfield($id = 0,$name = 0)
 	{
+		if($id === 0){
+			$id = $this->_id;
+		}
+
 		if (empty($this->_data)) {
 			$this->_data = $this->getTable('userfields');
-
-			$this->_data->load((int)$this->_id);
+			if($name !==0){
+				$this->_data->load($id, $name);
+			}
+			$this->_data->load($id);
 		}
 
 		if(strpos($this->_data->type,'plugin')!==false){
@@ -196,6 +202,7 @@ class VirtueMartModelUserfields extends VmModel {
 
 		return $this->_data;
 	}
+
 
 	/**
 	 * Retrieve the value records for the current $id if available for the current type
@@ -398,7 +405,7 @@ class VirtueMartModelUserfields extends VmModel {
 			  $q = 'DELETE from `#__virtuemart_userfield_values` WHERE `virtuemart_userfield_value_id` = ' . (int)$originalvalues[$i]->virtuemart_userfield_value_id.' and `virtuemart_userfield_id` = '.(int)$_id; 
 			  
 			  $db->setQuery($q);
-		      if ($db->query() === false) {
+		      if ($db->execute() === false) {
 					vmError($db->getError());
 					return false;
 				}
@@ -750,7 +757,7 @@ class VirtueMartModelUserfields extends VmModel {
 					     'name' => $_prefix . $_fld->name
 				,'value' => (($_userData == null || !array_key_exists($_fld->name, $_userData))
 				? $_fld->default
-				: @$_userData[$_fld->name])
+				: @html_entity_decode($_userData[$_fld->name],ENT_COMPAT,'UTF-8'))
 				,'title' => JText::_($_fld->title)
 				,'type' => $_fld->type
 				,'required' => $_fld->required
@@ -810,7 +817,8 @@ class VirtueMartModelUserfields extends VmModel {
 						break;
 
 					case 'virtuemart_state_id':
-
+						if (!class_exists ('shopFunctionsF'))
+							require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 						$_return['fields'][$_fld->name]['formcode'] =
 						shopFunctions::renderStateList(	$_return['fields'][$_fld->name]['value'],
 						$_prefix,
@@ -1006,6 +1014,7 @@ class VirtueMartModelUserfields extends VmModel {
 									break;
 								case 'multiselect':
 									$_attribs['multiple'] = 'multiple';
+									$_attribs['class'] = 'vm-chzn-select';
 									$field_values="";
 									$_return['fields'][$_fld->name]['formcode'] = JHTML::_('select.genericlist', $_values, $_prefix.$_fld->name.'[]', $_attribs, 'fieldvalue', 'fieldtitle', $_selected);
 									$separator_form = '<br />';

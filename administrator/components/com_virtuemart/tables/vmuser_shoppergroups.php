@@ -33,7 +33,7 @@ if(!class_exists('VmTableXarray'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS
 
 
 	/**
-	 * @param $db Class constructor; connect to the database
+	 * @param JDataBase $db
 	 */
 	function __construct(&$db)
 	{

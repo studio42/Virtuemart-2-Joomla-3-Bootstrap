@@ -37,7 +37,6 @@ class VirtuemartViewShopperGroup extends VmView {
 		$this->loadHelper('html');
 		$this->loadHelper('permissions');
 
-// 		$this->assignRef('perms', Permissions::getInstance());
 		$model = VmModel::getModel();
 
 		$this->addStandardDefaultViewCommands();

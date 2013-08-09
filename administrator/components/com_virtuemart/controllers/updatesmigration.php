@@ -525,7 +525,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 			echo 'is in array';
 			$query = 'ALTER TABLE `#__virtuemart_products` ADD product_ordered int(11)';
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}*/
 	}
 

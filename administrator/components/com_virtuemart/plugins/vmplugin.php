@@ -261,7 +261,7 @@ abstract class vmPlugin extends JPlugin {
 				// 				vmdebug('onStoreInstallPluginTable '.$query);
 				$db = JFactory::getDBO ();
 				$db->setQuery ($query);
-				if (!$db->query ()) {
+				if (!$db->execute ()) {
 					JError::raiseWarning (1, $this->_name . '::onStoreInstallPluginTable: ' . JText::_ ('COM_VIRTUEMART_SQL_ERROR') . ' ' . $db->stderr (TRUE));
 					echo $this->_name . '::onStoreInstallPluginTable: ' . JText::_ ('COM_VIRTUEMART_SQL_ERROR') . ' ' . $db->stderr (TRUE);
 				} else {

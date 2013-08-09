@@ -53,12 +53,8 @@ class VirtuemartViewCountry extends VmView {
 
 		$layoutName = JRequest::getWord('layout', 'default');
 		if ($layoutName == 'edit') {
-			$country = $model->getData();
-
-		    $this->assignRef('country',	$country);
-			$wzsList = $zoneModel->getWorldZonesSelectList();
-		    $this->assignRef('worldZones', $wzsList	);
-
+			$this->country = $model->getData();
+			$this->worldZones = $zoneModel->getWorldZonesSelectList();
 			$this->addStandardEditViewCommands();
 
 		}
@@ -70,11 +66,9 @@ class VirtuemartViewCountry extends VmView {
 			$this->addStandardDefaultViewLists($model,0,'ASC','filter_country');
 
 			$filter_country = JRequest::getWord('filter_country', false);
-			$countries = $model->getCountries(false, false, $this->lists['filter_country']);
-			$this->assignRef('countries',	$countries);
+			$this->countries = $model->getCountries(false, false, $this->lists['filter_country']);
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 		}
 

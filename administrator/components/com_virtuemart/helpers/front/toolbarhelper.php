@@ -242,7 +242,7 @@ abstract class JToolbarHelper
 	 *
 	 * @since   1.5
 	 */
-	public static function publish($task = 'publish', $alt = 'COM_VIRTUEMART_PUBLISH', $check = false)
+	public static function publish($task = 'publish', $alt = 'JTOOLBAR_PUBLISH', $check = false)
 	{
 		$bar = JToolbar::getInstance('toolbar');
 
@@ -260,7 +260,7 @@ abstract class JToolbarHelper
 	 *
 	 * @since   1.5
 	 */
-	public static function publishList($task = 'publish', $alt = 'COM_VIRTUEMART_PUBLISH')
+	public static function publishList($task = 'publish', $alt = 'JTOOLBAR_PUBLISH')
 	{
 		$bar = JToolbar::getInstance('toolbar');
 
@@ -351,7 +351,7 @@ abstract class JToolbarHelper
 	 *
 	 * @since   1.5
 	 */
-	public static function editList($task = 'edit', $alt = 'COM_VIRTUEMART_EDIT')
+	public static function editList($task = 'edit', $alt = 'JTOOLBAR_EDIT')
 	{
 		$bar = JToolbar::getInstance('toolbar');
 

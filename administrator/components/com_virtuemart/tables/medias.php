@@ -65,7 +65,7 @@ class TableMedias extends VmTable {
 
 	/**
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db
 	 */
 	function __construct (&$db) {
 
@@ -368,6 +368,16 @@ class TableMedias extends VmTable {
 					$notice = TRUE;
 				}
 			//}
+		}
+
+		//Nasty small hack, should work as long the word for default is in the language longer than 3 words and the first
+		//letter should be always / or something like this
+		//It prevents storing of the default path
+		$a = trim(substr($this->file_url_thumb,0,4));
+		$b = trim(substr(JText::_('COM_VIRTUEMART_DEFAULT_URL'),0,4));
+
+		if( strpos($a,$b)!==FALSE ){
+			$this->file_url_thumb = null;
 		}
 
 		if ($ok) {

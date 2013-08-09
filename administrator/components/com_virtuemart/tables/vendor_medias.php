@@ -31,7 +31,7 @@ class TableVendor_medias extends VmTableXarray {
 
 	/**
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db database connector object
 	 */
 	function __construct(&$db){
 		parent::__construct('#__virtuemart_vendor_medias', 'id', $db);

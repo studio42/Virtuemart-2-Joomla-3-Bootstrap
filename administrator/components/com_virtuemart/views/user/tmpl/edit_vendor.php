@@ -114,6 +114,10 @@ defined('_JEXEC') or die('Restricted access'); ?>
 		<?php echo $this->editor->display('vendor_legal_info', $this->vendor->vendor_legal_info, '100%', 400, 70, 15)?>
 	</fieldset>
 
+	<fieldset>
+		<legend><?php echo JText::_('COM_VIRTUEMART_METAINFO'); ?></legend>
+		<?php echo shopFunctions::renderMetaEdit($this->vendor); ?>
+	</fieldset>
 <input type="hidden" name="user_is_vendor" value="1" />
 <input type="hidden" name="virtuemart_vendor_id" value="<?php echo $this->vendor->virtuemart_vendor_id; ?>" />
 <input type="hidden" name="last_task" value="<?php echo JRequest::getCmd('task'); ?>" />

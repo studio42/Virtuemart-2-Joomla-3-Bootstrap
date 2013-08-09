@@ -32,8 +32,8 @@ $search_type = JRequest::getVar('search_type', 'product');
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch ('COM_VIRTUEMART_PRODUCT_LIST_SEARCH_BY_DATE', 'filter_product') ?>
 
-		<div class="btn-group pull-right form-horizontal"><?php echo vmJsApi::jDate(JRequest::getVar('search_date', $nowstring), 'search_date'); ?></div>
-		<div class="btn-group pull-right"><?php echo $this->lists['search_order']; ?></div>
+		<span class="searchbydate"><div class="btn-group pull-right form-horizontal"><?php echo vmJsApi::jDate(JRequest::getVar('search_date', $nowstring), 'search_date'); ?></div>
+		<div class="btn-group pull-right"><?php echo $this->lists['search_order']; ?></div></span>
 
 		<div class="clearfix clear"> </div>
 		<div class="btn-group pull-left">
@@ -61,19 +61,6 @@ $search_type = JRequest::getVar('search_type', 'product');
 <?php AdminUIHelper::endAdminArea(true); ?>
 <script type="text/javascript">
     <!--
-
-    jQuery('.show_comment').click(function() {
-	jQuery(this).prev('.element-hidden').show();
-	return false
-    });
-
-    jQuery('.element-hidden').mouseleave(function() {
-	jQuery(this).hide();
-    });
-    jQuery('.element-hidden').mouseout(function() {
-	jQuery(this).hide();
-    });
-
 <?php 
 	$jsons = array (
 			0	=> array(JText::_('COM_VIRTUEMART_DISABLED'),JText::_('COM_VIRTUEMART_ENABLE_ITEM') ),
@@ -129,6 +116,65 @@ $search_type = JRequest::getVar('search_type', 'product');
 			, "json" );
 		return false;
 	}
+	jQuery(function($){
+		$('#search_type').change(function(){
+			var selected = $(this).val() ;
+			if ( selected === 'product' || selected ==='price') 
+				 $('.searchbydate').show();
+			else $('.searchbydate').hide();
+			
+		
+		});
+	});
  -->
 </script>
 </form>
+  <style type="text/css">
+.thumbnail {
+    height: 60px;
+    width: 48px;
+}
+
+  </style>
+
+<?php AdminUIHelper::endAdminArea();
+
+// DONE BY stephanbais
+/// DRAG AND DROP PRODUCT ORDER HACK
+if ($this->virtuemart_category_id ) { ?>
+	<script>
+		jQuery(function() {
+
+			jQuery( ".adminlist" ).sortable({
+				handle: ".vmicon-16-move",
+				items: 'tr:not(:first,:last)',
+				opacity: 0.8,
+				update: function() {
+					var i = 1;
+					jQuery(function updatenr(){
+						jQuery('input.ordering').each(function(idx) {
+							jQuery(this).val(idx);
+						});
+					});
+
+					jQuery(function updaterows() {
+						jQuery(".order").each(function(index){
+							var row = jQuery(this).parent('td').parent('tr').prevAll().length;
+							jQuery(this).val(row);
+							i++;
+						});
+
+					});
+				}
+
+			});
+		});
+
+		//jQuery('input.ordering').css({'color': '#666666', 'background-color': 'transparent','border': 'none' }).attr('readonly', true);
+</script>
+
+<?php }
+
+
+/// END PRODUCT ORDER HACK
+?>

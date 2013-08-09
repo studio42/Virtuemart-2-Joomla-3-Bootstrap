@@ -34,26 +34,20 @@ class VirtuemartViewUserfields extends VmView {
 
 	function display($tpl = null) {
 
-		$option = JRequest::getCmd( 'option');
-		$mainframe = JFactory::getApplication() ;
-
+		VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
 		// Load the helper(s)
-
-
 		$this->loadHelper('html');
 
-		$layoutName = JRequest::getWord('layout', 'default');
+		$layoutName = JRequest::getWord('layout');
 		$model = VmModel::getModel();
 
 		// The list of fields which can't be toggled
 		//$lists['coreFields']= array( 'name','username', 'email', 'password', 'password2' );
 		$lists['coreFields'] = $model->getCoreFields();
 
-			$this->addStandardDefaultViewLists($model,'ordering','ASC');
-
-			$this->userfieldsList = $model->getUserfieldsList();
-			$this->pagination = $model->getPagination();
-		//}
+		$this->addStandardDefaultViewLists($model,'ordering','ASC');
+		$this->userfieldsList = $model->getUserfieldsList();
+		$this->pagination = $model->getPagination();
 		$this->lists['coreFields'] = $lists['coreFields'];
 		parent::display('results');
 		echo $this->AjaxScripts();

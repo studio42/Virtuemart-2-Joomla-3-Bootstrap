@@ -32,11 +32,9 @@ if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmvie
 class VirtuemartViewShopperGroup extends VmView {
 
 	function display($tpl = null) {
+
 		// Load the helper(s)
-
 		$this->loadHelper('html');
-
-// 		$this->assignRef('perms', Permissions::getInstance());
 
 		$model = VmModel::getModel();
 
@@ -44,6 +42,7 @@ class VirtuemartViewShopperGroup extends VmView {
 		$this->task = JRequest::getWord('task',$layoutName);
 
 		if ($layoutName == 'edit') {
+			VmConfig::loadJLang('com_virtuemart_config');
 			$shoppergroup = $model->getShopperGroup();
 
 			$this->SetViewTitle('SHOPPERGROUP',$shoppergroup->shopper_group_name);

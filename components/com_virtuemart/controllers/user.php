@@ -271,7 +271,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 			//$userModel -> deleteAddressST();
 			$q = 'DELETE FROM #__virtuemart_userinfos  WHERE virtuemart_user_id="'. $currentUser->id .'" AND virtuemart_userinfo_id="'. $virtuemart_userinfo_id .'"';
 			$db->setQuery($q);
-			$db->query();
+			$db->execute();
 
 			$msg = vmInfo('Address has been successfully deleted.');
 		}

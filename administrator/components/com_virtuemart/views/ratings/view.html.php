@@ -62,7 +62,12 @@ class VirtuemartViewRatings extends VmView {
 				// $lists['filter_order'] = $mainframe->getUserStateFromRequest($option.'filter_order', 'filter_order', '', 'cmd');
 				// $lists['filter_order_Dir'] = $mainframe->getUserStateFromRequest($option.'filter_order_Dir', 'filter_order_Dir', '', 'word');
 				$this->setLayout('listreviews');
-				$virtuemart_product_id = JRequest::getInt('virtuemart_product_id',0);
+				$virtuemart_product_id = JRequest::getVar('virtuemart_product_id',array(),'', 'array');
+				if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
+					$virtuemart_product_id = (int)$virtuemart_product_id[0];
+				} else {
+					$virtuemart_product_id = (int)$virtuemart_product_id;
+				}
 				$this->reviewslist = $model->getReviews($virtuemart_product_id);
 				$this->pagination = $model->getPagination();
 				$this->addStandardDefaultViewCommands(false,true);

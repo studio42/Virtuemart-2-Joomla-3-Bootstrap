@@ -190,12 +190,12 @@ class VirtueMartModelVendor extends VmModel {
 // 	$dbv = $table->getDBO();
 // 	if(empty($this->_id)) $this->_id = $dbv->insertid();
 		if (empty($this->_id)) {
-			$this->_id = $table->virtuemart_vendor_id;
+			$data['virtuemart_vendor_id'] = $this->_id = $table->virtuemart_vendor_id;
 		}
 
 		if ($this->_id != $oldVendorId) {
 
-			vmdebug('Developer notice, tried to update vendor xref should not appear in singlestore');
+			vmdebug('Developer notice, tried to update vendor xref should not appear in singlestore $oldVendorId = '.$oldVendorId.' newId = '.$this->_id);
 
 			//update user table
 			$usertable = $this->getTable ('vmusers');
@@ -272,15 +272,15 @@ class VirtueMartModelVendor extends VmModel {
 	function getUserIdByOrderId ($virtuemart_order_id) {
 
 		if (empty ($virtuemart_order_id)) {
-			return;
+			return 0;
 		}
 		$virtuemart_order_id = (int)$virtuemart_order_id;
 		$q = "SELECT `virtuemart_user_id` FROM `#__virtuemart_orders` WHERE `virtuemart_order_id`='.$virtuemart_order_id'";
-//		$db->query( $q );
+//		$db->execute( $q );
 		$this->_db->setQuery ($q);
 
 //		if($db->next_record()){
-		if ($this->_db->query ()) {
+		if ($this->_db->execute ()) {
 //			$virtuemart_user_id = $db->f('virtuemart_user_id');
 			return $this->_db->loadResult ();
 		} else {
@@ -357,7 +357,7 @@ class VirtueMartModelVendor extends VmModel {
 
 		$query = 'SELECT `vendor_store_name` FROM `#__virtuemart_vendors_' . VMLANG . '` WHERE `virtuemart_vendor_id` = "' . (int)$virtuemart_vendor_id . '" ';
 		$this->_db->setQuery ($query);
-		if ($this->_db->query ()) {
+		if ($this->_db->execute ()) {
 			return $this->_db->loadResult ();
 		} else {
 			return '';
@@ -376,7 +376,7 @@ class VirtueMartModelVendor extends VmModel {
 		if (!empty($virtuemart_user_id)) {
 			$query = 'SELECT `email` FROM `#__users` WHERE `id` = "' . $virtuemart_user_id . '" ';
 			$this->_db->setQuery ($query);
-			if ($this->_db->query ()) {
+			if ($this->_db->execute ()) {
 				return $this->_db->loadResult ();
 			} else {
 				return '';

@@ -43,6 +43,7 @@ $document->addStyleDeclaration('
 $tabarray = array();
 if($this->userDetails->user_is_vendor){
 	$tabarray['vendor'] = 'COM_VIRTUEMART_VENDOR';
+	$tabarray['vendorletter'] = 'COM_VIRTUEMART_VENDORLETTER';
 }
 $tabarray['shopper'] = 'COM_VIRTUEMART_SHOPPER_FORM_LBL';
 //$tabarray['user'] = 'COM_VIRTUEMART_USER_FORM_TAB_GENERALINFO';
@@ -76,6 +77,7 @@ function myValidator(f) {
 	}
 	//Funny, works for chrome etc, but throws error on FF, but the error stops the script, so the effect is the same
     jQuery().event.preventDefault();
+    return false;
 }
 </script>
 <?php AdminUIHelper::endAdminArea(); ?>

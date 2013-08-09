@@ -49,7 +49,7 @@ class TableStates extends VmTable {
 	/**
 	 * @author RickG
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db
 	 */
 	function __construct(&$db)
 	{

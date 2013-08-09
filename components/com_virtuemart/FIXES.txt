@@ -1,4 +1,13 @@
+** last fixes **
 
+Edit product, category and manufaturer  :
+clicking on a image in the autocomplet result list displayed the image and all changes was loose.
+related product or category autocomplet reloaded 2 time the same list.
+related product or category autocomplet json result withou filter displayed all results.
+product(model) with all category unpublished (more then one category) was in error cononical link was not set.
+
+
+*** old fixes
 1-Incompatible j1.5 & j1.7 :
 JComponentHelper::filterText
 

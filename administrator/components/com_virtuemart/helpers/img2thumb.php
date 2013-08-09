@@ -195,22 +195,29 @@ class Img2Thumb	{
 		// [2] = type
 		// [3] = img tag "width=xx height=xx" values
 
+
 		$orig_size = getimagesize($filename);
 
+		$newxsize = (int)$newxsize;
+		$newysize = (int)$newysize;
+		if(empty($newxsize) and empty($newysize)){
+			vmWarn('NewImgResize failed x,y = 0','NewImgResize failed x,y = 0');
+			return false;
+		}
 		$maxX = $newxsize;
 		$maxY = $newysize;
 
 		if ($orig_size[0]<$orig_size[1])
 		{
-			$newxsize = $newysize * ($orig_size[0]/$orig_size[1]);
-			$adjustX = ($maxX - $newxsize)/2;
+			$newxsize = (int)$newysize * ($orig_size[0]/$orig_size[1]);
+			$adjustX = (int)($maxX - $newxsize)/2;
 			$adjustY = 0;
 		}
 		else
 		{
-			$newysize = $newxsize / ($orig_size[0]/$orig_size[1]);
+			$newysize = (int) $newxsize / ($orig_size[0]/$orig_size[1]);
 			$adjustX = 0;
-			$adjustY = ($maxY - $newysize)/2;
+			$adjustY = (int)($maxY - $newysize)/2;
 		}
 
 		/* Original code removed to allow for maxSize thumbnails

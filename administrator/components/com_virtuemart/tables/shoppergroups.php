@@ -48,7 +48,7 @@ class TableShoppergroups extends VmTable
 	/**
 	 * @author Markus �hler
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db
 	 */
 	function __construct(&$db)
 	{

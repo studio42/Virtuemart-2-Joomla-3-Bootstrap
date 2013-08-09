@@ -39,28 +39,13 @@ class VirtuemartViewMedia extends VmView {
 
 		$titleMsg ='';
 		$model = VmModel::getModel();
-		$perms = Permissions::getInstance();
-		$this->assignRef('perms', $perms);
+		$this->perms = Permissions::getInstance();
 
 		$layoutName = JRequest::getWord('layout', 'default');
 		if ($layoutName == 'edit') {
 
-			$media = $model->getFile();
-			$this->assignRef('media',	$media);
+			$this->media = $model->getFile();
 
-			$isNew = ($media->virtuemart_media_id < 1);
-/*			if ($isNew) {
-				if(!Permissions::getInstance()->check('admin')) {
-					$usermodel = VmModel::getModel('user');
-// 					$usermodel->setCurrent();
-					$userDetails = $usermodel->getUser();
-					if(empty($userDetails->virtuemart_vendor_id)){
-						JError::raiseError(403,'Forbidden for non vendors');
-					}
-				} else $media->virtuemart_vendor_id = 1;
-				if(empty($media->virtuemart_vendor_id))$media->virtuemart_vendor_id = $userDetails->virtuemart_vendor_id;
-			}
-*/
 			$this->addStandardEditViewCommands();
 
         }
@@ -68,15 +53,15 @@ class VirtuemartViewMedia extends VmView {
 			$this->cat_id = 0 ;
         	if ($this->product_id = JRequest::getInt('virtuemart_product_id',0) ) {
 				$product = VmModel::getModel('product')->getProductSingle ($this->product_id, false, false );
-				$this->link = 'virtuemart_product_id='.$this->product_id;
-				$this->titleName = $product->product_name ;
-				$titleMsg = $this->titleName ;
+				$this->link =  $this->editLink(	$this->product_id, '<i class="icon-edit"></i> '.$product->product_name, 'virtuemart_product_id',
+					array('class'=> 'hasTooltip btn btn-inverse', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$product->product_name), 'product') ;
+				$titleMsg =  $product->product_name ;
 
 			} else if ($this->cat_id = JRequest::getInt('virtuemart_category_id',0) ) {
 				$category = VmModel::getModel('category')->getCategory($this->cat_id,false);
-				$this->titleName = $category->category_name ;
-				$this->link = '&virtuemart_category_id='.$this-cat_id;
-				$titleMsg = $this->titleName ;
+				$this->link =  $this->editLink(	$this->cat_id, '<i class="icon-edit"></i> '.$category->category_name, 'virtuemart_category_id',
+					array('class'=> 'hasTooltip btn btn-inverse', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '. $category->category_name), 'category') ;
+				$titleMsg = $category->category_name ;
 			}
 
 			JToolBarHelper::custom('synchronizeMedia', 'new', 'new', JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'),false);
@@ -90,10 +75,16 @@ class VirtuemartViewMedia extends VmView {
 				);
 			$this->lists['search_type'] = VmHTML::selectList('search_type', JRequest::getVar('search_type'),$options,1,'','onchange="Joomla.ajaxSearch(this); return false;"');
 
+			$options = array( '' => JText::_('COM_VIRTUEMART_LIST_ALL_ROLES'),
+				'file_is_displayable' => JText::_('COM_VIRTUEMART_FORM_MEDIA_DISPLAYABLE'),
+				'file_is_downloadable' => JText::_('COM_VIRTUEMART_FORM_MEDIA_DOWNLOADABLE'),
+				'file_is_forSale' => JText::_('COM_VIRTUEMART_FORM_MEDIA_SET_FORSALE'),
+				);
+			$this->lists['search_role'] = VmHTML::selectList('search_role', JRequest::getVar('search_role'),$options,1,'','onchange="this.form.submit();"');
+
 			$this->files = $model->getFiles(false,false,$this->product_id,$this->cat_id);
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 		}
 		// TODO add icon for media view

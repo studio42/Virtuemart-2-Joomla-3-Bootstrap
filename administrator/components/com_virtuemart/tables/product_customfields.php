@@ -52,7 +52,7 @@ class TableProduct_customfields extends VmTable {
 
 	/**
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db
 	 */
 	function __construct(&$db){
 		parent::__construct('#__virtuemart_product_customfields', 'virtuemart_customfield_id', $db);

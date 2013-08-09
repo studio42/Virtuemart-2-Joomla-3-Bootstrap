@@ -33,7 +33,7 @@ jimport('joomla.filesystem.file');
 		<th><?php echo JText::_('COM_VIRTUEMART_VIEW'); ?></th>
 		<th class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_FILES_LIST_FILENAME'); ?></th>
 		<th><?php echo JText::_('COM_VIRTUEMART_FILES_LIST_FILETYPE'); ?></th>
-		<th><?php echo $this->sort('published','COM_VIRTUEMART_PUBLISH'); ?></th>
+		<th><?php echo $this->sort('published','COM_VIRTUEMART_PUBLISHED'); ?></th>
 	  <th  class="hidden-phone"><?php echo $this->sort('virtuemart_media_id', 'COM_VIRTUEMART_ID')  ?></th>
 	</tr>
 	</thead>
@@ -68,7 +68,7 @@ jimport('joomla.filesystem.file');
 				<!-- Preview -->
 				<td>
 				<?php
-					echo $media->displayMediaThumb();
+					echo $media->displayMediaThumb('',true,'class="hasTooltip thumbnail modalbox" rel="group" ');
 
 				?>
 				</td>

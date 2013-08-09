@@ -41,7 +41,7 @@ class TableRating_votes extends VmTable {
 
 	/**
 	* @author Max Milbers
-	* @param $db A database connector object
+	* @param JDataBase $db
 	*/
 	function __construct(&$db) {
 		parent::__construct('#__virtuemart_rating_votes', 'virtuemart_rating_vote_id', $db);

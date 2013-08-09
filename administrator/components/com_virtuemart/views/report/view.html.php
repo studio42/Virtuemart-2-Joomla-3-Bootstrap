@@ -36,10 +36,7 @@ class VirtuemartViewReport extends VmView {
 		// Load the helper(s)
 
 		$this->loadHelper('html');
-
-		$this->loadHelper('html');
 		$this->loadHelper('currencydisplay');
-		$this->loadHelper('reportFunctions');
 
 		$model		= VmModel::getModel();
 
@@ -48,6 +45,16 @@ class VirtuemartViewReport extends VmView {
 		$this->SetViewTitle('REPORT');
 
 		$myCurrencyDisplay = CurrencyDisplay::getInstance();
+
+		//update order items button
+		$q = 'SELECT * FROM #__virtuemart_order_items WHERE `product_discountedPriceWithoutTax` IS NULL ';
+		$db = JFactory::getDBO();
+		$db->setQuery($q);
+		$res = $db->loadRow();
+		if($res) {
+			JToolBarHelper::custom('updateOrderItems', 'new', 'new', JText::_('COM_VIRTUEMART_REPORT_UPDATEORDERITEMS'),false);
+			vmError('COM_VIRTUEMART_REPORT_UPDATEORDERITEMS_WARN');
+		}
 
 		$this->addStandardDefaultViewLists($model);
 		$revenueBasic = $model->getRevenue();
@@ -80,19 +87,20 @@ class VirtuemartViewReport extends VmView {
 				// else array_multisort($itemsSold, SORT_ASC,$revenueBasic);
 			// }
 		}
-		$this->assignRef('report', $revenueBasic);
-		$this->assignRef('totalReport', $totalReport);
+		$this->report = $revenueBasic;
+		$this->totalReport = $totalReport;
 
 		//$itemsSold = $model->getItemsSold($revenueBasic);
-		//$this->assignRef('itemsSold', $itemsSold);
+		//$this->itemsSold', $itemsSold);
 		// I tihnk is to use in a different layout such as product solds
 		// PATRICK K.
 		// $productList = $model->getOrderItems();
-		// $this->assignRef('productList', $productList);
+		// $this->productList', $productList);
 
-
+		$orderstatusM =VmModel::getModel('orderstatus');
 		$this->lists['select_date'] = $model->renderDateSelectList();
-		$this->lists['state_list'] = $model->renderOrderstatesList();
+		$orderstates = JRequest::getVar ('order_status_code', array('C','S'));
+		$this->lists['state_list'] = $orderstatusM->renderOSList($orderstates,'order_status_code',TRUE);
 		$this->lists['intervals'] = $model->renderIntervalsList();
 		$this->from_period = $model->from_period;
 		$this->until_period = $model->until_period;

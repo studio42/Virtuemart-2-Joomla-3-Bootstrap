@@ -210,7 +210,7 @@
         },
         media:function (mediatype, total) {
             var page = 0,
-                max = 24,
+                max = 16,
                 container = jQuery(this);
             var pagetotal = Math.ceil(total / max);
             var cache = new Array();

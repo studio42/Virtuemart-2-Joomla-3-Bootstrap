@@ -79,6 +79,12 @@ class VmImage extends VmMediaHandler {
 	}
 
 
+	public function createThumbFileUrl(){
+
+		$file_name = $this->createThumbName();
+		$file_url_thumb = $this->file_url_folder.'resized/'.$this->file_name_thumb.'.'.$this->file_extension;
+		return $file_url_thumb;
+	}
 	/**
 	 * a small function that ensures that we always build the thumbnail name with the same method
 	 */
@@ -143,7 +149,7 @@ class VmImage extends VmMediaHandler {
 
 		if (file_exists($fullSizeFilenamePath)) {
 			if (!class_exists('Img2Thumb')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'img2thumb.php');
-			$createdImage = new Img2Thumb($fullSizeFilenamePath, $width, $height, $resizedFilenamePath, $maxsize, $bgred, $bggreen, $bgblue);
+			$createdImage = new Img2Thumb($fullSizeFilenamePath, (int)$width, (int)$height, $resizedFilenamePath, $maxsize, $bgred, $bggreen, $bgblue);
 			if($createdImage){
 				return $this->file_url_folder_thumb.$this->file_name_thumb.'.'.$this->file_extension;
 			} else {

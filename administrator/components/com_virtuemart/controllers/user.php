@@ -42,6 +42,7 @@ class VirtuemartControllerUser extends VmController {
 	 * @author
 	 */
 	function __construct(){
+		VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
 		parent::__construct('virtuemart_user_id');
 	}
 

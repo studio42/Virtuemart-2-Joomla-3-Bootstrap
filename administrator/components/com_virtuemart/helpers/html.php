@@ -61,6 +61,9 @@ static function vmGetCharset() {
 
     /**
      * Generate HTML code for a row using VmHTML function
+     * works also with shopfunctions, for example
+	 * $html .= VmHTML::row (array('ShopFunctions', 'renderShopperGroupList'),
+	 * 			'VMCUSTOM_BUYER_GROUP_SHOPPER', $field->shopper_groups, TRUE, 'custom_param['.$row.'][shopper_groups][]', ' ');
      *
      * @func string  : function to call
      * @label string : Text Label
@@ -69,6 +72,10 @@ static function vmGetCharset() {
      */
     static function row($func,$label){
 		$VmHTML="VmHTML";
+		if (!is_array($func)) {
+			$func = array($VmHTML, $func);
+		}
+
 		$passedArgs = func_get_args();
 		array_shift( $passedArgs );//remove function
 		array_shift( $passedArgs );//remove label
@@ -77,14 +84,24 @@ static function vmGetCharset() {
 			    $args[] = &$passedArgs[$k];
 			}
 		$lang =JFactory::getLanguage();
-		$label = $lang->hasKey($label.'_TIP') ? '<span class="hasTooltip" title="'.JText::_($label.'_TIP').'">'.JText::_($label).'</span>' : JText::_($label) ;
+		if($lang->hasKey($label.'_TIP')){
+			$labelHint = JText::_($label.'_TIP');
+			$label = '<span class="hasTooltip" title="'.JText::_($label.'_TIP').'">'.JText::_($label).'</span>' ;
+		} //Fallback
+		else if($lang->hasKey($label.'_EXPLAIN')){
+			$labelHint = JText::_($label.'_EXPLAIN');
+			$label = '<span class="hasTooltip" title="'.JText::_($label.'_EXPLAIN').'">'.JText::_($label).'</span>' ;
+		} else {
+			$label = JText::_($label);
+		}
+
 		$html = '
 		<tr>
 			<td class="key">
 				'.$label.'
 			</td>
 			<td>
-				'.call_user_func_array(array($VmHTML, $func), $args).'
+				'.call_user_func_array($func, $args).'
 			</td>
 		</tr>';
 		return $html ;
@@ -95,7 +112,12 @@ static function vmGetCharset() {
 		return $lang->hasKey($value) ? JText::_($value) : $value;
 	}
 
-	/* simple raw render */
+	/* simple raw render
+	 * The sense is unclear !
+	 * The sense is to us it with vmhtml::row
+	 * @param $value
+	 * @return mixed
+	 */
 	static function raw( $value ){
 		return $value;
 	}

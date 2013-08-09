@@ -40,24 +40,18 @@ class VirtuemartViewCalc extends VmView {
 
 		$model = VmModel::getModel('calc');
 		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
-		$perms = Permissions::getInstance();
-		$this->assignRef('perms', $perms);
+		$this->perms = Permissions::getInstance();
 
 		//@todo should be depended by loggedVendor
-		$vendorId=1;
-		$this->assignRef('vendorId', $vendorId);
-
-		$db = JFactory::getDBO();
+		$this->vendorId=1;
 
 		$this->SetViewTitle();
-
-
 		$layoutName = JRequest::getWord('layout', 'default');
 		if ($layoutName == 'edit') {
 
 			$calc = $model->getCalc();
 			
-			$this->assignRef('calc',	$calc);
+			$this->calc = $calc;
 
 			$isNew = ($calc->virtuemart_calc_id < 1);
 			if ($isNew) {
@@ -77,13 +71,9 @@ class VirtuemartViewCalc extends VmView {
 				}
 
 			}
-			$entryPointsList = self::renderEntryPointsList($calc->calc_kind);
-			$this->assignRef('entryPointsList',$entryPointsList);
-
-			$mathOpList = self::renderMathOpList($calc->calc_value_mathop);
-			$this->assignRef('mathOpList',$mathOpList);
-
-
+			$this->entryPointsList = self::renderEntryPointsList($calc->calc_kind);
+			$this->mathOpList = self::renderMathOpList($calc->calc_value_mathop);
+			
 			/* Get the category tree */
 			$categoryTree= null;
 			if (isset($calc->calc_categories)){
@@ -92,29 +82,20 @@ class VirtuemartViewCalc extends VmView {
 			}else{
 				 $categoryTree = ShopFunctions::categoryListTree();
 			}
-			$this->assignRef('categoryTree', $categoryTree);
+			$this->categoryTree = $categoryTree;
 
 
 			$currencyModel = VmModel::getModel('currency');
-			$_currencies = $currencyModel->getCurrencies();
-			$this->assignRef('currencies', $_currencies);
+			$this->currencies = $currencyModel->getCurrencies();
 
-			/* Get the shoppergroup tree */
-			$shopperGroupList= ShopFunctions::renderShopperGroupList($calc->virtuemart_shoppergroup_ids,True);
-			$this->assignRef('shopperGroupList', $shopperGroupList);
-
-			$countriesList = ShopFunctions::renderCountryList($calc->calc_countries,True);
-			$this->assignRef('countriesList', $countriesList);
-
-			$statesList = ShopFunctions::renderStateList($calc->virtuemart_state_ids,'', True);
-			$this->assignRef('statesList', $statesList);
-
-			$manufacturerList= ShopFunctions::renderManufacturerList($calc->virtuemart_manufacturers,true);
-			$this->assignRef('manufacturerList', $manufacturerList);
+			/* assign some values  */
+			$this->shopperGroupList= ShopFunctions::renderShopperGroupList($calc->virtuemart_shoppergroup_ids,True);
+			$this->countriesList = ShopFunctions::renderCountryList($calc->calc_countries,True);
+			$this->statesList = ShopFunctions::renderStateList($calc->virtuemart_state_ids,'', True);
+			$this->manufacturerList= ShopFunctions::renderManufacturerList($calc->virtuemart_manufacturers,true);
 
 			if(Vmconfig::get('multix','none')!=='none'){
-				$vendorList= ShopFunctions::renderVendorList($calc->virtuemart_vendor_id,false);
-				$this->assignRef('vendorList', $vendorList);
+				$this->vendorList= ShopFunctions::renderVendorList($calc->virtuemart_vendor_id,false);
 			}
 
 			$this->addStandardEditViewCommands();
@@ -131,11 +112,9 @@ class VirtuemartViewCalc extends VmView {
 			$search = JRequest::getWord('search', false);
 			$calcs = $model->getCalcs(false, false, $search);
 
-			$this->assignRef('calcs',	$calcs);
+			$this->calcs = $calcs;
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
-
+			$this->pagination = $model->getPagination();
 		}
 
 		parent::display($tpl);
@@ -167,8 +146,7 @@ class VirtuemartViewCalc extends VmView {
 		'7' => array('calc_kind' => 'DATaxBill', 'calc_kind_name' => JText::_('COM_VIRTUEMART_CALC_EPOINT_DATAXBILL')),
 		);
 
-		$listHTML = JHTML::_('Select.genericlist', $entryPoints, 'calc_kind', '', 'calc_kind', 'calc_kind_name', $selected );
-		return $listHTML;
+		return JHTML::_('Select.genericlist', $entryPoints, 'calc_kind', '', 'calc_kind', 'calc_kind_name', $selected );
 
 	}
 
@@ -198,8 +176,7 @@ class VirtuemartViewCalc extends VmView {
 
 		$answer = $dispatcher->trigger('plgVmAddMathOp', array(&$mathOps));
 
-		$listHTML = JHTML::_('Select.genericlist', $mathOps, 'calc_value_mathop', '', 'calc_value_mathop', 'calc_value_mathop_name', $selected );
-		return $listHTML;
+		return  JHTML::_('Select.genericlist', $mathOps, 'calc_value_mathop', '', 'calc_value_mathop', 'calc_value_mathop_name', $selected );
 	}
 
 

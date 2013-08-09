@@ -52,7 +52,7 @@ class GenericTableUpdater extends JModelLegacy {
 
 		$config = JFactory::getConfig();
 		$this->_prefix = $config->get('dbprefix');
-// var_dump($this->_prefix,$config);jexit('bug');
+
 		$this->reCreaPri = VmConfig::get('reCreaPri',0);
 		$this->reCreaKey = VmConfig::get('reCreaKey',1);
 	}
@@ -133,6 +133,10 @@ class GenericTableUpdater extends JModelLegacy {
 					$fields['vendor_terms_of_service'] = 'text '.$linedefaulttext;
 					$fields['vendor_legal_info'] = 'text '.$linedefaulttext;
 
+					$fields['vendor_letter_css'] = 'text '.$linedefaulttext;
+					$fields['vendor_letter_header_html'] = "varchar(8000) NOT NULL DEFAULT '<h1>{vm:vendorname}</h1><p>{vm:vendoraddress}</p>'";
+					$fields['vendor_letter_footer_html'] = "varchar(8000) NOT NULL DEFAULT '<p>{vm:vendorlegalinfo}<br />Page {vm:pagenum}/{vm:pagecount}</p>'";
+
 
 					$key = array_search('vendor_store_desc', $translatableFields);
 					unset($translatableFields[$key]);
@@ -142,6 +146,16 @@ class GenericTableUpdater extends JModelLegacy {
 
 					$key = array_search('vendor_legal_info', $translatableFields);
 					unset($translatableFields[$key]);
+					
+					$key = array_search('vendor_letter_css', $translatableFields);
+					unset($translatableFields[$key]);
+
+					$key = array_search('vendor_letter_header_html', $translatableFields);
+					unset($translatableFields[$key]);
+
+					$key = array_search('vendor_letter_footer_html', $translatableFields);
+					unset($translatableFields[$key]);
+
 				}
 			} else {
 				$fields['vendor_terms_of_service'] = 'text '.$linedefaulttext;
@@ -160,6 +174,8 @@ class GenericTableUpdater extends JModelLegacy {
 					$fields[$name] = 'char('.VmConfig::get('dbmetasize',100).') '.$linedefault;
 				} else if(strpos($name,'metakey')!==false ){
 					$fields[$name] = 'varchar('.VmConfig::get('dbmetasize',400).') '.$linedefault;
+				} else if(strpos($name,'metaauthor')!==false ){
+					$fields[$name] = 'char(64) '.$linedefault;
 				} else if(strpos($name,'slug')!==false ){
 					$fields[$name] = 'char('.VmConfig::get('dbslugsize',192).') '.$linedefault;
 					$slug = true;
@@ -167,7 +183,7 @@ class GenericTableUpdater extends JModelLegacy {
 					$fields[$name] = 'char(26) '.$linedefault;
 				}else if(strpos($name,'desc')!==false) {
 					if(VmConfig::get('dblayoutstrict',true)){
-						$fields[$name] = 'varchar('.VmConfig::get('dbdescsize',20000).') '.$linedefault;
+						$fields[$name] = 'varchar('.VmConfig::get('dbdescsize',19000).') '.$linedefault;
 					} else {
 						$fields[$name] = 'text '.$linedefaulttext;
 					}
@@ -305,7 +321,7 @@ class GenericTableUpdater extends JModelLegacy {
 				$this->createTable($tablename,$table);
 			}
 			// 			$this->_db->setQuery('OPTIMIZE '.$tablename);
-			// 			$this->_db->query();
+			// 			$this->_db->execute();
 			$i++;
 
 		}
@@ -357,7 +373,7 @@ class GenericTableUpdater extends JModelLegacy {
 		$q .= ") ENGINE=MyISAM  DEFAULT CHARSET=utf8".$comment." AUTO_INCREMENT=1 ;";
 
 		$this->_db->setQuery($q);
-		if(!$this->_db->query()){
+		if(!$this->_db->execute()){
 			vmError('createTable ERROR :'.$this->_db->getErrorMsg() );
 		} else {
 			vmInfo('created table '.$tablename);
@@ -375,7 +391,7 @@ class GenericTableUpdater extends JModelLegacy {
 		$q = substr($q,0,-1);
 
 		// 		$this->_db->setQuery($q);
-		// 		if(!$this->_db->query()){
+		// 		if(!$this->_db->execute()){
 		// 			$this->_app->enqueueMessage('dropTables ERROR :'.$this->_db->getErrorMsg() );
 		// 		}
 		$this->_app->enqueueMessage($q);
@@ -433,7 +449,7 @@ class GenericTableUpdater extends JModelLegacy {
 
 				if(!empty($query)){
 					$this->_db->setQuery($query);
-					if(!$this->_db->query()){
+					if(!$this->_db->execute()){
 						$this->_app->enqueueMessage('alterTable DROP '.$tablename.'.'.$name.' :'.$this->_db->getErrorMsg() );
 					} else {
 						$dropped++;
@@ -470,7 +486,7 @@ class GenericTableUpdater extends JModelLegacy {
 
 			if(!empty($query)){
 				$this->_db->setQuery($query);
-				if(!$this->_db->query()){
+				if(!$this->_db->execute()){
 					$this->_app = JFactory::getApplication();
 					$this->_app->enqueueMessage('alterKey '.$action.' INDEX '.$name.': '.$this->_db->getErrorMsg() );
 				} else {
@@ -508,7 +524,7 @@ class GenericTableUpdater extends JModelLegacy {
 	 * @param unknown_type $fields
 	 * @param unknown_type $command
 	 */
-	private function alterColumns($tablename,$fields,$reCreatePrimary){
+	public function alterColumns($tablename,$fields,$reCreatePrimary){
 
 
 		$after ='FIRST';
@@ -540,7 +556,7 @@ class GenericTableUpdater extends JModelLegacy {
 						$dropped++;
 
 						$this->_db->setQuery($query);
-						if(!$this->_db->query()){
+						if(!$this->_db->execute()){
 							$this->_app->enqueueMessage('alterTable '.$action.' '.$tablename.'.'.$fieldname.' :'.$this->_db->getErrorMsg() );
 						}
 					}
@@ -618,7 +634,7 @@ class GenericTableUpdater extends JModelLegacy {
 			if (!empty($query)) {
 				$this->_db->setQuery($query);
 				$err = $this->_db->getErrorMsg();
-				if(!$this->_db->query() or !empty($err) ){
+				if(!$this->_db->execute() or !empty($err) ){
 					vmError('alterTable '.$action.' '.$tablename.'.'.$fieldname.' : '.$err );
 				} else {
 					vmInfo('alterTable '.$action.' '.$tablename.'.'.$fieldname.' : '. $query);
@@ -704,7 +720,12 @@ class GenericTableUpdater extends JModelLegacy {
 
 	private function getdefault($string){
 		if (isset($string)) {
+			if(strpos($string,'CURRENT_TIMESTAMP')!==FALSE){
+				return  " DEFAULT ".trim($string);
+			} else {
 			return  " DEFAULT '".trim($string)."'";
+			}
+
 		} else {
 			return '';
 		}
@@ -743,7 +764,7 @@ class GenericTableUpdater extends JModelLegacy {
 
 		$continue = true;
 		$this->_db->setQuery($q);
-		if(!$this->_db->query()){
+		if(!$this->_db->execute()){
 			vmError($msg.' db error '. $this->_db->getErrorMsg());
 			vmError($msg.' db error '. $this->_db->getQuery());
 			$entries = array();

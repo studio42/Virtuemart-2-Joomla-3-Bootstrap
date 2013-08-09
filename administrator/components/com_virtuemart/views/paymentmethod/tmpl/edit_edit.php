@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
         <legend><?php echo JText::_('COM_VIRTUEMART_PAYMENTMETHOD') .' '.$this->payment->payment_element ; ?></legend>
         <table class="admintable">
 		<?php echo VmHTML::row('input','COM_VIRTUEMART_PAYMENTMETHOD_FORM_NAME','payment_name',$this->payment->payment_name ? $this->payment->payment_name : $this->payment->payment_element); ?>
-     	<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISH','published',$this->payment->published); ?>
+     	<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISHED','published',$this->payment->published); ?>
 		<?php echo VmHTML::row('textarea','COM_VIRTUEMART_PAYMENT_FORM_DESCRIPTION','payment_desc',$this->payment->payment_desc); ?>
 		<?php // echo VmHTML::row('raw','COM_VIRTUEMART_PAYMENT_CLASS_NAME', $this->vmPPaymentList ); ?>
 		<?php echo VmHTML::row('raw','COM_VIRTUEMART_PAYMENTMETHOD_FORM_SHOPPER_GROUP', $this->shopperGroupList ); ?>

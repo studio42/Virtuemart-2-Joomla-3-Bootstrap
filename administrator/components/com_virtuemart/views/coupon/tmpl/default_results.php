@@ -16,9 +16,6 @@
 * @version $Id: default.php 5628 2012-03-08 09:00:21Z alatak $
 */
 
-if (!class_exists ('CurrencyDisplay')) {
-	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
-}
 $currency = CurrencyDisplay::getInstance ();
  ?>
 	<div id="resultscounter"><?php echo $this->pagination->getResultsCounter(); ?></div>
@@ -50,7 +47,6 @@ $currency = CurrencyDisplay::getInstance ();
 		$row = $this->coupons[$i];
 		$published = $this->toggle( $row->published, $i, 'published');
 		$checked = JHTML::_('grid.id', $i, $row->virtuemart_coupon_id);
-		$editlink = JROUTE::_('index.php?option=com_virtuemart&view=coupon&task=edit&cid[]=' . $row->virtuemart_coupon_id);
 		?>
 	    <tr >
 		<td width="10">
@@ -64,7 +60,7 @@ $currency = CurrencyDisplay::getInstance ();
 		</td>
 		<td>
 			<?php
-			if ( $row->percent_or_total=='percent')
+			if ( $row->percent_or_total==='percent')
 				echo $row->coupon_value.'%';
 			else
 				echo $currency->priceDisplay($row->coupon_value); //.' '.$this->vendor_currency;

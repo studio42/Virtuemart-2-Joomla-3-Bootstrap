@@ -38,26 +38,26 @@ class TableProducts extends VmTable {
 	/** @var string File name */
 	var $product_parent_id		= 0;
 	/** @var string File title */
-	var $product_sku= '';
+	var $product_sku= null;
     /** @var string Name of the product */
 	var $product_name	= '';
 	var $slug			= '';
     /** @var string File description */
-	var $product_s_desc		= '';
+	var $product_s_desc		= null;
     /** @var string File extension */
-	var $product_desc			= '';
+	var $product_desc			= null;
 	/** @var int File is an image or other */
-	var $product_weight			= 0;
+	var $product_weight			= null;
 	/** @var int File image height */
-	var $product_weight_uom		= '';
+	var $product_weight_uom		= null;
 	/** @var int File image width */
-	var $product_length		= 0;
+	var $product_length		= null;
 	/** @var int File thumbnail image height */
-	var $product_width = 0;
+	var $product_width = null;
 	/** @var int File thumbnail image width */
-	var $product_height	= 0;
+	var $product_height	= null;
 	/** @var int File thumbnail image width */
-	var $product_lwh_uom	= '';
+	var $product_lwh_uom	= null;
 	/** @var int File thumbnail image width */
 	var $product_url	= '';
 	/** @var int File thumbnail image width */
@@ -104,7 +104,7 @@ class TableProducts extends VmTable {
 
 	/**
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db
 	 */
 	function __construct($db) {
 		parent::__construct('#__virtuemart_products', 'virtuemart_product_id', $db);
@@ -127,7 +127,7 @@ class TableProducts extends VmTable {
 									);
 
 		$this->setParameterable('product_params',$varsToPushParam);
-
+		$this->_updateNulls = true;
 	}
 
 }

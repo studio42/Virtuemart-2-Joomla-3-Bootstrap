@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
         <legend><?php echo JText::_('COM_VIRTUEMART_SHIPMENTMETHOD').' '.$this->shipment->shipment_element ; ?></legend>
         <table class="admintable">
 	    <?php echo VmHTML::row('input', 'COM_VIRTUEMART_SHIPPING_FORM_NAME', 'shipment_name', $this->shipment->shipment_name ? $this->shipment->shipment_name : $this->shipment->shipment_element); ?>
-	    <?php echo VmHTML::row('booleanlist', 'COM_VIRTUEMART_PUBLISH', 'published', $this->shipment->published); ?>
+	    <?php echo VmHTML::row('booleanlist', 'COM_VIRTUEMART_PUBLISHED', 'published', $this->shipment->published); ?>
 	    <?php echo VmHTML::row('textarea', 'COM_VIRTUEMART_SHIPPING_FORM_DESCRIPTION', 'shipment_desc', $this->shipment->shipment_desc); ?>
 	    <?php // echo VmHTML::row('raw', 'COM_VIRTUEMART_SHIPPING_CLASS_NAME', $this->pluginList); ?>
 	    <?php echo VmHTML::row('raw', 'COM_VIRTUEMART_SHIPPING_FORM_SHOPPER_GROUP', $this->shopperGroupList); ?>

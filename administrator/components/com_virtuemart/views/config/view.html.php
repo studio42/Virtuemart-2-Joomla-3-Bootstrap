@@ -49,61 +49,33 @@ class VirtuemartViewConfig extends VmView {
 		if(!empty($config->_params)){
 			unset ($config->_params['pdf_invoice']); // parameter remove and replaced by inv_os
 		}
+		$this->config = $config;
 
-		$this->assignRef('config', $config);
-
-		$mainframe = JFactory::getApplication();
-		$this->assignRef('joomlaconfig', $mainframe);
-
-		$userparams = JComponentHelper::getParams('com_users');
-		$this->assignRef('userparams', $userparams);
-
-		$templateList = ShopFunctions::renderTemplateList(JText::_('COM_VIRTUEMART_ADMIN_CFG_JOOMLA_TEMPLATE_DEFAULT'));
-
-		$this->assignRef('jTemplateList', $templateList);
-
-		$vmLayoutList = $model->getLayoutList('virtuemart');
-		$this->assignRef('vmLayoutList', $vmLayoutList);
-
-		$categoryLayoutList = $model->getLayoutList('category');
-		$this->assignRef('categoryLayoutList', $categoryLayoutList);
-
-		$productLayoutList = $model->getLayoutList('productdetails');
-		$this->assignRef('productLayoutList', $productLayoutList);
-
-		$noimagelist = $model->getNoImageList();
-		$this->assignRef('noimagelist', $noimagelist);
-
-		$orderStatusModel=VmModel::getModel('orderstatus');
-		$this->assignRef('orderStatusModel', $orderStatusModel);
-
-		$currConverterList = $model->getCurrencyConverterList();
-		$this->assignRef('currConverterList', $currConverterList);
-		$moduleList = $model->getModuleList();
-		$this->assignRef('moduleList', $moduleList);
-
-		$activeLanguages = $model->getActiveLanguages( VmConfig::get('active_languages') );
-		$this->assignRef('activeLanguages', $activeLanguages);
-
-		$orderByFields = $model->getProductFilterFields('browse_orderby_fields');
-		$this->assignRef('orderByFields', $orderByFields);
-
-		$searchFields = $model->getProductFilterFields( 'browse_search_fields');
-		$this->assignRef('searchFields', $searchFields);
-
-		$aclGroups = $usermodel->getAclGroupIndentedTree();
-		$this->assignRef('aclGroups', $aclGroups);
-
+		$this->userparams = JComponentHelper::getParams('com_users');
+		$this->jTemplateList = ShopFunctions::renderTemplateList(JText::_('COM_VIRTUEMART_ADMIN_CFG_JOOMLA_TEMPLATE_DEFAULT'));
+		$this->vmLayoutList = $model->getLayoutList('virtuemart');
+		$this->categoryLayoutList = $model->getLayoutList('category');
+		$this->productLayoutList = $model->getLayoutList('productdetails');
+		$this->noimagelist = $model->getNoImageList();
+		$this->orderStatusModel=VmModel::getModel('orderstatus');
+		$this->currConverterList = $model->getCurrencyConverterList();
+		$this->moduleList = $model->getModuleList();
+		$this->activeLanguages = $model->getActiveLanguages( VmConfig::get('active_languages') );
+		$this->orderByFields = $model->getProductFilterFields('browse_orderby_fields');
+		$this->searchFields = $model->getProductFilterFields( 'browse_search_fields');
+		
+		$this->aclGroups = $usermodel->getAclGroupIndentedTree();
+		
 		if(is_Dir(VmConfig::get('vmtemplate').DS.'images'.DS.'availability'.DS)){
 			$imagePath = VmConfig::get('vmtemplate').'/images/availability/';
 		} else {
 			$imagePath = '/components/com_virtuemart/assets/images/availability/';
 		}
-		$this->assignRef('imagePath', $imagePath);
+		$this->imagePath = $imagePath;
 
 		shopFunctions::checkSafePath();
-
 		$this -> checkVmUserVendor();
+
 		parent::display($tpl);
 	}
 

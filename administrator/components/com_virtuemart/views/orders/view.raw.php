@@ -90,7 +90,7 @@ class VirtuemartViewOrders extends VmView {
 		}
 		else
 		{
-		// Note patrick Kohl. I don't know if this is used anymore ???
+		// Note patrick Kohl. to finish  A big Spagetti to know what value is really needed
 			// Load addl models
 			$userFieldsModel = VmModel::getModel('userfields');
 			$productModel = VmModel::getModel('product');
@@ -104,7 +104,7 @@ class VirtuemartViewOrders extends VmView {
 			$orderst = (array_key_exists('ST', $order['details'])) ? $order['details']['ST'] : $orderbt;
 
 			$currency = CurrencyDisplay::getInstance('',$order['details']['BT']->virtuemart_vendor_id);
-			$this->assignRef('currency', $currency);
+			$this->currency = $currency;
 
 
 			$_userFields = $userFieldsModel->getUserFields(
@@ -156,15 +156,15 @@ class VirtuemartViewOrders extends VmView {
 			//$_shipmentInfo = ShopFunctions::getShipmentRateDetails($orderbt->virtuemart_shipmentmethod_id);
 
 			/* Assign the data */
-			$this->assignRef('orderdetails', $order);
-			$this->assignRef('orderNumber', $orderNumber);
-			$this->assignRef('userfields', $userfields);
-			$this->assignRef('shipmentfields', $shipmentfields);
-			$this->assignRef('orderstatuslist', $_orderStatusList);
-			$this->assignRef('orderbt', $orderbt);
-			$this->assignRef('orderst', $orderst);
-			$this->assignRef('virtuemart_shipmentmethod_id', $orderbt->virtuemart_shipmentmethod_id);
-
+			$this->orderdetails = $order;
+			$this->orderNumber = $orderNumber;
+			$this->userfields = $userfields;
+			$this->shipmentfields = $shipmentfields;
+			$this->orderstatuslist = $_orderStatusList;
+			$this->orderbt = $orderbt;
+			$this->orderst = $orderst;
+			$this->virtuemart_shipmentmethod_id = $orderbt->virtuemart_shipmentmethod_id);
+//Note Patrick Kohl , why error reporting 0 in one case in all vm2 and here ???
 			error_reporting(0);
 			parent::display($tpl);
 		}

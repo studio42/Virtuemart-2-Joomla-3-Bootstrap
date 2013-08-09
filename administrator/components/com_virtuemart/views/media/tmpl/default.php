@@ -23,9 +23,7 @@ jimport('joomla.filesystem.file'); ?>
 		<?php echo $this->displayDefaultViewSearch('COM_VIRTUEMART_NAME','searchMedia') .' ' ;
 		// if link is set then we come from a direct link(product or category)
 		if ( isset($this->link)) {
-			echo JHTML::_('link', JRoute::_('index.php?option=com_virtuemart&view=product&task=edit&'.$this->link), 
-				'<i class="icon-edit"></i> '.$this->titleName,
-				array('title' => JText::_('COM_VIRTUEMART_EDIT').' '.$this->titleName, 'class' => 'btn-inverse') );
+			echo $this->link;
 		}
 		else echo $this->lists['search_type']; ?>
 	</div>

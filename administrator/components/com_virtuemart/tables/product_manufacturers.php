@@ -32,7 +32,7 @@ class TableProduct_manufacturers extends VmTableXarray {
 
 	/**
 	 * @author Max Milbers
-	 * @param $db A database connector object
+	 * @param JDataBase $db
 	 */
 	function __construct(&$db){
 		parent::__construct('#__virtuemart_product_manufacturers', 'id', $db);

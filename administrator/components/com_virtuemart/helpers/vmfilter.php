@@ -1033,7 +1033,7 @@ class vmFilter{
 		}
 		return $config;
 	}
-function mail($v){
+static function mail($v){
 
 $v = str_replace('mailto:','', $v);
 $v = str_replace(array('\'','"',',','%','*','/','\\','?','^','`','{','}','|','~'),array(''),$v);
@@ -1047,7 +1047,7 @@ function phone($v){
  $regx = "~^[0-9,+,(), ,]{1,}(,[0-9]+){0,}$~";
  return preg_replace($regx ,'', $v);
 }
-function urlcheck($v) {
+static function urlcheck($v) {
 
  if (!preg_match("#(http|ftp|https)#",$v)) $v = "http://".$v ;
  $regx = "#(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?#";

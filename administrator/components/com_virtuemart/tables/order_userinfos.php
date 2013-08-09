@@ -24,7 +24,8 @@ defined('_JEXEC') or die('Restricted access');
 class TableOrder_userinfos extends VmTable {
 
 	/**
-	 * Constructor
+     * @author Max Milbers
+     * @param string $_db
 	 */
 	function __construct(&$_db)
 	{

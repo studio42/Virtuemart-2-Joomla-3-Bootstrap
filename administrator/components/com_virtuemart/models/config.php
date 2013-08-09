@@ -256,9 +256,9 @@ class VirtueMartModelConfig extends JModelLegacy  {
 	 * @author RickG
 	 * @return boolean True is successful, false otherwise
 	 */
-	function store(&$data) {
+	function store(&$data,$replace = FALSE) {
 
-		JSession::checkToken() or jexit( 'Invalid Token, in store config');
+		JSession::checkToken() or JSession::checkToken('get') or jexit( 'Invalid Token, in store config');
 
 		//$data['active_languages'] = strtolower(strtr($data['active_languages'],'-','_'));
 		//ATM we want to ensure that only one config is used
@@ -266,8 +266,7 @@ class VirtueMartModelConfig extends JModelLegacy  {
 		$config = VmConfig::loadConfig(TRUE);
 		unset ($config->_params['pdf_invoice']); // parameter remove and replaced by inv_os
 
-
-		$config->setParams($data);
+		$config->setParams($data,$replace);
 
 		$confData = array();
 		$query = 'SELECT * FROM `#__virtuemart_configs`';
@@ -288,17 +287,27 @@ class VirtueMartModelConfig extends JModelLegacy  {
 				}
 		}
 
-/*		$path = trim($config->get('forSale_path'));
-		$length = strlen($path);
-		if(strrpos($url,DS)!=($length-1)){
-			if(is_dir()){
-				$config->set('forSale_path',$path.DS);
-				vmInfo('Corrected safe path added missing '.DS);
-			} else {
+		//If empty it is not sent by the form, other forms do it by using a table to store,
+		//the config is like a big xparams and so we check some values for this form manually
+		/*$toSetEmpty = array('active_languages','inv_os','email_os_v','email_os_s');
+		foreach($toSetEmpty as $item){
+			if(!isset($data[$item])) {
+				$config->set($item,array());
+			}
+		}*/
 
+		$checkCSVInput = array('pagseq','pagseq_1','pagseq_2','pagseq_3','pagseq_4','pagseq_5');
+		foreach($checkCSVInput as $csValueKey){
+			$csValue = $config->get($csValueKey);
+			if(!empty($csValue)){
+				$sequenceArray = explode(',', $csValue);
+				foreach($sequenceArray as &$csV){
+					$csV = (int)trim($csV);
+				}
+				$csValue = implode(',',$sequenceArray);
+				$config->set($csValueKey,$csValue);
 			}
 		}
-*/
 
 		$safePath = trim($config->get('forSale_path'));
 		if(!empty($safePath)){
@@ -309,6 +318,7 @@ class VirtueMartModelConfig extends JModelLegacy  {
 				vmInfo('Corrected safe path added missing '.DS);
 			}
 		}
+
 		if(!class_exists('shopfunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
 		$safePath = shopFunctions::checkSafePath($safePath);
 
@@ -341,6 +351,20 @@ class VirtueMartModelConfig extends JModelLegacy  {
 		$result = $updater->createLanguageTables();
 
 		return true;
+	}
+
+	public static function checkConfigTableExists(){
+
+		$db = JFactory::getDBO();
+		$query = 'SHOW TABLES LIKE "'.$db->getPrefix().'virtuemart_configs"';
+		$db->setQuery($query);
+		$configTable = $db->loadResult();
+		$err = $db->getErrorMsg();
+		if(!empty($err) or !$configTable){
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	/**

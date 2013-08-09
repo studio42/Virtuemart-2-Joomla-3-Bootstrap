@@ -920,7 +920,7 @@ class VmTable extends JTable{
 		   $q = 'UPDATE  `'.$this->_tbl.'` SET `'.$this->_orderingKey.'` = '.(int)$start.' WHERE `'.$this->_tbl_key.'`= '.$row[$this->_tbl_key].' LIMIT 1'; 
 		 
 		   $this->_db->setQuery($q); 
-		   $r = $this->_db->query($q);
+		   $r = $this->_db->execute($q);
 		   $start = $start + 5; 
 		}
 
@@ -1039,7 +1039,7 @@ class VmTable extends JTable{
 			$this->_db->setQuery($query);
 			echo "\n".$query.'<br />'; 
 			
-			if(!$this->_db->query()){
+			if(!$this->_db->execute()){
 				$err = $this->_db->getErrorMsg();
 				JError::raiseError(500, get_class( $this ).':: move isset row $row->$k'.$err);
 			}
@@ -1051,7 +1051,7 @@ class VmTable extends JTable{
 			;
 			$this->_db->setQuery($query);
 			//echo $query.'<br />'; die(); 
-			if(!$this->_db->query()){
+			if(!$this->_db->execute()){
 				$err = $this->_db->getErrorMsg();
 				JError::raiseError(500, get_class( $this ).':: move isset row $row->$k'.$err);
 			}
@@ -1069,7 +1069,7 @@ class VmTable extends JTable{
 			;
 			$this->_db->setQuery($query);
 		
-			if(!$this->_db->query()){
+			if(!$this->_db->execute()){
 				$err = $this->_db->getErrorMsg();
 				JError::raiseError(500,  get_class( $this ).':: move update $this->$k'. $err);
 			}
@@ -1159,7 +1159,7 @@ class VmTable extends JTable{
 					 WHERE ' . $k . ' = "' . $this->_db->escape($orders[$i]->$k) . '"'
 					;
 					$this->_db->setQuery($query);
-					$this->_db->query();
+					$this->_db->execute();
 				}
 			}
 		}
@@ -1199,7 +1199,7 @@ class VmTable extends JTable{
 		$this->locked_by = $who;
 		$this->locked_on = $time;
 
-		return $this->_db->query();
+		return $this->_db->execute();
 	}
 
 	/**
@@ -1235,7 +1235,7 @@ class VmTable extends JTable{
 		$this->locked_by = 0;
 		$this->locked_on = '';
 
-		return $this->_db->query();
+		return $this->_db->execute();
 	}
 
 	/**
@@ -1285,7 +1285,7 @@ class VmTable extends JTable{
 		$q = 'UPDATE `'.$this->_tbl.'` SET `'.$field.'` = "'.$this->$field.'" WHERE `'.$k.'` = "'.$this->$k.'" ';
 		$this->_db->setQuery($q);
 		vmdebug('toggle '.$q);
-		return ($this->_db->query());
+		return ($this->_db->execute());
 	}
 
 	public function resetErrors(){
@@ -1365,7 +1365,7 @@ class VmTable extends JTable{
 				$query = 'DELETE FROM `'.$table.'` WHERE '.$this->_tbl_key.' = "'.$row.'"';
 				$this->_db->setQuery( $query );
 
-				if (!$this->_db->query()){
+				if (!$this->_db->execute()){
 					$this->setError($this->_db->getErrorMsg());
 					vmError('checkAndDelete '.$this->_db->getErrorMsg());
 					$ok = 0;
@@ -1439,7 +1439,7 @@ class VmTable extends JTable{
 
 		$this->_db->setQuery($_sql);
 		
-		$this->_db->query();
+		$this->_db->execute();
 		if ($this->_db->getErrorNum() != 0) {
 			vmError(get_class( $this ).'::modify table - '.$this->_db->getErrorMsg().'<br /> values: action '.$_act.', columname: '. $_col.', type: '.$_type.', columname2: '.$_col2);
 			return false;

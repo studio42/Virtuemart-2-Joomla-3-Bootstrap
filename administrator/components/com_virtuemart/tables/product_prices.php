@@ -58,7 +58,7 @@ class TableProduct_prices extends VmTableData {
 
     /**
      * @author RolandD
-     * @param $db A database connector object
+     * @param JDataBase $db
      */
     function __construct(&$db) {
         parent::__construct('#__virtuemart_product_prices', 'virtuemart_product_price_id', $db);
@@ -66,6 +66,7 @@ class TableProduct_prices extends VmTableData {
         $this->setPrimaryKey('virtuemart_product_price_id');
 		$this->setLoggable();
 		$this->setTableShortCut('pp');
+		$this->_updateNulls = true;
     }
 
     /**

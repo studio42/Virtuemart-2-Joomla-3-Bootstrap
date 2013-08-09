@@ -34,6 +34,7 @@ class VirtuemartViewUserfields extends VmView {
 
 	function display($tpl = null) {
 
+		VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
 		// Load the helper(s)
 
 
@@ -64,7 +65,7 @@ class VirtuemartViewUserfields extends VmView {
 				$qry = 'SELECT ordering AS value, name AS text'
 					. ' FROM #__virtuemart_userfields'
 					. ' ORDER BY ordering';
-				$ordering = JHTML::_('list.ordering',  $userField->ordering, $qry, '', $userField->virtuemart_userfield_id);
+				$ordering = JHTML::_('list.specificordering',  $userField, $userField->virtuemart_userfield_id, $qry);
 				$this->assignRef('ordering', $ordering);
 
 				$userFieldValues = $model->getUserfieldValues();
@@ -134,7 +135,7 @@ class VirtuemartViewUserfields extends VmView {
 // 			vmdebug('$userField->shipment',$userField);
 			// Toggles
 			$lists['required']     =  VmHTML::row('booleanlist','COM_VIRTUEMART_FIELDMANAGER_REQUIRED','required',$userField->required,$notoggle);
-			$lists['published']    =  VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISH','published',$userField->published,$notoggle);
+			$lists['published']    =  VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISHED','published',$userField->published,$notoggle);
 			$lists['registration'] =  VmHTML::row('booleanlist','COM_VIRTUEMART_FIELDMANAGER_SHOW_ON_REGISTRATION','registration',$userField->registration,$notoggle);
 			$lists['shipment']     =  VmHTML::row('booleanlist','COM_VIRTUEMART_FIELDMANAGER_SHOW_ON_SHIPPING','shipment',$userField->shipment,$notoggle);
 			$lists['account']      =  VmHTML::row('booleanlist','COM_VIRTUEMART_FIELDMANAGER_SHOW_ON_ACCOUNT','account',$userField->account,$notoggle);

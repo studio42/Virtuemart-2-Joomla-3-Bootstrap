@@ -32,7 +32,7 @@ th.autosize,td.autosize {
 a.btn.btn-inverse i,a.btn.btn.btn-primary i {
     color: #FFFFFF;
 }
-
+#editor-xtd-buttons > div {float:left}
 /* #j-main-container{overflow-x: auto;} Break the chosen select list*/
 .order .table{background-color:#fff}
 .order .chzn-container{width:100px}
@@ -102,6 +102,7 @@ opacity: 0.2;
 }
 .stars-orange{background-position:0 0 !important;}
 
+.tip-wrap{background:#fff}
 /* unused ??? */
 #vmPage input {background: #e8e8e8 url(../images/backgrounds.png) top repeat-x;padding: 5px 5px 4px 5px;border: solid #CAC9C9 1px;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;color: #000;}
 #vmPage input:hover {background: #e8e8e8 url(../images/backgrounds.png) repeat-x;background-position: 0px -40px;color: #0270bc;}

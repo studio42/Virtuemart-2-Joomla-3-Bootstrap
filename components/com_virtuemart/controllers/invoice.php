@@ -162,7 +162,7 @@ class VirtueMartControllerInvoice extends JController
 
 
 		$app = JApplication::getInstance('site', array(), 'J');
-		// $template = $app->getTemplate();// does not work, the path is a constant and cannot be redefined.
+		// $template = $app->getTemplate();// does not work, the path is a static and cannot be redefined.
 		$attributes = array('charset' => 'utf-8', 'lineend' => 'unix', 'tab' => '  ', 'language' => $jlang->getTag(),
 			'direction' => $jlang->isRTL() ? 'rtl' : 'ltr');
 
@@ -177,11 +177,8 @@ class VirtueMartControllerInvoice extends JController
 		$view->document = $document ;
 		$vmtemplate = VmConfig::get('vmtemplate',0);
 		if($vmtemplate===0 or $vmtemplate == 'default'){
-			if(JVM_VERSION == 2){
-				$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
-			} else {
-				$q = 'SELECT `template` FROM `#__templates_menu` WHERE `client_id`="0" AND `menuid`="0"';
-			}
+			$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
+
 			$db = JFactory::getDbo();
 			$db->setQuery($q);
 			$templateName = $db->loadResult();
@@ -214,8 +211,7 @@ class VirtueMartControllerInvoice extends JController
 		
 		//var_dump( $this->basePath,$template,$format,$app,$view,$document,$this,$html); jexit();
 
-
-		return $view->document->getPath() ; //$html;//jexit();
+		return $view->document->getPath() ;
 
 	}
 }

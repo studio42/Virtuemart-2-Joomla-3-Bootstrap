@@ -74,11 +74,13 @@ class TableCustoms extends VmTable {
 	var $published		= 1;
 	/** @var int listed Order */
 	var $ordering	= 0;
+	/** @var int show title or not */
+	var $show_title		= 1;
 
 
 	/**
 	 * @author  Patrick Kohl
-	 * @param $db A database connector object
+	 * @param JDataBase $db
 	 */
 	function __construct(&$db) {
 		parent::__construct('#__virtuemart_customs', 'virtuemart_custom_id', $db);
@@ -99,7 +101,7 @@ class TableCustoms extends VmTable {
 		$this->_db->setQuery('DELETE X,C FROM `#__virtuemart_customs` AS C
 			LEFT JOIN  `#__virtuemart_product_customfields` AS X ON  X.`virtuemart_custom_id` = C.`virtuemart_custom_id`
 			WHERE C.`virtuemart_custom_id`=' . $id);
-		if ($this->_db->query() === false) {
+		if ($this->_db->execute() === false) {
 			vmError($this->_db->getError());
 			return false;
 		}

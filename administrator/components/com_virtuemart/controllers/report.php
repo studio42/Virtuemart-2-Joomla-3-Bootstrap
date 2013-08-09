@@ -37,9 +37,18 @@ class VirtuemartControllerReport extends VmController {
 	 */
 	function __constuct(){
 		parent::__construct();
-
 	}
+	
+	function updateOrderItems(){
 
+		$data = JRequest::get('get');
+		JRequest::setVar($data['token'], '1', 'post');
+		JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+
+		$model = VmModel::getModel('report');
+		$model->updateOrderItems();
+		$this->setRedirect($this->redirectPath, 'Order Items updated');
+	}
 
 }
 // pure php no closing tag

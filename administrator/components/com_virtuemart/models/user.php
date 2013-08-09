@@ -1240,19 +1240,63 @@ class VirtueMartModelUser extends VmModel {
 
 		//$select = ' * ';
 		//$joinedTables = ' FROM #__users AS ju LEFT JOIN #__virtuemart_vmusers AS vmu ON ju.id = vmu.virtuemart_user_id';
-		$select = ' DISTINCT ju.id AS id
+		$search = JRequest::getString('search', false);
+		$tableToUse = JRequest::getString('searchTable','juser');
+
+		$where = '';
+		if ($search) {
+			$where = ' WHERE ';
+
+			$searchArray = array('ju.name','username','email','perms','usertype','shopper_group_name');
+			if($tableToUse!='juser'){
+
+				if(!class_exists('TableUserinfos'))require(JPATH_VM_ADMINISTRATOR.DS.'tables'.DS.'userinfos.php');
+				$db = JFactory::getDbo();
+				$userfieldTable = new TableUserinfos($db);
+				$userfieldFields = get_object_vars($userfieldTable);
+				$userFieldSearchArray = array('company','first_name','last_name');
+				//We must validate if the userfields actually exists, they could be removed
+				$userFieldsValid = array();
+				foreach($userFieldSearchArray as $ufield){
+					if(key_exists($ufield,$userfieldFields)){
+						$userFieldsValid[] = $ufield;
+					}
+				}
+				$searchArray = array_merge($userFieldsValid,$searchArray);
+			}
+
+			$search = str_replace(' ','%',$this->_db->escape( $search, true ));
+			foreach($searchArray as $field){
+
+					$where.= ' '.$field.' LIKE "%'.$search.'%" OR ';
+			}
+			$where = substr($where,0,-3);
+		}
+//DISTINCT get removed.
+		$select = ' ju.id AS id
 			, ju.name AS name
 			, ju.username AS username
 			, ju.email AS email
 			, m.group_id AS usergroup
 			, IFNULL(vmu.user_is_vendor,"0") AS is_vendor
 			, IFNULL(sg.shopper_group_name, "") AS shopper_group_name ';
+		if ($search) {
+			if($tableToUse!='juser'){
+				$select .= ' , ui.name as uiname ';
+			}
+
+			foreach($searchArray as $ufield){
+				$select .= ' , '.$ufield;
+			}
+		}
 		$joinedTables = ' FROM #__users AS ju
 			LEFT JOIN #__virtuemart_vmusers AS vmu ON ju.id = vmu.virtuemart_user_id
 			LEFT JOIN #__virtuemart_vmuser_shoppergroups AS vx ON ju.id = vx.virtuemart_user_id
 			LEFT JOIN #__virtuemart_shoppergroups AS sg ON vx.virtuemart_shoppergroup_id = sg.virtuemart_shoppergroup_id 
 			LEFT JOIN #__user_usergroup_map as m on ju.id=m.user_id';
-
+		if ($search and $tableToUse!='juser') {
+			$joinedTables .= ' LEFT JOIN #__virtuemart_userinfos AS ui ON ui.virtuemart_user_id = vmu.virtuemart_user_id';
+		}
 		return $this->_data = $this->exeSortSearchListQuery(0,$select,$joinedTables,$this->_getFilter(),' GROUP BY ju.id',$this->_getOrdering());
 
 	}
@@ -1265,11 +1309,17 @@ class VirtueMartModelUser extends VmModel {
 	 */
 	function _getFilter()
 	{
-		if ($search = JRequest::getWord('search', false)) {
+		if ($search = JRequest::getString('search', false)) {
 			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 			//$search = $this->_db->Quote($search, false);
+			$searchArray = array('name','username','email','perms','usertype','shopper_group_name');
 
-			$where = ' WHERE `name` LIKE '.$search.' OR `username` LIKE ' .$search.' OR `email` LIKE ' .$search.' OR `perms` LIKE ' .$search.' OR `usertype` LIKE ' .$search.' OR `shopper_group_name` LIKE ' .$search;
+			$where = ' WHERE ';
+			foreach($searchArray as $field){
+				$where.= ' `'.$field.'` LIKE '.$search.' OR ';
+			}
+			$where = substr($where,0,-3);
+			//$where = ' WHERE `name` LIKE '.$search.' OR `username` LIKE ' .$search.' OR `email` LIKE ' .$search.' OR `perms` LIKE ' .$search.' OR `usertype` LIKE ' .$search.' OR `shopper_group_name` LIKE ' .$search;
 			return ($where);
 		}
 		return ('');
@@ -1306,22 +1356,27 @@ class VirtueMartModelUser extends VmModel {
 	 * @param int $_id User ID
 	 * @return string Customer Number
 	 */
-	function getCustomerNumberById()
+	private $customer_number = 0;
+	public function getCustomerNumberById()
 	{
+		if($this->customer_number===0){
 		$_q = "SELECT `customer_number` FROM `#__virtuemart_vmusers` "
 		."WHERE `virtuemart_user_id`='" . $this->_id . "' ";
 		$_r = $this->_getList($_q);
+
 		if(!empty($_r[0])){
-			return $_r[0]->customer_number;
+				$this->customer_number = $_r[0]->customer_number;
 		}else {
-			return false;
+				$this->customer_number = false;
+		}
 		}
 
+		return $this->customer_number;
 	}
 
 	/**
 	 * Get the number of active Super Admins
-	 * note : user_usergroup_map is for j2.5+
+	 * studio42 note : user_usergroup_map is for j2.5+, TODO : blck = 0 
 	 * @return integer
 	 */
 	function getSuperAdminCount()

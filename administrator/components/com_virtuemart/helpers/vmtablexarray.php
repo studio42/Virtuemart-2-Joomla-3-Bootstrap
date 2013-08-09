@@ -30,7 +30,8 @@ class VmTableXarray extends VmTable {
 
 	protected $_autoOrdering = false;
 	protected $_orderable = false;
-
+    protected $_skey = '';
+    protected $_skeyForm = '';
 	protected $_pvalue = '';
 
 //    function setOrderable($key='ordering', $auto=true){
@@ -168,6 +169,7 @@ class VmTableXarray extends VmTable {
 
     	$returnCode = true;
 		$this->setLoggableFieldsForStore();
+		$db = JFactory::getDBO();
 
         $pkey = $this->_pkey;
         $skey = $this->_skey;
@@ -192,6 +194,7 @@ class VmTableXarray extends VmTable {
 	            if(!is_array($this->_svalue)) $this->_svalue = array($this->_svalue);
 	            foreach($this->_svalue as $value) $newArray[] = array($pkey=>$this->_pvalue, $skey=>$value);
 		}
+
         // Inserts and Updates
         if(count($newArray)>0){
             $myOrdering = 1;

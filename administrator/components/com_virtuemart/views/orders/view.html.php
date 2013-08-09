@@ -74,6 +74,7 @@ class VirtuemartViewOrders extends VmView {
 			$this->userfields = $userFieldsModel->getUserFieldsFilled(
 					 $_userFields
 					,$orderbt
+					,'BT_'
 			);
 
 			$_userFields = $userFieldsModel->getUserFields(
@@ -85,6 +86,7 @@ class VirtuemartViewOrders extends VmView {
 			$this->shipmentfields = $userFieldsModel->getUserFieldsFilled(
 					 $_userFields
 					,$orderst
+					,'ST_'
 			);
 
 			// Create an array to allow orderlinestatuses to be translated
@@ -125,8 +127,8 @@ class VirtuemartViewOrders extends VmView {
 			$this->orderStatusSelect = JHTML::_('select.genericlist', $orderStates, 'order_status', '', 'order_status_code', 'order_status_name', $this->currentOrderStat, 'order_items_status',true);
 
 			/* Toolbar */
-			JToolBarHelper::custom( 'prev', 'back','','COM_VIRTUEMART_ITEM_PREVIOUS',false);
-			JToolBarHelper::custom( 'next', 'forward','','COM_VIRTUEMART_ITEM_NEXT',false);
+			JToolBarHelper::custom( 'prevItem', 'back','','COM_VIRTUEMART_ITEM_PREVIOUS',false);
+			JToolBarHelper::custom( 'nextItem', 'forward','','COM_VIRTUEMART_ITEM_NEXT',false);
 			JToolBarHelper::divider();
 			JToolBarHelper::custom( 'cancel', 'back','back','back',false,false);
 		}
@@ -197,17 +199,6 @@ class VirtuemartViewOrders extends VmView {
 
 		parent::display($tpl);
 	}
-
-	public function renderOrderstatesList() {
-		$orderstates = JRequest::getWord('order_status_code','');
-		$query = 'SELECT `order_status_code` as value, `order_status_name` as text
-			FROM `#__virtuemart_orderstates`
-			WHERE published=1 ' ;
-			$db = JFactory::getDBO();
-		$db->setQuery($query);
-		$list = $db->loadObjectList();
-		return VmHTML::select( 'order_status_code', $list,  $orderstates,'class="inputbox" onchange="Joomla.ajaxSearch(this); return false;"');
-    }
 
 }
 

@@ -78,8 +78,6 @@ class VirtuemartViewUser extends VmView {
 			$this->loadHelper('shoppergroup');
 			$this->loadHelper('image');
 
-			//$userFieldsModel = VmModel::getModel('userfields');
-
 			$userDetails = $model->getUser();
 
 			if($task == 'editshop' && $userDetails->user_is_vendor){
@@ -231,14 +229,16 @@ class VirtuemartViewUser extends VmView {
 			$userList = $model->getUserList();
 			$this->assignRef('userList', $userList);
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 			$shoppergroupmodel = VmModel::getModel('shopperGroup');
 			$defaultShopperGroup = $shoppergroupmodel->getDefault(0)->shopper_group_name;
 			$this->assignRef('defaultShopperGroup', $defaultShopperGroup);
 		}
 
+		if(!empty($this->orderlist)){
+			VmConfig::loadJLang('com_virtuemart_orders',TRUE);
+		}
 		parent::display($tpl);
 	}
 

@@ -41,7 +41,7 @@ class VirtuemartViewCoupon extends VmView {
 
 
 		$this->loadHelper('html');
-
+		$this->loadHelper('currencydisplay');
 		$model = VmModel::getModel();
 		$vendorModel = VmModel::getModel('Vendor');
 		$vendorModel->setId(1);

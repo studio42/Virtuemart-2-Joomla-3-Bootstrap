@@ -37,14 +37,15 @@ class VirtuemartViewPaymentMethod extends VmView {
 	function display($tpl = null) {
 
 		// Load the helper(s)
-		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
 		$this->loadHelper('permissions');
 		$this->loadHelper('html');
 
-		$this->addHelperPath(JPATH_VM_PLUGINS);
-		$this->loadHelper('vmplugin');
-
+		if (!class_exists ('vmPlugin')) {
+			require(JPATH_VM_PLUGINS . DS . 'vmplugin.php');
+		}
 		$this->perms = Permissions::getInstance();
+
+
 		$model = VmModel::getModel('paymentmethod');
 
 		//@todo should be depended by loggedVendor

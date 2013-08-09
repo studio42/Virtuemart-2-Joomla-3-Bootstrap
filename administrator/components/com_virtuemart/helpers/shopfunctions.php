@@ -88,7 +88,7 @@ class ShopFunctions {
 					} else {
 						$cid = 'virtuemart_user_id';
 					}
-					$links .= JHTML::_ ('link', JRoute::_ ('index.php?option=com_virtuemart&view=' . $view . '&task=edit&' . $cid . '[]=' . $value), JText::_($tmp)) . ', ';
+					$links .= JHTML::_ ('link', JRoute::_ ('index.php?option=com_virtuemart&view=' . $view . '&task=edit&' . $cid . '[]=' . $value, FALSE), JText::_($tmp)) . ', ';
 				}
 				$ttip .= $tmp . ', ';
 
@@ -136,7 +136,7 @@ class ShopFunctions {
 	/**
 	 * Creates a Drop Down list of available Vendors
 	 *
-	 * @author Max Milbers, RolandD
+	 * @author Max Milbers
 	 * @access public
 	 * @param int $virtuemart_shoppergroup_id the shopper group to pre-select
 	 * @param bool $multiple if the select list should allow multiple selections
@@ -181,10 +181,10 @@ class ShopFunctions {
 				$idA = $id = 'virtuemart_vendor_id';
 
 				if ($multiple) {
-					$attrs .= 'multiple="multiple"';
+					$attrs = 'multiple="multiple"';
 					$idA .= '[]';
 				} else {
-					$emptyOption = JHTML::_ ('select.option', '', '- '.JText::_ ('COM_VIRTUEMART_VENDOR').' -', $id, $name);
+					$emptyOption = JHTML::_ ('select.option', '', JText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION'), $id, $name);
 					array_unshift ($vendors, $emptyOption);
 				}
 				$listHTML = JHTML::_ ('select.genericlist', $vendors, $idA, $attrs, $id, $name, $vendorId);
@@ -197,7 +197,8 @@ class ShopFunctions {
 	/**
 	 * Creates a Drop Down list of available Shopper Groups
 	 * $id to prevent javascript bug
-	 * @author Max Milbers, RolandD, p Kohl
+	 * TODO. Warning : the last parameter (id) is not ame as original VM2!!!
+	 * @author Max Milbers, p Kohl
 	 * @access public
 	 * @param int $shopperGroupId the shopper group to pre-select
 	 * @param bool $multiple if the select list should allow multiple selections
@@ -273,12 +274,8 @@ class ShopFunctions {
 		// Load helpers and  languages files
 		if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
 		VmConfig::loadConfig();
-		if(VmConfig::get('enableEnglish', 1)){
-		    $jlang =JFactory::getLanguage();
-		    $jlang->load('com_virtuemart_countries', JPATH_ADMINISTRATOR, 'en-GB', TRUE);
-		    $jlang->load('com_virtuemart_countries', JPATH_ADMINISTRATOR, $jlang->getDefault(), TRUE);
-		    $jlang->load('com_virtuemart_countries', JPATH_ADMINISTRATOR, NULL, TRUE);
-		}
+		VmConfig::loadJLang('com_virtuemart_countries');
+		// This is set by default in joomla 3.0 !!! vmJsApi::chosenDropDowns();
 
         $sorted_countries = array();
 		$lang = JFactory::getLanguage();
@@ -340,7 +337,7 @@ class ShopFunctions {
 		static $keys = array();
 		if (isset($keys[$id]) ) return ;
 		$keys[$id] = true ;
-		
+
 		if (is_array ($stateId)) {
 					$stateId = implode (",", $stateId);
 				}
@@ -357,7 +354,7 @@ class ShopFunctions {
 			$attrs .= ' required';
 		}
 
-		$class = 'class="inputbox multiple"';
+				$class = 'class="inputbox multiple"';
 
 		$listHTML = '<select '.$class.' id="'.$id.'" ' . $attrs . '>
 						<option value="">' . JText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION') . '</option>
@@ -492,7 +489,7 @@ class ShopFunctions {
 
 		$weight_unit_default = array(
 			'KG' => JText::_ ('COM_VIRTUEMART_UNIT_SYMBOL_KG')
-		, 'DMG' => JText::_ ('COM_VIRTUEMART_UNIT_SYMBOL_100MG')
+		, 'DG' => JText::_ ('COM_VIRTUEMART_UNIT_SYMBOL_100G')
 		, 'M'   => JText::_ ('COM_VIRTUEMART_UNIT_SYMBOL_M')
 		, 'SM'   => JText::_ ('COM_VIRTUEMART_UNIT_SYMBOL_SM')
 		, 'CUBM'   => JText::_ ('COM_VIRTUEMART_UNIT_SYMBOL_CUBM')
@@ -520,14 +517,11 @@ class ShopFunctions {
 			return $value;
 		}
 
-		$g = 1;
+		$g = (float)$value;
 
 		switch ($from) {
 			case 'KG':
 				$g = (float)(1000 * $value);
-			break;
-			case 'G':
-				$g = (float)$value;
 			break;
 			case 'MG':
 				$g = (float)($value / 1000);
@@ -572,7 +566,7 @@ class ShopFunctions {
 		if ($from === $to) {
 			return $value;
 		}
-		$meter = 1 * $value;
+		$meter = (float)$value;
 
 		// transform $value in meters
 		switch ($from) {
@@ -593,6 +587,9 @@ class ShopFunctions {
 				break;
 		}
 		switch ($to) {
+			case 'M' :
+				$value = $meter;
+				break;
 			case 'CM':
 				$value = (float)($meter / 0.01);
 				break;
@@ -868,13 +865,13 @@ class ShopFunctions {
 	}
 
 	/**
-	 * Return the countryID of a given country name
+	 * Return the virtuemart_country_id of a given country name
 	 *
 	 * @author Oscar van Eijk
 	 * @author Max Milbers
 	 * @access public
-	 * @param string $_name Country name
-	 * @return int Country ID
+	 * @param string $name Country name (can be country_name or country_3_code  or country_2_code )
+	 * @return int virtuemart_country_id
 	 */
 	static public function getCountryIDByName ($name) {
 
@@ -899,12 +896,12 @@ class ShopFunctions {
 	}
 
 	/**
-	 * Return the statename or code of a given countryID
+	 * Return the statename or code of a given virtuemart_state_id
 	 *
 	 * @author Oscar van Eijk
 	 * @access public
-	 * @param int $_id State ID
-	 * @param char $_fld Field to return: state_name (default), state_2_code or state_3_code.
+	 * @param int $id State ID
+	 * @param char $fld Field to return: state_name (default), state_2_code or state_3_code.
 	 * @return string state name or code
 	 */
 	static public function getStateByID ($id, $fld = 'state_name') {
@@ -924,8 +921,8 @@ class ShopFunctions {
 	 *
 	 * @author Max Milbers
 	 * @access public
-	 * @param string $_name Country name
-	 * @return int Country ID
+	 * @param string $name Country name
+	 * @return int virtuemart_state_id
 	 */
 	static public function getStateIDByName ($name) {
 
@@ -949,12 +946,12 @@ class ShopFunctions {
 	}
 
 	/*
-	 * Return the Tax or code of a given taxID
+	 * Returns the associative array for a given virtuemart_calc_id
 	*
 	* @author Valérie Isaksen
 	* @access public
-	* @param int $_d TAx ID
-	* @return string Country name or code
+	* @param int $id virtuemart_calc_id
+	* @return array Result row
 	*/
 	static public function getTaxByID ($id) {
 
@@ -971,12 +968,12 @@ class ShopFunctions {
 	}
 
 	/**
-	 * Return the currencyname or code of a given currencyID
+	 * Return any field  from table '#__virtuemart_currencies'
 	 *
 	 * @author Valérie Isaksen
 	 * @access public
-	 * @param int $_id Currency ID
-	 * @param char $_fld Field to return: currency_name (default), currency_2_code or currency_3_code.
+	 * @param int $id Currency ID
+	 * @param char $fld Field from table '#__virtuemart_currencies' to return: currency_name (default), currency_code_2, currency_code_3 etc.
 	 * @return string Currency name or code
 	 */
 	static public function getCurrencyByID ($id, $fld = 'currency_name') {
@@ -994,12 +991,12 @@ class ShopFunctions {
 	}
 
 	/**
-	 * Return the countryID of a given Currency name
+	 * Return the currencyID of a given Currency name
 	 *
 	 * @author Valerie Isaksen
 	 * @access public
-	 * @param string $_name Currency name
-	 * @return int Currency ID
+	 * @param string $name Currency name
+	 * @return int virtuemart_currency_id
 	 */
 	static public function getCurrencyIDByName ($name) {
 
@@ -1250,22 +1247,6 @@ class ShopFunctions {
 	}
 
 	/**
-	 * Validates an email address by using regular expressions
-	 * Does not resolve the domain name!
-	 * ATM NOT USED
-	 * Joomla has it's own e-mail checker but is no good JMailHelper::isEmailAddress()
-	 * maybe in the future it will be better
-	 *
-	 * @param string $email
-	 * @return boolean The result of the validation
-	 */
-	function validateEmail ($email) {
-
-		$valid = preg_match ('/^[\w\.\-]+@\w+[\w\.\-]*?\.\w{1,4}$/', $email);
-		return $valid;
-	}
-
-	/**
 	 * Return $str with all but $display_length at the end as asterisks.
 	 *
 	 * @author gday
@@ -1461,6 +1442,21 @@ class ShopFunctions {
 
 		return $safePath;
 	}
+	/*
+	 * get The invoice Folder Name
+	 * @return the invoice folder name
+	 */
+	static function getInvoiceFolderName() {
+		return   'invoices' ;
+	}
+	/*
+	 * get The invoice path
+	 * @param $safePath the safepath from the config
+	 * @return the path where the invoice are stored
+	 */
+	static function getInvoicePath($safePath) {
+		return  $safePath.self::getInvoiceFolderName() ;
+	}
 
 	/*
 	 * Returns the suggested safe Path, used to store the invoices
@@ -1495,8 +1491,9 @@ class ShopFunctions {
 			$html .= $order_info['order_item_status_name'];
 			$html .= '</td>
 			<td class="order_number">';
-				$link = 'index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $order_info['order_id'];
-				$html .= JHTML::_ ('link', JRoute::_ ($link), $order_info['order_number'], array('title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_NUMBER') . ' ' . $order_info['order_number']));
+				$uri = JFactory::getURI();
+				$link = $uri->root() . 'administrator/index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $order_info['order_id'];
+				$html .= JHTML::_ ('link', $link, $order_info['order_number'], array('title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_NUMBER') . ' ' . $order_info['order_number']));
 			$first=FALSE;
 			$html .= '
 					</td>
@@ -1517,6 +1514,27 @@ class ShopFunctions {
 
 		return $html;
 	}
+
+	static public function renderMetaEdit($obj){
+
+		$options = array(
+			''	=>	JText::_('JGLOBAL_INDEX_FOLLOW'),
+			'noindex, follow'	=>	JText::_('JGLOBAL_NOINDEX_FOLLOW'),
+			'index, nofollow'	=>	JText::_('JGLOBAL_INDEX_NOFOLLOW'),
+			'noindex, nofollow'	=>	JText::_('JGLOBAL_NOINDEX_NOFOLLOW'),
+			'noodp, noydir'	=>	JText::_('COM_VIRTUEMART_NOODP_NOYDIR'),
+			'noodp, noydir, nofollow'	=>	JText::_('COM_VIRTUEMART_NOODP_NOYDIR_NOFOLLOW'),
+		);
+		$html = '<table>
+					'.VmHTML::row('input','COM_VIRTUEMART_CUSTOM_PAGE_TITLE','customtitle',$obj->customtitle,'class="input-block-level"').'
+					'.VmHTML::row('textarea','COM_VIRTUEMART_METAKEY','metakey',$obj->metakey,'class="input-block-level"','70','3').'
+					'.VmHTML::row('textarea','COM_VIRTUEMART_METADESC','metadesc',$obj->metadesc,'class="input-block-level"','70','3').'
+					'.VmHtml::row('selectList','COM_VIRTUEMART_METAROBOTS','metarobot',$obj->metarobot,$options).'
+					'.VmHTML::row('input','COM_VIRTUEMART_METAAUTHOR','metaauthor',$obj->metaauthor,'class="input-block-level"').'
+				</table>';
+		return $html;
+	}
+
 	/*
 	 * translated a string using prefix+text or text to find the language key
 	 * Usefull for COM_VIRTUEMART_ORDER_STATUS_+PENDING already existing
@@ -1534,6 +1552,8 @@ class ShopFunctions {
 			return jText::_($prefix . '_' . $name);
 		}
 		return jText::_($string);
+
+
 	}
 }
 

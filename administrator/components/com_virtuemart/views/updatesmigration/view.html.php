@@ -42,12 +42,10 @@ class VirtuemartViewUpdatesMigration extends VmView {
 		$this->loadHelper('image');
 		$this->loadHelper('html');
 
-		$this->assignRef('checkbutton_style', $checkbutton_style);
-		$this->assignRef('downloadbutton_style', $downloadbutton_style);
-		$this->assignRef('latestVersion', $latestVersion);
-
-		$analyse =$this->analyseTables();
-		$this->assignRef('analyse', $analyse);
+		// $this->assignRef('checkbutton_style', $checkbutton_style);
+		// $this->assignRef('downloadbutton_style', $downloadbutton_style);
+		// $this->assignRef('latestVersion', $latestVersion);
+		$this->analyse =$this->analyseTables();
 
 		parent::display($tpl);
 	}
@@ -69,7 +67,7 @@ class VirtuemartViewUpdatesMigration extends VmView {
 // 			$db->setQuery('SELECT * FROM '.$table.' PROCEDURE ANALYSE(); ');
 			$db->setQuery('SELECT * FROM #__virtuemart_countries PROCEDURE ANALYSE(); ');
 
-			if($db->query()){
+			if($db->execute()){
 				vmdebug('Analyse',$db->loadObjectList());
 			} else {
 				$app->enqueueMessage('Error drop virtuemart table ' . $db->getErrorMsg());

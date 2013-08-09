@@ -113,7 +113,7 @@ class VirtueMartModelWaitingList extends VmModel {
 			$vars['user'] =  $waiting_user->name ;
 			if (shopFunctionsF::renderMail ('productdetails', $waiting_user->notify_email, $vars, 'productdetails')) {
 				$db->setQuery ('UPDATE #__virtuemart_waitingusers SET notified=1 WHERE virtuemart_waitinguser_id=' . $waiting_user->virtuemart_waitinguser_id);
-				$db->query ();
+				$db->execute ();
 				$i++;
 			}
 			if (!empty($max_number) && $i >= $max_number) {

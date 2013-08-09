@@ -17,13 +17,10 @@
  */
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die();
-$i = 0;
 if ($this->jsonPath !=='') return;
 ?>
-<table class="adminform">
-	<tbody>
-	<tr class="row<?php echo $i?>">
-		<td width="21%" valign="top">
+<div class="row-fluid">
+		<div>
 			<?php
 			$mail_options = array(
 				'customer'=> JText::_ ('COM_VIRTUEMART_PRODUCT_SHOPPERS'),
@@ -50,35 +47,29 @@ if ($this->jsonPath !=='') return;
 			<br/>
 
 			<div class="mailing">
-				<div class="button2-left btn" data-type="sendmail">
-					<div class="blank" style="padding:0 6px;cursor: pointer;" title="<?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_SEND_TIP'); ?>">
-						 <span class="vmicon vmicon-16-email"></span>
+				<div class="btn" data-type="sendmail">
+					<div title="<?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_SEND_TIP'); ?>">
+						 <span class="vmicon vmicon-16-email icon-nofloat"></span>
 						<?php echo Jtext::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_SEND'); ?>
 					</div>
-
 				</div>
 				<div id="customers-list-msg"></div>
 				<br/>
 			</div>
 
-		</td>
-	</tr>
-	<?php $i = 1 - $i; ?>
-	<tr class="row<?php echo $i?>">
-		<td width="21%" valign="top">
+
+	</div>
+	<div>
 			<div id="customer-mail-content">
 				<div><?php echo Jtext::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_SUBJECT') ?></div>
-				<input type="text" class="mail-subject" id="mail-subject" size="100"   value="<?php echo JText::sprintf ('COM_VIRTUEMART_PRODUCT_EMAIL_SHOPPERS_SUBJECT',$this->product->product_name) ?>">
+				<input class="span12" type="text" class="mail-subject" id="mail-subject" size="100"   value="<?php echo JText::sprintf ('COM_VIRTUEMART_PRODUCT_EMAIL_SHOPPERS_SUBJECT',$this->product->product_name) ?>">
 
 				<div><?php echo Jtext::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_CONTENT') ?></div>
-				<textarea style="width: 100%;" class="inputbox"   id="mail-body" cols="35" rows="10"></textarea>
+				<textarea class="span12"   id="mail-body" cols="35" rows="10"></textarea>
 				<br/>
 			</div>
-		</td>
-	</tr>
-	<?php $i = 1 - $i; ?>
-	<tr class="row<?php echo $i?>">
-		<td width="21%" valign="top">
+	</div>
+	<div>
 			<div id="customer-mail-list">
 				<span class="hasTip" title="<?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_ORDER_ITEM_STATUS_TIP'); ?>">
 				<strong><?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_ORDER_ITEM_STATUS') ?></strong>
@@ -148,19 +139,14 @@ if ($this->jsonPath !=='') return;
 
 				<?php } ?>
 			</div>
-		</td>
-	</tr>
-	<tr>
-		<td>
+	</div>
+	<div>
 			<?php
 
 			$aflink = '<a target="_blank" href="http://www.acyba.com/acymailing.html?partner_id=19513"><img title="AcyMailing 2" height=60 src="http://www.acyba.com/images/banners/acymailing_450-109.png"/></a>';
 			echo JText::sprintf('COM_VIRTUEMART_AD_ACY',$aflink);
 			?>
-		</td>
-	</tr>
-	</tbody>
-</table>
+	</div>
 <script type="text/javascript">
 	<!-- 
 	var $customerMailLink = '<?php echo JURI::root () . '/index.php?option=com_virtuemart&view=productdetails&task=sentproductemailtoshoppers&virtuemart_product_id=' . $this->product->virtuemart_product_id ?>';
@@ -171,12 +157,12 @@ if ($this->jsonPath !=='') return;
 
 	jQuery(document).ready(function () {
 
-		populate_customer_list(jQuery('select#order_items_status').val());
+		populate_customer_list(jQuery('select#order_status').val());
 		customer_initiliaze_boxes();
 		jQuery("input:radio[name=customer_email_type],input:checkbox[name=notification_template]").click(function () {
 			customer_initiliaze_boxes();
 		});
-		jQuery('select#order_items_status').chosen({enable_select_all:true, select_some_options_text:vm2string.select_some_options_text}).change(function () {
+		jQuery('select#order_status').chosen({enable_select_all:true, select_some_options_text:vm2string.select_some_options_text}).change(function () {
 			populate_customer_list(jQuery(this).val());
 		})
 		jQuery('.mailing .button2-left').click(function () {
@@ -224,7 +210,7 @@ if ($this->jsonPath !=='') return;
 					alert("<?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_ENTER_BODY')?>");
 				}
 				else {
-					var $statut = jQuery('select#order_items_status').val();
+					var $statut = jQuery('select#order_status').val();
 					jQuery.post($customerMailLink, { subject:$subject, mailbody:$body, statut:$statut, token:'<?php echo JSession::getFormToken () ?>' },
 						function (data) {
 							alert('<?php echo addslashes (JTExt::_ ('COM_VIRTUEMART_PRODUCT_NOTIFY_MESSAGE_SENT')); ?>');
@@ -246,11 +232,14 @@ if ($this->jsonPath !=='') return;
 
 	function populate_customer_list($status) {
 		if ($status == "undefined" || $status == null) $status = '';
+		if($status !=''){
 		jQuery.getJSON($customerListLink, { status:$status  },
 			function (data) {
 				jQuery("#customers-list").html(data.value);
 			});
 	}
+	}
+
 	function customer_initiliaze_boxes() {
 		email_type = jQuery("input:radio[name=customer_email_type]:checked").val();
 		if (email_type == 'notify') {

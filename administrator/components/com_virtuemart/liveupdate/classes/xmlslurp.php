@@ -89,17 +89,16 @@ class LiveUpdateXMLSlurp extends JObject
 			unset($xml);
 			return array('version' => '', 'date' => '', 'xmlfile' => '');
 		}
-		
-		if ( ($xml->document->name() != 'install') && ($xml->document->name() != 'extension') ) {
-			unset($xml);
-			return array('version' => '', 'date' => '', 'xmlfile' => '');			
-		}
+		// if ( ($xml->document->name() != 'install') && ($xml->document->name() != 'extension') ) {
+			// unset($xml);
+			// return array('version' => '', 'date' => '', 'xmlfile' => '');			
+		// }
 		
 		$data = array();
-		$element = & $xml->document->version[0];
-		$data['version'] = $element ? $element->data() : '';		
-		$element = & $xml->document->creationDate[0];
-		$data['date'] = $element ? $element->data() : '';
+		// $element = & $xml->document->version[0];
+		$data['version'] = $xml->version;// $element ? $element->data() : '';		
+		// $element = & $xml->document->creationDate[0];
+		$data['date'] = $xml->creationDate; //$element ? $element->data() : '';
 		
 		$data['xmlfile'] = $filename;
 

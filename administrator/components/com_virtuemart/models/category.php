@@ -566,53 +566,45 @@ class VirtueMartModelCategory extends VmModel {
 
 		$table = $this->getTable('categories');
 
-		foreach($cids as $cid) {
-		    if( $this->clearProducts($cid) ) {
+		foreach($cids as &$cid) {
+
 				if (!$table->delete($cid)) {
 				    vmError($table->getError());
 				    return false;
 				}
-// TODO MULTI LANGUE REMOVE
-				//deleting relations
-				$query = "DELETE FROM `#__virtuemart_product_categories` WHERE `virtuemart_category_id` = ". (int)$cid;
-		    	$this->_db->setQuery($query);
+		}
 
-		    	if(!$this->_db->query()){
+		$cidInString = implode(',',$cids);
+
+		//Delete media xref
+		$query = 'DELETE FROM `#__virtuemart_category_medias` WHERE `virtuemart_category_id` IN ('. $cidInString .') ';
+		$this->_db->setQuery($query);
+		if(!$this->_db->execute()){
+			vmError( $this->_db->getErrorMsg() );
+		}
+
+		//deleting product relations
+		$query = 'DELETE FROM `#__virtuemart_product_categories` WHERE `virtuemart_category_id` IN ('. $cidInString .') ';
+		$this->_db->setQuery($query);
+
+		if(!$this->_db->execute()){
+			vmError( $this->_db->getErrorMsg() );
+		}
+
+		//deleting product relations
+		$query = 'DELETE FROM `#__virtuemart_category_categories` WHERE `category_child_id` IN ('. $cidInString .') ';
+		$this->_db->setQuery($query);
+
+		if(!$this->_db->execute()){
 		    		vmError( $this->_db->getErrorMsg() );
 		    	}
 
 		    	//updating parent relations
-				$query = "UPDATE `#__virtuemart_product_categories` SET `virtuemart_category_id` = 0 WHERE `virtuemart_category_id` = ". (int)$cid;
+		$query = 'UPDATE `#__virtuemart_category_categories` SET `category_parent_id` = 0 WHERE `category_parent_id` IN ('. $cidInString .') ';
 		    	$this->_db->setQuery($query);
 
-		    	if(!$this->_db->query()){
+		    	if(!$this->_db->execute()){
 		    		vmError( $this->_db->getErrorMsg() );
-		    	}
-		    }
-		    else {
-				vmError('Could not clear category products');
-				return false;
-		    }
-		}
-		return true;
-    }
-
-
-	/**
-     * Delete all relations between categories and products
-     *
-     * @author jseros
-     *
-     * @param  int $cid categories to remove
-     * @return boolean if the item remove was successful
-     */
-    public function clearProducts($cid) {
-
-    	$query = "UPDATE `#__virtuemart_product_categories` SET `virtuemart_category_id` = 0 WHERE `virtuemart_category_id` =" . (int)$cid;
-		$this->_db->setQuery($query);
-
-		if( !$this->_db->query() ){
-			return false;
 		}
 
 		return true;
@@ -641,7 +633,7 @@ class VirtueMartModelCategory extends VmModel {
 			FROM `#__virtuemart_category_categories`
 			WHERE `category_parent_id` = ".(int)$virtuemart_category_id;
 		$db->setQuery($q);
-		$db->query();
+		$db->execute();
 		if ($db->getAffectedRows() > 0){
 // 			vmTime('hasChildren YES','hasChildren');
 			return true;
@@ -651,40 +643,6 @@ class VirtueMartModelCategory extends VmModel {
 		}
 
 	}
-
-	/**
-	 * Creates a bulleted of the childen of this category if they exist
-	 *
-	 * @author RolandD
-	 * @todo Add vendor ID
-	 * @param int $virtuemart_category_id the category ID to create the list of
-	 * @return array containing the child categories
-	 */
-/*	public function getChildrenList($virtuemart_category_id,$limit=false) {
-		$db = JFactory::getDBO();
-		$childs = array();
-
-		$q = "SELECT `#__virtuemart_categories`.*, `category_child_id`
-			FROM `#__virtuemart_categories`, `#__virtuemart_category_categories`
-			WHERE `#__virtuemart_category_categories`.`category_parent_id` = ".(int)$virtuemart_category_id."
-			AND `#__virtuemart_categories`.`virtuemart_category_id`=`#__virtuemart_category_categories`.`category_child_id`
-			AND `#__virtuemart_categories`.`virtuemart_vendor_id` = 1
-			AND `#__virtuemart_categories`.`published` = 1
-			ORDER BY `#__virtuemart_categories`.`ordering`, `#__virtuemart_categories`.`category_name` ASC";
-		if ($limit) $q .=' limit 0,'.$limit;
-		$db->setQuery($q);
-		$childs = $db->loadObjectList();
-		// Get the products in the category
-		if(!empty($childs)){
-			foreach ($childs as $ckey => $child) {
-				$childs[$ckey]->number_of_products = $this->countProducts($child->category_child_id);
-			}
-		}
-
-
-		return $childs;
-	}
-*/
 
 	/**
 	 * Creates a bulleted of the childen of this category if they exist

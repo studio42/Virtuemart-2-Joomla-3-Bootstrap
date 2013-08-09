@@ -90,12 +90,10 @@ class VirtueMartModelRatings extends VmModel {
     * Load a single rating
     * @author RolandD
     */
-    public function getRating($cids = array(0) ) {
+    public function getRating($cids) {
 
-		$pid = JRequest::getInt('virtuemart_product_id',0);
-	    if (empty($cids) ) {
-			if (!$pid) return;
-			else $cids[0] = 0 ;
+	    if (empty($cids)) {
+		    return;
 	    }
 
 		/* First copy the product in the product table */
@@ -104,14 +102,19 @@ class VirtueMartModelRatings extends VmModel {
 		/* Load the rating */
 		$joinValue = array('product_name' =>'#__virtuemart_products');
 
-	    // if ($cids) {
-		    $ratings_data->load ($cids[0], null, 'virtuemart_product_id');
-	    // }
+	    if ($cids) {
+		    $ratings_data->load ($cids[0], $joinValue, 'virtuemart_product_id');
+	    }
 
 		/* Add some variables for a new rating */
 		if (JRequest::getWord('task') == 'add') {
-			/* Product ID */
-			$ratings_data->virtuemart_product_id = JRequest::getInt('virtuemart_product_id',0);
+			$virtuemart_product_id = JRequest::getVar('virtuemart_product_id',array(),'', 'array');
+			if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
+				$virtuemart_product_id = (int)$virtuemart_product_id[0];
+			} else {
+				$virtuemart_product_id = (int)$virtuemart_product_id;
+			}
+			$ratings_data->virtuemart_product_id = $virtuemart_product_id;
 
 			/* User ID */
 			$user = JFactory::getUser();

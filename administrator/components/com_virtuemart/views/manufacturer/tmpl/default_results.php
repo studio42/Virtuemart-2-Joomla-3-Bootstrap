@@ -42,7 +42,7 @@ defined('_JEXEC') or die();
 				<?php echo $this->sort('mf_url', 'COM_VIRTUEMART_URL'); ?>
 		    </th>
 		    <th width="20" class="autosize">
-				<?php echo JText::_('COM_VIRTUEMART_PUBLISH'); ?>
+				<?php echo JText::_('COM_VIRTUEMART_PUBLISHED'); ?>
 		    </th>
 		      <th class="hidden-phone"><?php echo $this->sort('m.virtuemart_manufacturer_id', 'COM_VIRTUEMART_ID')  ?></th>
 		</tr>

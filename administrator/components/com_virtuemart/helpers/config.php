@@ -36,7 +36,7 @@ if (version_compare (JVERSION, '3.0.0', 'ge')) {
 	
 	defined ('JVM_VERSION') or define ('JVM_VERSION', 3);
 }
-else {
+// else {
 	defined ('JVM_VERSION') or define ('JVM_VERSION', 2);
 	// load missing bootstrap +css library ... in joomla 2.5
 
@@ -46,9 +46,9 @@ else {
 	JLoader::register('JHtmlIcons', JPATH_VM_ADMINISTRATOR.'/html/icons.php');
 	JLoader::register('JHtmlSidebar', JPATH_VM_ADMINISTRATOR.'/html/sidebar.php');
 	JLoader::register('JHtmlSortablelist', JPATH_VM_ADMINISTRATOR.'/html/sortablelist.php');
-}
+// }
 
-// define DS removed in j3
+
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 //This number is for obstruction, similar to the prefix jos_ of joomla it should be avoided
@@ -72,15 +72,16 @@ if (!class_exists ('VmModel')) {
  * and also vmInfo('COM_VIRTUEMART_MEDIA_NO_PATH_TYPE');
  *
  * @author Max Milbers
- * @param unknown_type $publicdescr
- * @param unknown_type $value
+ * @param string $publicdescr
+ * @param string $value
  */
 
 function vmInfo($publicdescr,$value=NULL){
 
-	VmConfig::$maxMessageCount++;
 	$app = JFactory::getApplication();
 
+	$msg = '';
+	$type = 'info';
 	if(VmConfig::$maxMessageCount<VmConfig::$maxMessage){
 		$lang = JFactory::getLanguage();
 		if($value!==NULL){
@@ -88,21 +89,32 @@ function vmInfo($publicdescr,$value=NULL){
 			$args = func_get_args();
 			if (count($args) > 0) {
 				$args[0] = $lang->_($args[0]);
-				$app ->enqueueMessage(call_user_func_array('sprintf', $args),'notice');
+				$msg = call_user_func_array('sprintf', $args);
 			}
 		}	else {
 			// 		$app ->enqueueMessage('Info: '.JText::_($publicdescr));
-			$publicdescr = $lang->_($publicdescr);
-			$app ->enqueueMessage('Info: '.JText::_($publicdescr),'notice');
+			//$publicdescr = $lang->_($publicdescr);
+			$msg = JText::_($publicdescr);
 			// 		debug_print_backtrace();
 		}
 	}
 	else {
 		if (VmConfig::$maxMessageCount == VmConfig::$maxMessage) {
-			$app->enqueueMessage ('Max messages reached', 'notice');
+			$msg = 'Max messages reached';
+			$type = 'warning';
+		} else {
+			return false;
 		}
 	}
 
+	if(!empty($msg)){
+		VmConfig::$maxMessageCount++;
+		$app ->enqueueMessage($msg,$type);
+	} else {
+		vmTrace('vmInfo Message empty '.$msg);
+	}
+
+	return $msg;
 }
 
 /**
@@ -114,7 +126,7 @@ function vmAdminInfo($publicdescr,$value=NULL){
 
 	if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
 	if(Permissions::getInstance()->isSuperVendor()){
-		VmConfig::$maxMessageCount++;
+
 		$app = JFactory::getApplication();
 
 		if(VmConfig::$maxMessageCount<VmConfig::$maxMessage){
@@ -124,18 +136,22 @@ function vmAdminInfo($publicdescr,$value=NULL){
 				$args = func_get_args();
 				if (count($args) > 0) {
 					$args[0] = $lang->_($args[0]);
-					$app ->enqueueMessage(call_user_func_array('sprintf', $args),'notice');
+					VmConfig::$maxMessageCount++;
+					$app ->enqueueMessage(call_user_func_array('sprintf', $args),'info');
 				}
 			}	else {
+				VmConfig::$maxMessageCount++;
 				// 		$app ->enqueueMessage('Info: '.JText::_($publicdescr));
 				$publicdescr = $lang->_($publicdescr);
-				$app ->enqueueMessage('Info: '.JText::_($publicdescr),'notice');
+				$app ->enqueueMessage('Info: '.JText::_($publicdescr),'info');
 				// 		debug_print_backtrace();
 			}
 		}
 		else {
 			if (VmConfig::$maxMessageCount == VmConfig::$maxMessage) {
-				$app->enqueueMessage ('Max messages reached', 'notice');
+				$app->enqueueMessage ('Max messages reached', 'info');
+			}else {
+				return false;
 			}
 		}
 	}
@@ -144,9 +160,9 @@ function vmAdminInfo($publicdescr,$value=NULL){
 
 function vmWarn($publicdescr,$value=NULL){
 
-	VmConfig::$maxMessageCount++;
-	$app = JFactory::getApplication();
 
+	$app = JFactory::getApplication();
+	$msg = '';
 	if(VmConfig::$maxMessageCount<VmConfig::$maxMessage){
 		$lang = JFactory::getLanguage();
 		if($value!==NULL){
@@ -154,19 +170,31 @@ function vmWarn($publicdescr,$value=NULL){
 			$args = func_get_args();
 			if (count($args) > 0) {
 				$args[0] = $lang->_($args[0]);
-				$app ->enqueueMessage(call_user_func_array('sprintf', $args),'warning');
+				$msg = call_user_func_array('sprintf', $args);
+
 			}
 		}	else {
 			// 		$app ->enqueueMessage('Info: '.JText::_($publicdescr));
-			$publicdescr = $lang->_($publicdescr);
-			$app ->enqueueMessage('Info: '.$publicdescr,'warning');
+			$msg = $lang->_($publicdescr);
+			//$app ->enqueueMessage('Info: '.$publicdescr,'warning');
 			// 		debug_print_backtrace();
 		}
 	}
 	else {
 		if (VmConfig::$maxMessageCount == VmConfig::$maxMessage) {
-			$app->enqueueMessage ('Max messages reached', 'notice');
+			$msg = 'Max messages reached';
+		} else {
+			return false;
 		}
+	}
+
+	if(!empty($msg)){
+		VmConfig::$maxMessageCount++;
+		$app ->enqueueMessage($msg,'warning');
+		return $msg;
+	} else {
+		vmTrace('vmWarn Message empty');
+		return false;
 	}
 
 }
@@ -177,10 +205,8 @@ function vmWarn($publicdescr,$value=NULL){
  */
 function vmError($descr,$publicdescr=''){
 
-	VmConfig::$maxMessageCount++;
-	$app = JFactory::getApplication();
-
-	if(VmConfig::$maxMessageCount<VmConfig::$maxMessage){
+	$msg = '';
+	if(VmConfig::$maxMessageCount< (VmConfig::$maxMessage+5)){
 		if (empty($descr)) {
 			vmTrace ('vmError message empty');
 		}
@@ -189,24 +215,31 @@ function vmError($descr,$publicdescr=''){
 			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
 		}
 		if(Permissions::getInstance()->check('admin')){
-			$app = JFactory::getApplication();
+			//$app = JFactory::getApplication();
 			$descr = $lang->_($descr);
-			$app ->enqueueMessage('vmError: '.$descr,'error');
+			$msg = 'vmError: '.$descr;
 		} else {
 			if(!empty($publicdescr)){
-				$app = JFactory::getApplication();
-
-				$publicdescr = $lang->_($publicdescr);
-				$app ->enqueueMessage($publicdescr,'error');
+				$msg = $lang->_($publicdescr);
 			}
 		}
 	}
 	else {
-		if (VmConfig::$maxMessageCount == VmConfig::$maxMessage) {
-			$app->enqueueMessage ('Max messages reached', 'notice');
+		if (VmConfig::$maxMessageCount == (VmConfig::$maxMessage+5)) {
+			$msg = 'Max messages reached';
+		} else {
+			return false;
 		}
 	}
 
+	if(!empty($msg)){
+		VmConfig::$maxMessageCount++;
+		$app = JFactory::getApplication();
+		$app ->enqueueMessage($msg,'error');
+		return $msg;
+	}
+
+	return $msg;
 
 }
 
@@ -221,7 +254,7 @@ function vmdebug($debugdescr,$debugvalues=NULL){
 
 	if(VMConfig::showDebug()  ){
 
-		VmConfig::$maxMessageCount++;
+
 		$app = JFactory::getApplication();
 
 		if(VmConfig::$maxMessageCount<VmConfig::$maxMessage){
@@ -241,9 +274,11 @@ function vmdebug($debugdescr,$debugvalues=NULL){
 			}
 
 			if(!VmConfig::$echoDebug){
+				VmConfig::$maxMessageCount++;
 				$app = JFactory::getApplication();
 				$app ->enqueueMessage('<span class="vmdebug" >vmdebug '.$debugdescr.'</span>');
 			} else {
+				VmConfig::$maxMessageCount++;
 				echo $debugdescr;
 			}
 
@@ -380,8 +415,6 @@ class VmConfig {
 		if(self::$_debug===NULL){
 
 			$debug = VmConfig::get('debug_enable','none');
-			// 			$app = JFactory::getApplication();
-			// 			$app ->enqueueMessage($debug);
 
 			// 1 show debug only to admins
 			if($debug === 'admin' ){
@@ -752,25 +785,25 @@ class VmConfig {
 		$qry = self::$_jpConfig->getCreateConfigTableQuery();
 		$_db = JFactory::getDBO();
 		$_db->setQuery($qry);
-		$_db->query();
+		$_db->execute();
 
 		$query = 'SELECT `virtuemart_config_id` FROM `#__virtuemart_configs`
 						 WHERE `virtuemart_config_id` = 1';
 		$_db->setQuery( $query );
-		if ($_db->query()){
+		if ($_db->execute()){
 			$qry = 'DELETE FROM `#__virtuemart_configs` WHERE `virtuemart_config_id`=1';
 			$_db->setQuery($qry);
-			$_db->query();
+			$_db->execute();
 		}
 
 
 		$_value = json_encode( $_value );
-		$qry = 'INSERT INTO `#__virtuemart_configs` (`virtuemart_config_id`, `config`) VALUES ( 1, '.$_db->quote($_value).' )';
+		$qry = 'INSERT INTO `#__virtuemart_configs` (`virtuemart_config_id`, `config`) VALUES ( 1, "'.$_db->escape($_value).'")';
 
 		self::$_jpConfig->raw = $_value;
 
 		$_db->setQuery($qry);
-		if (!$_db->query()) {
+		if (!$_db->execute()) {
 			JError::raiseWarning(1, 'VmConfig::installVMConfig: '.JText::_('COM_VIRTUEMART_SQL_ERROR').' '.$_db->stderr(TRUE));
 			echo 'VmConfig::installVMConfig: '.JText::_('COM_VIRTUEMART_SQL_ERROR').' '.$_db->stderr(TRUE);
 			die;
@@ -968,7 +1001,7 @@ class vmJsApi{
 			return;
 		}
 		vmJsApi::jQuery();
-		//JPlugin::loadLanguage('com_virtuemart');
+
 		$lang = JFactory::getLanguage();
 		$lang->load('com_virtuemart');
 		vmJsApi::jSite();
@@ -983,21 +1016,32 @@ class vmJsApi{
 		else {
 			$jsVars .= 'vmLang = "";' . "\n";
 		}
-		$jsVars .= "vmCartText = '". addslashes( JText::_('COM_VIRTUEMART_MINICART_ADDED_JS') )."' ;\n" ;
-		$jsVars .= "vmCartError = '". addslashes( JText::_('COM_VIRTUEMART_MINICART_ERROR_JS') )."' ;\n" ;
-		$jsVars .= "loadingImage = '".JURI::root(TRUE) ."/components/com_virtuemart/assets/images/facebox/loading.gif' ;\n" ;
-		$jsVars .= "closeImage = '".$closeimage."' ; \n";
-		$jsVars .= "Virtuemart.addtocart_popup = '".VmConfig::get('addtocart_popup',1)."' ; \n";
-		// $jsVars .= 'faceboxHtml = \'<div id="facebox" style="display:none;"><div class="popup"><div class="content"></div> <a href="#" class="close"><img src="'.$closeimage.'" title="close" alt="X" class="close_image" /></a></div></div>\' '."\n";
-		$jsVars .= 'faceboxHtml = \'<div id="facebox" style="display:none;"><div class="popup"><div class="content"></div> <a href="#" class="close"></a></div></div>\' '." ;\n";
+
+		if(VmConfig::get('addtocart_popup',1)){
+			$jsVars .= "Virtuemart.addtocart_popup = '".VmConfig::get('addtocart_popup',1)."' ; \n";
+			if(VmConfig::get('usefancy',0)){
+				$jsVars .= "usefancy = true";
+				vmJsApi::js( 'fancybox/jquery.fancybox-1.3.4.pack');
+				vmJsApi::css('jquery.fancybox-1.3.4');
+			} else {//This is just there for the backward compatibility
+				$jsVars .= "vmCartText = '". addslashes( JText::_('COM_VIRTUEMART_CART_PRODUCT_ADDED') )."' ;\n" ;
+				$jsVars .= "vmCartError = '". addslashes( JText::_('COM_VIRTUEMART_MINICART_ERROR_JS') )."' ;\n" ;
+				$jsVars .= "loadingImage = '".JURI::root(TRUE) ."/components/com_virtuemart/assets/images/facebox/loading.gif' ;\n" ;
+				$jsVars .= "closeImage = '".$closeimage."' ; \n";
+				//This is necessary though and should not be removed without rethinking the whole construction
+
+				$jsVars .= "usefancy = false";
+				vmJsApi::js( 'facebox' );
+				vmJsApi::css( 'facebox' );
+			}
+		}
+
 		$jsVars .= '
 //]]>
 ';
 		$document = JFactory::getDocument();
 		$document->addScriptDeclaration($jsVars);
-		vmJsApi::js( 'facebox');
 		vmJsApi::js( 'vmprices');
-		vmJsApi::css('facebox');
 
 		$jPrice = TRUE;
 		return TRUE;
@@ -1029,6 +1073,7 @@ class vmJsApi{
 		});
 //]]>
 		');
+		$JcountryStateList = TRUE;
 		return;
 	}
 
@@ -1216,7 +1261,7 @@ class vmJsApi{
 		elseif (!in_array ($lang, $existingLang)) {
 			$lang = "en-GB";
 		}
-		vmJsApi::js ('jquery.ui.datepicker-'.$lang, $front.'js/i18n' ) ;
+		vmJsApi::js ('jquery.ui.datepicker-'.$lang, $front.'js/i18n','',true ) ;
 		$jDate = TRUE;
 		return $display;
 	}

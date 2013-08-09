@@ -14,6 +14,23 @@
  * other free or open source software licenses.
  * @version $Id: order_editstatus.php 6468 2012-09-18 22:00:43Z Milbo $
  */
+
+$document = JFactory::getDocument();
+//TODO : Warning this is not checked !!!! Studio 42
+$document->addScriptDeclaration ( "
+
+		function cancelOrderStatFormEdit(e) {
+			jQuery('#orderStatForm').each(function(){
+				this.reset();
+			});
+			jQuery('#order_items_status')
+				.find('option:selected').prop('selected', true)
+				.end().trigger('liszt:updated');
+			jQuery('div#updateOrderStatus').hide();
+			e.preventDefault();
+		}
+
+		");
 ?>
 <form action="index.php" method="post" name="orderStatForm" id="orderStatForm">
 <div class="modal-header"> <button type="button" class="close" aria-hidden="true">&times;</button>
