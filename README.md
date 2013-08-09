@@ -19,7 +19,7 @@ THe code is **joomla 3.0** compatible(tested on joomla 3.1 and joomla 2.5)
 
 **Simplified and more advanced** Virtuemart plugin settings.
 
-All List are now updated **without complet page reload**.
+All List are now updated **without complet page reload**. No javascript and css refresh and size reduced by 2.
 
 Tasks in lists view, publishing ..., only reload **260 Octets** (the message itself) and **not 80 Kbs**.
 
