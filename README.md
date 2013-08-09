@@ -8,7 +8,8 @@ VIrtuemart 2 is a online shop solution for joomla 2.5.
 New features
 ------------
 **Full Shop Front-end administration** not only product or category.
-**direct** edit link for products,categories and manufacturers.
+
+In shop **direct** edit link for products,categories and manufacturers.(more to come soon)
 
 All is converted to **Bootstrap**
 
