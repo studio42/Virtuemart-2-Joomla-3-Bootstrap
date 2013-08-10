@@ -256,6 +256,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		if ($search = JRequest::getString('search', false)){
 
 			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
+			$search = str_replace(' ','%',$search);
 
 			$searchFields = array();
 			$searchFields[] = 'u.first_name';
@@ -271,7 +272,8 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			//$where[] = ' ( u.first_name LIKE '.$search.' OR u.middle_name LIKE '.$search.' OR u.last_name LIKE '.$search.' OR `order_number` LIKE '.$search.')';
 		}
 
-		if ($order_status_code = JRequest::getString('order_status_code', false)){
+		$order_status_code = JRequest::getString('order_status_code', false);
+		if ($order_status_code and $order_status_code!=-1){
 			$where[] = ' o.order_status = "'.$order_status_code.'" ';
 		}
 
@@ -332,6 +334,9 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 // 			$_returnValues = $_dispatcher->trigger('plgVmOnUpdateSingleItem',array($table,&$orderdata));
 */
 			$dataT = get_object_vars($table);
+
+//		$doUpdate = JRequest::getString('update_values');
+
 			$orderdatacopy = $orderdata;
 			$data = array_merge($dataT,(array)$orderdatacopy);
 // 			$data['order_status'] = $orderdata->orderstatus;
@@ -481,7 +486,6 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 // 		}
 
 	}
-
 
 
 	/**
@@ -1454,7 +1458,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		//We may add later something to the method, defining this better
 		$vars['url'] = 'url';
 			if(!isset($newOrderData['doVendor'])) $vars['doVendor'] = false; else $vars['doVendor'] = $newOrderData['doVendor'];
-		}
+
 		$virtuemart_vendor_id=1;
 		$vendorModel = VmModel::getModel('vendor');
 		$vendor = $vendorModel->getVendor($virtuemart_vendor_id);

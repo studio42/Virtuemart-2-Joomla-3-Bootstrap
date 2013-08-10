@@ -34,7 +34,9 @@ class VirtuemartViewVirtuemart extends VmView {
 	function display($tpl = null) {
 
 		// Load the helper(s)
-
+		if (JFactory::getUser()->authorise('core.admin', 'com_virtuemart')) {
+			JToolBarHelper::preferences('com_virtuemart');
+		}
 		$this->loadHelper('image');
 
 		$model = VmModel::getModel('virtuemart');

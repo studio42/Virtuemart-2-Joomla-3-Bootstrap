@@ -54,13 +54,14 @@ defined ('_JEXEC') or die();
 				<td><?php echo $checked; ?></td>
 				<!-- Order id -->
 				<td>
-					<?php echo $this->editLink(	$order->virtuemart_order_id, $order->order_name, 'virtuemart_order_id',
-						array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_NUMBER') . ' ' .  $order->order_number) ) ?>
+					<?php echo $this->editLink(	$order->virtuemart_order_id, $order->order_number, 'virtuemart_order_id',
+						array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_NUMBER') . ' ' .  $order->order_number) );
+					?>
 				<td>
 					<?php
 					if ($order->virtuemart_user_id) {
-						<?php echo $this->editLink(	$order->virtuemart_user_id,	$order->order_name, 'virtuemart_user_id[]',
-							array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_USER') . ' ' .  $order->order_name),'user')	) ?>
+						echo $this->editLink(	$order->virtuemart_user_id,	$order->order_name, 'virtuemart_user_id[]',
+							array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_USER') . ' ' .  $order->order_name) ,'user');
 					} else {
 						echo $order->order_name;
 					}
@@ -119,7 +120,11 @@ defined ('_JEXEC') or die();
 				</td>
 				<!-- Total -->
 				<td><?php echo $order->order_total; ?></td>
-				<td><?php echo JHTML::_ ('link', JRoute::_ ($link), $order->virtuemart_order_id, array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_ID') . ' ' . $order->virtuemart_order_id)); ?></td>
+				<td>
+					<?php echo $this->editLink(	$order->virtuemart_order_id, $order->virtuemart_order_id, 'virtuemart_order_id',
+						array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_ID') . ' ' .  $order->virtuemart_order_id) );
+					?>
+				</td>
 
 			</tr>
 				<?php

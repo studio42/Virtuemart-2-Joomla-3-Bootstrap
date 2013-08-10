@@ -16,7 +16,7 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 // Load the view framework
 if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
@@ -48,9 +48,9 @@ class VirtuemartViewOrders extends VmView {
 
 		$curTask = JRequest::getWord('task');
 		if ($curTask == 'edit') {
+			VmConfig::loadJLang('com_virtuemart_shoppers',TRUE); 
 
 			// Load addl models
-
 			$userFieldsModel = VmModel::getModel('userfields');
 			$productModel = VmModel::getModel('product');
 
@@ -133,7 +133,7 @@ class VirtuemartViewOrders extends VmView {
 			JToolBarHelper::custom( 'cancel', 'back','back','back',false,false);
 		}
 		else if ($curTask == 'editOrderItem') {
-			$this->loadHelper('calculationHelper');
+			$this->loadHelper('calculationh');
 
 			$this->orderstatuses = $orderStates;
 			$this->virtuemart_order_id = JRequest::getString('orderId', '');
@@ -144,12 +144,14 @@ class VirtuemartViewOrders extends VmView {
 		}
 		else {
 			$this->addStandardDefaultViewLists($model,'created_on');
-			$this->lists['state_list'] = $this->renderOrderstatesList();
+			$orderStatusModel =VmModel::getModel('orderstatus');
+			$orderstates = JRequest::getWord('order_status_code','');
+			$this->lists['state_list'] = $orderStatusModel->renderOSList($orderstates,'order_status_code',FALSE,' onchange="this.form.submit();" ');
 			$orderslist = $model->getOrdersList();
 
 			$this->orderstatuses = $orderStates;
 
-			if(!class_exists('CurrencyDisplay'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
+			$this->loadHelper('currencydisplay');
 
 			/* Apply currency This must be done per order since it's vendor specific */
 			$_currencies = array(); // Save the currency data during this loop for performance reasons

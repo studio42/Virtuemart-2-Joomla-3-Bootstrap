@@ -30,6 +30,7 @@ $j = "
 " ;
 $document->addScriptDeclaration ( $j);
 $document->addStyleDeclaration('
+ body { padding-top: 30px; }
  body,.vmadmin{width:100%;background-color:#fff !important;background-image:none !important;margin:0px;}
  #system-message-container { display: none; }
 /*#toolbar {padding-left: 10px;}
@@ -39,9 +40,57 @@ $document->addStyleDeclaration('
 #system-message dt { display: none; }
 #system-message-container dl, #system-message-container dd{margin:0px} */
 ');
+/* simplified front admin menu
+	view => language key
+ */
+$treemenu= array(
+    'catalog' => array(
+        'product&task=add' => jtext::_('COM_VIRTUEMART_PRODUCT').' '.jtext::_('JNEW'),
+        'product' => 'COM_VIRTUEMART_PRODUCT_S',
+        'category' => 'COM_VIRTUEMART_CATEGORY_S',
+        'manufacturer' => 'COM_VIRTUEMART_MANUFACTURER_S',
+        'custom' => 'COM_VIRTUEMART_CUSTOM',
+        'ratings' => 'COM_VIRTUEMART_LISTREVIEWS',
+    ),
+    'sales' => array(
+        'orders' => 'COM_VIRTUEMART_ORDER_S',
+        'shoppers' => 'COM_VIRTUEMART_USER_S',
+        'coupons' => 'COM_VIRTUEMART_COUPON_S',
+        'report' => 'COM_VIRTUEMART_REPORT'
+    )
+);
+
 ?>
 
 <div class="vm2admin row-fluid">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target="#mainvmnav">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+				<a target="_blank" title="Your Shop" href="<?php echo jRoute::_('index.php?option=com_virtuemart') ?>" class="brand">Your shop<i class="icon-out-2 small"></i></a>
+				<div class="nav-collapse" id="mainvmnav">
+					<ul class="nav" id="menu">
+					<?php foreach ($treemenu as $topname => $menus) { ?>
+					<li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><?php echo $topname ?><span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<?php foreach ($menus as $link => $name) { ?>
+							<li>
+								<a href="<?php echo jRoute::_('index.php?option=com_virtuemart&tmpl=component&view='.$link) ?>" class="menu-cpanel"><?php echo jtext::_($name) ?></a>
+							</li>
+							<?php } ?>
+						</ul>
+					</li>
+					<?php } ?>
+						<li class="dropdown"><a href="<?php echo jRoute::_('index.php?option=com_virtuemart&tmpl=component') ?>"><?php echo jtext::_('COM_VIRTUEMART_ADMIN') ?><span class="caret"></span></a>
+					<ul/>
+				</div>
+			</div>
+		</div>
+	</nav>
 	<?php if (count($messages) ) {
 		foreach ($messages as $message ) {
 			
