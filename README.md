@@ -37,6 +37,13 @@ Most of this fix are not included in Official release.
 This repositry is a derivated work from original 2.0.22a stable zip package from virtuemart 2 Official site (without aditional languages & files).
 See http://dev.virtuemart.net/projects/virtuemart/files for original packages without this changes and fixes.
 You can install new languages from original release.
+Install Steps
+-------------
+1-Download https://github.com/studio42/Virtuemart-2-Joomla-3-Bootstrap/archive/master.zip and install as all joomla component  
+2-Download and install https://github.com/studio42/Virtuemart2-all-in-one-joomla3/archive/master.zip as all joomla component
+
+The pdf enchanced is included in all-in-one installer no need to install anything more.  
+All-in-one main plugins and modules are ready to run
 
 info
 ------------
