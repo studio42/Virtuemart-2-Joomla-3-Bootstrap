@@ -9,6 +9,8 @@ New features
 ------------
 **Full Shop Front-end administration** not only product or category.
 
+Inlcude now a **front-End administrator menu**
+
 In shop **direct** edit link for products,categories and manufacturers.(more to come soon)
 
 All is converted to **Bootstrap**
