@@ -140,12 +140,6 @@ if (isset($this->product->customfields_fromParent)) { ?>
 					</tbody>
 				</table><!-- custom_fields -->
 			</fieldset>
-			
-			<!--fieldset style="background-color:#F9F9F9;">
-				<legend><?php echo JText::_('COM_VIRTUEMART_CUSTOM_EXTENSION'); ?></legend>
-				<div id="custom_customPlugins"><?php echo  $tables['customPlugins']; ?></div>
-			</fieldset-->
-
 
 <div style="clear:both;"></div>
 </div>

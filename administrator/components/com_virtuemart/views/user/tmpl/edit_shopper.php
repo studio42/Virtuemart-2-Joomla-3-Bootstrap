@@ -26,6 +26,22 @@ defined('_JEXEC') or die('Restricted access');
 		<?php echo JText::_('COM_VIRTUEMART_SHOPPER_FORM_LBL') ?>
 	</legend>
 	<table>
+		<?php 
+		// compare the id to prevent remove myself admin rights
+		$admin_id = JFactory::getUser()->get('id');
+		$user_id = $this->userDetails->JUser->get('id');
+		if ( Permissions::getInstance()->check("admin,storeadmin") && ($admin_id !== $user_id) ) { ?>
+			<tr>
+				<td class="key">
+					<label for="user_is_vendor">
+						<?php echo JText::_('COM_VIRTUEMART_VENDOR') ?>:
+					</label>
+				</td>
+				<td>
+					<?php echo VmHTML::checkbox('user_is_vendor', $this->userDetails->user_is_vendor ); ?>
+				</td>
+			</tr>
+		<?php } ?>
 		<tr>
 			<td class="key">
 				<label for="virtuemart_vendor_id">

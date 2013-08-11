@@ -779,7 +779,8 @@ class ShopFunctions {
 		self::$counter++;
 
 		static $categoryTree = '';
-
+		static $isSite = null;
+		if  ($isSite ===null) $isSite = JFactory::getApplication()->isSite ();
 		$virtuemart_vendor_id = 1;
 
 // 		vmSetStartTime('getCategories');
@@ -787,8 +788,8 @@ class ShopFunctions {
 		$level++;
 
 		$categoryModel->_noLimit = TRUE;
-		$app = JFactory::getApplication ();
-		$records = $categoryModel->getCategories ($app->isSite (), $cid);
+		// $app = JFactory::getApplication ();
+		$records = $categoryModel->getCategories ($isSite , $cid);
 // 		vmTime('getCategories','getCategories');
 		$selected = "";
 		if (!empty($records)) {

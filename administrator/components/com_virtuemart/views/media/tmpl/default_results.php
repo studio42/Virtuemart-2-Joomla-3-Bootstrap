@@ -28,11 +28,11 @@ jimport('joomla.filesystem.file');
 		<th>
 			<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 		</th>
+		<th><?php echo JText::_('COM_VIRTUEMART_VIEW'); ?></th>
 		<th><?php echo $this->sort('file_title', 'COM_VIRTUEMART_FILES_LIST_FILETITLE') ?></th>
 		<th><?php echo $this->sort('file_type', 'COM_VIRTUEMART_FILES_LIST_ROLE') ?></th>
-		<th><?php echo JText::_('COM_VIRTUEMART_VIEW'); ?></th>
 		<th class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_FILES_LIST_FILENAME'); ?></th>
-		<th><?php echo JText::_('COM_VIRTUEMART_FILES_LIST_FILETYPE'); ?></th>
+		<th class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_FILES_LIST_FILETYPE'); ?></th>
 		<th><?php echo $this->sort('published','COM_VIRTUEMART_PUBLISHED'); ?></th>
 	  <th  class="hidden-phone"><?php echo $this->sort('virtuemart_media_id', 'COM_VIRTUEMART_ID')  ?></th>
 	</tr>
@@ -51,10 +51,18 @@ jimport('joomla.filesystem.file');
 			<tr >
 				<!-- Checkbox -->
 				<td><?php echo $checked;   ?></td>
+				<!-- Preview -->
+				<td>
+				<?php
+					echo $media->displayMediaThumb('',true,'class="hasTooltip thumbnail modalbox" rel="group" ');
+
+				?>
+				</td>
 				<!-- File name -->
 				<td>
 					<?php echo $this->editLink(	$media->virtuemart_media_id, $media->file_title, 'virtuemart_media_id[]',
 						array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$media->file_title) ) ?>
+					<small class="visible-phone"><?php echo $media->file_name; ?> (<?php echo $media->file_extension; ?>)</small>
 				</td>
 				<!-- File role -->
 				<td><?php
@@ -65,17 +73,11 @@ jimport('joomla.filesystem.file');
 
 					?>
 				</td>
-				<!-- Preview -->
-				<td>
-				<?php
-					echo $media->displayMediaThumb('',true,'class="hasTooltip thumbnail modalbox" rel="group" ');
 
-				?>
-				</td>
 				<!-- File title -->
 				<td  class="hidden-phone autosize"><?php echo $media->file_name; ?></td>
 				<!-- File extension -->
-				<td><span class="vmicon vmicon-16-ext_<?php echo $media->file_extension; ?>"></span><?php echo $media->file_extension; ?></td>
+				<td  class="hidden-phone"><span class="vmicon vmicon-16-ext_<?php echo $media->file_extension; ?>"></span><?php echo $media->file_extension; ?></td>
 				<!-- published -->
 				<td><?php echo $published; ?></td>
 				<td  class="hidden-phone"><?php echo $media->virtuemart_media_id; ?></td>

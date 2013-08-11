@@ -598,16 +598,17 @@ class VmTable extends JTable{
 
 				$loggedVendorId = Permissions::getInstance()->isSuperVendor();
 				$admin = Permissions::getInstance()->check('admin');
-
 				$tbl_key = $this->_tbl_key ;
 				if(get_class($this)!=='TableVmusers'){
-					$q = 'SELECT `virtuemart_vendor_id` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key.'`="'.$this->$tbl_key.'" ';
-					if (!isset(self::$_query_cache[md5($q)]))
-					{
-					$this->_db->setQuery($q);
-					$virtuemart_vendor_id = $this->_db->loadResult();
-					}
-					else $virtuemart_vendor_id = self::$_query_cache[md5($q)];
+					if ($this->$tbl_key ) {
+						$q = 'SELECT `virtuemart_vendor_id` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key.'`="'.$this->$tbl_key.'" ';
+						if (!isset(self::$_query_cache[md5($q)]))
+						{
+						$this->_db->setQuery($q);
+						$virtuemart_vendor_id = $this->_db->loadResult();
+						}
+						else $virtuemart_vendor_id = self::$_query_cache[md5($q)];
+					} else $virtuemart_vendor_id = $loggedVendorId ; // insert new ;
 				} else {
 					$q = 'SELECT `virtuemart_vendor_id`,`user_is_vendor` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key.'`="'.$this->$tbl_key.'" ';
 					if (!isset(self::$_query_cache[md5($q)]))

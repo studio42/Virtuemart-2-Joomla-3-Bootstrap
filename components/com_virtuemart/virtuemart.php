@@ -24,8 +24,11 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR .'/components/com_virtuemart/helpers/config.php');
 VmConfig::loadConfig();
 if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
-$admin = Permissions::getInstance()->check("admin,storeadmin");
+$isVendor = Permissions::getInstance()->isSuperVendor();//check("admin,storeadmin");
+$isAdmin = Permissions::getInstance()->check("admin,storeadmin");
 $offline = VmConfig::get('shop_is_offline',0);
+// 
+// var_dump($isVendor, $isAdmin);
 vmRam('Start');
 // vmSetStartTime();
 vmSetStartTime('Start');
@@ -33,7 +36,7 @@ vmSetStartTime('Start');
 VmConfig::loadJLang('com_virtuemart', true);
 $input = JFactory::getApplication()->input;
 
-if($offline && !$admin){
+if($offline && !$isAdmin){
 	$_controller = 'virtuemart';
 	require (JPATH_VM_SITE.'/controllers/virtuemart.php');
 	JRequest::setVar('view', 'virtuemart');
@@ -55,10 +58,33 @@ if($offline && !$admin){
 	$trigger = 'onVmSiteController';
 // 	$task = JRequest::getWord('task',JRequest::getWord('layout',$_controller) );		$this makes trouble!
 	$task = $input->get( 'task' , null , 'word');
-// jexit('site')
-	
+
 	$basePath = JPATH_VM_SITE;
-	if (jRequest::getVar('tmpl') == 'component' && $admin ) {
+	if (jRequest::getVar('tmpl') == 'component' && $isVendor ) {
+		// Get the component params
+		$params = JComponentHelper::getParams('com_virtuemart', true);
+		$canEdit = $params->get($_controller.'_edit',null);
+		$canAdd = $params->get($_controller.'_add',null);
+		$app = Jfactory::getApplication();
+		// verify if vendor  can do it
+		if (!$isAdmin) {
+			if ($canEdit !== null) {
+				if ($canEdit == 0 && ($task =='save' || $task =='apply') ) {
+					$app->enqueueMessage(JText::_('not allowed '.$_controller.'_edit' ) );
+					$task = $input->set( 'task' , 'cancel');
+					jRequest::setVar('task','cancel');
+				}
+			}
+			if ($canAdd !== null) {
+				if ($canAdd == 0 && $task =='add') {	
+					$app->enqueueMessage(JText::_('not allowed '.$_controller.'_add' ) );
+					$task = $input->set( 'task' , 'cancel');
+					jRequest::setVar('task','cancel');
+				}
+			}
+		}
+		
+		
 		$jlang =JFactory::getLanguage();
 		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, null, true);
 		$jlang->load('', JPATH_ADMINISTRATOR, null, true);

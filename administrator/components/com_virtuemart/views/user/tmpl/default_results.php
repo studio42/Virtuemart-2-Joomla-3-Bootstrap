@@ -51,7 +51,7 @@ defined('_JEXEC') or die();
 				</td>
 
 				<td align="left">
-					<?php echo $this->editLink($row->id, $row->username, 'virtuemart_user_id[]');  ?>">
+					<?php echo $this->editLink($row->id, $row->username, 'virtuemart_user_id[]');  ?>
 				</td>
 				<td align="left">
 					<?php echo $row->name; ?>

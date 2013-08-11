@@ -209,7 +209,7 @@ class VirtueMartModelProduct extends VmModel {
 	 *
 	 * @author Max Milbers
 	 */
-	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE) {
+	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE,$vendor) {
 
 		$app = JFactory::getApplication ();
 
@@ -228,6 +228,7 @@ class VirtueMartModelProduct extends VmModel {
 		$orderBy = ' ';
 
 		$where = array();
+		if ($vendor) $where[] = '`virtuemart_vendor_id` = ' . (int)$vendor;
 		$useCore = TRUE;
 		if ($this->searchplugin !== 0) {
 			//reset generic filters ! Why? the plugin can do it, if it wishes it.
@@ -1252,9 +1253,10 @@ class VirtueMartModelProduct extends VmModel {
 	 *
 	 * @author Max Milbers
 	 */
-	public function getProductListing ($group = FALSE, $nbrReturnProducts = FALSE, $withCalc = TRUE, $onlyPublished = TRUE, $single = FALSE, $filterCategory = TRUE, $category_id = 0) {
+	public function getProductListing ($group = FALSE, $nbrReturnProducts = FALSE, $withCalc = TRUE, $onlyPublished = TRUE, $single = FALSE, $filterCategory = TRUE, $category_id = 0,$vendor = null) {
 
 		$app = JFactory::getApplication ();
+
 		if ($app->isSite ()) {
 			$front = TRUE;
 			if (!class_exists ('Permissions')) {
@@ -1265,6 +1267,8 @@ class VirtueMartModelProduct extends VmModel {
 				if ($show_prices = VmConfig::get ('show_prices', 1) == '0') {
 					$withCalc = FALSE;
 				}
+			} else if(JRequest::getVar ('view') === 'product') {
+				$front = FALSE;// front acces to admin
 			}
 		}
 		else {
@@ -1280,7 +1284,7 @@ class VirtueMartModelProduct extends VmModel {
 		else {
 			$this->virtuemart_category_id = FALSE;
 		}
-		$ids = $this->sortSearchListQuery ($onlyPublished, $this->virtuemart_category_id, $group, $nbrReturnProducts);
+		$ids = $this->sortSearchListQuery ($onlyPublished, $this->virtuemart_category_id, $group, $nbrReturnProducts,$vendor);
 
 		//quickndirty hack for the BE list, we can do that, because in vm2.1 this is anyway fixed correctly
 		$this->listing = TRUE;

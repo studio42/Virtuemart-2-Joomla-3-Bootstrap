@@ -3,14 +3,15 @@
 // add messgae in bootstrap style
 $app   = JFactory::getApplication();
 $messages = $app->getMessageQueue();
+$user = JFactory::getUser();
 // html code for front-end administration
 $view=jrequest::getWord('view');
 $task =jrequest::getWord('task');
 if ($pid = jrequest::getInt('virtuemart_product_id'))
-	$link = 'productdetails&virtuemart_product_id='.$pid;
+	$returnlink = 'productdetails&virtuemart_product_id='.$pid;
 elseif ($cid = jrequest::getInt('virtuemart_category_id'))
-	$link = 'category&virtuemart_category_id='.$cid;
-else $link ='virtuemart';
+	$returnlink = 'category&virtuemart_category_id='.$cid;
+else $returnlink =null;
 JHtml::_('script', 'system/core.js', false, true);
 $document = JFactory::getDocument();
 JHtml::_('jquery.ui');
@@ -30,8 +31,17 @@ $j = "
 " ;
 $document->addScriptDeclaration ( $j);
 $document->addStyleDeclaration('
+@media (min-width: 768px) {
  body { padding-top: 30px; }
- body,.vmadmin{width:100%;background-color:#fff !important;background-image:none !important;margin:0px;}
+}
+@media (max-width: 767px) {
+ body { padding-top: 0px;}
+ .vm2admin .navbar-fixed-top,.vm2admin .header{ margin:0px;max-width:100%}
+ .vm2admin .subhead {margin-left:0px;margin-right:0px}
+}
+ body,.vmadmin{width:100%;background-color:#fff !important;background-image:none !important;}
+ .vm2admin .subhead,.vmadmin{margin:0px;}
+body {margin:0px}
  #system-message-container { display: none; }
 /*#toolbar {padding-left: 10px;}
 .vm2admin #adminForm input[type="text"] {width: auto;}
@@ -45,11 +55,12 @@ $document->addStyleDeclaration('
  */
 $treemenu= array(
     'catalog' => array(
-        'product&task=add' => jtext::_('COM_VIRTUEMART_PRODUCT').' '.jtext::_('JNEW'),
+        'product&task=add' => jtext::_('COM_VIRTUEMART_PRODUCT').' ('.jtext::_('JNEW').')',
         'product' => 'COM_VIRTUEMART_PRODUCT_S',
         'category' => 'COM_VIRTUEMART_CATEGORY_S',
         'manufacturer' => 'COM_VIRTUEMART_MANUFACTURER_S',
         'custom' => 'COM_VIRTUEMART_CUSTOM',
+        'media' => 'COM_VIRTUEMART_MEDIA_S',
         'ratings' => 'COM_VIRTUEMART_LISTREVIEWS',
     ),
     'sales' => array(
@@ -71,22 +82,31 @@ $treemenu= array(
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
-				<a target="_blank" title="Your Shop" href="<?php echo jRoute::_('index.php?option=com_virtuemart') ?>" class="brand">Your shop<i class="icon-out-2 small"></i></a>
+				<a target="_blank" title="<?php echo jtext::_('COM_VIRTUEMART_INSTALL_GO_SHOP') ?>" href="<?php echo jRoute::_('index.php?option=com_virtuemart&view=virtuemart') ?>" class="brand"><?php echo jtext::_('COM_VIRTUEMART_SHOP_HOME') ?> <i class="icon-out-2 small"></i></a>
 				<div class="nav-collapse" id="mainvmnav">
 					<ul class="nav" id="menu">
-					<?php foreach ($treemenu as $topname => $menus) { ?>
-					<li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><?php echo $topname ?><span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<?php foreach ($menus as $link => $name) { ?>
-							<li>
-								<a href="<?php echo jRoute::_('index.php?option=com_virtuemart&tmpl=component&view='.$link) ?>" class="menu-cpanel"><?php echo jtext::_($name) ?></a>
-							</li>
-							<?php } ?>
-						</ul>
-					</li>
-					<?php } ?>
-						<li class="dropdown"><a href="<?php echo jRoute::_('index.php?option=com_virtuemart&tmpl=component') ?>"><?php echo jtext::_('COM_VIRTUEMART_ADMIN') ?><span class="caret"></span></a>
-					<ul/>
+						<li class="dropdown"><a href="<?php echo jRoute::_('index.php?option=com_virtuemart&tmpl=component') ?>"><?php echo jtext::_('COM_VIRTUEMART_ADMIN') ?><span class="caret"></span></a></li>
+						<?php foreach ($treemenu as $topname => $menus) { ?>
+						<li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><?php echo $topname ?><span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<?php foreach ($menus as $link => $name) { ?>
+								<li>
+									<a href="<?php echo jRoute::_('index.php?option=com_virtuemart&tmpl=component&view='.$link) ?>" class="menu-cpanel"><?php echo jText::_($name) ?></a>
+								</li>
+								<?php } ?>
+							</ul>
+						</li>
+						<?php } ?>
+					</ul>
+					<ul class="nav pull-right">
+						<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><?php echo $user->name ?><b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li class=""><a href=<?php echo jRoute::_('index.php?option=com_virtuemart&view=user') ?>"><?php echo jText::_('COM_VIRTUEMART_YOUR_ACCOUNT_DETAILS') ?></a></li>
+								<li class="divider"></li>
+								<li class=""><a href="<?php echo jRoute::_('index.php?option=com_users&task=user.logout&'.jSession::getFormToken().'=1 ') ?>">Logout</a></li>
+							</ul>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -106,10 +126,12 @@ $treemenu= array(
 	<div class="header">
 		<div class="container-fluid">
 			<h1 class="page-title"><?php echo $document->getTitle(); ?>
+				<?php if ($returnlink) { ?>
 				<div class="nav pull-right">
-					<a class="btn" href="<?php echo jRoute::_('index.php?option=com_virtuemart&view='.$link ) ?>"><?php echo jText::_('COM_VIRTUEMART_CLOSE') ?></a>
+					<a class="btn" href="<?php echo jRoute::_('index.php?option=com_virtuemart&view='.$returnlink ) ?>"><?php echo jText::_('COM_VIRTUEMART_CLOSE') ?></a>
 				</div>
 				<div class="clearfix"></div>
+				<?php } ?>
 			</h1>
 
 		</div>

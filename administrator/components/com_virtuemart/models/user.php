@@ -606,8 +606,11 @@ class VirtueMartModelUser extends VmModel {
 		$alreadyStoredUserData = $usertable->load($this->_id);
 		$app = JFactory::getApplication();
 		unset($data['virtuemart_vendor_id']);
-		unset($data['user_is_vendor']);
-		$data['user_is_vendor'] = $alreadyStoredUserData->user_is_vendor;
+		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+		if ( !Permissions::getInstance()->check("admin,storeadmin") ) {
+			unset($data['user_is_vendor']);
+			$data['user_is_vendor'] = $alreadyStoredUserData->user_is_vendor;
+		}
 		$data['virtuemart_vendor_id'] = $alreadyStoredUserData->virtuemart_vendor_id;
 
 		vmdebug('saveUserData',$data);
@@ -620,7 +623,7 @@ class VirtueMartModelUser extends VmModel {
 			$data['customer_number_bycore'] = 1;
 			//}
 		} else {
-			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+
 			if(!Permissions::getInstance()->check("admin,storeadmin")) {
 				$data['customer_number'] = $alreadyStoredUserData->customer_number;
 			}

@@ -101,7 +101,9 @@ class VirtuemartViewProduct extends VmView {
 				$vendor_model = VmModel::getModel('vendor');
 
 				if(Vmconfig::get('multix','none')!=='none'){
-					$lists['vendors'] = Shopfunctions::renderVendorList($product->virtuemart_vendor_id);
+					if ($task =='add') $vendor_id = Permissions::getInstance()->isSuperVendor();
+					else $vendor_id = $product->virtuemart_vendor_id ;
+					$lists['vendors'] = Shopfunctions::renderVendorList($vendor_id);
 				}
 				// Load the currencies
 				$currency_model = VmModel::getModel('currency');
@@ -278,13 +280,15 @@ class VirtuemartViewProduct extends VmView {
 				$msg="";
 			}
 			$this->db = JFactory::getDBO();
-
+			$this->loadHelper('permissions');
 			$this->SetViewTitle($title, $msg );
 
 			$this->addStandardDefaultViewLists($model,'created_on', 'DESC', 'filter_product');
+			$vendor = Permissions::getInstance()->isSuperVendor();
+			if ($vendor == 1 ) $vendor = null;
 
 			/* Get the list of products */
-			$productlist = $model->getProductListing(false,false,false,false,true);
+			$productlist = $model->getProductListing(false,false,false,false,true,true,0,$vendor);
 
 			//The pagination must now always set AFTER the model load the listing
 			$this->pagination = $model->getPagination();
@@ -298,9 +302,10 @@ class VirtuemartViewProduct extends VmView {
 
 			$vendor_model = VmModel::getModel('vendor');
 			$productreviews = VmModel::getModel('ratings');
-
 			foreach ($productlist as $virtuemart_product_id => $product) {
-				$product->mediaitems = count($product->virtuemart_media_id);
+				if (isset($product->virtuemart_media_id) )
+					$product->mediaitems = count($product->virtuemart_media_id);
+				else $product->mediaitems = 'none';
 				$product->reviews = $productreviews->countReviewsForProduct($product->virtuemart_product_id);
 
 				$vendor_model->setId($product->virtuemart_vendor_id);

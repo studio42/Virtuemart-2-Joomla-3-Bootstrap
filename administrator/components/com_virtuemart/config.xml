@@ -1,685 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
-	<fieldset addfieldpath="/administrator/components/com_virtuemart/models/fields"
-		name="shop"
-		label="COM_VIRTUEMART_ADMIN_CFG_SHOPTAB">
-		<field name="shop_settings_separator" type="note" label="COM_VIRTUEMART_ADMIN_CFG_SHOP_SETTINGS"/>
+	<fieldset name="vendor" label="COM_VIRTUEMART_VENDOR">
 		<field
-			name="shop_is_offline"
-			type="radio" class="btn-group"
-			label="COM_VIRTUEMART_ADMIN_CFG_SHOP_OFFLINE"
-			description="COM_VIRTUEMART_ADMIN_CFG_SHOP_OFFLINE_TIP"
-			default="1"
-		>
-			<option value="0">JYES</option>
-			<option value="1">JNO</option>
+			name="product"
+			type="spacer"
+			class="star gi"
+			label="COM_VIRTUEMART_PRODUCT_S"/>
+		<field
+			name="product_spacer"
+			type="spacer"
+			hr="true"/>
+		<field
+			name="product_edit"
+			type="radio"
+			default="0"
+			label="JACTION_EDITOWN">
+			<option
+				value="0">JNO</option>
+			<option
+				value="1">JYES</option>
 		</field>
 		<field
-			name="offline_message"
-			type="textarea"
-			default="Our Shop is currently down for maintenance. Please check back again soon."
-			label="COM_VIRTUEMART_ADMIN_CFG_SHOP_OFFLINE_MSG">
-		</field>
-		<field 
-			name="show_tag_title" 
-			type="radio" class="btn-group"
-			label="COM_VIRTUEMART_ADMIN_CFG_USE_ONLY_AS_CATALOGUE"
-			description="COM_VIRTUEMART_ADMIN_CFG_USE_ONLY_AS_CATALOGUE_EXPLAIN"
+			name="product_add"
+			type="radio"
 			default="0"
-		>
-			<option value="0">JYES</option>
-			<option value="1">JNO</option>
+			label="JACTION_CREATE">
+			<option
+				value="0">JNO</option>
+			<option
+				value="1">JYES</option>
 		</field>
 
-		<field 
-			name="currency_converter_module" 
-			type="currency_converter_module"
-			description="COM_VIRTUEMART_CFG_CURRENCY_MODULE_TIP"
-			label="COM_VIRTUEMART_CFG_CURRENCY_MODULE"
-			default="convertECB"
-		>
-			<option value="convertECB">convertECB</option>
-		</field>
-
-		<field 
-			name="enable_content_plugin" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_ADMIN_CFG_ENABLE_CONTENT_PLUGIN_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_ENABLE_CONTENT_PLUGIN"
-			default="01"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field 
-			name="useSSL" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_ADMIN_CFG_SSL_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_SSL"
+		<field
+			name="category"
+			type="spacer"
+			class="star gi"
+			label="COM_VIRTUEMART_CATEGORY_S"/>
+		<field
+			name="category_spacer"
+			type="spacer"
+			hr="true"/>
+		<field
+			name="category_edit"
+			type="radio"
 			default="0"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+			label="JACTION_EDITOWN">
+			<option
+				value="0">JNO</option>
+			<option
+				value="1">JYES</option>
 		</field>
-
-		<field 
-			name="shop_languages" 
-			type="note" label="COM_VIRTUEMART_ADMIN_CFG_SHOP_LANGUAGES"
-		/>
-
-		<field 
-			name="active_languages" 
-			type="language" multiple="true"
-			description="COM_VIRTUEMART_ADMIN_CFG_MULTILANGUE_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_MULTILANGUE"
-		/>
-		<field 
-			name="enableEnglish" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_ADMIN_CFG_ENABLE_ENGLISH_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_ENABLE_ENGLISH"
-			default="1"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field 
-			name="shop_emails" 
-			type="note" label="COM_VIRTUEMART_ADMIN_CFG_SHOP_EMAILS"
-		/>
-		<field 
-			name="order_mail_html" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_ADMIN_CFG_MAIL_FORMAT_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_MAIL_FORMAT"
-			default="1"
-		>
-			<option value="0">COM_VIRTUEMART_ADMIN_CFG_MAIL_FORMAT_TEXT</option>
-			<option value="1">COM_VIRTUEMART_ADMIN_CFG_MAIL_FORMAT_HTML</option>
-		</field>
-		<field 
-			name="useVendorEmail" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_ADMIN_CFG_MAIL_USEVENDOR_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_MAIL_USEVENDOR"
+		<field
+			name="category_add"
+			type="radio"
 			default="0"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+			label="JACTION_CREATE">
+			<option
+				value="0">JNO</option>
+			<option
+				value="1">JYES</option>
 		</field>
-		<field 
-			name="shop_advanced" 
-			type="note" label="COM_VIRTUEMART_ADMIN_CFG_SHOP_ADVANCED"
-		/>
-		<field 
-			name="debug_enable" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_ADMIN_CFG_ENABLE_DEBUG_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_ENABLE_DEBUG"
-			default="none"
-		>
-			<option value="none">COM_VIRTUEMART_ADMIN_CFG_ENABLE_DEBUG_NONE</option>
-			<option value="admin">COM_VIRTUEMART_ADMIN_CFG_ENABLE_DEBUG_ADMIN</option>
-			<option value="all">COM_VIRTUEMART_ADMIN_CFG_ENABLE_DEBUG_ALL</option>
+
+		<field
+			name="manufacturer"
+			type="spacer"
+			class="star gi"
+			label="COM_VIRTUEMART_MANUFACTURER_S"/>
+		<field
+			name="manufacturer_spacer"
+			type="spacer"
+			hr="true"/>
+		<field
+			name="manufacturer_edit"
+			type="radio"
+			default="0"
+			label="JACTION_EDITOWN">
+			<option
+				value="0">JNO</option>
+			<option
+				value="1">JYES</option>
+		</field>
+		<field
+			name="manufacturer_add"
+			type="radio"
+			default="0"
+			label="JACTION_CREATE">
+			<option
+				value="0">JNO</option>
+			<option
+				value="1">JYES</option>
+		</field>
+
+		<field
+			name="media"
+			type="spacer"
+			class="star gi"
+			label="COM_VIRTUEMART_MEDIA_S"/>
+		<field
+			name="media_spacer"
+			type="spacer"
+			hr="true"/>
+		<field
+			name="media_edit"
+			type="radio"
+			default="0"
+			label="JACTION_EDITOWN">
+			<option
+				value="0">JNO</option>
+			<option
+				value="1">JYES</option>
+		</field>
+		<field
+			name="media_add"
+			type="radio"
+			default="0"
+			label="JACTION_CREATE">
+			<option
+				value="0">JNO</option>
+			<option
+				value="1">JYES</option>
 		</field>
 	</fieldset>
-	
-	<fieldset
-		name="shopfront"
-		label="COM_VIRTUEMART_ADMIN_CFG_SHOPFRONTTAB">
-
-		<field 
-			name="more_core_settings" 
-			type="note" label="COM_VIRTUEMART_ADMIN_CFG_MORE_CORE_SETTINGS"
-		/>
-		<field 
-			name="show_emailfriend" 
-			type="radio" 
-			class="btn-group"
-			label="COM_VIRTUEMART_ADMIN_SHOW_EMAILFRIEND"
-			description="COM_VIRTUEMART_ADMIN_SHOW_EMAILFRIEND_TIP"
-			default="1"
-		>
-			<option value="0">JYES</option>
-			<option value="1">JNO</option>
-		</field>
-		
-		<field 
-			name="show_printicon" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_ADMIN_SHOW_PRINTICON_TIP"
-			label="COM_VIRTUEMART_ADMIN_SHOW_PRINTICON"
-			default="1"
-		>
-			<option value="0">JYES</option>
-			<option value="1">JNO</option>
-		</field>
-		<field 
-			name="pdf_icon" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_PDF_ICON_SHOW_EXPLAIN"
-			label="COM_VIRTUEMART_PDF_ICON_SHOW"
-			default="1"
-		>
-			<option value="0">JYES</option>
-			<option value="1">JNO</option>
-		</field>		<field 
-			name="ask_question" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_ASK_QUESTION_SHOW_EXPLAIN"
-			label="COM_VIRTUEMART_ASK_QUESTION_SHOW"
-			default="1"
-		>
-			<option value="0">JYES</option>
-			<option value="1">JNO</option>
-		</field>
-		<field
-			name="asks_minimum_comment_length"
-			type="text"
-			default="50"
-			filter="integer"
-			label="COM_VIRTUEMART_ASK_QUESTION_MIN_LENGTH"
-			description="COM_VIRTUEMART_ASK_QUESTION_MIN_LENGTH_EXPLAIN">
-		</field>
-		<field
-			name="asks_maximum_comment_length"
-			type="text"
-			default="2000"
-			filter="integer"
-			label="COM_VIRTUEMART_ASK_QUESTION_MAX_LENGTH"
-			description="COM_VIRTUEMART_ASK_QUESTION_MAX_LENGTH_EXPLAIN">
-		</field>
-		<field 
-			name="product_navigation" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_PRODUCT_NAVIGATION_SHOW_EXPLAIN"
-			label="COM_VIRTUEMART_PRODUCT_NAVIGATION_SHOW"
-			default="0"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field 
-			name="recommend_unauth" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_RECCOMEND_UNATUH_EXPLAIN"
-			label="COM_VIRTUEMART_RECCOMEND_UNATUH"
-			default="0"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field
-			name="list_limit"
-			type="text"
-			default="10"
-			filter="integer"
-			label="COM_VIRTUEMART_LIST_LIMIT"
-			description="COM_VIRTUEMART_LIST_LIMIT_EXPLAIN">
-		</field>
-
-		<field 
-			name="display_stock" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_DISPLAY_STOCK_EXPLAIN"
-			label="COM_VIRTUEMART_DISPLAY_STOCK"
-			default="0"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field 
-			name="coupons_enable" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_COUPONS_ENABLE_EXPLAIN"
-			label="COM_VIRTUEMART_COUPONS_ENABLE"
-			default="0"
-		>
-			<option value="0">JDISABLED</option>
-			<option value="1">JENABLED</option>
-		</field>
-		<field 
-			name="show_uncat_child_products" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_UNCAT_CHILD_PRODUCTS_SHOW_EXPLAIN"
-			label="COM_VIRTUEMART_UNCAT_CHILD_PRODUCTS_SHOW"
-			default="0"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field 
-			name="coupons_default_expire" 
-			type="couponExpire"
-			description="COM_VIRTUEMART_COUPONS_EXPIRE_EXPLAIN"
-			label="COM_VIRTUEMART_COUPONS_EXPIRE"
-			default="1,D"
-		>
-		</field>
-		<field 
-			name="weight_unit_default" 
-			type="WeightUnit"
-			description="COM_VIRTUEMART_WEIGHT_UNIT_DEFAULT_EXPLAIN"
-			label="COM_VIRTUEMART_WEIGHT_UNIT_DEFAULT"
-			default="1,D"
-		>
-		</field>
-		<field 
-			name="lwh_unit_default" 
-			type="lwhUnit"
-			description="COM_VIRTUEMART_LWH_UNIT_DEFAULT_EXPLAIN"
-			label="COM_VIRTUEMART_LWH_UNIT_DEFAULT"
-			default="M"
-		>
-		</field>
-
-		<field
-			name="latest_products_days"
-			type="text"
-			default="7"
-			filter="integer"
-			label="COM_VIRTUEMART_LATEST_PRODUCTS_DAYS"
-			description="COM_VIRTUEMART_LATEST_PRODUCTS_DAYS_EXPLAIN">
-		</field>
-		<field 
-			name="latest_products_orderBy" 
-			type="list" 
-			
-			description="COM_VIRTUEMART_LATEST_PRODUCTS_ORDERBY_EXPLAIN"
-			label="COM_VIRTUEMART_LATEST_PRODUCTS_ORDERBY"
-			default="modified_on"
-		>
-			<option value="modified_on">COM_VIRTUEMART_LATEST_PRODUCTS_ORDERBY_MODIFIED</option>
-			<option value="created_on">COM_VIRTUEMART_LATEST_PRODUCTS_ORDERBY_CREATED</option>
-		</field>
-
-		<field 
-			name="lstockmail" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY_TIP"
-			label="COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY"
-			default="0"
-		>
-			<option value="0">JDISABLED</option>
-			<option value="1">JENABLED</option>
-		</field>
-		<field 
-			name="stockhandle" 
-			type="list" 
-			label="COM_VIRTUEMART_CFG_POOS_ENABLE"
-			description="COM_VIRTUEMART_CFG_POOS_ENABLE_EXPLAIN"
-			default="none"
-		>
-			<option value="none">COM_VIRTUEMART_ADMIN_CFG_POOS_NONE</option>
-			<option value="disableit">COM_VIRTUEMART_ADMIN_CFG_POOS_DISABLE_IT</option>
-			<option value="disableit_children">COM_VIRTUEMART_ADMIN_CFG_POOS_DISABLE_IT_CHILDREN</option>
-			<option value="disableadd">COM_VIRTUEMART_ADMIN_CFG_POOS_DISABLE_ADD</option>
-			<option value="risetime">COM_VIRTUEMART_ADMIN_CFG_POOS_RISE_AVATIME</option>
-		</field>
-		<!-- Not well implemented TODO-->
-		<field
-			name="rised_availability"
-			type="imagelist"
-			directory="/components/com_virtuemart/assets/images/availability/"
-			
-			hide_none="1"
-			label="COM_VIRTUEMART_AVAILABILITY"
-			description="COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP1">
-		</field>
-		<field 
-			name="review_title" 
-			type="note" label="COM_VIRTUEMART_ADMIN_CFG_REVIEW_TITLE"
-		/>
-
-		<field 
-			name="reviews_autopublish" 
-			type="radio" 
-			class="btn-group"
-			description="COM_VIRTUEMART_REVIEWS_AUTOPUBLISH_TIP"
-			label="COM_VIRTUEMART_REVIEWS_AUTOPUBLISH"
-			default="0"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field
-			name="reviews_minimum_comment_length"
-			type="text"
-			default="50"
-			filter="integer"
-			label="COM_VIRTUEMART_ADMIN_CFG_REVIEW_MINIMUM_COMMENT_LENGTH"
-			description="COM_VIRTUEMART_ADMIN_CFG_REVIEW_MINIMUM_COMMENT_LENGTH_TIP">
-		</field>
-		<field
-			name="reviews_maximum_comment_length"
-			type="text"
-			default="50"
-			filter="integer"
-			label="COM_VIRTUEMART_ADMIN_CFG_REVIEW_MAXIMUM_COMMENT_LENGTH"
-			description="COM_VIRTUEMART_ADMIN_CFG_REVIEW_MAXIMUM_COMMENT_LENGTH_TIP">
-		</field>
-		<field 
-			name="showReviewFor" 
-			type="list" 
-			description="COM_VIRTUEMART_ADMIN_CFG_REVIEW_SHOW_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_REVIEW_SHOW"
-			default="none"
-		>
-			<option value="none">COM_VIRTUEMART_ADMIN_CFG_REVIEW_SHOW_NONE</option>
-			<option value="registered">COM_VIRTUEMART_ADMIN_CFG_REVIEW_SHOW_REGISTERED</option>
-			<option value="all">COM_VIRTUEMART_ADMIN_CFG_REVIEW_SHOW_ALL</option>
-		</field>
-		<field 
-			name="reviewMode" 
-			type="list" 
-			description="COM_VIRTUEMART_ADMIN_CFG_REVIEW_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_REVIEW"
-			default="none"
-		>
-			<option value="none">COM_VIRTUEMART_ADMIN_CFG_REVIEW_MODE_NONE</option>
-			<option value="bought">COM_VIRTUEMART_ADMIN_CFG_REVIEW_MODE_BOUGHT_PRODUCT</option>
-			<option value="registered">COM_VIRTUEMART_ADMIN_CFG_REVIEW_MODE_REGISTERED</option>
-		</field>
-		<field 
-			name="showRatingFor" 
-			type="list" 
-			description="COM_VIRTUEMART_ADMIN_CFG_RATING_SHOW_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_RATING_SHOW"
-			default="none"
-		>
-			<option value="none">COM_VIRTUEMART_ADMIN_CFG_RATING_SHOW_NONE</option>
-			<option value="registered">COM_VIRTUEMART_ADMIN_CFG_RATING_SHOW_REGISTERED</option>
-			<option value="all">COM_VIRTUEMART_ADMIN_CFG_RATING_SHOW_ALL</option>
-		</field>
-		<field 
-			name="ratingMode" 
-			type="list" 
-			description="COM_VIRTUEMART_ADMIN_CFG_RATING_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_RATING"
-			default="none"
-		>
-			<option value="none">COM_VIRTUEMART_ADMIN_CFG_REVIEW_MODE_NONE</option>
-			<option value="bought">COM_VIRTUEMART_ADMIN_CFG_REVIEW_MODE_BOUGHT_PRODUCT</option>
-			<option value="registered">COM_VIRTUEMART_ADMIN_CFG_REVIEW_MODE_REGISTERED</option>
-		</field>
-		
-	</fieldset>	
-<!-- TODO templates-->
-	<fieldset
-		name="templates"
-		label="COM_VIRTUEMART_ADMIN_CFG_TEMPLATESTAB"
-		description="COM_TAGS_CONFIG_ALL_TAGS_SETTINGS_DESC">
-
-		<field
-			name="tags_layout" 
-			type="componentlayout"
-			label="COM_TAGS_CONFIG_ALL_TAGS_FIELD_LAYOUT_LABEL"
-			description="COM_TAGS_CONFIG_ALL_TAGS_FIELD_LAYOUT_DESC"
-			menuitems="true"
-			extension="com_tags"
-			view="tags"
-		/>
-
-		<field 
-			name="all_tags_orderby"
-			type="list"
-			default="title"
-			label="JGLOBAL_FIELD_FIELD_ORDERING_LABEL"
-			description="JGLOBAL_FIELD_FIELD_ORDERING_DESC"
-		>
-				<option value="title">JGLOBAL_TITLE</option>
-				<option value="hits">JGLOBAL_HITS</option>
-				<option value="created_time">JGLOBAL_CREATED_DATE</option>
-				<option value="modified_time">JGLOBAL_MODIFIED_DATE</option>
-				<option value="publish_up">JGLOBAL_PUBLISHED_DATE</option>
-		</field>
-
-		<field 
-			name="all_tags_orderby_direction" 
-			type="radio" 
-			class="btn-group"
-			description="JGLOBAL_ORDER_DIRECTION_DESC"
-			label="JGLOBAL_ORDER_DIRECTION_LABEL"
-			default="ASC"
-		>
-			<option value="ASC">JGLOBAL_ORDER_ASCENDING</option>
-			<option value="DESC">JGLOBAL_ORDER_DESCENDING</option>
-		</field>
-
-		<field 
-			name="all_tags_show_tag_image" 
-			type="radio" 
-			class="btn-group"
-			description="COM_TAGS_SHOW_ITEM_IMAGE_DESC"
-			label="COM_TAGS_SHOW_ITEM_IMAGE_LABEL"
-			default="1"
-		>
-			<option value="0">JHIDE</option>
-			<option value="1">JSHOW</option>
-		</field>
-
-		<field 
-			name="all_tags_show_tag_descripion" 
-			type="radio" 
-			class="btn-group"
-			description="COM_TAGS_SHOW_ITEM_DESCRIPTION_DESC"
-			label="COM_TAGS_SHOW_ITEM_DESCRIPTION_LABEL"
-			default="1"
-		>
-			<option value="0">JHIDE</option>
-			<option value="1">JSHOW</option>
-		</field>
-		
-		<field
-			name="all_tags_tag_maximum_characters"
-			type="text"
-			filter="integer"
-			label="COM_TAGS_LIST_MAX_CHARACTERS_LABEL"
-			description="COM_TAGS_LIST_MAX_CHARACTERS_DESC"
-		/>
-		
-		<field 
-			name="all_tags_show_tag_hits" 
-			type="radio" 
-			class="btn-group"
-			description="COM_TAGS_FIELD_CONFIG_HITS_DESC"
-			label="JGLOBAL_HITS"
-			default="0"
-		>
-			<option value="0">JHIDE</option>
-			<option value="1">JSHOW</option>
-		</field>
-
-	</fieldset>
-		<fieldset
-		name="pricing"
-		label="COM_VIRTUEMART_ADMIN_CFG_PRICINGTAB">
-		<field 
-			name="price_configuration" 
-			type="note" label="COM_VIRTUEMART_ADMIN_CFG_PRICE_CONFIGURATION"
-		/>
-		
-		<field
-			name="show_tax"
-			type="radio"
-			class="btn-group"
-			default="1"
-			description="COM_VIRTUEMART_ADMIN_CFG_PRICE_SHOW_TAX_TIP"
-			label="COM_VIRTUEMART_ADMIN_CFG_PRICE_SHOW_TAX"
-			>
-				<option value="0">JHIDE</option>
-				<option value="1">JSHOW</option>
-		</field>
-
-		<field
-			name="askprice"
-			type="radio"
-			class="btn-group"
-			default="0"
-			description="COM_VIRTUEMART_ADMIN_CFG_PRICE_ASKPRICE_TIP"
-			label="COM_VIRTUEMART_ADMIN_CFG_PRICE_ASKPRICE"
-			>
-				<option value="0">JDISABLED</option>
-				<option value="1">JENABLED</option>
-		</field>
-		<field
-			name="rappenrundung"
-			type="radio"
-			class="btn-group"
-			default="0"
-			description="COM_VIRTUEMART_ADMIN_CFG_PRICE_RAPPENRUNDUNG_TIP"
-			label="COM_VIRTUEMART_ADMIN_CFG_PRICE_RAPPENRUNDUNG"
-			>
-				<option value="0">JDISABLED</option>
-				<option value="1">JENABLED</option>
-		</field>
-		<field
-			name="roundindig"
-			type="radio"
-			class="btn-group"
-			default="0"
-			description="COM_VIRTUEMART_ADMIN_CFG_PRICE_ROUNDINDIG_TIP"
-			label="COM_VIRTUEMART_ADMIN_CFG_PRICE_ROUNDINDIG"
-			>
-				<option value="0">JDISABLED</option>
-				<option value="1">JENABLED</option>
-		</field>
-		<field
-			name="cVarswT"
-			type="radio"
-			class="btn-group"
-			default="0"
-			
-			label="COM_VIRTUEMART_ADMIN_CFG_PRICE_CVARSWT"
-			><!-- description="COM_VIRTUEMART_ADMIN_CFG_PRICE_CVARSWT_TIP" -->
-				<option value="0">JDISABLED</option>
-				<option value="1">JENABLED</option>
-		</field>
-
-		<field 
-			name="show_prices" 
-			type="radio"
-			default="1"
-			class="btn-group"
-			description="COM_VIRTUEMART_ADMIN_CFG_SHOW_PRICES_EXPLAIN"
-			label="COM_VIRTUEMART_ADMIN_CFG_SHOW_PRICES"
-		>
-			<option value="0">JHIDE</option>
-			<option value="1">JSHOW</option>
-		</field>
-		
-		<field 
-			name="show_pagination" 
-			type="list"
-			default="2"
-			description="JGLOBAL_PAGINATION_DESC"
-			label="JGLOBAL_PAGINATION_LABEL"
-		>
-			<option value="0">JHIDE</option>
-			<option value="1">JSHOW</option>
-			<option value="2">JGLOBAL_AUTO</option>
-		</field>
-
-		<field
-			name="show_pagination_results"
-			type="radio"
-			class="btn-group"
-			default="1"
-			label="JGLOBAL_PAGINATION_RESULTS_LABEL"
-			description="JGLOBAL_PAGINATION_RESULTS_DESC"
-		>
-			<option value="0">JHIDE</option>
-			<option value="1">JSHOW</option>
-		</field>
-		
-	</fieldset>
-	
-	<fieldset
-		name="checkout"
-		label="COM_VIRTUEMART_ADMIN_CFG_CHECKOUTTAB"
-		description="COM_TAGS_CONFIG_DATA_ENTRY_SETTINGS_DESC">
-		
-		<field 
-			name="tag_field_ajax_mode" 
-			type="radio" 
-			class="btn-group"
-			description="COM_TAGS_TAG_FIELD_MODE_DESC"
-			label="COM_TAGS_TAG_FIELD_MODE_LABEL"
-			default="1"
-		>
-			<option value="1">COM_TAGS_TAG_FIELD_MODE_AJAX</option>
-			<option value="0">COM_TAGS_TAG_FIELD_MODE_NESTED</option>
-		</field>
-		
-	
-		
-	</fieldset>
-	
-	<fieldset 
-		name="product_order"
-		label="COM_VIRTUEMART_ADMIN_CFG_PRODUCTORDERTAB"
-		description="COM_TAGS_CONFIG_INTEGRATION_SETTINGS_DESC"
-	>
-
-		<field
-			name="show_feed_link"
-			type="radio"
-			class="btn-group"
-			default="1"
-			label="JGLOBAL_SHOW_FEED_LINK_LABEL"
-			description="JGLOBAL_SHOW_FEED_LINK_DESC">
-				<option value="0">JHIDE</option>
-				<option value="1">JSHOW</option>
-		</field>
-
-	</fieldset>	
-	<fieldset 
-		name="sef"
-		label="COM_VIRTUEMART_ADMIN_CFG_SEF"
-		description="COM_TAGS_CONFIG_INTEGRATION_SETTINGS_DESC"
-	>
-
-		<field
-			name="show_feed_link"
-			type="radio"
-			class="btn-group"
-			default="1"
-			label="JGLOBAL_SHOW_FEED_LINK_LABEL"
-			description="JGLOBAL_SHOW_FEED_LINK_DESC">
-				<option value="0">JHIDE</option>
-				<option value="1">JSHOW</option>
-		</field>
-
-	</fieldset>
-
-	<fieldset
-		name="permissions"
-		label="JCONFIG_PERMISSIONS_LABEL"
-		description="JCONFIG_PERMISSIONS_DESC"
-		>
-
+	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC">
 		<field
 			name="rules"
 			type="rules"
 			label="JCONFIG_PERMISSIONS_LABEL"
-			filter="rules"
+			class="inputbox"
 			validate="rules"
+			filter="rules"
 			component="com_virtuemart"
-			section="component" />
+			section="component"
+		/>
 	</fieldset>
 </config>

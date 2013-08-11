@@ -34,7 +34,6 @@ class VirtuemartViewProduct extends VmView {
 		// Get the task
 		$this->task = JRequest::getWord('task',$this->getLayout());
 
-		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
 		// Load helpers
 		$this->loadHelper('currencydisplay');
 		$this->loadHelper('html');
@@ -75,8 +74,6 @@ class VirtuemartViewProduct extends VmView {
 				break;
 
 			default:
-				//Template path and helper fix for Front-end editing
-				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'product'.DS.'tmpl');
 			if ($product_parent_id=JRequest::getInt('product_parent_id',false) ) {
 				$product_parent= $model->getProductSingle($product_parent_id,false);
 
@@ -110,13 +107,15 @@ class VirtuemartViewProduct extends VmView {
 			$this->category_tree = ShopFunctions::categoryListTree(array($categoryId));
 
 			/* Load the product price */
-			if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'calculationh.php');
+			$this->loadHelper('calculationh');
 
 			$vendor_model = VmModel::getModel('vendor');
 			$productreviews = VmModel::getModel('ratings');
 
 			foreach ($productlist as $virtuemart_product_id => $product) {
-				$product->mediaitems = count($product->virtuemart_media_id);
+				if (isset($product->virtuemart_media_id) )
+					$product->mediaitems = count($product->virtuemart_media_id);
+				else $product->mediaitems = 'none';
 				$product->reviews = $productreviews->countReviewsForProduct($product->virtuemart_product_id);
 
 				$vendor_model->setId($product->virtuemart_vendor_id);
