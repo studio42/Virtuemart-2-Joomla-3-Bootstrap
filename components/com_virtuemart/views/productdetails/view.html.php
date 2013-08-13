@@ -128,24 +128,22 @@ class VirtueMartViewProductdetails extends VmView {
 	   $dispatcher = & JDispatcher::getInstance();
 	   JPluginHelper::importPlugin('content');
 	   $product->text = $product->product_desc;
-		jimport( 'joomla.html.parameter' );
-		$params = new JParameter('');
+		// jimport( 'joomla.html.parameter' );
+		// $params = new JParameter('');
+		$params = new JRegistry;
+		$product->event = new stdClass;
+		$results = $dispatcher->trigger('onContentPrepare', array('com_virtuemart.productdetails', &$product, &$params, 0));
+		// More events for 3rd party content plugins
+		// This do not disturb actual plugins, because we don't modify $product->text
+		$res = $dispatcher->trigger('onContentAfterTitle', array('com_virtuemart.productdetails', &$product, &$params, 0));
+		$product->event->afterDisplayTitle = trim(implode("\n", $res));
 
- 		if(JVM_VERSION === 2 ) {
-			$results = $dispatcher->trigger('onContentPrepare', array('com_virtuemart.productdetails', &$product, &$params, 0));
-			// More events for 3rd party content plugins
-			// This do not disturb actual plugins, because we don't modify $product->text
-			$res = $dispatcher->trigger('onContentAfterTitle', array('com_virtuemart.productdetails', &$product, &$params, 0));
-			$product->event->afterDisplayTitle = trim(implode("\n", $res));
+		$res = $dispatcher->trigger('onContentBeforeDisplay', array('com_virtuemart.productdetails', &$product, &$params, 0));
+		$product->event->beforeDisplayContent = trim(implode("\n", $res));
 
-			$res = $dispatcher->trigger('onContentBeforeDisplay', array('com_virtuemart.productdetails', &$product, &$params, 0));
-			$product->event->beforeDisplayContent = trim(implode("\n", $res));
+		$res = $dispatcher->trigger('onContentAfterDisplay', array('com_virtuemart.productdetails', &$product, &$params, 0));
+		$product->event->afterDisplayContent = trim(implode("\n", $res));
 
-			$res = $dispatcher->trigger('onContentAfterDisplay', array('com_virtuemart.productdetails', &$product, &$params, 0));
-			$product->event->afterDisplayContent = trim(implode("\n", $res));
-		} else {
-			$results = $dispatcher->trigger('onPrepareContent', array(& $product, & $params, 0));
-		}
 		$product->product_desc = $product->text;
 	}
 
