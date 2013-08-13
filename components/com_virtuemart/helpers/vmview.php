@@ -37,6 +37,28 @@ class VmView extends JViewLegacy{
 		if ($modal) return '<a class="modal" rel="{handler: \'iframe\', size: {x: 700, y: 550}}" title="'. JText::_($altText).'" href="'.JRoute::_($link).'">'.$text.'</a>';
 		else 		return '<a title="'. JText::_($altText).'" href="'.JRoute::_($link, FALSE).'">'.$text.'</a>';
 	}
+	// display edit link if the user have the rights.
+	function editLink($view,$id,$created_by) {
+		static $user_id = null;
+		static $vendor = null;
+		static $isAdmin = null;
+		static $canEdit = null;
+		if ($vendor === null) {
+			if (!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
+			$vendor = Permissions::getInstance()->isSuperVendor();
+			$user_id = JFactory::getUser()->get('id');
+			$isAdmin = Permissions::getInstance()->check("admin,storeadmin");
+			$params = JComponentHelper::getParams('com_virtuemart', true);
+			$canEdit = $params->get($view.'_edit');
+		}
+		if (!$vendor) return '';
+		if ( $vendor > 1) {
+			if (!$canEdit || ($created_by !== $user_id) )  return '';
+		}
+
+	    $edit_link = JURI::root() . 'index.php?option=com_virtuemart&tmpl=component&view='.$view.'&task=edit&virtuemart_'.$view.'_id='.$id ;
+	    return $this->linkIcon($edit_link, 'COM_VIRTUEMART_PRODUCT_FORM_EDIT_PRODUCT', 'edit', false, false);	
+	}
 
 	public function escape($var)
 	{

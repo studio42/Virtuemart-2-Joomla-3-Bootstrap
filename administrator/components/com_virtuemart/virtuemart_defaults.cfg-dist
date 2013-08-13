@@ -24,9 +24,10 @@ order_mail_html=1
 useSSL=0
 dangeroustools=0
 debug_enable=none
-google_jquery=1
+google_jquery=0
 multix=none
-
+usefancy=1
+jchosen=1
 
 ##Shopfront
 pdf_button_enable=1
@@ -55,12 +56,18 @@ productlayout=0
 products_per_row=3
 
 vmlayout=0
+show_store_desc=1
+show_categories=1
+homepage_categories_per_row=3
+homepage_products_per_row=3
     show_featured=1
-    featured_products_per_row=3
+featured_products_rows=1
     show_topTen=1
-    topten_products_per_row=3
+topTen_products_rows=1
     show_recent=1
+recent_products_rows=1
     show_latest=1
+latest_products_rows=1
 
 ##Paths
     assets_general_path=components/com_virtuemart/assets/
@@ -128,6 +135,9 @@ browse_search_fields=array:product_sku|category_name|category_description|mf_nam
     oncheckout_show_register=1
     oncheckout_show_steps=0
     oncheckout_show_register_text=COM_VIRTUEMART_ONCHECKOUT_DEFAULT_TEXT_REGISTER
+inv_os=C
+email_os_s=array:U|C|X|R|S
+email_os_v=array:U|C|X|R
 
 ##SEO
     seo_disabled=0

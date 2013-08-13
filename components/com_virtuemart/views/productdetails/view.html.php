@@ -247,26 +247,7 @@ class VirtueMartViewProductdetails extends VmView {
 	$this->assignRef('allowRating', $allowRating);
 
 	// Check for editing access
-	// @todo build edit page
-	if (!class_exists('Permissions'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
-	//if (Permissions::getInstance()->check("admin,storeadmin")) {
-	$perm = Permissions::getInstance();
-	$admin = $perm->check("admin");
-	    if(!$admin) vmdebug('No admin');
-
-	$storeadmin = $perm->check("admin,storeadmin");
-	if(!$storeadmin) vmdebug('No $storeadmin');
-
-	$superVendor = $perm->isSuperVendor();
-	if(!$superVendor) vmdebug('No $superVendor');
-
-	if($admin or ($perm->isSuperVendor()==$product->virtuemart_vendor_id and $storeadmin)){
-	    $edit_link = JURI::root() . 'index.php?option=com_virtuemart&tmpl=component&view=product&task=edit&virtuemart_product_id=' . $product->virtuemart_product_id;
-	    $edit_link = $this->linkIcon($edit_link, 'COM_VIRTUEMART_PRODUCT_FORM_EDIT_PRODUCT', 'edit', false, false);
-	} else {
-	    $edit_link = "";
-	}
+    $edit_link = $this->editLink('product',$product->virtuemart_product_id,$product->created_by);
 	$this->assignRef('edit_link', $edit_link);
 
 	// todo: atm same form for "call for price" and "ask a question". Title of the form should be different

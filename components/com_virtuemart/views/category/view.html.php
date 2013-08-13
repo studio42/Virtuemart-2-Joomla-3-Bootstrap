@@ -174,27 +174,25 @@ class VirtuemartViewCategory extends VmView {
 				// add content plugin //
 				$dispatcher = JDispatcher::getInstance();
 				JPluginHelper::importPlugin('content');
+				$params = new JRegistry;
+				$category->event = new stdClass;
+				$category->catid = $category->virtuemart_category_id;
+				$category->id = null;
+				$category->title = $category->category_name;
 				$category->text = $category->category_description;
-				if(!class_exists('JParameter')) require(JPATH_LIBRARIES.DS.'joomla'.DS.'html'.DS.'parameter.php');
+				$results = $dispatcher->trigger('onContentPrepare', array('com_virtuemart.category', &$category, &$params, 0));
+				// More events for 3rd party content plugins
+				// This do not disturb actual plugins, because we don't modify $product->text
+				$res = $dispatcher->trigger('onContentAfterTitle', array('com_virtuemart.category', &$category, &$params, 0));
+				$category->event->afterDisplayTitle = trim(implode("\n", $res));
 
-				$params = new JParameter('');
+				$res = $dispatcher->trigger('onContentBeforeDisplay', array('com_virtuemart.category', &$category, &$params, 0));
+				$category->event->beforeDisplayContent = trim(implode("\n", $res));
 
-				if(JVM_VERSION === 2 ) {
-					$results = $dispatcher->trigger('onContentPrepare', array('com_virtuemart.category', &$category, &$params, 0));
-					// More events for 3rd party content plugins
-					// This do not disturb actual plugins, because we don't modify $product->text
-					$res = $dispatcher->trigger('onContentAfterTitle', array('com_virtuemart.category', &$category, &$params, 0));
-					$category->event->afterDisplayTitle = trim(implode("\n", $res));
-
-					$res = $dispatcher->trigger('onContentBeforeDisplay', array('com_virtuemart.category', &$category, &$params, 0));
-					$category->event->beforeDisplayContent = trim(implode("\n", $res));
-
-					$res = $dispatcher->trigger('onContentAfterDisplay', array('com_virtuemart.category', &$category, &$params, 0));
-					$category->event->afterDisplayContent = trim(implode("\n", $res));
-				} else {
-					$results = $dispatcher->trigger('onPrepareContent', array(& $category, & $params, 0));
-				}
+				$res = $dispatcher->trigger('onContentAfterDisplay', array('com_virtuemart.category', &$category, &$params, 0));
+				$category->event->afterDisplayContent = trim(implode("\n", $res));
 				$category->category_description = $category->text;
+				$category->category_name = $category->title;
 			}
 
 
