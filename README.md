@@ -11,6 +11,8 @@ New features
 
 Include now a **front-End administrator menu**
 
+Enhanced **multi-vendor**
+
 In shop **direct** edit link for products,categories and manufacturers.(more to come soon)
 
 All is converted to **Bootstrap**
