@@ -27,25 +27,25 @@ if ($admin) require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'liveupdate'.DS.'liveu
 <div class="well well-small hidden-phone">
 	<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_CONTROL_PANEL') ?></div>
 	<div class="row-striped">
-		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=product&task=add'), 'vmicon vmicon-16-editadd icon-nofloat', JText::_('COM_VIRTUEMART_PRODUCT').'<small>('.JText::_('COM_VIRTUEMART_ADD').')</small>'); ?>
+		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=product&task=add'), 'vmicon vmicon-16-editadd icon-nofloat', JText::_('COM_VIRTUEMART_PRODUCT').'<small>('.JText::_('COM_VIRTUEMART_ADD').')</small>'); ?>
 		</div>
-		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=product'), 'vmicon vmicon-16-camera icon-nofloat', JText::_('COM_VIRTUEMART_PRODUCT_S')); ?>
+		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=product'), 'vmicon vmicon-16-camera icon-nofloat', JText::_('COM_VIRTUEMART_PRODUCT_S')); ?>
 		</div>
-		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=category'), 'vmicon vmicon-16-folder_camera icon-nofloat', JText::_('COM_VIRTUEMART_CATEGORY_S')); ?>
+		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=category'), 'vmicon vmicon-16-folder_camera icon-nofloat', JText::_('COM_VIRTUEMART_CATEGORY_S')); ?>
 		</div>
-		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=orders'), 'vmicon vmicon-16-page_white_stack icon-nofloat', JText::_('COM_VIRTUEMART_ORDER_S')); ?>
+		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=orders'), 'vmicon vmicon-16-page_white_stack icon-nofloat', JText::_('COM_VIRTUEMART_ORDER_S')); ?>
 		</div>
-		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=paymentmethod'), 'vmicon vmicon-16-creditcards icon-nofloat', JText::_('COM_VIRTUEMART_PAYMENTMETHOD_S')); ?>
+		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=paymentmethod'), 'vmicon vmicon-16-creditcards icon-nofloat', JText::_('COM_VIRTUEMART_PAYMENTMETHOD_S')); ?>
 		</div>
-		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=user'), 'vmicon vmicon-16-user icon-nofloat', JText::_('COM_VIRTUEMART_USER_S')); ?>
+		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=user'), 'vmicon vmicon-16-user icon-nofloat', JText::_('COM_VIRTUEMART_USER_S')); ?>
 		</div>
 		<?php if ($admin) { ?>
-			<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=config'), 'icon-cog', JText::_('COM_VIRTUEMART_CONFIG')); ?>
+			<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=config'), 'icon-cog', JText::_('COM_VIRTUEMART_CONFIG')); ?>
 			</div>
 		<?php } ?>
-		<div class="row-fluid"><?php VmImage::displayImageButton(JROUTE::_('index.php?option=com_virtuemart&view=user&task=editshop'), 'vmicon vmicon-16-reseller_account_template icon-nofloat', JText::_('COM_VIRTUEMART_STORE')); ?>
+		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=user&task=editshop'), 'vmicon vmicon-16-reseller_account_template icon-nofloat', JText::_('COM_VIRTUEMART_STORE')); ?>
 		</div>
-		<div class="row-fluid"><?php VmImage::displayImageButton('http://http://docs.virtuemart.net/', 'icon-question-sign', JText::_('COM_VIRTUEMART_DOCUMENTATION')); ?>
+		<div class="row-fluid"><?php $this->panelButton('http://docs.virtuemart.net/', 'icon-question-sign', JText::_('COM_VIRTUEMART_DOCUMENTATION')); ?>
 		</div>
 	</div>
 

@@ -63,8 +63,8 @@ $search_type = JRequest::getVar('search_type', 'product');
     <!--
 <?php 
 	$jsons = array (
-			0	=> array(JText::_('COM_VIRTUEMART_DISABLED'),JText::_('COM_VIRTUEMART_ENABLE_ITEM') ),
-			1	=> array(JText::_('COM_VIRTUEMART_FEATURED'),JText::_('COM_VIRTUEMART_DISABLE_ITEM') )
+			1	=> array(JText::_('COM_VIRTUEMART_DISABLED'),JText::_('COM_VIRTUEMART_ENABLE_ITEM') ),
+			0	=> array(JText::_('COM_VIRTUEMART_FEATURED'),JText::_('COM_VIRTUEMART_DISABLE_ITEM') )
 		);
 ?>
 	Joomla.featuredJson = function(el, id) {
@@ -79,7 +79,7 @@ $search_type = JRequest::getVar('search_type', 'product');
 			url = form.attr('action'),
 			val = task.charAt( task.length-1 ),
 			valNew = 0;
-		console.log(text);
+		//console.log(text);
 		//get the toggle value
 		if (val == 0 ) valNew = 1;
 		if (cb) {

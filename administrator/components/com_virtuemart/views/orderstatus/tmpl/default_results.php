@@ -51,7 +51,8 @@ defined('_JEXEC') or die();
         $vmCoreStatusCode= $this->lists['vmCoreStatusCode'];
 		for ($i = 0, $n = count($this->orderStatusList); $i < $n; $i++) {
 			$row = $this->orderStatusList[$i];
-			$published = $this->toggle( $row->published, $i, 'published');
+			$canDo = $this->canChange($row->created_by);
+			$published = $this->toggle( $row->published, $i, 'published',$canDo);
 			$checked = JHTML::_('grid.id', $i, $row->virtuemart_orderstate_id);
 			$coreStatus = (in_array($row->order_status_code, $this->lists['vmCoreStatusCode']));
 			$checked = ($coreStatus) ?

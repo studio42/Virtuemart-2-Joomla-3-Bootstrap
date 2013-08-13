@@ -340,10 +340,10 @@ class VmView extends JViewLegacy{
 			$action = $field ? JText::_('COM_VIRTUEMART_DISABLE_ITEM') : JText::_('COM_VIRTUEMART_ENABLE_ITEM');
 		}
 		if ($cando) {
-			return ('<a class="hasTooltip" data-task="'. $task .'" href="#" onclick="return Joomla.taskJson(this, \'cb'. $i .'\')" title="'. $action .'">'
+			return ('<a class="hasTooltip btn btn-mini" data-task="'. $task .'" href="#" onclick="return Joomla.taskJson(this, \'cb'. $i .'\')" title="'. $action .'">'
 				.'<i class="icon-'.$ico.'"></i></a>');
 				// .JHTML::_('image', 'admin/' .$img, $alt, null, true) .'</a>');
-		} else return JHTML::_('image', 'admin/' .$img, $alt, 'style="opacity: 0.6;"', true) ;
+		} else return '<i class="icon-'.$ico.' hasTooltip" title="'.$alt.'"></i>' ;
 
 	}
 
@@ -397,5 +397,17 @@ class VmView extends JViewLegacy{
 		// add ajax results script file
 		include('ajax/results.raw.php');
 	}
+	/*
+	 * compare creator with current logged vendor
+	 * usefull for shared items
+	 */
+	public function canChange($created_by){
+		static $user_id = null;
+		static $vendor = null;
+		if ($vendor === null) $vendor = Permissions::getInstance()->isSuperVendor();
+		if ($vendor == 1) return true; // can change all
+		if ($user_id === null) $user_id = JFactory::getUser()->get('id');
+		return ($created_by === $user_id);
 
+	}
 }

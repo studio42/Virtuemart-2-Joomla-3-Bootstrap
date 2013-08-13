@@ -37,5 +37,5 @@ $link= JHTML::_('link', $link, $this->vendor->vendor_name) ;
 /* GENERAL FOOTER FOR ALL MAILS */
 	echo JText::_('COM_VIRTUEMART_MAIL_FOOTER' ) . $link;
         echo "\n";
-	echo $this->vendor->vendor_name ."\n".$this->vendor->vendor_phone .' '.$this->vendor->vendor_store_name ."\n".strip_tags($this->vendor->vendor_store_desc)."\n".str_replace('<br />',"\n",$this->vendor->vendor_legal_info);
+	echo $this->vendor->vendor_name ."\n".$this->vendor->vendor_phone .' '.$this->vendor->vendor_store_name ."\n".strip_tags($this->vendor->vendor_store_desc)."\n".strip_tags(str_replace('<br />',"\n",$this->replaceVendorFields($this->vendor->vendor_letter_footer_html, $this->vendor)));
 

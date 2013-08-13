@@ -22,177 +22,125 @@ defined('_JEXEC') or die('');
 
 if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'helpers'.DS.'config.php');
 VmConfig::loadConfig();
+if(!class_exists('VmModel')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+if(!class_exists('shopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+if (!class_exists('VmImage')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'image.php');
 
-/*class vmPdf {
+class VmPdf {
+	/** Function to create a nice vendor-styled PDF for the output of the given view.
+	    The $path and $dest arguments are directly passed on to TCPDF::Output. 
+	    To create a PDF directly from a given HTML (i.e. not through a view), one
+	    can directly use the VmVendorPDF class, see VirtueMartControllerInvoice::samplePDF */
+	static function createVmPdf($view, $path='', $dest='F', $meta=array()) {
+		if(!$view){
+			// TODO: use some default view???
+			return;
+		}
 
-	function createVmPdf($view=0){
-
-//		if($view ===0){
-			$view = new stdClass;
-			$virtuemart_vendor_id=1;
-			$vendorModel = VmModel::getModel('vendor');
-			$view->vendor = $vendorModel->getVendor($virtuemart_vendor_id);
-			$vendorModel->addImages($view->vendor);
-// 		}
-
-		if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
+		if(!class_exists('VmVendorPDF')){
 			vmError('vmPdf: For the pdf, you must install the tcpdf library at '.JPATH_VM_LIBRARIES.DS.'tcpdf');
 			return 0;
 		}
-		// create new PDF document
-		$this->myTcPDF = new myTcPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-		// set document information
-		$this->myTcPDF->SetCreator('Invoice by Virtuemart 2, used library tcpdf');
-		$this->myTcPDF->SetAuthor($view->vendor->vendor_name);
+		$pdf = new VmVendorPDF();
+		if (isset($meta['title'])) $pdf->SetTitle($meta['title']);
+		if (isset($meta['subject'])) $pdf->SetSubject($meta['subject']);
+		if (isset($meta['keywords'])) $pdf->SetKeywords($meta['keywords']);
+		// Make the formatter available, just in case some specialized view wants/needs it
+		$view->pdf_formatter = $pdf;
 
-		$this->myTcPDF->SetTitle(JText::_('COM_VIRTUEMART_INVOICE_TITLE'));
-		$this->myTcPDF->SetSubject(JText::sprintf('COM_VIRTUEMART_INVOICE_SUBJ',$view->vendor->vendor_store_name));
-		$this->myTcPDF->SetKeywords('Invoice by Virtuemart 2');
+		ob_start();
+		$view->display();
+		$html = ob_get_contents();
+		ob_end_clean();
 
-		//virtuemart.cloudaccess.net/index.php?option=com_virtuemart&view=invoice&layout=details&virtuemart_order_id=18&order_number=6e074d9b&order_pass=p_9cb9e2&task=checkStoreInvoice
-		if(empty($view->vendor->images[0])){
-			vmError('Vendor image given path empty ');
-		} else if(empty($view->vendor->images[0]->file_url_folder) or empty($view->vendor->images[0]->file_name) or empty($view->vendor->images[0]->file_extension) ){
-			vmError('Vendor image given image is not complete '.$view->vendor->images[0]->file_url_folder.$view->vendor->images[0]->file_name.'.'.$view->vendor->images[0]->file_extension);
-			vmdebug('Vendor image given image is not complete, the given media',$view->vendor->images[0]);
-		} else if(!empty($view->vendor->images[0]->file_extension) and strtolower($view->vendor->images[0]->file_extension)=='png'){
-			vmError('Warning extension of the image is a png, tpcdf has problems with that in the header, choose a jpg or gif');
-		} else {
-			$imagePath = DS. str_replace('/',DS, $view->vendor->images[0]->file_url_folder.$view->vendor->images[0]->file_name.'.'.$view->vendor->images[0]->file_extension);
-			if(!file_exists(JPATH_ROOT.$imagePath)){
-				vmError('Vendor image missing '.$imagePath);
-			} else {
-				$this->myTcPDF->SetHeaderData($imagePath, 60, $view->vendor->vendor_store_name, $view->vendorAddress);
-			}
-		}
-
-		// set header and footer fonts
-		$this->myTcPDF->setHeaderFont(Array('helvetica', '', 8));
-		$this->myTcPDF->setFooterFont(Array('helvetica', '', 10));
-
-		// set default monospaced font
-		$this->myTcPDF->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-		//set margins
-		$this->myTcPDF->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		$this->myTcPDF->SetHeaderMargin(PDF_MARGIN_HEADER);
-		$this->myTcPDF->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-		//set auto page breaks
-		$this->myTcPDF->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-		//set image scale factor
-		$this->myTcPDF->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-		//TODO include the right file (in libraries/tcpdf/config/lang set some language-dependent strings
-		$l='';
-		$this->myTcPDF->setLanguageArray($l);
-
-		// set default font subsetting mode
-		$this->myTcPDF->setFontSubsetting(true);
-
-		// Set font
-		// dejavusans is a UTF-8 Unicode font, if you only need to
-		// print standard ASCII chars, you can use core fonts like
-		// helvetica or times to reduce file size.
-		$this->myTcPDF->SetFont('helvetica', '', 8, '', true);
-
-		// Add a page
-		// This method has several options, check the source code documentation for more information.
-		$this->myTcPDF->AddPage();
-
-		// Set some content to print
-		// $html =
-
-		// Print text using writeHTMLCell()
-		$this->myTcPDF->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
-
+		$pdf->AddPage();
+		$pdf->PrintContents($html);
 
 		// Close and output PDF document
 		// This method has several options, check the source code documentation for more information.
-		$this->myTcPDF->Output($path, 'F');
-
-		// 			vmdebug('Pdf object ',$this->myTcPDF);
-		// 		vmdebug('checkStoreInvoice start');
+		$pdf->Output($path, 'F');
 		return $path;
-
 	}
 }
-*/
+
+
 if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
-	vmError('vmPdf: For the pdf, you must install the tcpdf library at '.JPATH_VM_LIBRARIES.DS.'tcpdf');
+	vmError('VmPDF helper: For the PDF invoice and other PDF business letters, you must install the tcpdf library at '.JPATH_VM_LIBRARIES.DS.'tcpdf');
 } else {
-	if(!class_exists('TCPDF'))	require(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php');
-	// Extend the TCPDF class to create custom Header and Footer
-	class myTcPDF extends TCPDF {
-
+	if(!class_exists('TCPDF'))require(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php');
+	// Extend the TCPDF class to create custom Header and Footer as configured in the Backend
+	class VmVendorPDF extends TCPDF {
+		var $vendor = 0;
+		var $vendorImage = '';
+		var $vendorAddress = '';
+		var $css = '';
+		
 		public function __construct() {
-			parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-		}
-
-		function createVmPdf($view=0){
-
-			$path = 0;
-
-			if($view ===0){
-			$view = new stdClass();
-			jimport( 'joomla.database.table' );
-// 			JTable::addIncludePath(JPATH_VM_ADMINISTRATOR . DS . 'tables');
-
-			$virtuemart_vendor_id=1;
-
+			// Load the vendor, so we have the data for the header/footer...
+			// The images are NOT loaded by default, so do it manually, just in case
 			$vendorModel = VmModel::getModel('vendor');
-			$view->vendor = $vendorModel->getVendor($virtuemart_vendor_id);
-			$vendorModel->addImages($view->vendor);
-			}
+			$this->vendor = $vendorModel->getVendor();
+			$vendorModel->addImages($this->vendor,1);
+			$this->vendor->vendorFields = $vendorModel->getVendorAddressFields();
+			
+			parent::__construct($this->vendor->vendor_letter_orientation, 'mm', $this->vendor->vendor_letter_format);
 
-			if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
-				vmError('vmPdf: For the pdf, you must install the tcpdf library at '.JPATH_VM_LIBRARIES.DS.'tcpdf');
-				return 0;
-			}
-			// create new PDF document
-// 			$this->myTcPDF = new myTcPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
+			$this->css = $this->vendor->vendor_letter_css;
+			
 			// set document information
-			$this->SetCreator('Invoice by Virtuemart 2, used library tcpdf');
-			$this->SetAuthor($view->vendor->vendor_name);
-
-			$this->SetTitle(JText::_('COM_VIRTUEMART_INVOICE_TITLE'));
-			$this->SetSubject(JText::sprintf('COM_VIRTUEMART_INVOICE_SUBJ',$view->vendor->vendor_store_name));
-			$this->SetKeywords('Invoice by Virtuemart 2');
-
-			//virtuemart.cloudaccess.net/index.php?option=com_virtuemart&view=invoice&layout=details&virtuemart_order_id=18&order_number=6e074d9b&order_pass=p_9cb9e2&task=checkStoreInvoice
-			if(empty($view->vendor->images[0])){
+			$this->SetCreator(JText::_('COM_VIRTUEMART_PDF_CREATOR'));
+			if(empty($this->vendor->images[0])){
 				vmError('Vendor image given path empty ');
-			} else if(empty($view->vendor->images[0]->file_url_folder) or empty($view->vendor->images[0]->file_name) or empty($view->vendor->images[0]->file_extension) ){
-				vmError('Vendor image given image is not complete '.$view->vendor->images[0]->file_url_folder.$view->vendor->images[0]->file_name.'.'.$view->vendor->images[0]->file_extension);
-				vmdebug('Vendor image given image is not complete, the given media',$view->vendor->images[0]);
-			} else if(!empty($view->vendor->images[0]->file_extension) and strtolower($view->vendor->images[0]->file_extension)=='png'){
+			} else if(empty($this->vendor->images[0]->file_url_folder) or empty($this->vendor->images[0]->file_name) or empty($this->vendor->images[0]->file_extension) ){
+				vmError('Vendor image given image is not complete '.$this->vendor->images[0]->file_url_folder.$this->vendor->images[0]->file_name.'.'.$this->vendor->images[0]->file_extension);
+				vmdebug('Vendor image given image is not complete, the given media',$this->vendor->images[0]);
+			} else if(!empty($this->vendor->images[0]->file_extension) and strtolower($this->vendor->images[0]->file_extension)=='png'){
 				vmError('Warning extension of the image is a png, tpcdf has problems with that in the header, choose a jpg or gif');
 			} else {
-				$imagePath = DS. str_replace('/',DS, $view->vendor->images[0]->file_url_folder.$view->vendor->images[0]->file_name.'.'.$view->vendor->images[0]->file_extension);
-				if(!file_exists(JPATH_ROOT.$imagePath)){
+				$imagePath = str_replace('/',DS, $this->vendor->images[0]->file_url_folder.$this->vendor->images[0]->file_name.'.'.$this->vendor->images[0]->file_extension);
+				if(!file_exists(JPATH_ROOT . DS . $imagePath)){
 					vmError('Vendor image missing '.$imagePath);
 				} else {
-					$this->SetHeaderData($imagePath, 60, $view->vendor->vendor_store_name, $view->vendorAddress);
+					$this->vendorImage=$imagePath;
 				}
 			}
+			$this->setHeaderData(($this->vendor->vendor_letter_header_image?$this->vendorImage:''), 
+					     ($this->vendor->vendor_letter_header_image?$this->vendor->vendor_letter_header_imagesize:0), 
+					     '', $this->vendor->vendor_letter_header_html,
+					     array(0,0,0), $this->convertHTMLColorToDec($this->vendor->vendor_letter_footer_line_color));
+			$this->vendorAddress = shopFunctions::renderVendorAddress($this->vendor->virtuemart_vendor_id, "<br/>");
+			// Trim the final <br/> from the address, which is inserted by renderVendorAddress automatically!
+			if (substr($this->vendorAddress, -5, 5) == '<br/>') {
+				$this->vendorAddress = substr($this->vendorAddress, 0, -5);
+			}
 
-			// set header and footer fonts
-			$this->setHeaderFont(Array('helvetica', '', 8));
-			$this->setFooterFont(Array('helvetica', '', 10));
+			$vmFont=$this->vendor->vendor_letter_font;
+			$this->SetFont($vmFont, '', $this->vendor->vendor_letter_font_size, '', 'false');                 
+			$this->setHeaderFont(Array($vmFont, '', $this->vendor->vendor_letter_header_font_size ));
+			$this->setFooterFont(Array($vmFont, '', $this->vendor->vendor_letter_footer_font_size ));
 
+			// Remove all vertical margins and padding from the HTML cells (default is excessive padding):
+			$this->SetCellPadding(0);
+			$tagvs = array('p' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 0, 'n' => 0)),
+				'div' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 0, 'n' => 0)),
+				'h1' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 0, 'n' => 0)),
+				'h2' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 0, 'n' => 0)),
+				'h3' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 0, 'n' => 0)),
+				'table' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 0, 'n' => 0)),
+				);
+			$this->setHtmlVSpace($tagvs);
+			
+			// set default font subsetting mode
+			$this->setFontSubsetting(true);
 			// set default monospaced font
-			$this->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+// 			$this->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 			//set margins
-			$this->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-			$this->SetHeaderMargin(PDF_MARGIN_HEADER);
-			$this->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-			//set auto page breaks
-			$this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+			$this->SetMargins($this->vendor->vendor_letter_margin_left, $this->vendor->vendor_letter_margin_top, $this->vendor->vendor_letter_margin_right);
+			$this->SetHeaderMargin($this->vendor->vendor_letter_margin_header);
+			$this->SetFooterMargin($this->vendor->vendor_letter_margin_footer);
+			$this->SetAutoPageBreak(TRUE, $this->vendor->vendor_letter_margin_bottom);
 
 			//set image scale factor
 			$this->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -201,65 +149,143 @@ if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
 			$l='';
 			$this->setLanguageArray($l);
 
-			// set default font subsetting mode
-			$this->setFontSubsetting(true);
-
-			// Set font
-			// dejavusans is a UTF-8 Unicode font, if you only need to
-			// print standard ASCII chars, you can use core fonts like
-			// helvetica or times to reduce file size.
-			$this->SetFont('helvetica', '', 8, '', true);
-
-			// Add a page
-			// This method has several options, check the source code documentation for more information.
-			$this->AddPage();
-
-			// Set some content to print
-			// $html =
-
-			// Print text using writeHTMLCell()
-			$this->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
-
-
-			// Close and output PDF document
-			// This method has several options, check the source code documentation for more information.
-			$this->Output($path, 'F');
-
-			// 			vmdebug('Pdf object ',$this->myTcPDF);
-			// 		vmdebug('checkStoreInvoice start');
-			return $path;
-
 		}
 
-		//Page header
-		/*	public function Header() {
-		// Logo
-		$image_file = K_PATH_IMAGES.'logo_example.jpg';
-		$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		// Set font
-		$this->SetFont('helvetica', 'B', 20);
-		// Title
-		$this->Cell(0, 15, '<< TCPDF Example 003 >>', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-		}*/
 
-		// Page footer
+		/** Replace variables like {vm:page}, {vm:pagecount} etc. in the given string 
+		 */
+		function replace_variables($txt) {
+			// TODO: Implement more Placeholders (ordernr, invoicenr, etc.)
+			// Use PageNo rather than getAliasNumPage, since the alias will be misaligned (spaced like the {:npn:} text rather than the final number)
+			$txt = str_replace('{vm:pagenum}', $this->/*getAliasNumPage*/PageNo(), $txt);
+			// Can't use getNumPages, because when this is evaluated, we don't know the final number of pages (getNumPages is always equal to the current page numbe)
+			$txt = str_replace('{vm:pagecount}', $this->getAliasNbPages/*getNumPages*/(), $txt);
+			$txt = str_replace('{vm:vendorname}', $this->vendor->vendor_store_name, $txt);
+			$imgrepl='';
+			if (!empty($this->vendor->images)) {
+				$img = $this->vendor->images[0];
+				$imgrepl = "<div class=\"vendor-image\">".$img->displayIt($img->file_url,'','',false, '', false, false)."</div>";
+			}
+			$txt = str_replace('{vm:vendorimage}', $imgrepl, $txt);
+			$txt = str_replace('{vm:vendoraddress}', $this->vendorAddress, $txt);
+			$txt = str_replace('{vm:vendorlegalinfo}', $this->vendor->vendor_legal_info, $txt);
+			$txt = str_replace('{vm:vendordescription}', $this->vendor->vendor_store_desc, $txt);
+			$txt = str_replace('{vm:tos}', $this->vendor->vendor_terms_of_service, $txt);
+			return "$txt";
+		}
+		
+		public function PrintContents($html) {
+			$contents = $this->replace_variables ($html);
+			$this->writeHTMLCell($w=0, $h=0, $x='', $y='', $contents, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
+		}
+
 		public function Footer() {
-			// Position at 15 mm from bottom
-			$this->SetY(-15);
-			// Set font
-			$this->SetFont('helvetica', 'I', 8);
 
-			$vendorModel = VmModel::getModel('vendor');
-			$vendor = & $vendorModel->getVendor();
-			// 			$this->assignRef('vendor', $vendor);
-			$vendorModel->addImages($vendor,1);
-			//vmdebug('$vendor',$vendor);
-			$html = $vendor->vendor_legal_info."<br /> Page ".$this->getAliasNumPage().'/'.$this->getAliasNbPages();
-			// Page number
-			$this->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
+			if ($this->vendor->vendor_letter_footer == 1) {
+				$footertxt = '<style>' . $this->css . '</style>';
+				$footertxt .= '<div id="vmdoc-footer" class="vmdoc-footer">' . $this->replace_variables($this->vendor->vendor_letter_footer_html) . '</div>';
 
-			// 		$this->writeHTML(0, 10, $vendor->vendor_legal_info."<br /> Page ".$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+				$currentCHRF = $this->getCellHeightRatio();
+				$this->setCellHeightRatio($this->vendor->vendor_letter_footer_cell_height_ratio);
+			
+			
+				//set style for cell border
+				$border = 0;
+				if ($this->vendor->vendor_letter_footer_line == 1) {
+					$line_width = 0.85 / $this->getScaleFactor();
+					$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $this->convertHTMLColorToDec($this->vendor->vendor_letter_footer_line_color)));
+					$border = 'T';
+				}
+			
+				// TODO: Implement cell_height
+// 				$cell_height = round(($this->getCellHeightRatio() * $footerfont[2]) / $this->getScaleFactor(), 2);
+				$cell_height=1;
+		
+		
+				$this->writeHTMLCell(0, $cell_height, '', '', $footertxt, $border, 1, 0, true, '', true);
+				// Set it back
+				$this->setCellHeightRatio($currentCHRF);
+			}
+		}
+
+	public function Header() {
+		if ($this->vendor->vendor_letter_header != 1) return;
+		if ($this->header_xobjid < 0) {
+			// start a new XObject Template
+			$this->header_xobjid = $this->startTemplate($this->w, $this->tMargin);
+			$headerfont = $this->getHeaderFont();
+			$headerdata = $this->getHeaderData();
+			$this->y = $this->header_margin;
+			
+			$headertxt = '<style>' . $this->css . '</style>';
+			$headertxt .= '<div id="vmdoc-header" class="vmdoc-header">' . $this->replace_variables($headerdata['string']) . '</div>';
+			$currentCHRF = $this->getCellHeightRatio();
+			$this->setCellHeightRatio($this->vendor->vendor_letter_header_cell_height_ratio);
+
+			if ($this->rtl) {
+				$this->x = $this->w - $this->original_rMargin;
+			} else {
+				$this->x = $this->original_lMargin;
+			}
+			$header_x = (($this->getRTL())?($this->original_rMargin):($this->original_lMargin));
+			$cw = $this->w - $this->original_lMargin - $this->original_rMargin;
+			if (($headerdata['logo']) AND ($headerdata['logo'] != K_BLANK_IMAGE)) {
+				$imgtype = $this->getImageFileType(K_PATH_IMAGES.DS.$headerdata['logo']);
+				if (($imgtype == 'eps') OR ($imgtype == 'ai')) {
+					$this->ImageEps(K_PATH_IMAGES.DS.$headerdata['logo'], '', '', $headerdata['logo_width']);
+				} elseif ($imgtype == 'svg') {
+					$this->ImageSVG(K_PATH_IMAGES.DS.$headerdata['logo'], '', '', $headerdata['logo_width']);
+				} else {
+					$this->Image(K_PATH_IMAGES.DS.$headerdata['logo'], '', '', $headerdata['logo_width']);
+				}
+				$imgy = $this->getImageRBY();
+				$header_x +=  ($headerdata['logo_width'] * 1.1);
+				$cw -= ($headerdata['logo_width'] * 1.1);
+			} else {
+				$imgy = $this->y;
+			}
+// 			$cell_height = round(($this->cell_height_ratio * $headerfont[2]) / $this->k, 2);
+			// set starting margin for text data cell
+			$this->SetTextColorArray($this->header_text_color);
+			// header string
+			$this->SetFont($headerfont[0], $headerfont[1], $headerfont[2]);
+			$this->SetX($header_x);
+			
+			$this->writeHTMLCell($cw, /*$cell_height*/0, $this->x, $this->header_margin, $headertxt, '', /*$ln=*/2, false, /*$reseth*/true, '', /*$autopadding=*/true);
+			// print an ending header line
+			if ($this->vendor->vendor_letter_header_line == 1) {
+				$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
+				$this->SetY(max($imgy,$this->y));
+				if ($this->rtl) {
+					$this->SetX($this->original_rMargin);
+				} else {
+					$this->SetX($this->original_lMargin);
+				}
+				$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, '', 'T', 0, 'C');
+			}
+			$this->setCellHeightRatio($currentCHRF);
+			$this->endTemplate();
+		}
+		// print header template
+		$x = 0;
+		$dx = 0;
+		if (!$this->header_xobj_autoreset AND $this->booklet AND (($this->page % 2) == 0)) {
+			// adjust margins for booklet mode
+			$dx = ($this->original_lMargin - $this->original_rMargin);
+		}
+		if ($this->rtl) {
+			$x = $this->w + $dx;
+		} else {
+			$x = 0 + $dx;
+		}
+		$this->printTemplate($this->header_xobjid, $x, 0, 0, 0, '', '', false);
+		if ($this->header_xobj_autoreset) {
+			// reset header xobject template at each page
+			$this->header_xobjid = -1;
 		}
 	}
+
+	}
+
 }
 

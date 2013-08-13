@@ -45,8 +45,9 @@ jimport('joomla.filesystem.file');
 		foreach ($this->files as $key => $media) {
 
 			$checked = JHTML::_('grid.id', $i , $media->virtuemart_media_id,null,'virtuemart_media_id');
-			if (!is_null($media->virtuemart_media_id)) $published = $this->toggle( $media->published, $i, 'published');
-			else $published = '';
+			$canDo = $this->canChange($media->created_by);
+			$published = $this->toggle( $media->published, $i, 'published',$canDo);
+			
 			?>
 			<tr >
 				<!-- Checkbox -->

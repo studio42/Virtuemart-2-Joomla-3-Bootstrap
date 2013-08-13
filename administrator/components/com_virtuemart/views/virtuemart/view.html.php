@@ -70,6 +70,20 @@ class VirtuemartViewVirtuemart extends VmView {
 		// }
 		parent::display($tpl);
 	}
+	/**
+	 * Display an image icon for the given image and create a link to the given link.
+	 *
+	 * @param string $link Link to use in the href tag
+	 * @param string $image Name of the image file to display
+	 * @param string $text Text to use for the image alt text and to display under the image.
+	 */
+	static public function panelButton($link, $imageclass, $text, $btColor = '') {
+		$button = '<a class="span12 '.$btColor.'" title="' . $text . '" href="' . $link . '">';
+		$button .= '<i class="'.$imageclass.'"></i> ';
+		$button .=  $text.'</a>';
+		echo $button;
+
+	}
 }
 
 //pure php no tag

@@ -44,7 +44,7 @@ if($this->format == 'pdf'){
 <?php
 	foreach($this->orderdetails['items'] as $item) {
 		$qtt = $item->product_quantity ;
-		$_link = JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id=' . $item->virtuemart_category_id . '&virtuemart_product_id=' . $item->virtuemart_product_id);
+		$_link = JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id=' . $item->virtuemart_category_id . '&virtuemart_product_id=' . $item->virtuemart_product_id, FALSE);
 ?>
 		<tr valign="top">
 			<td align="left">
@@ -65,7 +65,15 @@ if($this->format == 'pdf'){
 				<?php echo $this->orderstatuses[$item->order_status]; ?>
 			</td>
 			<td align="right"   class="priceCol" >
-			    <?php echo '<span >'.$this->currency->priceDisplay($item->product_item_price,$this->currency) .'</span><br />'; ?>
+				<?php
+				$item->product_discountedPriceWithoutTax = (float) $item->product_discountedPriceWithoutTax;
+				if (!empty($item->product_priceWithoutTax) && $item->product_discountedPriceWithoutTax != $item->product_priceWithoutTax) {
+					echo '<span class="line-through">'.$this->currency->priceDisplay($item->product_item_price, $this->currency) .'</span><br />';
+					echo '<span >'.$this->currency->priceDisplay($item->product_discountedPriceWithoutTax, $this->currency) .'</span><br />';
+				} else {
+					echo '<span >'.$this->currency->priceDisplay($item->product_item_price, $this->currency) .'</span><br />'; 
+				}
+				?>
 			</td>
 			<td align="right" >
 				<?php echo $qtt; ?>
@@ -82,6 +90,9 @@ if($this->format == 'pdf'){
 				$class = '';
 				if(!empty($item->product_basePriceWithTax) && $item->product_basePriceWithTax != $item->product_final_price ) {
 					echo '<span class="line-through" >'.$this->currency->priceDisplay($item->product_basePriceWithTax,$this->currency,$qtt) .'</span><br />' ;
+				}
+				elseif (empty($item->product_basePriceWithTax) && $item->product_item_price != $item->product_final_price) {
+					echo '<span class="line-through">' . $this->currency->priceDisplay($item->product_item_price,$this->currency,$qtt) . '</span><br />';
 				}
 
 				echo $this->currency->priceDisplay(  $item->product_subtotal_with_tax ,$this->currency); //No quantity or you must use product_final_price ?>
@@ -105,14 +116,13 @@ if ($this->orderdetails['details']['BT']->coupon_discount <> 0.00) {
     $coupon_code=$this->orderdetails['details']['BT']->coupon_code?' ('.$this->orderdetails['details']['BT']->coupon_code.')':'';
 	?>
 	<tr>
-		<td align="right" class="pricePad" colspan="5"><?php echo JText::_('COM_VIRTUEMART_COUPON_DISCOUNT').$coupon_code ?></td>
-			<td align="right">&nbsp;</td>
+		<td align="right" class="pricePad" colspan="6"><?php echo JText::_('COM_VIRTUEMART_COUPON_DISCOUNT').$coupon_code ?></td>
 
-			<?php if ( VmConfig::get('show_tax')) { ?>
-				<td align="right">&nbsp;</td>
-                                <?php } ?>
-		<td align="right"><?php echo '- '.$this->currency->priceDisplay($this->orderdetails['details']['BT']->coupon_discount,$this->currency); ?></td>
+		<?php if ( VmConfig::get('show_tax')) { ?>
+			<td align="right">&nbsp;</td>
+		<?php } ?>
 		<td align="right">&nbsp;</td>
+		<td align="right"><?php echo $this->currency->priceDisplay($this->orderdetails['details']['BT']->coupon_discount,$this->currency); ?></td>
 	</tr>
 <?php  } ?>
 

@@ -30,13 +30,6 @@ class VirtueMartViewVirtueMart extends VmView {
 
 	public function display($tpl = null) {
 
-		/* MULTI-X
-		 * $this->loadHelper('vendorHelper');
-		* $vendorModel = new Vendor;
-		* $vendor = $vendorModel->getVendor();
-		* $this->assignRef('vendor',	$vendor);
-		*/
-
 		$vendorId = JRequest::getInt('vendorid', 1);
 
 		$vendorModel = VmModel::getModel('vendor');
@@ -52,6 +45,9 @@ class VirtueMartViewVirtueMart extends VmView {
 			$params = new JParameter('');
 
 			if (JVM_VERSION === 2) {
+				if (!isset($vendor->event)) {
+					$vendor->event = new stdClass();
+				}
 				$results = $dispatcher->trigger ('onContentPrepare', array('com_virtuemart.vendor', &$vendor, &$params, 0));
 				// More events for 3rd party content plugins
 				// This do not disturb actual plugins, because we don't modify $vendor->text
@@ -93,9 +89,9 @@ class VirtueMartViewVirtueMart extends VmView {
 			$currency = CurrencyDisplay::getInstance( );
 			$this->assignRef('currency', $currency);
 			
-			$products_per_row = VmConfig::get('homepage_products_per_row');
+			$products_per_row = VmConfig::get('homepage_products_per_row',3);
 			
-			$featured_products_rows = VmConfig::get('featured_products_rows');
+			$featured_products_rows = VmConfig::get('featured_products_rows',1);
 			$featured_products_count = $products_per_row * $featured_products_rows;
 
 			if (!empty($featured_products_count) and VmConfig::get('show_featured', 1)) {
@@ -149,9 +145,9 @@ class VirtueMartViewVirtueMart extends VmView {
 		if ($products  && (VmConfig::get('feed_featured_published', 0)==1 or VmConfig::get('feed_topten_published', 0)==1 or VmConfig::get('feed_latest_published', 0)==1)) {
 			$link = '&format=feed&limitstart=';
 			$attribs = array('type' => 'application/rss+xml', 'title' => 'RSS 2.0');
-			$document->addHeadLink(JRoute::_($link . '&type=rss'), 'alternate', 'rel', $attribs);
+			$document->addHeadLink(JRoute::_($link . '&type=rss', FALSE), 'alternate', 'rel', $attribs);
 			$attribs = array('type' => 'application/atom+xml', 'title' => 'Atom 1.0');
-			$document->addHeadLink(JRoute::_($link . '&type=atom'), 'alternate', 'rel', $attribs);
+			$document->addHeadLink(JRoute::_($link . '&type=atom', FALSE), 'alternate', 'rel', $attribs);
 		}
 		$error = JRequest::getInt('error',0);
 
@@ -159,12 +155,32 @@ class VirtueMartViewVirtueMart extends VmView {
 		if(!empty($error)){
 			$document->setTitle(JText::_('COM_VIRTUEMART_PRODUCT_NOT_FOUND').JText::sprintf('COM_VIRTUEMART_HOME',$vendor->vendor_store_name));
 		} else {
-			$app = JFactory::getApplication();
-			$menus = $app->getMenu();
-			$menu = $menus->getActive();
-			if ($menu) $title = $menu->title;
-			if(empty($title)) $title = JText::sprintf('COM_VIRTUEMART_HOME',$vendor->vendor_store_name);
-			$document->setTitle($title);
+
+			if(empty($vendor->customtitle)){
+				$app = JFactory::getApplication();
+				$menus = $app->getMenu();
+				$menu = $menus->getActive();
+
+				if ($menu){
+					$menuTitle = $menu->params->get('page_title');
+					if(empty($menuTitle)) {
+						$menuTitle = JText::sprintf('COM_VIRTUEMART_HOME',$vendor->vendor_store_name);
+					}
+					$document->setTitle($menuTitle);
+				} else {
+					$title = JText::sprintf('COM_VIRTUEMART_HOME',$vendor->vendor_store_name);
+					$document->setTitle($title);
+				}
+			} else {
+				$document->setTitle($vendor->customtitle);
+			}
+
+
+			if(!empty($vendor->metadesc)) $document->setMetaData('description',$vendor->metadesc);
+			if(!empty($vendor->metakey)) $document->setMetaData('keywords',$vendor->metakey);
+			if(!empty($vendor->metarobot)) $document->setMetaData('robots',$vendor->metarobot);
+			if(!empty($vendor->metaauthor)) $document->setMetaData('author',$vendor->metaauthor);
+
 		}
 
 		$template = VmConfig::get('vmtemplate','default');

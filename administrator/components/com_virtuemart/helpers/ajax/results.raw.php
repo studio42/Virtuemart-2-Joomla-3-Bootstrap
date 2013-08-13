@@ -2,8 +2,10 @@
 //script to add in the results ajax list render
  ?>
 <script type="text/javascript">
-	var tips = jQuery("#results .hasTooltip,#results .jgrid");
-	if (tips.length) tips.tooltip({"html":true});
-	jQuery('td.order .jgrid').addClass('btn btn-mini');
+	var orderBtn = jQuery('td.order .jgrid');
+	jQuery("#results .hasTooltip,#results .jgrid").tooltip({"html":true}),
+	jQuery('.btn-group label').addClass('btn');
+	orderBtn.addClass('btn btn-mini').children('.uparrow').toggleClass('uparrow icon-uparrow');
+	orderBtn.children('.downarrow').toggleClass('downarrow icon-downarrow');
 	<?php echo $scripts ?>
 </script>

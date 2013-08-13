@@ -48,7 +48,8 @@ defined('_JEXEC') or die();
 			$row = $this->manufacturerCategories[$i];
 
 			$checked = JHTML::_('grid.id', $i, $row->virtuemart_manufacturercategories_id);
-			$published = $this->toggle( $row->published, $i, 'published');
+			$canDo = $this->canChange($row->created_by);
+			$published = $this->toggle( $row->published, $i, 'published',$canDo);
 			$manufacturersList = JROUTE::_('index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id);
 
 			?>

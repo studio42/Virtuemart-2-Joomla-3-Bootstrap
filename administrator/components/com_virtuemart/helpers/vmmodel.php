@@ -446,7 +446,32 @@ class VmModel extends JModelLegacy  {
 
 		return $this->_data;
 	}
-
+	
+	/*
+	 * check if it's own item
+	 */
+	public function checkOwn($id){
+		$user		= JFactory::getUser();
+		$userId		= $user->get('id');
+		$table 		= $this->getTable($this->_maintablename);
+		$table->load($id);
+		if (isset($table->created_by) )
+			return ($table->created_by == $userId);
+		else return null; // or false ???
+	}
+	/*
+	 * check if it's own item from a table
+	 */
+	public function checkCanChangeOwn($table){
+		static $user_id = null;
+		static $vendor = null;
+		if ($vendor === null) $vendor = Permissions::getInstance()->isSuperVendor();
+		if ($vendor == 1) return true;
+		if ($user_id === null) $user_id = JFactory::getUser()->get('id');
+		if (isset($table->created_by) )
+			return ($table->created_by && $user_id);
+		else return null; // or false ???
+	}
 
 	public function store(&$data){
 
@@ -474,10 +499,12 @@ class VmModel extends JModelLegacy  {
 	 * @author Max Milbers
 	 * @return boolean True is the delete was successful, false otherwise.
 	 */
-	public function remove($ids) {
+	public function remove($ids,$vendor_id = 1) {
 
 		$table = $this->getTable($this->_maintablename);
 		foreach($ids as $id) {
+			if ($vendor_id!=1)
+				if (!$this->checkOwn($id)) continue;
 			if (!$table->delete((int)$id)) {
 				vmError(get_class( $this ).'::remove '.$id.' '.$table->getError());
 				return false;
@@ -509,11 +536,12 @@ class VmModel extends JModelLegacy  {
 
 		$table = $this->getTable($tablename);
 		//if(empty($cidName)) $cidName = $this->_cidName;
-
 		$ids = JRequest::getVar( $cidname, JRequest::getVar('cid',array(0)), 'post', 'array' );
 
 		foreach($ids as $id){
 			$table->load( (int)$id );
+			// vendor check
+			if (!$this->checkCanChangeOwn($table)) continue;
 
 			if (!$table->toggle($field, $val)) {
 				//			if (!$table->store()) {
@@ -540,7 +568,7 @@ class VmModel extends JModelLegacy  {
 			vmError('VmModel move '.$this->_db->getErrorMsg());
 			return false;
 		}
-
+		if (!$this->checkCanChangeOwn($table)) return false;
 		if (!$table->move( $direction, $filter )) {
 			vmError('VmModel move '.$this->_db->getErrorMsg());
 			return false;
@@ -565,6 +593,7 @@ class VmModel extends JModelLegacy  {
 		for( $i=0; $i < count($cid); $i++ )
 		{
 			$table->load( (int) $cid[$i] );
+			if (!$this->checkCanChangeOwn($table) ) continue;
 			// track categories
 			if ($filter) $groupings[] = $table->$filter;
 

@@ -36,9 +36,9 @@ class VirtuemartViewManufacturer extends VmView {
 		$document = JFactory::getDocument();
 		$mainframe = JFactory::getApplication();
 		$pathway = $mainframe->getPathway();
-		/* Set the helper */
-		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
-		$this->loadHelper('image');
+
+		if (!class_exists('VmImage'))
+			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
 
 		$virtuemart_manufacturer_id = JRequest::getInt('virtuemart_manufacturer_id', 0);
 		$mf_category_id = JRequest::getInt('mf_category_id', 0);

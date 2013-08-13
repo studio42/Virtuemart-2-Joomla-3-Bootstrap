@@ -68,7 +68,8 @@ $cols = $multiX ? 10 : 9 ;
 
 			$row = $this->payments[$i];
 			$checked = JHTML::_('grid.id', $i, $row->virtuemart_paymentmethod_id);
-			$published = $this->toggle( $row->published, $i, 'published');
+			$canDo = $this->canChange($row->created_by);
+			$published = $this->toggle( $row->published, $i, 'published',$canDo);
 			?>
 			<tr class="<?php echo "row".$k; ?>">
 

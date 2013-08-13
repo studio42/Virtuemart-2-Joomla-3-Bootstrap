@@ -64,7 +64,7 @@ class VirtuemartViewReport extends VmView {
 			}
 			$totalReport['revenueTotal_netto'] = $myCurrencyDisplay->priceDisplay($totalReport['revenueTotal_netto']);
 			$totalReport['revenueTotal_brutto'] = $myCurrencyDisplay->priceDisplay($totalReport['revenueTotal_brutto']);
-		}
+		} else $totalReport = null;
 		$this->report = $revenueBasic;
 		$this->totalReport = $totalReport;
 

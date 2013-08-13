@@ -28,7 +28,7 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
 	    		continue;
 			if ($field->display) {
 	    ?><div class="product-field product-field-type-<?php echo $field->field_type ?>">
-		    <?php if ($field->custom_title != $custom_title) { ?>
+		    <?php if ($field->custom_title != $custom_title && $field->show_title) { ?>
 			    <span class="product-fields-title" ><?php echo JText::_($field->custom_title); ?></span>
 			    <?php
 			    if ($field->custom_tip)

@@ -21,7 +21,7 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
 ?>
 
 
-<form method="post" action="<?php echo JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id='.$this->product->virtuemart_product_id.'&virtuemart_category_id='.$this->product->virtuemart_category_id) ; ?>" name="notifyform" id="notifyform">
+<form method="post" action="<?php echo JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id='.$this->product->virtuemart_product_id.'&virtuemart_category_id='.$this->product->virtuemart_category_id, FALSE) ; ?>" name="notifyform" id="notifyform">
 	<h4><?php echo JText::_('COM_VIRTUEMART_CART_NOTIFY') ?></h4>
 
 	<div class="list-reviews">

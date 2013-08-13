@@ -51,8 +51,6 @@ class VirtuemartViewManufacturer extends VmView {
 
 			$manufacturer = $model->getManufacturer();
 
-			$isNew = ($manufacturer->virtuemart_manufacturer_id < 1);
-
 			$model->addImages($manufacturer);
 			$this->manufacturer = $manufacturer ;
 

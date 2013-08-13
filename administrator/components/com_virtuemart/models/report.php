@@ -128,7 +128,11 @@ class VirtuemartModelReport extends VmModel {
 		$joinTables = array();
 		$joinedTables = '';
 		$where = array();
-
+		$vendor = Permissions::getInstance()->isSuperVendor();
+		if ($vendor >1) {
+			JRequest::setVar ('intervals', 'product_s');
+			JRequest::setVar ('virtuemart_vendor_id', $vendor);
+		}
 		// group always by intervals (day,week, ... or ID) and set grouping and defaut ordering
 
 		$intervals = JRequest::getWord ('intervals', 'day');

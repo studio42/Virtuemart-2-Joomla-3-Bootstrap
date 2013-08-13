@@ -209,7 +209,7 @@ class VirtueMartModelProduct extends VmModel {
 	 *
 	 * @author Max Milbers
 	 */
-	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE,$vendor) {
+	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE,$vendor = null) {
 
 		$app = JFactory::getApplication ();
 
@@ -228,7 +228,7 @@ class VirtueMartModelProduct extends VmModel {
 		$orderBy = ' ';
 
 		$where = array();
-		if ($vendor) $where[] = '`virtuemart_vendor_id` = ' . (int)$vendor;
+		if ($vendor) $where[] = 'p.`virtuemart_vendor_id` = ' . (int)$vendor;
 		$useCore = TRUE;
 		if ($this->searchplugin !== 0) {
 			//reset generic filters ! Why? the plugin can do it, if it wishes it.
@@ -1236,9 +1236,9 @@ class VirtueMartModelProduct extends VmModel {
 	 * @param int $virtuemart_category_id the category ID where to get the products for
 	 * @return array containing product objects
 	 */
-	public function getProductsInCategory ($categoryId) {
+	public function getProductsInCategory ($categoryId,$vendor = null) {
 
-		$ids = $this->sortSearchListQuery (TRUE, $categoryId);
+		$ids = $this->sortSearchListQuery (TRUE, $categoryId, FALSE, FALSE, $vendor);
 		$this->products = $this->getProducts ($ids);
 		return $this->products;
 	}

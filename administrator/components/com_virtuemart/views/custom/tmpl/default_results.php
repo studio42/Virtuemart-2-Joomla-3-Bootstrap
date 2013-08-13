@@ -60,8 +60,8 @@ $customs = $this->customs->items;
 		foreach ($customs as $key => $custom) {
 
 			$checked = JHTML::_('grid.id', $i , $custom->virtuemart_custom_id,false,'virtuemart_custom_id');
-			if (!is_null($custom->virtuemart_custom_id)) $published = $this->toggle( $custom->published, $i, 'published');
-			else $published = '';
+			$canDo = $this->canChange($custom->created_by);
+			$published = $this->toggle( $custom->published, $i, 'published',$canDo);
 			?>
 			<tr >
 				<!-- Checkbox -->
@@ -70,6 +70,7 @@ $customs = $this->customs->items;
 					<?php
 					if ($custom->custom_parent_id) {
 						$link = "index.php?view=custom&keyword=".urlencode($keyword)."&custom_parent_id=".$custom->custom_parent_id."&option=".$option;
+						if ($this->frontEdit) $link .= "&tmpl=component";
 						$text = $lang->hasKey($custom->custom_parent_title) ? JText::_($custom->custom_parent_title) : $custom->custom_parent_title;
 						echo JHTML::_('link', JRoute::_($link),'<div class="small">'.$text.'</div>', array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_FILTER_BY').' '.$text));
 					}
@@ -83,26 +84,25 @@ $customs = $this->customs->items;
 				<td>
 					<?php echo $this->editLink($custom->virtuemart_custom_id, $custom->custom_title, 'virtuemart_custom_id',
 						array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$custom->custom_title) ) ?>
-				<?php echo JHTML::_('link', JRoute::_($link), $custom->custom_title, array('class'=> 'hasTooltip', 'title' => JText::_(
 					<?php if ($custom->custom_field_desc) echo '<div class="small">'.$custom->custom_field_desc.'</div>' ?>
 				</td>
 				<td><?php echo $custom->field_type_display; ?></td>
 				<td><span class="vmicon vmicon-16-<?php echo $cartIcon ?>"></span></td>
 				<td class="hidden-phone">
-					<a href="javascript:void(0);" onclick="return listItemTask('cb<?php echo $i;?>','toggle.admin_only')" title="<?php echo ($custom->admin_only ) ? JText::_('COM_VIRTUEMART_YES') : JText::_('COM_VIRTUEMART_NO');?>">
-					<span class="vmicon <?php echo ( $custom->admin_only  ? 'vmicon-16-checkin' : 'vmicon-16-bug' );?>"></span></a></td>
-				<td class="hidden-phone"><a href="javascript:void(0);" onclick="return listItemTask('cb<?php echo $i;?>','toggle.is_hidden')" title="<?php echo ($custom->is_hidden ) ? JText::_('COM_VIRTUEMART_YES') : JText::_('COM_VIRTUEMART_NO');?>">
-					<span class="vmicon <?php echo ( $custom->is_hidden  ? 'vmicon-16-checkin' : 'vmicon-16-bug' );?>"></span></a></td>
+					<?php echo $this->toggle($custom->admin_only , $i, 'toggle.admin_only',$canDo); ?>
+				</td>
+				<td class="hidden-phone">
+					<?php echo $this->toggle($custom->is_hidden , $i, 'toggle.is_hidden',$canDo); ?>
+				</td>
 				<td align="center" class="order">
-					<span><?php echo $this->pagination->orderUpIcon($i, true, 'orderUp', JText::_('COM_VIRTUEMART_MOVE_UP')); ?></span>
-					<span><?php echo $this->pagination->orderDownIcon( $i, $n, true, 'orderDown', JText::_('COM_VIRTUEMART_MOVE_DOWN')); ?></span>
-					<input class="ordering input-mini" type="text" name="order[<?php echo $i?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $custom->ordering; ?>" style="text-align: center" />
+					<span><?php echo $this->pagination->orderUpIcon($i, $canDo, 'orderUp', JText::_('COM_VIRTUEMART_MOVE_UP')); ?></span>
+					<span><?php echo $this->pagination->orderDownIcon( $i, $n, $canDo, 'orderDown', JText::_('COM_VIRTUEMART_MOVE_DOWN')); ?></span>
+					<input class="ordering input-mini" <?php echo $canDo ? '' : 'disabled="disabled"' ?>" type="text" name="order[<?php echo $i?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $custom->ordering; ?>" style="text-align: center" />
 				</td>
 				<td><?php echo $published; ?></td>
 				<td class="hidden-phone"><?php echo $custom->virtuemart_custom_id; ?></td>
 			</tr>
 		<?php
-	
 			$i++;
 		}
 	}

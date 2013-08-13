@@ -57,7 +57,7 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
 			    }
 
 			    // Category Link
-			    $caturl = JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $category->virtuemart_category_id);
+			    $caturl = JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $category->virtuemart_category_id, FALSE);
 
 			    // Show Category
 			    ?>

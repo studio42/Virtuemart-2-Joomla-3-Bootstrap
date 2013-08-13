@@ -44,7 +44,8 @@ defined('_JEXEC') or die('Restricted access');
 		$keyword = JRequest::getWord('keyword');
 		foreach ($this->inventorylist as $key => $product) {
 			$checked = JHTML::_('grid.id', $i , $product->virtuemart_product_id);
-			$published = $this->toggle( $product->published, $i, 'published');
+			$canDo = $this->canChange($product->created_by);
+			$published = $this->toggle( $product->published, $i, 'published',$canDo);
 			
 			//<!-- low_stock_notification  -->
 			// current reel stock

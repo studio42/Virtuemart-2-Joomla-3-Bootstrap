@@ -78,6 +78,9 @@ class VirtuemartViewVendor extends VmView {
 				$params = new JParameter('');
 
 				if (JVM_VERSION === 2) {
+					if (!isset($vendor->event)) {
+						$vendor->event = new stdClass();
+					}
 					$results = $dispatcher->trigger ('onContentPrepare', array('com_virtuemart.vendor', &$vendor, &$params, 0));
 					// More events for 3rd party content plugins
 					// This do not disturb actual plugins, because we don't modify $vendor->text
@@ -123,9 +126,9 @@ class VirtuemartViewVendor extends VmView {
 			}
 
 			$linkdetails = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=details&virtuemart_vendor_id=' .
-				$virtuemart_vendor_id).'">'.JText::_('COM_VIRTUEMART_VENDOR_DETAILS').'</a>';
-			$linkcontact = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=contact&virtuemart_vendor_id=' . $virtuemart_vendor_id).'">'.JText::_('COM_VIRTUEMART_VENDOR_CONTACT').'</a>';
-			$linktos = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=tos&virtuemart_vendor_id=' . $virtuemart_vendor_id).'">'.JText::_('COM_VIRTUEMART_VENDOR_TOS').'</a>';
+				$virtuemart_vendor_id, FALSE).'">'.JText::_('COM_VIRTUEMART_VENDOR_DETAILS').'</a>';
+			$linkcontact = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=contact&virtuemart_vendor_id=' . $virtuemart_vendor_id, FALSE).'">'.JText::_('COM_VIRTUEMART_VENDOR_CONTACT').'</a>';
+			$linktos = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=tos&virtuemart_vendor_id=' . $virtuemart_vendor_id, FALSE).'">'.JText::_('COM_VIRTUEMART_VENDOR_TOS').'</a>';
 
 
 			//$this->assignRef('lineSeparator', $lineSeparator);
@@ -140,6 +143,7 @@ class VirtuemartViewVendor extends VmView {
 
 
 	function renderMailLayout($doVendor, $recipient) {
+
 		$this->setLayout('mail_html_question');
 		$this->comment = JRequest::getString('comment');
 		$virtuemart_vendor_id = JRequest::getInt('virtuemart_vendor_id');

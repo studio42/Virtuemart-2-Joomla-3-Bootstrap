@@ -62,14 +62,14 @@ else $front = '';
 	<?php
 	if ($total = count($this->productlist) ) {
 		$i = 0;
-
+		
 		$keyword = JRequest::getWord('keyword');
 		foreach ($this->productlist as $key => $product) {
 			$checked = JHTML::_('grid.id', $i , $product->virtuemart_product_id,null,'virtuemart_product_id');
-			$published = $this->toggle( $product->published, $i, 'published');
-			// featured bootstrap style , canChange is the permission 
-			$canChange = true;
-			$is_featured = vmHtml::featured($product->product_special, $i, $canChange);
+			$canDo = $this->canChange($product->created_by);
+			$published = $this->toggle( $product->published, $i, 'published',$canDo);
+			// featured bootstrap style , canDo is the permission 
+			$is_featured = vmHtml::featured($product->product_special, $i, $canDo);
 			?>
 			<tr >
 				<td align="right" ><?php echo $checked; ?></td>

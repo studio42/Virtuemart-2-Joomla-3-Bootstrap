@@ -18,9 +18,14 @@
 
 // Check to ensure this file is included in Joomla!
 defined ( '_JEXEC' ) or die ( 'Restricted access' );
-/* thank you for the ask question mail  */ ?>
 
+if(VmConfig::get('usefancy',0)){
+	$onclick = 'parent.jQuery.fancybox.close();';
+} else {
+	$onclick = 'parent.jQuery.facebox.close();';
+}
+?>
 <div class="productdetails-view">
 	<?php echo JText::_('COM_VIRTUEMART_ASK_QUESTION_THANK_YOU'); ?>
-	<button onclick="parent.jQuery.facebox.close();" type="button"><?php echo JText::_('COM_VIRTUEMART_CLOSE'); ?></button>
+	<button onclick="<?php echo $onclick ?>" type="button"><?php echo JText::_('COM_VIRTUEMART_CLOSE'); ?></button>
 </div>

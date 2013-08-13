@@ -210,7 +210,7 @@ class VirtueMartModelCategory extends VmModel {
 
 	public function getCategories($onlyPublished = true, $parentId = false, $childId = false, $keyword = "") {
 
-		$vendorId = 1;
+		$vendorId = Permissions::getInstance()->isSupervendor();
 
 		$select = ' c.`virtuemart_category_id`, l.`category_description`, l.`category_name`, c.`ordering`, c.`published`, cx.`category_child_id`, cx.`category_parent_id`, c.`shared` ';
 

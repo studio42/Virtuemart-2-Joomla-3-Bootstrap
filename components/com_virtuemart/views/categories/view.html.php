@@ -38,11 +38,9 @@ class VirtuemartViewCategories extends VmView {
 		$mainframe = JFactory::getApplication();
 		$pathway = $mainframe->getPathway();
 
-		/* Set the helper path */
-		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
-
 		//Load helpers
-		$this->loadHelper('image');
+		if (!class_exists('VmImage'))
+			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
 		$vendorId = JRequest::getInt('vendorid', 1);
 
 		$vendorModel = VmModel::getModel('vendor');
@@ -56,7 +54,8 @@ class VirtuemartViewCategories extends VmView {
 		$this->assignRef('categoryModel', $categoryModel);
 //		$categoryId = 0;	//The idea is that you can choose a parent catgory, this value should come from the joomla view parameter stuff
 		$category = $categoryModel->getCategory($categoryId);
-		if(!$category->published){
+
+		if(!empty($category->virtuemart_category_id) and empty($category->published)){
 			vmInfo('COM_VIRTUEMART_CAT_NOT_PUBL',$category->category_name,$categoryId);
 			return false;
 		}
@@ -99,13 +98,13 @@ class VirtuemartViewCategories extends VmView {
 		// Add the category name to the pathway
 		if ($category->parents) {
 			foreach ($category->parents as $c){
-				$pathway->addItem(strip_tags($c->category_name),JRoute::_('index.php?option=com_virtuemart&view=categories&virtuemart_category_id='.$c->virtuemart_category_id));
+				$pathway->addItem(strip_tags($c->category_name),JRoute::_('index.php?option=com_virtuemart&view=categories&virtuemart_category_id='.$c->virtuemart_category_id, FALSE));
 			}
 		} else {
 			if(!empty($category->category_name)){
-				$pathway->addItem(strip_tags($category->category_name,JRoute::_('index.php?option=com_virtuemart&view=categories&virtuemart_category_id='.$category->virtuemart_category_id)));
+				$pathway->addItem(strip_tags($category->category_name,JRoute::_('index.php?option=com_virtuemart&view=categories&virtuemart_category_id='.$category->virtuemart_category_id, FALSE)));
 			} else {
-				$pathway->addItem(strip_tags(JText::_('COM_VIRTUEMART_CATEGORY_TOP_LEVEL'),JRoute::_('index.php?option=com_virtuemart&view=categories&virtuemart_category_id='.$category->virtuemart_category_id)));
+				$pathway->addItem(strip_tags(JText::_('COM_VIRTUEMART_CATEGORY_TOP_LEVEL'),JRoute::_('index.php?option=com_virtuemart&view=categories&virtuemart_category_id='.$category->virtuemart_category_id, FALSE)));
 			}
 
 		}

@@ -67,7 +67,10 @@ jQuery(function($) {
 
 // All fixes to make bootstrap work on j2.5 vm2
  jQuery(function($){
+ var orderBtn = $('td.order .jgrid')
 	$('.btn-group label').addClass('btn');
-	$('td.order .jgrid').addClass('btn btn-mini');
+	orderBtn.addClass('btn btn-mini');
+	orderBtn.children('.uparrow').toggleClass('uparrow icon-uparrow');
+	orderBtn.children('.downarrow').toggleClass('downarrow icon-downarrow');
 	$('body#minwidth-body').removeAttr('id');
 });

@@ -59,7 +59,7 @@ if ($this->category->children ) {
 	    }
 
 	    // Category Link
-	    $caturl = JRoute::_ ( 'index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $category->virtuemart_category_id );
+	    $caturl = JRoute::_ ( 'index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $category->virtuemart_category_id , FALSE);
 
 		    // Show Category ?>
 		    <div class="category floatleft<?php echo $category_cellwidth . $show_vertical_separator ?>">

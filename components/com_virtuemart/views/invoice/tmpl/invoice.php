@@ -29,22 +29,9 @@ if ($this->_layout == "invoice") {
 
 if ($this->headFooter) {
     ?>
+<style><?php echo $this->vendor->vendor_letter_css; ?></style>
 <div class="vendor-details-view">
-    <h1><?php echo $this->vendor->vendor_store_name;
-        if (!empty($this->vendor->images[0])) {
-            ?>
-            <div class="vendor-image">
-                <?php echo $this->vendor->images[0]->displayMediaThumb('', false); ?>
-            </div>
-            <?php
-        }
-        ?>    </h1>
-	<div class="vendor-details-address">
-	<?php //Attention this is removed, please use directly
-		//echo $this->vendorAddress;
-		echo shopFunctions::renderVendorAddress($this->vendor->virtuemart_vendor_id, '<br />');
-		?>
-		</div>
+<?php echo ($this->format=="html")?$this->replaceVendorFields($this->vendor->vendor_letter_header_html, $this->vendor):$this->vendor->vendor_letter_header_html; ?>
 </div>
 
 <div class="vendor-description">
@@ -67,8 +54,8 @@ if ($this->headFooter) {
              }
          }
      }*/
-}
 ?></div> <?php
+}
 
 
 if ($this->print) {
@@ -92,10 +79,22 @@ if ($this->print) {
     echo $this->loadTemplate('items');
     ?>
 </div>
-    <?php    //echo $this->vendor->vendor_legal_info; ?>
+    <?php    
+if ($this->headFooter) {
+    echo ($this->format=="html")?$this->replaceVendorFields($this->vendor->vendor_letter_footer_html, $this->vendor):$this->vendor->vendor_letter_footer_html;
+}
+
+if ($this->vendor->vendor_letter_add_tos) {?>
+<div class="invoice_tos" <?php if ($this->vendor->vendor_letter_add_tos_newpage) { ?> style="page-break-before: always"<?php } ?>>
+    <?php echo $this->vendor->vendor_terms_of_service; ?>
+</div>
+<?php }
+?>
 </body>
 <?php
 } else {
+
+// NOT in print mode, full HTML view for a browser:
 
     ?>
 
@@ -119,9 +118,6 @@ if ($this->print) {
 	    <br clear="all"/><br/>';
 }
 
-if ($this->headFooter) {
-    echo $this->vendor->vendor_legal_info;
-}
 
 ?>
 

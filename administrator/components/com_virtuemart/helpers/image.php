@@ -176,6 +176,7 @@ class VmImage extends VmMediaHandler {
 	}
 
 	/**
+	 * Deprecated, only used in control panel
 	 * Display an image icon for the given image and create a link to the given link.
 	 *
 	 * @param string $link Link to use in the href tag

@@ -17,10 +17,18 @@
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
 ?>
-<?php if ($this->invoiceNumber) { ?>
+
+<?php
+if ($this->doctype == 'invoice') {
+  if ($this->invoiceNumber) { ?>
 <h1><?php echo JText::_('COM_VIRTUEMART_INVOICE').' '.$this->invoiceNumber; ?> </h1>
+<?php }
+} elseif ($this->doctype == 'deliverynote') { ?>
+<h1><?php echo JText::_('COM_VIRTUEMART_DELIVERYNOTE'); ?> </h1>
+<?php } elseif ($this->doctype == 'confirmation') { ?>
+<h1><?php echo JText::_('COM_VIRTUEMART_CONFIRMATION'); ?> </h1>
+
 <?php } ?>
 
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -63,11 +71,12 @@ defined('_JEXEC') or die('Restricted access');
     <td valign="top" align="left" width="50%"><?php echo $this->orderDetails['details']['BT']->customer_note; ?></td>
 </tr>
 <?php } ?>
-
+<?php if ($this->doctype == 'invoice') { ?>
      <tr>
 	<td class="orders-key"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_TOTAL') ?></strong></td>
 	<td class="orders-key" align="left"><strong><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_total,$this->currency); ?></strong></td>
     </tr>
+<?php } ?>
 
     <tr>
 	<td colspan="2"></td>

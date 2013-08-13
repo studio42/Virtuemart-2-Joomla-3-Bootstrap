@@ -52,29 +52,25 @@ class VirtueMartViewProductdetails extends VmView {
 
 	$document = JFactory::getDocument();
 
-	/* add javascript for price and cart */
+	// add javascript for price and cart, need even for quantity buttons, so we need it almost anywhere
 	vmJsApi::jPrice();
 
 	$mainframe = JFactory::getApplication();
 	$pathway = $mainframe->getPathway();
 	$task = JRequest::getCmd('task');
 
-	/* Set the helper path */
-	$this->addHelperPath(JPATH_VM_ADMINISTRATOR . DS . 'helpers');
+	if (!class_exists('VmImage'))
+		require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
 
-	//Load helpers
-	$this->loadHelper('image');
-
-
-	/* Load the product */
-//		$product = $this->get('product');	//Why it is sensefull to use this construction? Imho it makes it just harder
+	// Load the product
+	//$product = $this->get('product');	//Why it is sensefull to use this construction? Imho it makes it just harder
 	$product_model = VmModel::getModel('product');
 	$this->assignRef('product_model', $product_model);
-	$virtuemart_product_idArray = JRequest::getInt('virtuemart_product_id', 0);
-	if (is_array($virtuemart_product_idArray)) {
-	    $virtuemart_product_id = $virtuemart_product_idArray[0];
+	$virtuemart_product_idArray = JRequest::getVar('virtuemart_product_id', 0);
+	if (is_array($virtuemart_product_idArray) and count($virtuemart_product_idArray) > 0) {
+	    $virtuemart_product_id = (int)$virtuemart_product_idArray[0];
 	} else {
-	    $virtuemart_product_id = $virtuemart_product_idArray;
+	    $virtuemart_product_id = (int)$virtuemart_product_idArray;
 	}
 
     $quantityArray = JRequest::getVar ('quantity', array()); //is sanitized then
@@ -107,7 +103,7 @@ class VirtueMartViewProductdetails extends VmView {
 		$categoryLink = '&virtuemart_category_id=' . $last_category_id;
 	    }
 
-	    $mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink . '&error=404'));
+	    $mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink . '&error=404', FALSE));
 
 	    return;
 	}
@@ -168,8 +164,11 @@ class VirtueMartViewProductdetails extends VmView {
 	    $step_order_level = 1;
 	}
 	$this->assignRef('step_order_level', $step_order_level);
+
 	// Load the neighbours
-	$product->neighbours = $product_model->getNeighborProducts($product);
+    if (VmConfig::get('product_navigation', 1)) {
+	    $product->neighbours = $product_model->getNeighborProducts($product);
+	}
 
 	// Load the category
 	$category_model = VmModel::getModel('category');
@@ -187,7 +186,7 @@ class VirtueMartViewProductdetails extends VmView {
 		if ($category->parents) {
 			foreach ($category->parents as $c) {
 				if(is_object($c) and isset($c->category_name)){
-					$pathway->addItem(strip_tags($c->category_name), JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $c->virtuemart_category_id));
+					$pathway->addItem(strip_tags($c->category_name), JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $c->virtuemart_category_id, FALSE));
 				} else {
 					vmdebug('Error, parent category has no name, breadcrumb maybe broken, category',$c);
 				}
@@ -206,7 +205,7 @@ class VirtueMartViewProductdetails extends VmView {
 	}
 	if ($format == 'html') {
 	    // Set Canonic link
-	    $document->addHeadLink(JRoute::_($product->canonical, true, -1), 'canonical', 'rel', '');
+	    $document->addHeadLink($product->canonical, 'canonical', 'rel', '');
 	}
 
 	$uri = JURI::getInstance();
@@ -273,7 +272,7 @@ class VirtueMartViewProductdetails extends VmView {
 	$this->assignRef('edit_link', $edit_link);
 
 	// todo: atm same form for "call for price" and "ask a question". Title of the form should be different
-	$askquestion_url = JRoute::_('index.php?option=com_virtuemart&view=productdetails&task=askquestion&virtuemart_product_id=' . $product->virtuemart_product_id . '&virtuemart_category_id=' . $product->virtuemart_category_id . '&tmpl=component');
+	$askquestion_url = JRoute::_('index.php?option=com_virtuemart&view=productdetails&task=askquestion&virtuemart_product_id=' . $product->virtuemart_product_id . '&virtuemart_category_id=' . $product->virtuemart_category_id . '&tmpl=component', FALSE);
 	$this->assignRef('askquestion_url', $askquestion_url);
 
 	// Load the user details
@@ -357,7 +356,7 @@ class VirtueMartViewProductdetails extends VmView {
 		if ($virtuemart_category_id) {
 		    $categoryLink = '&virtuemart_category_id=' . $virtuemart_category_id;
 		}
-		$continue_link = JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink);
+		$continue_link = JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink, FALSE);
 
 		$continue_link_html = '<a href="' . $continue_link . '" />' . JText::_('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
 		$this->assignRef('continue_link_html', $continue_link_html);

@@ -75,7 +75,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 			}
 
 			 $emptyTable = '
-				<tr>
+				<tr class="custom-empty">
 					<td colspan="7">'.JText::_( 'COM_VIRTUEMART_CUSTOM_NO_TYPES').'</td>
 				<tr>';
 			?>
@@ -161,9 +161,11 @@ if (isset($this->product->customfields_fromParent)) { ?>
 	});
 	jQuery('select#customlist').chosen().change(function() {
 		selected = jQuery(this).find( 'option:selected').val() ;
-		jQuery.getJSON('<?php echo $this->jsonPath ?>index.php?option=com_virtuemart&view=product&task=getData&format=json&type=fields&id='+selected+'&row='+nextCustom+'&virtuemart_product_id=<?php echo $this->product->virtuemart_product_id; ?>',
+		jQuery.getJSON('<?php echo $this->jsonPath ?>index.php?option=com_virtuemart&tmpl=component&view=product&task=getData&format=json&type=fields&id='+selected+'&row='+nextCustom+'&virtuemart_product_id=<?php echo $this->product->virtuemart_product_id; ?>',
 		function(data) {
+			
 			jQuery.each(data.value, function(index, value){
+				jQuery("#"+index+' .custom-empty').remove();
 				jQuery("#"+index).append(value).find('.hasTooltip').tooltip();
 				jQuery('#'+index).trigger('sortupdate');
 			});

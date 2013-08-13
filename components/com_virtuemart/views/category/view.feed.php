@@ -37,11 +37,8 @@ class VirtuemartViewCategory extends VmView {
 
 		$doc = JFactory::getDocument ();
 
-		/* Set the helper path */
-		$this->addHelperPath (JPATH_VM_ADMINISTRATOR . DS . 'helpers');
-
-		//Load helpers
-		$this->loadHelper ('image');
+		if (!class_exists('VmImage'))
+			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
 		$productModel = VmModel::getModel ('product');
 		$categoryId = JRequest::getInt ('virtuemart_category_id', false);
 		$feed_show_prices = VmConfig::get ('feed_cat_show_prices', 0);

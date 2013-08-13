@@ -103,6 +103,8 @@ opacity: 0.2;
 .stars-orange{background-position:0 0 !important;}
 
 .tip-wrap{background:#fff}
+
+td.order .jgrid .text{display:none;}
 /* unused ??? */
 #vmPage input {background: #e8e8e8 url(../images/backgrounds.png) top repeat-x;padding: 5px 5px 4px 5px;border: solid #CAC9C9 1px;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;color: #000;}
 #vmPage input:hover {background: #e8e8e8 url(../images/backgrounds.png) repeat-x;background-position: 0px -40px;color: #0270bc;}

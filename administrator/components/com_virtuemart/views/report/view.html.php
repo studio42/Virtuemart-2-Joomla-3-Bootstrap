@@ -86,7 +86,7 @@ class VirtuemartViewReport extends VmView {
 				// if (JRequest::getWord('filter_order_Dir') == 'desc') array_multisort($itemsSold, SORT_DESC,$revenueBasic);
 				// else array_multisort($itemsSold, SORT_ASC,$revenueBasic);
 			// }
-		}
+		} else  $totalReport = null;
 		$this->report = $revenueBasic;
 		$this->totalReport = $totalReport;
 

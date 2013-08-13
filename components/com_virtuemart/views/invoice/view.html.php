@@ -21,10 +21,8 @@ defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
 if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+if (!class_exists('VmImage')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'image.php');
 
-// Set to '0' to use tabs i.s.o. sliders
-// Might be a config option later on, now just here for testing.
-define ('__VM_ORDER_USE_SLIDERS', 0);
 
 /**
  * Handle the orders view
@@ -36,6 +34,8 @@ class VirtuemartViewInvoice extends VmView {
 	var $uselayout	= '';
 	var $orderDetails = 0;
 	var $invoiceNumber =0;
+	var $doctype = 'invoice';
+	var $showHeaderFooter = true;
 
 	public function display($tpl = null)
 	{
@@ -47,12 +47,27 @@ class VirtuemartViewInvoice extends VmView {
 		} else {
 			$layout = $this->uselayout;
 		}
-		if($layout == 'mail'){
-			if (VmConfig::get('order_mail_html')) {
-				$layout = 'mail_html';
-			} else {
-				$layout = 'mail_raw';
-			}
+		switch ($layout) {
+			case 'invoice':
+				$this->doctype = $layout;
+				$title = JText::_('COM_VIRTUEMART_INVOICE');
+				break;
+			case 'deliverynote':
+				$this->doctype = $layout;
+				$layout = 'invoice';
+				$title = JText::_('COM_VIRTUEMART_DELIVERYNOTE');
+				break;
+			case 'confirmation':
+				$this->doctype = $layout;
+				$layout = 'confirmation';
+				$title = JText::_('COM_VIRTUEMART_CONFIRMATION');
+				break;
+			case 'mail':
+				if (VmConfig::get('order_mail_html')) {
+					$layout = 'mail_html';
+				} else {
+					$layout = 'mail_raw';
+				}
 		}
 		$this->setLayout($layout);
 
@@ -80,38 +95,13 @@ class VirtuemartViewInvoice extends VmView {
 
 		if($orderDetails==0){
 
-			// If the user is not logged in, we will check the order number and order pass
-			if ($orderPass = JRequest::getString('order_pass',false) and $orderNumber = JRequest::getString('order_number',false)){
-				$orderId = $orderModel->getOrderIdByOrderPass($orderNumber,$orderPass);
-				if(empty($orderId)){
-					echo 'Invalid order_number/password '.JText::_('COM_VIRTUEMART_RESTRICTED_ACCESS');
-					return 0;
-				}
-				$orderDetails = $orderModel->getOrder($orderId);
+			$orderDetails = $orderModel ->getMyOrderDetails();
+
+			if(!$orderDetails or empty($orderDetails['details'])){
+				echo JText::_('COM_VIRTUEMART_CART_ORDER_NOTFOUND');
+				return;
 			}
 
-			if($orderDetails==0){
-
-				$_currentUser = JFactory::getUser();
-				$cuid = $_currentUser->get('id');
-
-				// If the user is logged in, we will check if the order belongs to him
-				$virtuemart_order_id = JRequest::getInt('virtuemart_order_id',0) ;
-				if (!$virtuemart_order_id) {
-					$virtuemart_order_id = VirtueMartModelOrders::getOrderIdByOrderNumber(JRequest::getString('order_number'));
-				}
-				$orderDetails = $orderModel->getOrder($virtuemart_order_id);
-
-				if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
-				if(!Permissions::getInstance()->check("admin")) {
-					if(!empty($orderDetails['details']['BT']->virtuemart_user_id)){
-						if ($orderDetails['details']['BT']->virtuemart_user_id != $cuid) {
-							echo 'view '.JText::_('COM_VIRTUEMART_RESTRICTED_ACCESS');
-							return ;
-						}
-					}
-				}
-			}
 
 		}
 
@@ -230,58 +220,13 @@ class VirtuemartViewInvoice extends VmView {
 		$vendor->vendorFields = $vendorModel->getVendorAddressFields();
 		$this->assignRef('vendor', $vendor);
 
-		if ($document->getType() ==="pdf") {
-			$document->Set('Creator','Invoice by VirtueMart 2, used library tcpdf');
-			$document->Set('Author', $this->vendor->vendor_name);
-
-			$document->Set('Title',JText::_('COM_VIRTUEMART_INVOICE_TITLE'));
-			$document->Set('Subject',JText::sprintf('COM_VIRTUEMART_INVOICE_SUBJ',$this->vendor->vendor_store_name));
-			$document->Set('Keywords','Invoice by VirtueMart 2');
-			if(empty($this->vendor->images[0])){
-				vmError('Vendor image given path empty ');
-			} else if(empty($this->vendor->images[0]->file_url_folder) or empty($this->vendor->images[0]->file_name) or empty($this->vendor->images[0]->file_extension) ){
-				vmError('Vendor image given image is not complete '.$this->vendor->images[0]->file_url_folder.$this->vendor->images[0]->file_name.'.'.$this->vendor->images[0]->file_extension);
-				vmdebug('Vendor image given image is not complete, the given media',$this->vendor->images[0]);
-			} else if(!empty($this->vendor->images[0]->file_extension) and strtolower($this->vendor->images[0]->file_extension)=='png'){
-				vmError('Warning extension of the image is a png, tpcdf has problems with that in the header, choose a jpg or gif');
-			} else {
-				$imagePath = DS. str_replace('/',DS, $this->vendor->images[0]->file_url_folder.$this->vendor->images[0]->file_name.'.'.$this->vendor->images[0]->file_extension);
-				if(!file_exists(JPATH_ROOT.$imagePath)){
-					vmError('Vendor image missing '.$imagePath);
-				} else {
-					$document->Set('HeaderData', $imagePath, 60, $this->vendor->vendor_store_name, $this->vendorAddress);
-				}
-			}
-			// set header and footer fonts
-			$document->Set('HeaderFont',Array('helvetica', '', 8));
-			$document->Set('FooterFont',Array('helvetica', '', 10));
-
-			//TODO include the right file (in libraries/tcpdf/config/lang set some language-dependent strings
-			$l='';
-			$document->Set('LanguageArray',$l);
-
-			// set default font subsetting mode
-			$document->Set('FontSubsetting',true);
-
-			// Set font
-			// dejavusans is a UTF-8 Unicode font, if you only need to
-			// print standard ASCII chars, you can use core fonts like
-			// helvetica or times to reduce file size.
-			$document->Set('Font','helvetica', '', 8, '', true);
-		}
 // 		vmdebug('vendor', $vendor);
-		$task = JRequest::getWord('task',0);
-		if($task == 'checkStoreInvoice'){
-			$headFooter = false;
-		} else {
-			$headFooter = true;
-		}
 		if (strpos($layout,'mail') !== false) {
 			$lineSeparator="<br />";
 		} else {
 			$lineSeparator="\n";
 		}
-		$this->assignRef('headFooter', $headFooter);
+		$this->assignRef('headFooter', $this->showHeaderFooter);
 
 		//Attention, this function will be removed, it wont be deleted, but it is obsoloete in any view.html.php
 		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
@@ -330,6 +275,31 @@ class VirtuemartViewInvoice extends VmView {
 		$this->uselayout = 'mail';
 		$this->display();
 
+	}
+	
+	static function replaceVendorFields ($txt, $vendor) {
+		// TODO: Implement more Placeholders (ordernr, invoicenr, etc.); 
+		// REMEMBER TO CHANGE VmVendorPDF::replace_variables IN vmpdf.php, TOO!!!
+		// Page nrs. for mails is always "1"
+		$txt = str_replace('{vm:pagenum}', "1", $txt);
+		$txt = str_replace('{vm:pagecount}', "1", $txt);
+		$txt = str_replace('{vm:vendorname}', $vendor->vendor_store_name, $txt);
+		$imgrepl='';
+		if (!empty($vendor->images)) {
+			$img = $vendor->images[0];
+			$imgrepl = "<div class=\"vendor-image\">".$img->displayIt($img->file_url,'','',false, '', false, false)."</div>";
+		}
+		$txt = str_replace('{vm:vendorimage}', $imgrepl, $txt);
+		$vendorAddress = shopFunctions::renderVendorAddress($vendor->virtuemart_vendor_id, "<br/>");
+		// Trim the final <br/> from the address, which is inserted by renderVendorAddress automatically!
+		if (substr($vendorAddress, -5, 5) == '<br/>') {
+			$vendorAddress = substr($vendorAddress, 0, -5);
+		}
+		$txt = str_replace('{vm:vendoraddress}', $vendorAddress, $txt);
+		$txt = str_replace('{vm:vendorlegalinfo}', $vendor->vendor_legal_info, $txt);
+		$txt = str_replace('{vm:vendordescription}', $vendor->vendor_store_desc, $txt);
+		$txt = str_replace('{vm:tos}', $vendor->vendor_terms_of_service, $txt);
+		return "$txt";
 	}
 
 

@@ -28,6 +28,12 @@ jQuery(document).ready(function() {
 		"transitionIn"	:	"elastic",
 		"transitionOut"	:	"elastic"
 	});
+	jQuery(".additional-images .product-image").click(function() {
+		jQuery(".main-image img").attr("src",this.src );
+		jQuery(".main-image img").attr("alt",this.alt );
+		jQuery(".main-image a").attr("href",this.src );
+		jQuery(".main-image a").attr("title",this.alt );
+	}); 
 });
 ';
 $document->addScriptDeclaration ($imageJS);
@@ -49,12 +55,12 @@ if (!empty($this->product->images)) {
 		?>
     <div class="additional-images">
 		<?php
-		for ($i = 1; $i < $count_images; $i++) {
+		for ($i = 0; $i < $count_images; $i++) {
 			$image = $this->product->images[$i];
 			?>
             <div class="floatleft">
 	            <?php
-	                echo $image->displayMediaFull("",true,"rel='vm-additional-images'");
+	                echo $image->displayMediaFull('class="product-image" style="cursor: pointer"',false,"");
 	            ?>
             </div>
 			<?php

@@ -37,7 +37,11 @@ defined('_JEXEC') or die('');
 
 			<table class="html-email" cellspacing="0" cellpadding="0" border="0" width="100%">  <tr >
 				<th width="100%">
-				    <?php echo JText::_('COM_VIRTUEMART_QUESTION_ABOUT').' '.$this->product->product_name ?>
+				<?php echo JText::_('COM_VIRTUEMART_QUESTION_ABOUT').' ' ?>
+					<?php $product_link = JURI::root().'index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id=' . $this->product->virtuemart_category_id .
+			'&virtuemart_product_id=' . $this->product->virtuemart_product_id; ?>
+					<a href="<?php echo $product_link ?>"><?php echo $this->product->product_name ?></a>
+					<?php if ($this->product->product_sku) echo ' ('.JText::_('COM_VIRTUEMART_PRODUCT_SKU').' '.$this->product->product_sku .')' ; ?>
 				</th>
 			    </tr>
 			    <tr>

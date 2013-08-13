@@ -53,6 +53,8 @@ body {margin:0px}
 /* simplified front admin menu
 	view => language key
  */
+$params = JComponentHelper::getParams('com_virtuemart', true);
+$addTask = true ;
 $treemenu= array(
     'catalog' => array(
         'product&task=add' => jtext::_('COM_VIRTUEMART_PRODUCT').' ('.jtext::_('JNEW').')',
@@ -89,10 +91,17 @@ $treemenu= array(
 						<?php foreach ($treemenu as $topname => $menus) { ?>
 						<li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><?php echo $topname ?><span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<?php foreach ($menus as $link => $name) { ?>
-								<li>
-									<a href="<?php echo jRoute::_('index.php?option=com_virtuemart&tmpl=component&view='.$link) ?>" class="menu-cpanel"><?php echo jText::_($name) ?></a>
-								</li>
+								<?php foreach ($menus as $link => $name) {
+									if ($addTask) {
+										$addTask =  false ;
+										if (!$params->get('product_edit') ) continue;
+									} else {
+										if (!$params->get($link.'_edit') ) continue;
+									}
+									?>
+									<li>
+										<a href="<?php echo jRoute::_('index.php?option=com_virtuemart&tmpl=component&view='.$link) ?>" class="menu-cpanel"><?php echo jText::_($name) ?></a>
+									</li>
 								<?php } ?>
 							</ul>
 						</li>

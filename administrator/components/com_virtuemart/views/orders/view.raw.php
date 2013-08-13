@@ -163,7 +163,7 @@ class VirtuemartViewOrders extends VmView {
 			$this->orderstatuslist = $_orderStatusList;
 			$this->orderbt = $orderbt;
 			$this->orderst = $orderst;
-			$this->virtuemart_shipmentmethod_id = $orderbt->virtuemart_shipmentmethod_id);
+			$this->virtuemart_shipmentmethod_id = $orderbt->virtuemart_shipmentmethod_id;
 //Note Patrick Kohl , why error reporting 0 in one case in all vm2 and here ???
 			error_reporting(0);
 			parent::display($tpl);

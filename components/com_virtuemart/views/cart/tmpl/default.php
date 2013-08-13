@@ -19,12 +19,26 @@
 
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die('Restricted access');
-vmJsApi::js ('facebox');
-vmJsApi::css ('facebox');
-JHtml::_ ('behavior.formvalidation');
-$document = JFactory::getDocument ();
-$document->addScriptDeclaration ("
+if(VmConfig::get('usefancy',0)){
+	vmJsApi::js( 'fancybox/jquery.fancybox-1.3.4.pack');
+	vmJsApi::css('jquery.fancybox-1.3.4');
+	$box = "
+//<![CDATA[
+	jQuery(document).ready(function($) {
+		$('div#full-tos').hide();
+		var con = $('div#full-tos').html();
+		$('a#terms-of-service').click(function(event) {
+			event.preventDefault();
+			$.fancybox ({ div: '#full-tos', content: con });
+		});
+	});
 
+//]]>
+";
+} else {
+	vmJsApi::js ('facebox');
+	vmJsApi::css ('facebox');
+	$box = "
 //<![CDATA[
 	jQuery(document).ready(function($) {
 		$('div#full-tos').hide();
@@ -35,7 +49,12 @@ $document->addScriptDeclaration ("
 	});
 
 //]]>
-");
+";
+}
+
+JHtml::_ ('behavior.formvalidation');
+$document = JFactory::getDocument ();
+$document->addScriptDeclaration ($box);
 $document->addScriptDeclaration ("
 
 //<![CDATA[
@@ -61,8 +80,6 @@ $document->addScriptDeclaration ("
 ");
 $document->addStyleDeclaration ('#facebox .content {display: block !important; height: 480px !important; overflow: auto; width: 560px !important; }');
 
-//vmdebug('car7t pricesUnformatted',$this->cart->pricesUnformatted);
-//vmdebug('cart cart',$this->cart->pricesUnformatted );
 ?>
 
 <div class="cart-view">
@@ -133,9 +150,6 @@ $document->addStyleDeclaration ('#facebox .content {display: block !important; h
 			}
 			$userFieldsModel = VmModel::getModel ('userfields');
 			if ($userFieldsModel->getIfRequired ('agreed')) {
-				?>
-				<label for="tosAccepted">
-					<?php
 					if (!class_exists ('VmHtml')) {
 						require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
 					}
@@ -145,11 +159,13 @@ $document->addStyleDeclaration ('#facebox .content {display: block !important; h
 						?>
 						<div class="terms-of-service">
 
-							<a href="<?php JRoute::_ ('index.php?option=com_virtuemart&view=vendor&layout=tos&virtuemart_vendor_id=1') ?>" class="terms-of-service" id="terms-of-service" rel="facebox"
-							   target="_blank">
-								<span class="vmicon vm2-termsofservice-icon"></span>
-								<?php echo JText::_ ('COM_VIRTUEMART_CART_TOS_READ_AND_ACCEPTED'); ?>
-							</a>
+							<label for="tosAccepted">
+								<a href="<?php JRoute::_ ('index.php?option=com_virtuemart&view=vendor&layout=tos&virtuemart_vendor_id=1', FALSE) ?>" class="terms-of-service" id="terms-of-service" rel="facebox"
+							  	 target="_blank">
+									<span class="vmicon vm2-termsofservice-icon"></span>
+									<?php echo JText::_ ('COM_VIRTUEMART_CART_TOS_READ_AND_ACCEPTED'); ?>
+								</a>
+							</label>
 
 							<div id="full-tos">
 								<h2><?php echo JText::_ ('COM_VIRTUEMART_CART_TOS'); ?></h2>
@@ -160,14 +176,12 @@ $document->addStyleDeclaration ('#facebox .content {display: block !important; h
 						<?php
 					} // VmConfig::get('oncheckout_show_legal_info',1)
 					//echo '<span class="tos">'. JText::_('COM_VIRTUEMART_CART_TOS_READ_AND_ACCEPTED').'</span>';
-					?>
-				</label>
-				<?php
 			}
 			echo $this->checkout_link_html;
 			?>
 		</div>
 		<?php // Continue and Checkout Button END ?>
+		<input type='hidden' name='order_language' value='<?php echo $this->order_language; ?>'/>
 		<input type='hidden' id='STsameAsBT' name='STsameAsBT' value='<?php echo $this->cart->STsameAsBT; ?>'/>
 		<input type='hidden' name='task' value='<?php echo $this->checkout_task; ?>'/>
 		<input type='hidden' name='option' value='com_virtuemart'/>

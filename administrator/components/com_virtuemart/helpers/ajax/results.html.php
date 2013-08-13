@@ -1,8 +1,8 @@
 <?php defined ( '_JEXEC' ) or die ();
 	$jsons = array ();
 	$jsons['alt'] = array (
-		'0' =>JText::_('COM_VIRTUEMART_DISABLED'),
-		'1' =>JText::_('COM_VIRTUEMART_PUBLISHED'),
+		'0' =>JText::_('JNO'),
+		'1' =>JText::_('JYES'),
 		'publish' =>JText::_('COM_VIRTUEMART_PUBLISHED'),
 		'unpublish' =>JText::_('COM_VIRTUEMART_UNPUBLISHED')
 		) ;
@@ -129,6 +129,7 @@
 				});
 				var t=setTimeout(function(){$alert.alert('close')},5000);
 				$el.data('task', task.replace(val,valNew) );
+				if (data.type !== 'alert-error')
 				$img.toggleClass('icon-'+text.img[val]+' icon-'+text.img[valNew]); //attr('src', src.replace(text.img[val],text.img[valNew]) );
 				f.task.value = oldTask;
 			}

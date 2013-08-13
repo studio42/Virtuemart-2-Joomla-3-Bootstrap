@@ -38,7 +38,7 @@ if($this->print){
 		echo $this->loadTemplate('items');
 		?>
 		</div>
-		<?php	echo $this->vendor->vendor_legal_info; ?>
+		<?php	echo $this->vendor->vendor_letter_footer_html; ?>
 		</body>
 		<?php
 } else {
@@ -49,8 +49,7 @@ if($this->print){
 	<?php
 
 	/* Print view URL */
-	$details_url = juri::root().'index.php?option=com_virtuemart&view=orders&layout=details&tmpl=component&virtuemart_order_id=' . $this->orderdetails['details']['BT']->virtuemart_order_id .'&order_pass=' . JRequest::getString('order_pass',false) .'&order_number='.JRequest::getString('order_number',false);
-	$details_link = "<a href=\"javascript:void window.open('$details_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
+	$details_link = "<a href=\"javascript:void window.open('$this->details_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
 	//$details_link .= '<span class="hasTip print_32" title="' . JText::_('COM_VIRTUEMART_PRINT') . '">&nbsp;</span></a>';
 	$button = (JVM_VERSION==1) ? '/images/M_images/printButton.png' : 'system/printButton.png';
 	$details_link .= JHtml::_('image',$button, JText::_('COM_VIRTUEMART_PRINT'), NULL, true);

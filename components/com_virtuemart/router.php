@@ -382,6 +382,12 @@ function virtuemartParseRoute($segments) {
 		return $vars;
 	}
 
+	if ( $segments[0] == 'checkout') {
+		$vars['view'] = 'cart';
+		$vars['task'] = $segments[0];
+		return $vars;
+	}
+
 	if (  $helper->compareKey($segments[0] ,'manufacturer') ) {
 		array_shift($segments);
 		$vars['virtuemart_manufacturer_id'] =  $helper->getManufacturerId($segments[0]);
@@ -1013,7 +1019,7 @@ class vmrouterHelper {
 					elseif ($home == $view ) continue;
 					else $this->menu[$view]= $item->id ;
 
-					if ($item->home === 1) {
+					if ((int)$item->home === 1) {
 						$home = $view;
 						$homeid = $item->id;
 					}

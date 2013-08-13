@@ -22,9 +22,6 @@ defined('_JEXEC') or die('Restricted access');
 // Load the view framework
 if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
 
-// Set to '0' to use tabs i.s.o. sliders
-// Might be a config option later on, now just here for testing.
-define ('__VM_ORDER_USE_SLIDERS', 0);
 
 /**
  * Handle the orders view
@@ -33,6 +30,7 @@ class VirtuemartViewOrders extends VmView {
 
 	public function display($tpl = null)
 	{
+
 		$mainframe = JFactory::getApplication();
 		$pathway = $mainframe->getPathway();
 		$task = JRequest::getWord('task', 'list');
@@ -72,47 +70,14 @@ class VirtuemartViewOrders extends VmView {
 
 		if ($layoutName == 'details') {
 			$order_list_link = FALSE;
- 			$cuid = $_currentUser->get('id');
-// 			if(!empty($cuid)){
-				$order_list_link = JRoute::_('index.php?option=com_virtuemart&view=orders&layout=list');
-// 			} else {
-// 				$order_list_link = false;
-// 				$order_list_link = JRoute::_('index.php?option=com_virtuemart&view=orders');;
-// 			}
+
+			$order_list_link = JRoute::_('index.php?option=com_virtuemart&view=orders&layout=list', FALSE);
+
 			$this->assignRef('order_list_link', $order_list_link);
-			if(empty($cuid)){
-				// If the user is not logged in, we will check the order number and order pass
-				if ($orderPass = JRequest::getString('order_pass',false)){
-					$orderNumber = JRequest::getString('order_number',false);
-					$orderId = $orderModel->getOrderIdByOrderPass($orderNumber,$orderPass);
-					if(empty($orderId)){
-						echo JText::_('COM_VIRTUEMART_RESTRICTED_ACCESS');
-						return;
-					}
-					$orderDetails = $orderModel->getOrder($orderId);
-				}
-			}
-			else {
-				// If the user is logged in, we will check if the order belongs to him
-				$virtuemart_order_id = JRequest::getInt('virtuemart_order_id',0) ;
-				if (!$virtuemart_order_id) {
-					$virtuemart_order_id = VirtueMartModelOrders::getOrderIdByOrderNumber(JRequest::getString('order_number'));
-				}
-				$orderDetails = $orderModel->getOrder($virtuemart_order_id);
 
-				if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
-				if(!Permissions::getInstance()->check("admin")) {
-					if(!empty($orderDetails['details']['BT']->virtuemart_user_id)){
-						if ($orderDetails['details']['BT']->virtuemart_user_id != $cuid) {
-							echo JText::_('COM_VIRTUEMART_RESTRICTED_ACCESS');
-							return;
-						}
-					}
-				}
+			$orderDetails = $orderModel ->getMyOrderDetails();
 
-			}
-
-			if(empty($orderDetails['details'])){
+			if(!$orderDetails or empty($orderDetails['details'])){
 				echo JText::_('COM_VIRTUEMART_ORDER_NOTFOUND');
 				return;
 			}
@@ -168,6 +133,13 @@ class VirtuemartViewOrders extends VmView {
 			$this->assignRef('shipment_name', $shipment_name);
 			$this->assignRef('payment_name', $payment_name);
 			$this->assignRef('orderdetails', $orderDetails);
+
+			if($_currentUser->guest){
+				$details_url = juri::root().'index.php?option=com_virtuemart&view=orders&layout=details&tmpl=component&order_pass=' . JRequest::getString('order_pass',false) .'&order_number='.JRequest::getString('order_number',false);
+			} else {
+				$details_url = juri::root().'index.php?option=com_virtuemart&view=orders&layout=details&tmpl=component&virtuemart_order_id=' . $this->orderdetails['details']['BT']->virtuemart_order_id;
+			}
+			$this->assignRef('details_url', $details_url);
 
 			$tmpl = JRequest::getWord('tmpl');
 			$print = false;
@@ -253,6 +225,9 @@ class VirtuemartViewOrders extends VmView {
 		$this->assignRef('orderstatuses', $orderstatuses);
 
 		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+
+		$document = JFactory::getDocument();
+		$document->setMetaData('robots','NOINDEX, NOFOLLOW, NOARCHIVE, NOSNIPPET');
 
 		// this is no setting in BE to change the layout !
 		//shopFunctionsF::setVmTemplate($this,0,0,$layoutName);

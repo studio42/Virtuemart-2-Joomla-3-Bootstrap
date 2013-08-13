@@ -66,8 +66,9 @@ defined('_JEXEC') or die();
 
 			$row = $this->calcs[$i];
 			$checked = JHTML::_('grid.id', $i, $row->virtuemart_calc_id);
-			$published = $this->toggle( $row->published, $i, 'published');
-			$shared = $this->toggle($row->shared, $i, 'toggle.shared');
+			$canDo = $this->canChange($row->created_by);
+			$published = $this->toggle( $row->published, $i, 'published',$canDo);
+			$shared = $this->toggle($row->shared, $i, 'toggle.shared',$canDo);
 			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=calc&task=edit&cid[]=' . $row->virtuemart_calc_id);
 			?>
 			<tr class="<?php echo "row".$k; ?>">
@@ -109,7 +110,7 @@ defined('_JEXEC') or die();
 					<?php echo $row->calcShoppersList; ?>
 				</td>
 				<td align="center">
-					<?php echo $this->toggle($row->calc_shopper_published, $i, 'toggle.published'); ?>
+					<?php echo $this->toggle($row->calc_shopper_published, $i, 'toggle.calc_shopper_published',$canDo); ?>
 				</td>
 <?php /*				<td align="center">
 					<a href="#" onclick="return listItemTask('cb<?php echo $i;?>', 'toggle.calc_vendor_published')" title="<?php echo ( $row->calc_vendor_published == '1' ) ? JText::_('COM_VIRTUEMART_YES') : JText::_('COM_VIRTUEMART_NO');?>">

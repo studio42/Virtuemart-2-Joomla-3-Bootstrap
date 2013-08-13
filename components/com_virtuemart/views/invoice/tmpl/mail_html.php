@@ -45,6 +45,14 @@ defined('_JEXEC') or die('Restricted access');
 	    .sectiontableentry2, .html-email th, .cart-summary th{ background: #ccc;margin: 0px;padding: 10px;}
 	    .sectiontableentry1, .html-email td, .cart-summary td {background: #fff;margin: 0px;padding: 10px;}
 	    .line-through{text-decoration:line-through}
+	    <?php if ($this->vendor->vendor_letter_header==1 || $this->vendor->vendor_letter_footer==1) { echo $this->vendor->vendor_letter_css; } ?> 
+	    /* Firefox has a hard-coded font-size style for tables, so it won't by default inherit the surrounding div's font-size! */
+	    #vmdoc-footer table, #vmdoc-header table, .vmdoc-footer table, .vmdoc-header table { font-size: inherit; }
+	    #vmdoc-header h1, #vmdoc-footer h1, #vmdoc-header p, #vmdoc-footer p { margin-top: 0; margin-bottom: 0; }
+	    .vmdoc-header-image { padding: 0; vertical-align: top; }
+	    .vmdoc-header-vendor { width: 100%; }
+	    td.vmdoc-header-separator, td.vmdoc-header-separator hr { padding: 0; margin-top: 0; margin-bottom: 0; }
+	    td.vmdoc-header-separator { padding: 0; }
 	</style>
 
     </head>

@@ -25,7 +25,8 @@ class VmController extends JControllerLegacy{
 
 	protected $_cidName = 0;
 	protected $_cname = 0;
-
+	protected $_canEdit = 0;
+	protected $_vendor = null;
 	/**
 	 * Sets automatically the shortcut for the language and the redirect path
 	 *
@@ -44,12 +45,82 @@ class VmController extends JControllerLegacy{
 		$this->redirectPath = 'index.php?option=com_virtuemart&view='.$this->_cname;
 		if (JRequest::getWord( 'tmpl') === 'component') 
 			$this->redirectPath .= '&tmpl=component' ;
-		$task = explode ('.',JRequest::getCmd( 'task'));
-		if ($task[0] == 'toggle') {
-			$val = (isset($task[2])) ? $task[2] : NULL;
-			$this->toggle($task[1],$val);
+		if ( $this->checkVendor() ) {
+			$task = explode ('.',JRequest::getCmd( 'task'));
+			if ($task[0] == 'toggle') {
+				$val = (isset($task[2])) ? $task[2] : NULL;
+				$this->toggle($task[1],$val);
+			}
 		}
+	}
+	/*
+	 * control the vendor access
+	 * restrict acces to vendor only
+	 * edit own and new is not checked here.
+	 */
+	protected function checkVendor(){
+		$input = JFactory::getApplication()->input;
+		$this->_vendor = Permissions::getInstance()->isSuperVendor();
 
+		$params = JComponentHelper::getParams('com_virtuemart', true);
+		$this->_canEdit = $params->get($this->_cname.'_edit',null);
+		$this->_canAdd = $params->get($this->_cname.'_add',null);
+		$tasks = explode ('.',JRequest::getCmd( 'task','default'));
+		$canDo = true;
+		// var_dump($this->_vendor,$this->_canEdit,$this->_canAdd);
+		if (!$this->_vendor || ($this->_vendor > 1 && $this->_canEdit === null) ) {
+			$msg = JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
+			jRequest::setVar('task','');
+			$input->set('task','');
+			$this->setRedirect('index.php', $msg,'error');
+			$canDo = false;
+		} elseif ($this->_vendor > 1 && !$this->_canAdd && $tasks[0]=='add') {
+			$msg = JText::_('JLIB_APPLICATION_ERROR_CREATE_RECORD_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
+			jRequest::setVar('task','');
+			$input->set('task','');
+			$this->setRedirect($this->redirectPath, $msg,'error');
+			$canDo = false;
+		} elseif ($this->_vendor > 1 && !$this->_canEdit) {
+			// toggle is checked in controller
+			$taskBlacklist =array('add','edit','apply','save','publish','unpublish','apply','toggle','orderUp','orderDown','saveOrder');
+			// only check non admin
+			if (in_array($tasks[0],$taskBlacklist) ) {
+				$msg = JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
+				jRequest::setVar('task','');
+				$input->set('task','');
+				$this->setRedirect($this->redirectPath, $msg,'error');
+				$canDo = false;
+			}
+
+		} elseif ($this->_vendor > 1) {
+			$taskBlacklist =array('add','edit','apply','save');
+			// verify if it's own item
+			if (in_array($tasks[0],$taskBlacklist) && !$this->checkOwn() ) {
+				$msg = JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
+				jRequest::setVar('task','');
+				$input->set('task','');
+				$this->setRedirect($this->redirectPath, $msg,'error');
+				$canDo = false;
+			}
+		} elseif ($this->_vendor == 1 ) $canDo = true; // can do all
+		else $canDo = false; // can do nothing
+		return $canDo;
+	}
+	
+	/*
+	 * control the vendor access
+	 * restrict acces to vendor only
+	 * edit own and new is not checked here.
+	 */
+	protected function checkOwn($id = null){
+		if ($id === null) $id = jRequest::getint($this->_cidName);
+		if ($this->_vendor != 1) {
+			//check if this is my own
+			$model = VmModel::getModel($this->_cname);
+			$own = $model->checkOwn($id);
+			return $own;
+		}
+		return true;
 	}
 
 	/**
@@ -124,21 +195,9 @@ class VmController extends JControllerLegacy{
 	 */
 	function edit($layout='edit'){
 
-		JRequest::setVar('controller', $this->_cname);
-		JRequest::setVar('view', $this->_cname);
 		JRequest::setVar('layout', $layout);
-// 		JRequest::setVar('hidemenu', 1);
-
-		if(empty($view)){
-			$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
-			$document = JFactory::getDocument();
-			$viewType = $document->getType();
-			$view = $this->getView($this->_cname, $viewType);
-		}
-
-		$view->setLayout($layout);
-
 		$this->display();
+
 	}
 
 	/**
@@ -194,7 +253,7 @@ class VmController extends JControllerLegacy{
 			$type = 'notice';
 		} else {
 			$model = VmModel::getModel($this->_cname);
-			$ret = $model->remove($ids);
+			$ret = $model->remove($ids,$this->_vendor);
 			$errors = $model->getErrors();
 			$msg = JText::sprintf('COM_VIRTUEMART_STRING_DELETED',$this->mainLangKey);
 			if(!empty($errors) or $ret==false) {

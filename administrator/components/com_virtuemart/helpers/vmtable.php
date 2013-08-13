@@ -617,7 +617,7 @@ class VmTable extends JTable{
 					 $vmuser = $this->_db->loadRow();
 					}
 					else $vmuser = self::$_query_cache[md5($q)];
-					
+		
 					if($vmuser and count($vmuser)===2){
 						$virtuemart_vendor_id = $vmuser[0];
 						$user_is_vendor = $vmuser[1];

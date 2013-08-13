@@ -45,7 +45,8 @@ $currency = CurrencyDisplay::getInstance ();
 
 	    for ($i=0, $n=count($this->coupons); $i < $n; $i++) {
 		$row = $this->coupons[$i];
-		$published = $this->toggle( $row->published, $i, 'published');
+		$canDo = $this->canChange($row->created_by);
+		$published = $this->toggle( $row->published, $i, 'published',$canDo );
 		$checked = JHTML::_('grid.id', $i, $row->virtuemart_coupon_id);
 		?>
 	    <tr >

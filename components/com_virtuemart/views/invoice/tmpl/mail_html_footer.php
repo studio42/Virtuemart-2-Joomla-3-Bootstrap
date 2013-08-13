@@ -35,5 +35,13 @@ echo '<br/><br/>';
 /* GENERAL FOOTER FOR ALL MAILS */
 	echo JText::_('COM_VIRTUEMART_MAIL_FOOTER' ) . '<a href="'.$link.'">'.$this->vendor->vendor_name.'</a>';
         echo '<br/>';
-	echo $this->vendor->vendor_name .'<br />'.$this->vendor->vendor_phone .' '.$this->vendor->vendor_store_name .'<br /> '.$this->vendor->vendor_store_desc.'<br />'.$this->vendor->vendor_legal_info;
+	echo $this->vendor->vendor_name .'<br />'.$this->vendor->vendor_phone .' '.$this->vendor->vendor_store_name .'<br /> '.$this->vendor->vendor_store_desc.'<br />';
+?>	
+ 
+<?php if ($this->vendor->vendor_letter_footer == 1) { ?>
+<?php if ($this->vendor->vendor_letter_footer_line == 1) { ?><hr/><?php } ?>
+<div id="vmdoc-footer" class="vmdoc-footer" style="font-size: <?php echo $this->vendor->vendor_letter_footer_font_size; ?>pt;">
+<?php echo $this->replaceVendorFields($this->vendor->vendor_letter_footer_html, $this->vendor); ?>
+</div>
 
+<?php } // END if footer ?>

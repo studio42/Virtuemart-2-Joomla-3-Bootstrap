@@ -81,12 +81,12 @@ else $front = '';
 // 			if( !isset($this->depthList[$i])) $this->depthList[$i] = 0;
 
 // 			$row = $this->categories[$this->rowList[$i]];
-
+			$canDo = $this->canChange($cat->created_by);
 			$checked = JHTML::_('grid.id', $i, $cat->virtuemart_category_id);
-			$published = $this->toggle( $cat->published, $i, 'published');
+			$published = $this->toggle( $cat->published, $i, 'published',$canDo;);
 
 			$showProductsLink = JRoute::_('index.php?option=com_virtuemart&view=product&virtuemart_category_id=' . $cat->virtuemart_category_id.$front);
-			$shared = $this->toggle($cat->shared, $i, 'toggle.shared');
+			$shared = $this->toggle($cat->shared, $i, 'toggle.shared',$canDo);
 
 			$px = 0;
 			if(!isset($cat->level)){
@@ -138,7 +138,7 @@ else $front = '';
 					<?php echo $published;?>
 				</td>
 				<?php
-				if((Vmconfig::get('multix','none')!='none')) {
+				if( Vmconfig::get('multix','none')!='none' && $this->perms->check('admin') ) {
 					?><td align="center">
 						<?php echo $shared; ?>
                     </td>

@@ -54,7 +54,8 @@ defined('_JEXEC') or die();
 		$row = $this->manufacturers[$i];
 
 		$checked = JHTML::_('grid.id', $i, $row->virtuemart_manufacturer_id,null,'virtuemart_manufacturer_id');
-		$published = $this->toggle( $row->published, $i, 'published');
+		$canDo = $this->canChange($row->created_by);
+		$published = $this->toggle( $row->published, $i, 'published' ,$canDo );
 		?>
 	    <tr >
 		<td width="10">

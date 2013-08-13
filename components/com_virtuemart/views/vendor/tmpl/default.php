@@ -61,8 +61,9 @@ if (!empty($this->vendors)) { ?>
 		}
 
 		// vendor Elements
-		$vendorsLink = JRoute::_('index.php?option=com_virtuemart&view=vendor&virtuemart_vendor_id=' . $vendor->virtuemart_vendor_id);
-		$vendorIncludedProductsURL = JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_vendor_id=' . $vendor->virtuemart_vendor_id);
+		$vendorsLink = JRoute::_('index.php?option=com_virtuemart&view=vendor&virtuemart_vendor_id=' . $vendor->virtuemart_vendor_id, FALSE);
+		$productsLink = JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_vendor_id=' . $vendor->virtuemart_vendor_id, FALSE);
+		$vendorIncludedProductsURL = JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_vendor_id=' . $vendor->virtuemart_vendor_id, FALSE);
 		//$vendorImage = $vendor->images[0]->displayMediaThumb("",false);
 
 		// Show Category ?>
@@ -74,6 +75,7 @@ if (!empty($this->vendors)) { ?>
 				<a title="<?php echo $vendor->vendor_store_name; ?>" href="<?php echo $vendorsLink; ?>"><?php //echo $vendorImage;?></a>
 			</div>
 			<div><?php echo $vendor->vendor_name; ?></div>
+			<div><a title="<?php echo $vendor->vendor_store_name; ?>" href="<?php echo $productsLink; ?>"><?php echo $vendor->vendor_store_name; ?></a></div>
 		</div>
 		<?php
 		$ivendor ++;

@@ -72,7 +72,7 @@ $feedDescriptionType = array(
 		    <tr>
 			<td colspan="2">
 			    <div  class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_CATEGORY_LAYOUT_EXPLAIN'); ?>">
-			    <?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_CATEGORY_LAYOUT') ?>
+					<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_CATEGORY_LAYOUT') ?>
 			    </div>
 			    <?php
 			    echo JHTML::_('Select.genericlist', $this->categoryLayoutList, 'categorylayout', 'size=1', 'value', 'text', VmConfig::get('categorylayout',0));
@@ -82,7 +82,7 @@ $feedDescriptionType = array(
 		    <tr>
 			<td class="key">
 			    <span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_CATEGORIES_PER_ROW_EXPLAIN'); ?>">
-			    <?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_CATEGORIES_PER_ROW') ?>
+					<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_CATEGORIES_PER_ROW') ?>
 			    </span>
 			</td>
 			<td>
@@ -92,7 +92,7 @@ $feedDescriptionType = array(
 		    <tr>
 			<td colspan="2">
 			    <div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRODUCT_LAYOUT_EXPLAIN'); ?>">
-			    <?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRODUCT_LAYOUT') ?>
+					<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRODUCT_LAYOUT') ?>
 			    </div>
 			    <?php
 			    echo JHTML::_('Select.genericlist', $this->productLayoutList, 'productlayout', 'size=1', 'value', 'text', VmConfig::get('productlayout',0));
@@ -120,29 +120,37 @@ $feedDescriptionType = array(
 		    <input type="text" name="manufacturer_per_row" size="4" class="input-mini" value="<?php echo VmConfig::get('manufacturer_per_row',3) ?>" />
 		</td>
 	    </tr>
-	    <tr>
-		<td class="key">
-		    <span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PAGINATION_SEQUENCE_EXPLAIN'); ?>">
-		    <?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PAGINATION_SEQUENCE') ?>
-		    </span>
-		</td>
-		<td>
-		    <input type="text" name="pagination_sequence" class="input-mini" value="<?php echo VmConfig::get('pagination_sequence') ?>" />
-		</td>
-	    </tr>
       </table>
+    </fieldset>
+	<fieldset>
+		<legend><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PAGINATION_SEQUENCE'); ?></legend>
+		<table class="admintable">
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_LIST_MEDIA','mediaLimit',VmConfig::get('mediaLimit',20)); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_LLIMIT_INIT_BE','llimit_init_BE',VmConfig::get('llimit_init_BE',20)); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_BE','pagseq',VmConfig::get('pagseq')); ?>
+
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_LLIMIT_INIT_FE','llimit_init_FE',VmConfig::get('llimit_init_FE',20)); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_1','pagseq_1',VmConfig::get('pagseq_1')); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_2','pagseq_2',VmConfig::get('pagseq_2')); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_3','pagseq_3',VmConfig::get('pagseq_3')); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_4','pagseq_4',VmConfig::get('pagseq_4')); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_5','pagseq_5',VmConfig::get('pagseq_5')); ?>
+
+		</table>
     </fieldset>
 	<fieldset>
     <legend><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_CAT_FEED_SETTINGS') ?></legend>
     <table  width="100%">
 	<tr>
 	    <td class="key">
-		<span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_FEED_ENABLE_TIP'); ?>">
-		<label for="feed_cat_published"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_FEED_ENABLE') ?></label>
-		</span>
+			<span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_FEED_ENABLE_TIP'); ?>">
+				<label for="feed_cat_published">
+			<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_FEED_ENABLE'); ?>
+				</label>
+			</span>
 	    </td>
 	    <td>
-		<?php echo VmHTML::checkbox('feed_cat_published', VmConfig::get('feed_cat_published',0)); ?>
+			<?php echo VmHTML::checkbox('feed_cat_published', VmConfig::get('feed_cat_published',0)); ?>
 	    </td>
 	</tr>
 
@@ -492,8 +500,8 @@ $feedDescriptionType = array(
 			</td>
 		    </tr>
 		</table>
-	    </fieldset>
-		<fieldset>
+	</fieldset>
+	<fieldset>
     <legend><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_HOME_FEED_SETTINGS') ?></legend>
     <table  width="100%">
 	<tr>
@@ -614,6 +622,18 @@ $feedDescriptionType = array(
 <fieldset>
 <legend class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_JS_SETTINGS_TIP'); ?>"><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_JS_SETTINGS') ?></legend>
 		<table  width="100%">
+			<tr>
+				<td class="key">
+					<span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_CFG_FANCY_TIP'); ?>">
+						<label for="usefancy">
+					<?php echo JText::_('COM_VIRTUEMART_CFG_FANCY'); ?>
+						</label>
+					</span>
+				</td>
+				<td>
+					<?php echo VmHTML::checkbox('usefancy', VmConfig::get('usefancy', 0)); ?>
+				</td>
+			</tr>
 			<tr>
 			<td class="key">
 				<span class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_TIP'); ?>">

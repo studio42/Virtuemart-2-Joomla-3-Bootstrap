@@ -27,10 +27,7 @@ if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permis
 $isVendor = Permissions::getInstance()->isSuperVendor();//check("admin,storeadmin");
 $isAdmin = Permissions::getInstance()->check("admin,storeadmin");
 $offline = VmConfig::get('shop_is_offline',0);
-// 
-// var_dump($isVendor, $isAdmin);
 vmRam('Start');
-// vmSetStartTime();
 vmSetStartTime('Start');
 
 VmConfig::loadJLang('com_virtuemart', true);
@@ -57,39 +54,17 @@ if($offline && !$isAdmin){
 	$_controller = $input->get( 'view' , $_controller , 'word');
 	$trigger = 'onVmSiteController';
 // 	$task = JRequest::getWord('task',JRequest::getWord('layout',$_controller) );		$this makes trouble!
-	$task = $input->get( 'task' , null , 'word');
+
 
 	$basePath = JPATH_VM_SITE;
 	if (jRequest::getVar('tmpl') == 'component' && $isVendor ) {
-		// Get the component params
-		$params = JComponentHelper::getParams('com_virtuemart', true);
-		$canEdit = $params->get($_controller.'_edit',null);
-		$canAdd = $params->get($_controller.'_add',null);
-		$app = Jfactory::getApplication();
-		// verify if vendor  can do it
-		if (!$isAdmin) {
-			if ($canEdit !== null) {
-				if ($canEdit == 0 && ($task =='save' || $task =='apply') ) {
-					$app->enqueueMessage(JText::_('not allowed '.$_controller.'_edit' ) );
-					$task = $input->set( 'task' , 'cancel');
-					jRequest::setVar('task','cancel');
-				}
-			}
-			if ($canAdd !== null) {
-				if ($canAdd == 0 && $task =='add') {	
-					$app->enqueueMessage(JText::_('not allowed '.$_controller.'_add' ) );
-					$task = $input->set( 'task' , 'cancel');
-					jRequest::setVar('task','cancel');
-				}
-			}
-		}
-		
-		
+		// vendor check is in vmcontroller Back-end to secure front and backen acces same way
 		$jlang =JFactory::getLanguage();
 		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, null, true);
 		$jlang->load('', JPATH_ADMINISTRATOR, null, true);
 		$basePath = JPATH_VM_ADMINISTRATOR;
 	}
+
 }
 
 /* Create the controller name */
@@ -115,7 +90,8 @@ if (class_exists($_class)) {
 	JPluginHelper::importPlugin('vmuserfield');
 	$dispatcher = JDispatcher::getInstance();
 	$dispatcher->trigger('plgVmOnMainController', array($_controller));
-
+	// set task here that plugin or controller can change task, if we have permission control for eg.
+	$task = $input->get( 'task' , null , 'word');
     /* Perform the Request task */
     $controller->execute($task);
 
@@ -128,5 +104,5 @@ if (class_exists($_class)) {
 } else {
     vmDebug('VirtueMart controller not found: '. $_class);
     $app = Jfactory::getApplication();
-    $app->redirect('index.php?option=com_virtuemart');
+    $app->redirect(JRoute::_ ('index.php?option=com_virtuemart&view=virtuemart', FALSE));
 }
