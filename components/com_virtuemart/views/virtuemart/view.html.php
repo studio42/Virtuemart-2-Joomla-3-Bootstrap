@@ -41,27 +41,24 @@ class VirtueMartViewVirtueMart extends VmView {
 			$dispatcher = & JDispatcher::getInstance ();
 			JPluginHelper::importPlugin ('content');
 			$vendor->text = $vendor->vendor_store_desc;
-			jimport ('joomla.html.parameter');
-			$params = new JParameter('');
-
-			if (JVM_VERSION === 2) {
-				if (!isset($vendor->event)) {
-					$vendor->event = new stdClass();
-				}
-				$results = $dispatcher->trigger ('onContentPrepare', array('com_virtuemart.vendor', &$vendor, &$params, 0));
-				// More events for 3rd party content plugins
-				// This do not disturb actual plugins, because we don't modify $vendor->text
-				$res = $dispatcher->trigger ('onContentAfterTitle', array('com_virtuemart.vendor', &$vendor, &$params, 0));
-				$vendor->event->afterDisplayTitle = trim (implode ("\n", $res));
-
-				$res = $dispatcher->trigger ('onContentBeforeDisplay', array('com_virtuemart.vendor', &$vendor, &$params, 0));
-				$vendor->event->beforeDisplayContent = trim (implode ("\n", $res));
-
-				$res = $dispatcher->trigger ('onContentAfterDisplay', array('com_virtuemart.vendor', &$vendor, &$params, 0));
-				$vendor->event->afterDisplayContent = trim (implode ("\n", $res));
-			} else {
-				$results = $dispatcher->trigger ('onPrepareContent', array(& $vendor, & $params, 0));
+			$vendor->title = '';
+			$vendor->id = null;
+			$params = new JRegistry;
+			if (!isset($vendor->event)) {
+				$vendor->event = new stdClass();
 			}
+			$params = new JRegistry;
+			$results = $dispatcher->trigger ('onContentPrepare', array('com_virtuemart.vendor', &$vendor, &$params, 0));
+			// More events for 3rd party content plugins
+			// This do not disturb actual plugins, because we don't modify $vendor->text
+			$res = $dispatcher->trigger ('onContentAfterTitle', array('com_virtuemart.vendor', &$vendor, &$params, 0));
+			$vendor->event->afterDisplayTitle = trim (implode ("\n", $res));
+
+			$res = $dispatcher->trigger ('onContentBeforeDisplay', array('com_virtuemart.vendor', &$vendor, &$params, 0));
+			$vendor->event->beforeDisplayContent = trim (implode ("\n", $res));
+
+			$res = $dispatcher->trigger ('onContentAfterDisplay', array('com_virtuemart.vendor', &$vendor, &$params, 0));
+			$vendor->event->afterDisplayContent = trim (implode ("\n", $res));
 			$vendor->vendor_store_desc = $vendor->text;
 		}
 
