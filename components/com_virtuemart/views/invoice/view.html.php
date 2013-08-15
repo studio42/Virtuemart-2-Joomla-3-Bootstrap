@@ -220,6 +220,45 @@ class VirtuemartViewInvoice extends VmView {
 		$vendor->vendorFields = $vendorModel->getVendorAddressFields();
 		$this->assignRef('vendor', $vendor);
 
+		if ($document->getType() ==="pdf") {
+			$document->Set('Creator','Invoice by VirtueMart 2, used library tcpdf');
+			$document->Set('Author', $this->vendor->vendor_name);
+
+			$document->Set('Title',JText::_('COM_VIRTUEMART_INVOICE_TITLE'));
+			$document->Set('Subject',JText::sprintf('COM_VIRTUEMART_INVOICE_SUBJ',$this->vendor->vendor_store_name));
+			$document->Set('Keywords','Invoice by VirtueMart 2');
+			if(empty($this->vendor->images[0])){
+				vmError('Vendor image given path empty ');
+			} else if(empty($this->vendor->images[0]->file_url_folder) or empty($this->vendor->images[0]->file_name) or empty($this->vendor->images[0]->file_extension) ){
+				vmError('Vendor image given image is not complete '.$this->vendor->images[0]->file_url_folder.$this->vendor->images[0]->file_name.'.'.$this->vendor->images[0]->file_extension);
+				vmdebug('Vendor image given image is not complete, the given media',$this->vendor->images[0]);
+			} else if(!empty($this->vendor->images[0]->file_extension) and strtolower($this->vendor->images[0]->file_extension)=='png'){
+				vmError('Warning extension of the image is a png, tpcdf has problems with that in the header, choose a jpg or gif');
+			} else {
+				$imagePath = DS. str_replace('/',DS, $this->vendor->images[0]->file_url_folder.$this->vendor->images[0]->file_name.'.'.$this->vendor->images[0]->file_extension);
+				if(!file_exists(JPATH_ROOT.$imagePath)){
+					vmError('Vendor image missing '.$imagePath);
+				} else {
+					$document->Set('HeaderData', $imagePath, 60, $this->vendor->vendor_store_name, $this->vendorAddress);
+				}
+			}
+			// set header and footer fonts
+			$document->Set('HeaderFont',Array('helvetica', '', 8));
+			$document->Set('FooterFont',Array('helvetica', '', 10));
+
+			//TODO include the right file (in libraries/tcpdf/config/lang set some language-dependent strings
+			$l='';
+			$document->Set('LanguageArray',$l);
+
+			// set default font subsetting mode
+			$document->Set('FontSubsetting',true);
+
+			// Set font
+			// dejavusans is a UTF-8 Unicode font, if you only need to
+			// print standard ASCII chars, you can use core fonts like
+			// helvetica or times to reduce file size.
+			$document->Set('Font','helvetica', '', 8, '', true);
+		}
 // 		vmdebug('vendor', $vendor);
 		if (strpos($layout,'mail') !== false) {
 			$lineSeparator="<br />";

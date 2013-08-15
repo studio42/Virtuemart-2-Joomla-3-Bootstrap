@@ -61,8 +61,8 @@ class VirtuemartViewCoupon extends VmView {
 		$vendor = $vendorModel->getVendor();
 
 		$currencyModel = VmModel::getModel('Currency');
-		$currencyModel = $currencyModel->getCurrency($vendor->vendor_currency);
-		$this->vendor_currency = $currencyModel->currency_symbol);
+		$currency = $currencyModel->getCurrency($vendor->vendor_currency);
+		$this->vendor_currency = $currency->currency_symbol;
 
 		if ($layoutName == 'edit') {
 			if ($coupon->virtuemart_coupon_id < 1) {

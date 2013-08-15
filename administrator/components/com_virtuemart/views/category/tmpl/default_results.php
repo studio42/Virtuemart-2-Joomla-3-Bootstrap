@@ -83,7 +83,7 @@ else $front = '';
 // 			$row = $this->categories[$this->rowList[$i]];
 			$canDo = $this->canChange($cat->created_by);
 			$checked = JHTML::_('grid.id', $i, $cat->virtuemart_category_id);
-			$published = $this->toggle( $cat->published, $i, 'published',$canDo;);
+			$published = $this->toggle( $cat->published, $i, 'published',$canDo);
 
 			$showProductsLink = JRoute::_('index.php?option=com_virtuemart&view=product&virtuemart_category_id=' . $cat->virtuemart_category_id.$front);
 			$shared = $this->toggle($cat->shared, $i, 'toggle.shared',$canDo);

@@ -150,9 +150,15 @@ class VirtuemartViewOrders extends VmView {
 			$orderslist = $model->getOrdersList();
 
 			$this->orderstatuses = $orderStates;
-
+			foreach ($orderStates as $orderState) {
+				//$_orderStatusList[$orderState->virtuemart_orderstate_id] = $orderState->order_status_name;
+				//When I use update, I have to use this?
+				$_orderStatusList[$orderState->order_status_code] = JText::_($orderState->order_status_name);
+			}
+			$this->orderStatusList = $_orderStatusList ;
 			$this->loadHelper('currencydisplay');
-
+			$vendor = Permissions::getInstance()->isSuperVendor();
+			if ( $vendor > 1 ) $this->setLayout('vendor');
 			/* Apply currency This must be done per order since it's vendor specific */
 			$_currencies = array(); // Save the currency data during this loop for performance reasons
 

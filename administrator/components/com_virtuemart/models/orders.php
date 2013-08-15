@@ -241,7 +241,12 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		}*/
 
 		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
-		if(!Permissions::getInstance()->check('admin')){
+		$vendor = Permissions::getInstance()->isSuperVendor();
+		if ($vendor > 1 ) {
+			$from .= ' LEFT JOIN #__virtuemart_order_items as oi
+			ON oi.virtuemart_order_id = o.virtuemart_order_id';
+			$where[]= ' oi.virtuemart_vendor_id	 = '.(int)$vendor;
+		} elseif (!Permissions::getInstance()->check('admin')){
 			$myuser		=JFactory::getUser();
 			$where[]= ' u.virtuemart_user_id = ' . (int)$myuser->id.' AND o.virtuemart_vendor_id = "1" ';
 		} else {

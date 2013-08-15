@@ -57,7 +57,7 @@ if($offline && !$isAdmin){
 
 
 	$basePath = JPATH_VM_SITE;
-	if (jRequest::getVar('tmpl') == 'component' && $isVendor ) {
+	if (jRequest::getVar('tmpl') == 'component' && $isVendor && $_controller !== 'invoice') {
 		// vendor check is in vmcontroller Back-end to secure front and backen acces same way
 		$jlang =JFactory::getLanguage();
 		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, null, true);

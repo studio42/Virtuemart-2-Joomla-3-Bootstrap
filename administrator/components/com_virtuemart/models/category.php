@@ -212,7 +212,7 @@ class VirtueMartModelCategory extends VmModel {
 
 		$vendorId = Permissions::getInstance()->isSupervendor();
 
-		$select = ' c.`virtuemart_category_id`, l.`category_description`, l.`category_name`, c.`ordering`, c.`published`, cx.`category_child_id`, cx.`category_parent_id`, c.`shared` ';
+		$select = ' c.`virtuemart_category_id`, l.`category_description`, l.`category_name`, c.`ordering`, c.`published`, c.`created_by`, cx.`category_child_id`, cx.`category_parent_id`, c.`shared` ';
 
 		$joinedTables = ' FROM `#__virtuemart_categories_'.VMLANG.'` l
 				  JOIN `#__virtuemart_categories` AS c using (`virtuemart_category_id`)

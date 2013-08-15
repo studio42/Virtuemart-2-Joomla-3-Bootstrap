@@ -30,6 +30,16 @@ jimport('joomla.application.component.controller');
  */
 class VirtueMartControllerInvoice extends JController
 {
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->useSSL = VmConfig::get('useSSL',0);
+		$this->useXHTML = true;
+		VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
+		VmConfig::loadJLang('com_virtuemart_orders',TRUE);
+	}
+
 	public function getOrderDetails() {
 		$orderModel = VmModel::getModel('orders');
 		$orderDetails = 0;
@@ -70,7 +80,7 @@ class VirtueMartControllerInvoice extends JController
 
 	public function display($cachable = false, $urlparams = false)  {
 		$format = JRequest::getWord('format','html');
-
+		$layout = JRequest::getWord('layout', 'invoice');
 
 		if ($format != 'pdf') {
 			$document = JFactory::getDocument();
@@ -85,7 +95,7 @@ class VirtueMartControllerInvoice extends JController
 			/* Create the invoice PDF file on disk and send that back */
 			$orderModel = VmModel::getModel('orders');
 			$orderDetails = $this->getOrderDetails();
-			$fileName = $this->checkStoreInvoice($orderDetails, $viewName, $format);
+			$fileName = $this->getInvoicePDF($orderDetails, $viewName, $layout, $format);
 			if (file_exists ($fileName)) {
 				header ("Cache-Control: public");
 				header ("Content-Transfer-Encoding: binary\n");
@@ -102,9 +112,24 @@ class VirtueMartControllerInvoice extends JController
 		}
 
 	}
+	public function samplePDF() {
+		// if(!class_exists('VmVendorPDF')){
+		$jlang =JFactory::getLanguage();
+		$app = JApplication::getInstance('site', array(), 'J');
+		$attributes = array('charset' => 'utf-8', 'lineend' => 'unix', 'tab' => '  ', 'language' => $jlang->getTag(),
+			'direction' => $jlang->isRTL() ? 'rtl' : 'ltr');
+		$document = JDocument::getInstance('pdf', $attributes);
+		//$document->setDestination('F'); // render to file
+		$viewName='invoice';
+		// $viewLayout = JRequest::getCmd('layout', 'default');
+		$view = $this->getView($viewName, 'html', '', array('base_path' => $this->basePath, 'layout' => 'samplepdf' ));
+		$view->document = $document ;
+		$view->display();
+		//$pdf->PrintContents(JText::_('COM_VIRTUEMART_PDF_SAMPLEPAGE'));
 
-	function checkStoreInvoice($orderDetails = 0, $viewName='invoice', $format='html', $force = true){
+	}
 
+	function getInvoicePDF($orderDetails = 0, $viewName='invoice', $layout='invoice', $format='html', $force = false){
 		JRequest::setVar('task','checkStoreInvoice');
 
 		$force = true;
@@ -160,9 +185,7 @@ class VirtueMartControllerInvoice extends JController
 		$jlang->load('com_virtuemart', JPATH_SITE, $jlang->getDefault(), true);
 		$jlang->load('com_virtuemart', JPATH_SITE, null, true);
 
-
 		$app = JApplication::getInstance('site', array(), 'J');
-		// $template = $app->getTemplate();// does not work, the path is a static and cannot be redefined.
 		$attributes = array('charset' => 'utf-8', 'lineend' => 'unix', 'tab' => '  ', 'language' => $jlang->getTag(),
 			'direction' => $jlang->isRTL() ? 'rtl' : 'ltr');
 
@@ -195,13 +218,8 @@ class VirtueMartControllerInvoice extends JController
 		$view->invoiceDate = $invoiceNumberDate[1];
 
 		$view->orderDetails = $orderDetails;
-		$view->uselayout = 'invoice';
-		// $document->Set('Creator','Invoice by VirtueMart 2, used library tcpdf');
-		// $document->Set('Author', $view->vendor->vendor_name);
-
-		// $document->Set('Title',JText::_('COM_VIRTUEMART_INVOICE_TITLE'));
-		// $document->Set('Subject',JText::sprintf('COM_VIRTUEMART_INVOICE_SUBJ',$view->vendor->vendor_store_name));
-		// $document->Set('Keywords','Invoice by VirtueMart 2');
+		$view->uselayout = $layout;
+		$view->showHeaderFooter = false;
 		ob_start();
 		$view->display();
 		$document->setBuffer( ob_get_contents());

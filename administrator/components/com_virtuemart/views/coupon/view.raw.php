@@ -46,9 +46,10 @@ class VirtuemartViewCoupon extends VmView {
 		$vendorModel = VmModel::getModel('Vendor');
 		$vendorModel->setId(1);
 		$vendor = $vendorModel->getVendor();
-		$currencyModel = VmModel::getModel('Currency');
 		// something was wrong here !!! $currencyModel === $currencyModel
-		$this->vendor_currency = $currencyModel->getCurrency($vendor->vendor_currency);
+		$currencyModel = VmModel::getModel('Currency');
+		$currency = $currencyModel->getCurrency($vendor->vendor_currency);
+		$this->vendor_currency = $currency->currency_symbol;
 
 		$this->addStandardDefaultViewCommands();
 		$this->addStandardDefaultViewLists($model,0,'ASC');

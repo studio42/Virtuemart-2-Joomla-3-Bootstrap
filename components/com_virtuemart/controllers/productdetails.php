@@ -258,13 +258,12 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		//$post = JRequest::get('request');
 		// joomla 2.5 & 3 
 		$input = JFactory::getApplication()->input;
-		//$fields = $jinput->getArray('jform'); // array
-		//$input->get('val',default, 'int');
 
 		jimport ('joomla.utilities.arrayhelper');
 		$virtuemart_product_idArray = $input->get( 'virtuemart_product_id' , null, 'array'); //is sanitized then
 
 		if(is_array($virtuemart_product_idArray)){
+			JArrayHelper::toInteger ($virtuemart_product_idArray);
 			$virtuemart_product_id = $virtuemart_product_idArray[0];
 		} else {
 			$virtuemart_product_id = $virtuemart_product_idArray;
@@ -272,7 +271,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 
 		$customPrices = array();
 
-		$customVariants = $input->get( 'customPrice' , null, 'array'); //is sanitized then
+		$customVariants = $input->get( 'customPrice' , array(), 'array'); //is sanitized then
 		// var_dump($customVariants);
 
 		//MarkerVarMods
@@ -287,11 +286,16 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		}
 
 		$quantityArray = $input->get( 'quantity' , array(1) ,'array' ); //is sanitized then
+		JArrayHelper::toInteger ($quantityArray);
+		$quantity = 1;
+		if (!empty($quantityArray[0])) {
+			$quantity = $quantityArray[0];
+		}
 
 		$product_model = VmModel::getModel ('product');
 
 		//VmConfig::$echoDebug = TRUE;
-		$prices = $product_model->getPrice ($virtuemart_product_id, $customPrices, $quantityArray[0]);
+		$prices = $product_model->getPrice ($virtuemart_product_id, $customPrices, $quantity);
 
 		$priceFormated = array();
 		if (!class_exists ('CurrencyDisplay')) {
@@ -345,10 +349,10 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 			foreach ($errors as $error) {
 				$msg = ($error) . '<br />';
 			}
-			$this->setRedirect (JRoute::_ ('index.php?option=com_virtuemart&view=productdetails&layout=notify&virtuemart_product_id=' . $data['virtuemart_product_id']), $msg);
+			$this->setRedirect (JRoute::_ ('index.php?option=com_virtuemart&view=productdetails&layout=notify&virtuemart_product_id=' . $data['virtuemart_product_id'], FALSE), $msg);
 		} else {
 			$msg = JText::sprintf ('COM_VIRTUEMART_STRING_SAVED', JText::_ ('COM_VIRTUEMART_CART_NOTIFY'));
-			$this->setRedirect (JRoute::_ ('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $data['virtuemart_product_id']), $msg);
+			$this->setRedirect (JRoute::_ ('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $data['virtuemart_product_id'], FALSE), $msg);
 		}
 
 	}

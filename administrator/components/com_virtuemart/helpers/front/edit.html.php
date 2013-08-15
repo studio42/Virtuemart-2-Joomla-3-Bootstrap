@@ -4,6 +4,8 @@
 $app   = JFactory::getApplication();
 $messages = $app->getMessageQueue();
 $user = JFactory::getUser();
+if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+$admin = Permissions::getInstance()->check('admin');
 // html code for front-end administration
 $view=jrequest::getWord('view');
 $task =jrequest::getWord('task');
@@ -67,8 +69,8 @@ $treemenu= array(
     ),
     'sales' => array(
         'orders' => 'COM_VIRTUEMART_ORDER_S',
-        'shoppers' => 'COM_VIRTUEMART_USER_S',
-        'coupons' => 'COM_VIRTUEMART_COUPON_S',
+        'user' => 'COM_VIRTUEMART_USER_S',
+        'coupon' => 'COM_VIRTUEMART_COUPON_S',
         'report' => 'COM_VIRTUEMART_REPORT'
     )
 );
@@ -94,9 +96,9 @@ $treemenu= array(
 								<?php foreach ($menus as $link => $name) {
 									if ($addTask) {
 										$addTask =  false ;
-										if (!$params->get('product_edit') ) continue;
+										if (!$params->get('product_edit') && !$admin ) continue;
 									} else {
-										if (!$params->get($link.'_edit') ) continue;
+										if (!$params->get($link.'_edit') && !$admin ) continue;
 									}
 									?>
 									<li>
