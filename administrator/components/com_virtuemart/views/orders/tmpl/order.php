@@ -382,6 +382,7 @@ $document->addScriptDeclaration ( "
 	</div>
 </div>
 
+		<input type="hidden" name="task" value="updateOrderHead" />
 		<input type="hidden" name="option" value="com_virtuemart" />
 		<input type="hidden" name="view" value="orders" />
 		<input type="hidden" name="virtuemart_order_id" value="<?php echo $this->orderID; ?>" />
