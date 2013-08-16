@@ -277,7 +277,7 @@ class VmTable extends JTable{
 
 			//ADDED BY P2 PETER
 			if($this->created_on=="0000-00-00 00:00:00"){
-				$this->created_on = $this->$today;
+				$this->created_on = $today;
 			}
 			//END ADD
 
@@ -296,14 +296,14 @@ class VmTable extends JTable{
 	 * @author Max Milbers
 	 * $TableJoins array of table names to add and left join to find ID
 	 */
-	function load($oid=null,$overWriteLoadName=0,$andWhere=0,$tableJoins= array(),$joinKey = 0){
+	function load($oid=null,$overWriteLoadName=0,$andWhere='',$tableJoins= array(),$joinKey = 0){
 
 		if($overWriteLoadName!=0){
 			$k = $overWriteLoadName;
 		} else {
 			$k = $this->_pkey;
 		}
-
+		if (!$andWhere) $andWhere="";
 		if ($oid !== null) {
 			$this->$k = $oid;
 		} else {
@@ -351,7 +351,7 @@ class VmTable extends JTable{
 		}
 		//the cast to int here destroyed the query for keys like virtuemart_userinfo_id, so no cast on $oid
 		// 		$query = $select.$from.' WHERE '. $mainTable .'.`'.$this->_tbl_key.'` = "'.$oid.'"';
-		$query = $select.$from.' WHERE '. $mainTable .'.`'.$k.'` = "'.$oid.'"';
+		$query = $select.$from.' WHERE '. $mainTable .'.`'.$k.'` = "'.$oid.'"'.$andWhere;
 		
 		if (!isset(self::$_query_cache[md5($query)]))
 		{
