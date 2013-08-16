@@ -1697,6 +1697,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 
 		$order_userinfosTable = $this->getTable('order_userinfos');
 			$order_userinfosTable->load($virtuemart_order_id, 'virtuemart_order_id'," AND address_type='BT'");
+
 		if (!$order_userinfosTable->bindChecknStore($_userInfoData, true)){
 			vmError($order_userinfosTable->getError());
 			return false;
@@ -1711,17 +1712,18 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		$_userInfoData = array();
 		foreach ($_userFieldsST as $_fld) {
 			$_name = $_fld->name;
-			if(!empty( $_orderData["ST_{$_name}"])){
+			if(!empty( $_orderData['ST_'.$_name])){
 
-				$_userInfoData[$_name] = $_orderData["ST_{$_name}"];
+				$_userInfoData[$_name] = $_orderData['ST_'.$_name];
 			}
 		}
-
 		$_userInfoData['virtuemart_order_id'] = $virtuemart_order_id;
 		$_userInfoData['address_type'] = 'ST';
-
+		$bt_userinfo_id = $order_userinfosTable->virtuemart_order_userinfo_id;
 		$order_userinfosTable = $this->getTable('order_userinfos');
-			$order_userinfosTable->load($virtuemart_order_id, 'virtuemart_order_id'," AND address_type='ST'");
+		$order_userinfosTable->load($virtuemart_order_id, 'virtuemart_order_id'," AND address_type='ST'");
+		if ($bt_userinfo_id == $order_userinfosTable->virtuemart_order_userinfo_id) 
+			$order_userinfosTable->virtuemart_order_userinfo_id = null;
 		if (!$order_userinfosTable->bindChecknStore($_userInfoData, true)){
 			vmError($order_userinfosTable->getError());
 			return false;
