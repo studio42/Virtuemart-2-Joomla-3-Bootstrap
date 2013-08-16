@@ -3,7 +3,7 @@ Virtuemart 2.0 Joomla 3 Bootstrapped
 
 **This is an convertion for joomla 3.0**
 
-VIrtuemart 2 is a online shop solution for joomla 2.5.
+Virtuemart 2 is a online shop solution for Joomla 2.5.
 
 New features
 ------------
@@ -29,7 +29,7 @@ Tasks in lists view, publishing ..., only reload **260 Octets** (the message its
 
 Old parameters(jparameter) are removed and use now **New joomla formFields**.
 
-Compatible with most **PDF Engines***
+Compatible with most **PDF Engines***, this mean you are not restricted to use old tcPdf
 
 Clone product **with plugin** correctly, if the method is in the plugin.
 
@@ -50,19 +50,19 @@ All-in-one main plugins and modules are ready to run
 info
 ------------
 This release have to use joomla-pdf-document-view from github to make the orders PDF.  
-If you have always installed original virtuemart 2.0.20.b package, only to do is download and install this release and https://github.com/studio42/joomla-pdf-document-view/archive/master.zip
+If you have already installed original Virtuemart 2.0.20.b package, only to do is download and install this release and https://github.com/studio42/joomla-pdf-document-view/archive/master.zip
 Of course, use the Joomla installer to include all in your website.
 
 If you want better PDF, then look the full explain at http://studio42.github.io/joomla-pdf-document-view/index.html. But you have to update the original virtuemart with this repository to use another PDF class.
 
 Plugin Update
 ------------
-To update your plugin, simply use this minimal tutorial  
+To update your VritueMart Plugins, simply use this minimal tutorial  
 XML Manifest tags to change  
 `<install>` to `<extension>`  
 `<params>` to `<fields><fieldsets>`  
 and `<param>` to `<field>`  
-Now all plugins are compatible with this release and joomla 3.0
+Now all plugins are compatible with this Virtuemart release and joomla 3.0
 
 If you use old element with a path then replace  
 eg. for virtuemart elements  
@@ -73,6 +73,8 @@ to
 
 Not all fix (but most) listed here are fixed
 -------------
+
+This list is not updated anymore, some other bugs are fixed  
 1-Incompatible j1.5 & j1.7 :
 JComponentHelper::filterText(unfixed)
 If you try to edit a product in virtuemart 2.0.2 this does not work, upgrade to j2.5+
