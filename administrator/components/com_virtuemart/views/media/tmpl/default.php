@@ -26,6 +26,7 @@ jimport('joomla.filesystem.file'); ?>
 			echo $this->link;
 		}
 		else echo $this->lists['search_type']; ?>
+		<?php echo $this->DisplayFilterPublish() ?>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">

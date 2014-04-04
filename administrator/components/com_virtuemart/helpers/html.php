@@ -86,11 +86,11 @@ static function vmGetCharset() {
 		$lang =JFactory::getLanguage();
 		if($lang->hasKey($label.'_TIP')){
 			$labelHint = JText::_($label.'_TIP');
-			$label = '<span class="hasTooltip" title="'.JText::_($label.'_TIP').'">'.JText::_($label).'</span>' ;
+			$label = '<div class="hasTooltip" title="'.JText::_($label.'_TIP').'">'.JText::_($label).'</div>' ;
 		} //Fallback
 		else if($lang->hasKey($label.'_EXPLAIN')){
 			$labelHint = JText::_($label.'_EXPLAIN');
-			$label = '<span class="hasTooltip" title="'.JText::_($label.'_EXPLAIN').'">'.JText::_($label).'</span>' ;
+			$label = '<div class="hasTooltip" title="'.JText::_($label.'_EXPLAIN').'">'.JText::_($label).'</div>' ;
 		} else {
 			$label = JText::_($label);
 		}

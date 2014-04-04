@@ -17,7 +17,7 @@ if( !defined( '_JEXEC' ) ) die('Restricted access');
 * http://virtuemart.org
 */
 
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 /**
  * Report View class

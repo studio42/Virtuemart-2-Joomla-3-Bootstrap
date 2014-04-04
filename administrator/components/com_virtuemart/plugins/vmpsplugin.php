@@ -733,9 +733,11 @@ abstract class vmPSPlugin extends vmPlugin {
 		// 		$params = new JParameter($plugin->$plugin_params);
 		// 		$logo = $params->get($this->_psType . '_logos');
 		$logosFieldName = $this->_psType . '_logos';
-		$logos = $plugin->$logosFieldName;
-		if (!empty($logos)) {
-			$return = $this->displayLogos ($logos) . ' ';
+		if (!empty($plugin->$logosFieldName)) {
+			$logos = $plugin->$logosFieldName;
+			if (!empty($logos)) {
+				$return = $this->displayLogos ($logos) . ' ';
+			}
 		}
 		if (!empty($plugin->$plugin_desc)) {
 			$description = '<span class="' . $this->_type . '_description">' . $plugin->$plugin_desc . '</span>';

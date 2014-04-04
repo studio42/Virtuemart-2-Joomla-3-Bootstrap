@@ -36,7 +36,7 @@ if (version_compare (JVERSION, '3.0.0', 'ge')) {
 	
 	defined ('JVM_VERSION') or define ('JVM_VERSION', 3);
 }
-// else {
+else {
 	defined ('JVM_VERSION') or define ('JVM_VERSION', 2);
 	// load missing bootstrap +css library ... in joomla 2.5
 
@@ -46,7 +46,7 @@ if (version_compare (JVERSION, '3.0.0', 'ge')) {
 	JLoader::register('JHtmlIcons', JPATH_VM_ADMINISTRATOR.'/html/icons.php');
 	JLoader::register('JHtmlSidebar', JPATH_VM_ADMINISTRATOR.'/html/sidebar.php');
 	JLoader::register('JHtmlSortablelist', JPATH_VM_ADMINISTRATOR.'/html/sortablelist.php');
-// }
+}
 
 
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);

@@ -28,6 +28,7 @@ defined('_JEXEC') or die();
 
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch('COM_VIRTUEMART_PRODUCT','filter_ratings') ?>
+		<?php echo $this->DisplayFilterPublish() ?>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">

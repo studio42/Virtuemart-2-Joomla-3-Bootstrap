@@ -37,7 +37,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 							<div class="vm_thumb_image">
 								<span>'.$customfield->display.'</span>'.
 								VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
-							  .'<div class="vmicon vmicon-16-remove"></div>
+							  .'<div class="icon-remove"></div>
 							</div>';
 
 					} elseif ($customfield->field_type == 'R') {
@@ -46,7 +46,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 							<div class="vm_thumb_image">
 								<span>'.$customfield->display.'</span>'.
 								VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
-							  .'<div class="vmicon vmicon-16-remove"></div>
+							  .'<div class="icon-remove"></div>
 							</div>';
 
 					} elseif ($customfield->field_type == 'G') {
@@ -65,8 +65,8 @@ if (isset($this->product->customfields_fromParent)) { ?>
 							'.JText::_($this->fieldTypes[$customfield->field_type]).'
 							'.VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i).'
 							</td>
-							<td><span class="vmicon vmicon-16-remove"></span><input class="ordering" type="hidden" value="'.$customfield->ordering.'" name="field['.$i .'][ordering]" /></td>
-							<td ><span class="vmicon vmicon-16-move"></span></td>
+							<td><span class="icon-remove"></span><input class="ordering" type="hidden" value="'.$customfield->ordering.'" name="field['.$i .'][ordering]" /></td>
+							<td ><span class="icon-move"></span></td>
 						 </tr>';
 						}
 
@@ -148,7 +148,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 	nextCustom = <?php echo $i ?>;
 
 	jQuery(document).ready(function(){
-		jQuery('#custom_field,#cart_attribute').sortable({handle: ".vmicon-16-move"});
+		jQuery('#custom_field,#cart_attribute').sortable({handle: ".icon-move"});
 		// Need to declare the update routine outside the sortable() function so
 		// that it can be called when adding new customfields
 		jQuery('#custom_field,#cart_attribute').bind('sortupdate', function(event, ui) {
@@ -207,7 +207,15 @@ if (isset($this->product->customfields_fromParent)) { ?>
 		// console.log(handler);
 	  // });
 	// });
-
+	jQuery('#adminForm').on('click','.removable .icon-remove',function() {
+		var toRemove = jQuery(this).closest('.removable'); main = toRemove.parent();
+		if (main.attr('id') == 'pricesort' && main.children('.removable').length == 1 ) return;
+		else console.log(main.attr('id'));
+		jQuery(this).closest('.removable').fadeOut(  function() {
+			// Animation complete.
+			$(this).remove();
+		});
+	});
 
 eventNames = "click.remove keydown.remove change.remove focus.remove"; // all events you wish to bind to
 

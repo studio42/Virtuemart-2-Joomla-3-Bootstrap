@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 /**
  * HTML View class for maintaining the list of order types
@@ -64,7 +64,8 @@ class VirtuemartViewOrderstatus extends VmView {
 				$qry = 'SELECT ordering AS value, order_status_name AS text'
 				. ' FROM #__virtuemart_orderstates'
 				. ' ORDER BY ordering';
-				$ordering = JHTML::_('list.specificordering',  $orderStatus, $orderStatus->virtuemart_orderstate_id, $qry);
+				// $ordering = JHTML::_('list.specificordering',  $orderStatus, $orderStatus->virtuemart_orderstate_id, $qry);
+				$ordering = JHTML::_('list.ordering', 'ordering', $qry,'', $orderStatus, 0);
 				$this->assignRef('ordering', $ordering);
 
 

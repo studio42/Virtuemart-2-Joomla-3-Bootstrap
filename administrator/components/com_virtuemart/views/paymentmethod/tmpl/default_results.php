@@ -77,7 +77,7 @@ $cols = $multiX ? 10 : 9 ;
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<?php echo $this->editLink($row->virtuemart_paymentmethod_id, $row->payment_name) ?>">
+					<?php echo $this->editLink($row->virtuemart_paymentmethod_id, $row->payment_name) ?>
 				</td>
 				 <td align="left">
 					<?php echo $row->payment_desc; ?>

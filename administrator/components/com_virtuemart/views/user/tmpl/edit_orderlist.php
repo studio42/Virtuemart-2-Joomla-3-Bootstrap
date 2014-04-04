@@ -49,7 +49,7 @@ defined('_JEXEC') or die();
 
 		$n = 1;
 		foreach ($this->orderlist as $i => $row) {
-			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $row->virtuemart_order_id);
+			// $editlink = JROUTE::_('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $row->virtuemart_order_id);
 
 			//OrderPrint is deprecated
 // 			$print_url = JURI::base().'?option=com_virtuemart&view=orders&task=orderPrint&virtuemart_order_id='.$row->virtuemart_order_id.'&format=raw';
@@ -60,7 +60,7 @@ defined('_JEXEC') or die();
 			<tr >
 				 
 				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->order_number; ?></a>
+					<?php echo $this->editLink($row->virtuemart_order_id, $row->order_number,'virtuemart_order_id','','orders');  ?>
 				</td>
 				<td align="center">
 					<?php // echo $print_link; ?>

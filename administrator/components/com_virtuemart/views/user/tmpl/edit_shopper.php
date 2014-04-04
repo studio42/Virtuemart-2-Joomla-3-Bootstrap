@@ -332,9 +332,5 @@ function gotocontact(id) {
 	<?php } ?>
 </fieldset>
 
-<input type="hidden" name="virtuemart_user_id" value="<?php echo $this->userDetails->JUser->get('id'); ?>" />
-<input type="hidden" name="virtuemart_user_id[]" value="<?php echo $this->userDetails->JUser->get('id'); ?>" />
-<input type="hidden" name="contact_id" value="" />
-<input type="hidden" name="layout" value="<?php echo $this->_layout; ?>" />
 
 

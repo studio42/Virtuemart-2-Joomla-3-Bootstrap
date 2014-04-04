@@ -50,7 +50,9 @@ defined('_JEXEC') or die();
 			$checked = JHTML::_('grid.id', $i, $row->virtuemart_manufacturercategories_id);
 			$canDo = $this->canChange($row->created_by);
 			$published = $this->toggle( $row->published, $i, 'published',$canDo);
-			$manufacturersList = JROUTE::_('index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id);
+			$manufacturersList ='index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id;
+			if ($this->frontEdit) $manufacturersList .='&tmpl=component';
+			$manufacturersList = JROUTE::_($manufacturersList);
 
 			?>
 			<tr >

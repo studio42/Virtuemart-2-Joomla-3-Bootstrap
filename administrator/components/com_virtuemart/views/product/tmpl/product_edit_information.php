@@ -26,120 +26,46 @@ $i=0;
 
 <fieldset>
 	<legend>
-	<?php echo JText::_('COM_VIRTUEMART_PRODUCT_INFORMATION'); echo ' id: '.$this->product->virtuemart_product_id ?></legend>
+	<?php echo JText::_('COM_VIRTUEMART_PRODUCT_INFORMATION').( $this->product->virtuemart_product_id ? ' id: '.$this->product->virtuemart_product_id : '') ?></legend>
     <div class="row-fluid"> 
-	     <div class="span6"> 
-			<table class="table table-striped table-key">
-				<tr>
-					<td>
-					<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PUBLISH') ?>
-					</td>
-					<td >
-						<?php echo  VmHTML::checkbox('published', $this->product->published); ?>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_SKU') ?>
-					</td>
-					<td >
-						<input type="text" class="inputbox" name="product_sku" id="product_sku" value="<?php echo $this->product->product_sku; ?>" size="32" maxlength="64" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_NAME') ?>
-					</td>
-					<td>
-						<input type="text" class="inputbox"  name="product_name" id="product_name" value="<?php echo htmlspecialchars($this->product->product_name); ?>" size="32" maxlength="255" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_ALIAS') ?>
-					</td>
-					<td >
-						<input type="text" class="inputbox"  name="slug" id="slug" value="<?php echo $this->product->slug; ?>" size="32" maxlength="255" />
-					</td>
-				</tr>
-				<tr>
-					<td >
-						<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_URL') ?>
-					</td>
-					<td colspan="3">
-						<input type="text" class="inputbox" name="product_url" value="<?php echo $this->product->product_url; ?>" size="32" maxlength="255" />
-					</td>
-				</tr>
-            </table>
-	</div>
-	<div class="span6"> 
-        <table class="table table-striped">
+		<table class="span6">
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_FORM_PUBLISH','published',$this->product->published); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_SKU','product_sku',$this->product->product_sku); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_NAME','product_name',$this->product->product_name); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_ALIAS','slug',$this->product->slug); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_URL','product_url',$this->product->product_url); ?>
+		</table>
+		<table class="span6">
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_FORM_SPECIAL','product_special',$this->product->product_special); ?>
+
+			<?php	if(Vmconfig::get('multix','none')!=='none'){ ?>
+				<?php echo VmHTML::row('raw','COM_VIRTUEMART_VENDOR', $this->lists['vendors'] ); ?>
+			<?php } 
+			if (isset($this->lists['manufacturers'])) { ?>
+				<?php echo VmHTML::row('raw','COM_VIRTUEMART_MANUFACTURER', $this->lists['manufacturers'] ); ?>
+			<?php }?>
 			<tr>
-				<td >
-					<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_SPECIAL') ?>
+				<td  valign="top">
+					
+					<?php echo JText::_('COM_VIRTUEMART_CATEGORY_S') ?>
 				</td>
-				<td >
-					<?php echo VmHTML::checkbox('product_special', $this->product->product_special); ?>
+				<td>
+					<select class="inputbox" style="width:100%" id="categories" name="categories[]" multiple="multiple" size="10">
+						<option value=""><?php echo JText::_('COM_VIRTUEMART_UNCATEGORIZED')  ?></option>
+						<?php echo $this->category_tree; ?>
+					</select>
+					<?php
+					// It is important to have all product information in the form, since we do not preload the parent
+					// I place the ordering here, maybe we make it editable later.
+						if(!isset($this->product->ordering)) $this->product->ordering = 0;
+					?>
+					<input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering">
 				</td>
 			</tr>
-			<?php	if(Vmconfig::get('multix','none')!=='none'){ ?>
-				<tr>
-					<td >
-						<?php echo JText::_('COM_VIRTUEMART_VENDOR') ?>
-					</td>
-				<td>
-					<?php echo $this->lists['vendors'];?>
-				</td>
-				</tr>
-				<?php } ?>
+			<?php echo VmHTML::row('raw','COM_VIRTUEMART_SHOPPER_FORM_GROUP', $this->shoppergroupList ); ?>
+			<?php echo VmHTML::row('raw','COM_VIRTUEMART_PRODUCT_DETAILS_PAGE', JHTML::_('Select.genericlist', $this->productLayouts, 'layout', 'size=1', 'value', 'text', $this->product->layout) ) ?>
 
-
-				<?php if(isset($this->lists['manufacturers'])){?>
-				<tr>
-					<td >
-						<?php echo JText::_('COM_VIRTUEMART_MANUFACTURER') ?>
-					</td>
-					<td>
-						<?php echo $this->lists['manufacturers'];?>
-					</td>
-				</tr>
-				<?php }?>
-				<tr>
-					<td  valign="top">
-						
-						<?php echo JText::_('COM_VIRTUEMART_CATEGORY_S') ?>
-					</td>
-					<td>
-						<select class="inputbox" style="width:100%" id="categories" name="categories[]" multiple="multiple" size="10">
-							<option value=""><?php echo JText::_('COM_VIRTUEMART_UNCATEGORIZED')  ?></option>
-							<?php echo $this->category_tree; ?>
-						</select>
-						<?php
-						// It is important to have all product information in the form, since we do not preload the parent
-						// I place the ordering here, maybe we make it editable later.
-							if(!isset($this->product->ordering)) $this->product->ordering = 0;
-						?>
-						<input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<?php echo JText::_('COM_VIRTUEMART_SHOPPER_FORM_GROUP') ?>
-					</td>
-					<td>
-						<?php echo $this->shoppergroupList; ?>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<?php echo JText::_('COM_VIRTUEMART_PRODUCT_DETAILS_PAGE') ?>
-					</td>
-					<td>
-						<?php echo JHTML::_('Select.genericlist', $this->productLayouts, 'layout', 'size=1', 'value', 'text', $this->product->layout); ?>
-					</td>
-				</tr>
-            </table>
-		</div>
+		</table>
 	</div>
 </fieldset>
 <table width="100%">
@@ -225,9 +151,7 @@ $i=0;
 		$this->lists['shoppergroups'] = ShopFunctions::renderShopperGroupList ($this->tempProduct->virtuemart_shoppergroup_id, false, 'price_shoppergroup_id[]','price_shoppergroup_id'.$sPrices['virtuemart_product_price_id']);
 		?>
 		<div class="price-container removable">
-			<span class="vmicon vmicon-16-move price_ordering"></span>
-			<?php /* <span class="vmicon vmicon-16-new price-clone" ></span> */ ?>
-			<span class="vmicon vmicon-16-remove price-remove"></span>
+				<span class="icon-move price_ordering label"> </span> <span class="icon-remove price-remove  label pull-right"> </span>
 			<?php //echo JText::_ ('COM_VIRTUEMART_PRODUCT_PRICE_ORDER');
 			echo $this->loadTemplate ('price'); ?>
 		</div>
@@ -238,7 +162,7 @@ $i=0;
 	</div>
     <div class="button2-left">
         <div class="blank">
-            <a href="#" id="add_new_price" class="btn"><?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_ADD_PRICE') ?> </a>
+            <a href="#" id="add_new_price" class="btn"><i class="icon icon-new"></i> <?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_ADD_PRICE') ?> </a>
         </div>
     </div>
 
@@ -253,13 +177,14 @@ $i=0;
 		<table class="adminform">
 			<tr class="row<?php echo $i?>">
 				<td width="50%">
-				<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=product&task=createVariant&virtuemart_product_id='.$this->product->virtuemart_product_id.'&'.JSession::getFormToken().'=1' ); ?>
+				<?php 
+				// $link=JROUTE::_('index.php?option=com_virtuemart&view=product&task=createVariant&virtuemart_product_id='.$this->product->virtuemart_product_id.'&'.JSession::getFormToken().'=1' ); 
+				$link = $this->editLink($this->product->virtuemart_product_id,'<i class="icon icon-new"></i> '.jText::_('COM_VIRTUEMART_PRODUCT_ADD_CHILD'),null,'class="btn"', null,'createVariant&'.JSession::getFormToken().'=1');
+				?>
 
 						<div class="button2-left">
 							<div class="blank">
-								<a href="<?php echo $link ?>" class="btn">
-								<?php echo Jtext::_('COM_VIRTUEMART_PRODUCT_ADD_CHILD'); ?>
-								</a>
+								<?php echo $link ?>
 							</div>
 						</div>
 				</td>
@@ -273,8 +198,8 @@ $i=0;
 
 
 					$result = JText::_('COM_VIRTUEMART_EDIT').' ' . $this->product_parent->product_name;
-					echo ' | '.JHTML::_('link', JRoute::_('index.php?view=product&task=edit&virtuemart_product_id='.$this->product->product_parent_id
-						.'&option=com_virtuemart'), $this->product_parent->product_name, array('title' => $result)).' | '.$this->parentRelation;
+					echo ' | '.$this->editLink($this->product->product_parent_id
+						, $this->product_parent->product_name, null, array('title' => $result)).' | '.$this->parentRelation;
 				}
 				?>
 				</td>
@@ -318,7 +243,7 @@ $i=0;
 							$editBtn = '<i class="icon icon-edit"></i> '.$child->slug;
 							 ?>
 							<tr>
-								<td><?php echo JHTML::_('link', JRoute::_('index.php?view=product&task=edit&product_parent_id='.$this->product->virtuemart_product_id.'&virtuemart_product_id='.$child->virtuemart_product_id.'&option=com_virtuemart'), $editBtn, array('title' => JText::_('COM_VIRTUEMART_EDIT').' '.$child->product_name, 'class' =>'btn')) ?></td>
+								<td><?php echo $this->editLink($child->virtuemart_product_id.'&product_parent_id='.$this->product->virtuemart_product_id, $editBtn, null, array('title' => JText::_('COM_VIRTUEMART_EDIT').' '.$child->product_name, 'class' =>'btn')) ?></td>
 								<td><input type="text" class="inputbox input-block-level" name="childs[<?php echo $child->virtuemart_product_id ?>][product_name]" size="32" value="<?php echo $child->product_name ?>" /></td>
 								<td><input type="text" class="inputbox input-mini" name="childs[<?php echo $child->virtuemart_product_id ?>][product_price][]" size="10" value="<?php echo $child->product_price ?>" /><input type="hidden" name="childs[<?php echo $child->virtuemart_product_id ?>][virtuemart_product_price_id][]" value="<?php echo $child->virtuemart_product_price_id?>"  ></td>
 								<td><?php echo $child->product_in_stock ?></td>
@@ -383,7 +308,7 @@ $i=0;
 			return false;
 		});
 		// icon exit but order is not saved in price table
-		$('#pricesort').sortable({handle: ".vmicon-16-move"});
+		$('#pricesort').sortable({handle: ".icon-move"});
 		// little hidden input switcher
 		$('.productPriceTable .toggle-hiden').click(function() {
 			var clicked = $(this), input = clicked.children('input'), on = input.val();

@@ -21,29 +21,29 @@ defined('_JEXEC') or die('Restricted access');
  echo $this->langList ?>
 <fieldset>
 	<legend><?php echo JText::_('COM_VIRTUEMART_FORM_GENERAL'); ?></legend>
-	<table class="adminform">
-		<!-- Commented out for future use
-		<tr>
-			<td class="key">
-				<label for="shared">
-					<?php echo JText::_('COM_VIRTUEMART_CATEGORY_FORM_SHARED'); ?>:
-				</label>
-			</td>
-			<td>
-				<?php
-					$categoryShared = isset($this->relationInfo->category_shared) ? $this->relationInfo->category_shared : 1;
-					echo VmHTML::booleanlist('shared', $categoryShared);
-				?>
-			</td>
-		</tr>
-		-->
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_NAME','category_name',$this->category->category_name); ?>
-		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISHED','published',$this->category->published); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_SLUG','slug',$this->category->slug); ?>
-		<?php echo VmHTML::row('editor','COM_VIRTUEMART_DESCRIPTION','category_description',$this->category->category_description); ?>
-	</table>
+	<div class="row-fluid">
+		<table class="span6">
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_CATEGORY_NAME','category_name',$this->category->category_name); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_SLUG','slug',$this->category->slug); ?>
+		</table>
+		<table class="span6">
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISHED','published',$this->category->published); ?>
+			<?php
+			$categoryShared = isset($this->relationInfo->category_shared) ? $this->relationInfo->category_shared : 1;
+			echo VmHTML::row('booleanlist','COM_VIRTUEMART_CATEGORY_FORM_SHARED','shared', $categoryShared);
+			?>
+
+		</table>
+	</div>
+
 </fieldset>
-<div class=row-fluid">
+<fieldset>
+	<legend><?php echo JText::_('COM_VIRTUEMART_DESCRIPTION'); ?></legend>
+	<div>
+		<?php echo VmHTML::editor('category_description',$this->category->category_description); ?>
+	</div>
+</fieldset>
+<div class="row-fluid">
 <fieldset class="span6">
 	<legend><?php echo JText::_('COM_VIRTUEMART_DETAILS'); ?></legend>
 	<table>

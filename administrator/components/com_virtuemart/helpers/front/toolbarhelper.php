@@ -38,11 +38,12 @@ abstract class JToolbarHelper
 			$icon = 'icon-48-' . preg_replace('#\.[^.]*$#', '', $icon);
 		}
 
-		$html = '<div class="pagetitle ' . htmlspecialchars(implode(' ', $icons)) . '"><h2>' . $title . '</h2></div>';
+		// $html = '<div class="pagetitle ' . htmlspecialchars(implode(' ', $icons)) . '"><h2>' . $title . '</h2></div>';
 
 		$app = JFactory::getApplication();
-		$app->JComponentTitle = $html;
-		JFactory::getDocument()->setTitle($app->getCfg('sitename') . ' - ' . $title);
+		// $app->JComponentTitle = $html;
+		$app->JComponentTitle = $title;
+		JFactory::getDocument()->setTitle($title);
 	}
 
 	/**

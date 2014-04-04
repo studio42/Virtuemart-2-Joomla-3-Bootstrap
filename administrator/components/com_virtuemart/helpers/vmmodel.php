@@ -41,10 +41,15 @@ class VmModel extends JModelLegacy  {
 	private $_withCount = true;
 	var $_noLimit = false;
 
-	public function __construct($cidName='cid', $config=array()){
-		parent::__construct($config);
+	public function __construct($cidName=null, $config=array()){
 
-		$this->_cidName = $cidName;
+		$this->_cname = strtolower(substr(get_class( $this ), 15));
+		if ( !$cidName) {
+			$cidName = 'virtuemart_'.$this->_cname.'_id';
+			$this->_cidName = $cidName;
+		}
+
+		parent::__construct($config);
 
 		// Get the task
 		$task = JRequest::getWord('task','');
@@ -500,18 +505,23 @@ class VmModel extends JModelLegacy  {
 	 * @return boolean True is the delete was successful, false otherwise.
 	 */
 	public function remove($ids,$vendor_id = 1) {
-
+		$ret = true ;
 		$table = $this->getTable($this->_maintablename);
 		foreach($ids as $id) {
-			if ($vendor_id!=1)
-				if (!$this->checkOwn($id)) continue;
+			if ($vendor_id!=1) {
+				if (!$this->checkOwn($id)) {
+					vmError('no right to remove '.$id,'no right to remove '.$this->_cname.' '.$id);
+					$ret = false;
+					continue;
+				}
+			}
 			if (!$table->delete((int)$id)) {
 				vmError(get_class( $this ).'::remove '.$id.' '.$table->getError());
 				return false;
 			}
 		}
 
-		return true;
+		return $ret;
 	}
 
 	public function setToggleName($togglesName){
@@ -757,7 +767,8 @@ class VmPagination extends JPagination {
 				$limits[] = JHTML::_('select.option', JRoute::_( $link.'&limit='.$this->limit,false),$this->limit);
 				ksort($limits);
 			}
-			$selected= JRoute::_( $link.'&limit='. $selected) ;
+			// fix studio42 false missing
+			$selected= JRoute::_( $link.'&limit='. $selected, false) ;
 			$js = 'onchange="window.top.location.href=this.options[this.selectedIndex].value"';
 
 			$html = JHTML::_('select.genericlist',  $limits, '', 'class="inputbox" size="1" '.$js , 'value', 'text', $selected);

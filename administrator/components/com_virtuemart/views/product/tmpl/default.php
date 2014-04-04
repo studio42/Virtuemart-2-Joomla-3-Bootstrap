@@ -131,14 +131,12 @@ $search_type = JRequest::getVar('search_type', 'product');
 </form>
   <style type="text/css">
 .thumbnail {
-    height: 60px;
     width: 48px;
 }
 
   </style>
 
-<?php AdminUIHelper::endAdminArea();
-
+<?php 
 // DONE BY stephanbais
 /// DRAG AND DROP PRODUCT ORDER HACK
 if ($this->virtuemart_category_id ) { ?>

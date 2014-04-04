@@ -19,7 +19,7 @@
 defined('_JEXEC') or die();
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 /**
  * HTML View class for the VirtueMart Component
@@ -127,10 +127,10 @@ class VirtuemartViewOrders extends VmView {
 			$this->orderStatusSelect = JHTML::_('select.genericlist', $orderStates, 'order_status', '', 'order_status_code', 'order_status_name', $this->currentOrderStat, 'order_items_status',true);
 
 			/* Toolbar */
-			JToolBarHelper::custom( 'prevItem', 'back','','COM_VIRTUEMART_ITEM_PREVIOUS',false);
+			JToolBarHelper::custom( 'prevItem', 'backward','','COM_VIRTUEMART_ITEM_PREVIOUS',false);
 			JToolBarHelper::custom( 'nextItem', 'forward','','COM_VIRTUEMART_ITEM_NEXT',false);
 			JToolBarHelper::divider();
-			JToolBarHelper::custom( 'cancel', 'back','back','back',false,false);
+			JToolBarHelper::custom( 'cancel', 'cancel','back','COM_VIRTUEMART_CLOSE',false,false);
 		}
 		else if ($curTask == 'editOrderItem') {
 			$this->loadHelper('calculationh');
@@ -169,7 +169,7 @@ class VirtuemartViewOrders extends VmView {
 				    if(!empty($order->order_currency)){
 					    $currency = $order->order_currency;
 				    } else if($order->virtuemart_vendor_id){
-					    if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+					    if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'vendor.php');
 					    $currObj = VirtueMartModelVendor::getVendorCurrency($order->virtuemart_vendor_id);
 				        $currency = $currObj->virtuemart_currency_id;
 				   }

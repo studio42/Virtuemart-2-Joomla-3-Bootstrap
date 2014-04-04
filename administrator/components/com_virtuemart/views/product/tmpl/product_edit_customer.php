@@ -17,6 +17,7 @@
  */
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die();
+// todo SUDIO42 change jsonPath to make possible mails from Back-end
 if ($this->jsonPath !=='') return;
 ?>
 <div class="row-fluid">
@@ -90,7 +91,7 @@ if ($this->jsonPath !=='') return;
 					</thead>
 					<tbody id="customers-list">
 					<?php
-					if(!class_exists('ShopFunctions'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+					if(!class_exists('ShopFunctions'))require(JPATH_VM_ADMINISTRATOR.'/helpers'.DS.'shopfunctions.php');
 					echo ShopFunctions::renderProductShopperList($this->productShoppers);
 					?>
 					</tbody>

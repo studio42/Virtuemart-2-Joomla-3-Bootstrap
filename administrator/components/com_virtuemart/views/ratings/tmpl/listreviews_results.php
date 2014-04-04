@@ -52,8 +52,9 @@ $option = JRequest::getWord('option');
 				<!-- Checkbox -->
 				<td><?php echo $checked; ?></td>
 				<!-- Username + time -->
-				<?php $link = 'index.php?option='.$option.'&view=ratings&task=edit_review&virtuemart_rating_review_id='.$review->virtuemart_rating_review_id; ?>
-				<td><?php echo JHTML::_('link', $link, $review->customer.' ('.vmJsApi::date($review->created_on,'LC2',true).')', array("title" => JText::_('COM_VIRTUEMART_RATING_EDIT_TITLE'))); ?></td>
+				<td>
+				<?php echo $this->editLink($review->virtuemart_rating_review_id,$review->customer.' ('.vmJsApi::date($review->created_on,'LC2',true).')' ,'virtuemart_rating_review_id',array( "title" => JText::_('COM_VIRTUEMART_RATING_EDIT_TITLE')),null,'edit_review'); ?>
+				</td>
 				<!-- Product name TODO Add paren_id in LINK ? not existing here -->
 				<?php $link = 'index.php?option='.$option.'&view=product&task=edit&virtuemart_product_id='.$review->virtuemart_product_id ?>
 				<td><?php echo JHTML::_('link', JRoute::_($link), $review->product_name, array('title' => JText::_('COM_VIRTUEMART_EDIT').' '.$review->product_name)); ?></td>

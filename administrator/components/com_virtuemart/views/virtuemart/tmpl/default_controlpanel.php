@@ -27,29 +27,37 @@ if ($admin) require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'liveupdate'.DS.'liveu
 <div class="well well-small hidden-phone">
 	<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_CONTROL_PANEL') ?></div>
 	<div class="row-striped">
-		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=product&task=add'), 'vmicon vmicon-16-editadd icon-nofloat', JText::_('COM_VIRTUEMART_PRODUCT').'<small>('.JText::_('COM_VIRTUEMART_ADD').')</small>'); ?>
+		<?php if ( ShopFunctions::can('add','product') ) { ?>
+		<div class="row-fluid"><?php $this->panelButton('product&task=add', 'icon icon-new', JText::_('COM_VIRTUEMART_PRODUCT').'<small>('.JText::_('COM_VIRTUEMART_ADD').')</small>'); ?>
 		</div>
-		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=product'), 'vmicon vmicon-16-camera icon-nofloat', JText::_('COM_VIRTUEMART_PRODUCT_S')); ?>
+		<?php } if ( ShopFunctions::can('edit','product') ) { ?>
+		<div class="row-fluid"><?php $this->panelButton('product', 'icon icon-camera', JText::_('COM_VIRTUEMART_PRODUCT_S')); ?>
 		</div>
-		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=category'), 'vmicon vmicon-16-folder_camera icon-nofloat', JText::_('COM_VIRTUEMART_CATEGORY_S')); ?>
+		<?php } if ( ShopFunctions::can('edit','category') ) { ?>
+		<div class="row-fluid"><?php $this->panelButton('category', 'icon icon-folder', JText::_('COM_VIRTUEMART_CATEGORY_S')); ?>
 		</div>
-		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=orders'), 'vmicon vmicon-16-page_white_stack icon-nofloat', JText::_('COM_VIRTUEMART_ORDER_S')); ?>
+		<?php } if ( ShopFunctions::can('edit','orders') ) { ?>
+		<div class="row-fluid"><?php $this->panelButton('orders', 'icon icon-stack', JText::_('COM_VIRTUEMART_ORDER_S')); ?>
 		</div>
-		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=paymentmethod'), 'vmicon vmicon-16-creditcards icon-nofloat', JText::_('COM_VIRTUEMART_PAYMENTMETHOD_S')); ?>
+		<?php } if ( ShopFunctions::can('edit','paymentmethod') ) { ?>
+		<div class="row-fluid"><?php $this->panelButton('paymentmethod', 'icon icon-credit', JText::_('COM_VIRTUEMART_PAYMENTMETHOD_S')); ?>
 		</div>
-		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=user'), 'vmicon vmicon-16-user icon-nofloat', JText::_('COM_VIRTUEMART_USER_S')); ?>
+		<?php } if ( ShopFunctions::can('edit','user') ) { ?>
+		<div class="row-fluid"><?php $this->panelButton('user', 'icon icon-users', JText::_('COM_VIRTUEMART_USER_S')); ?>
 		</div>
-		<?php if ($admin) { ?>
-			<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=config'), 'icon-cog', JText::_('COM_VIRTUEMART_CONFIG')); ?>
+		<?php } if ($admin) { ?>
+			<div class="row-fluid"><?php $this->panelButton('config', 'icon icon-cog', JText::_('COM_VIRTUEMART_CONFIG')); ?>
 			</div>
-		<?php } ?>
-		<div class="row-fluid"><?php $this->panelButton(JROUTE::_('index.php?option=com_virtuemart&view=user&task=editshop'), 'vmicon vmicon-16-reseller_account_template icon-nofloat', JText::_('COM_VIRTUEMART_STORE')); ?>
+		<?php } if ( ShopFunctions::can('editshop','user') ) { ?>
+		<div class="row-fluid"><?php $this->panelButton('user&task=editshop', 'icon icon-home', JText::_('COM_VIRTUEMART_STORE')); ?>
 		</div>
-		<div class="row-fluid"><?php $this->panelButton('http://docs.virtuemart.net/', 'icon-question-sign', JText::_('COM_VIRTUEMART_DOCUMENTATION')); ?>
+		<?php } ?>
+		<div class="row-fluid"><?php $this->panelButton('http://docs.virtuemart.net/', 'icon icon-question-sign', JText::_('COM_VIRTUEMART_DOCUMENTATION'),false); ?>
 		</div>
 	</div>
 
 </div>
+<?php if ( ShopFunctions::can('edit','orders') ) { ?>
 <div class="well well-small">	
 	<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_STATISTIC_NEW_ORDERS') ?></div>
 	<div class="row-striped">
@@ -77,3 +85,4 @@ if ($admin) require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'liveupdate'.DS.'liveu
 		} ?>
 	</div>
 </div>
+<?php } ?>

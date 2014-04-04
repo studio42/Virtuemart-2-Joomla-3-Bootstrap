@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 jimport('joomla.version');
 
 /**
@@ -36,7 +36,7 @@ class VirtuemartViewUser extends VmView {
 
 		// Load the helper(s)
 		$this->loadHelper('html');
-		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers'.DS.'permissions.php');
 		$perm = Permissions::getInstance();
 		$this->assignRef('perm',$perm);
 
@@ -52,7 +52,7 @@ class VirtuemartViewUser extends VmView {
 				//Maybe we must check here if the user is vendor and if he has an own id and else map to mainvendor.
 				$userId = 0;
 			} else {
-				if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+				if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'vendor.php');
 				$userId = VirtueMartModelVendor::getUserIdByVendorId(1);
 			}
 			$this->SetViewTitle('STORE'  );
@@ -95,7 +95,8 @@ class VirtuemartViewUser extends VmView {
 
 			$_new = ($userDetails->JUser->get('id') < 1);
 
-			$this->addStandardEditViewCommands($vendorid);
+			// $this->addStandardEditViewCommands($userDetails->virtuemart_user_id,false);
+			$this->addStandardEditViewCommands(0,false);
 
 			// User details
 			$_contactDetails = $model->getContactDetails();
@@ -185,7 +186,7 @@ class VirtuemartViewUser extends VmView {
 
 
 			if (count($orderList) > 0 || !empty($userDetails->user_is_vendor)) {
-				if (!class_exists('CurrencyDisplay')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
+				if (!class_exists('CurrencyDisplay')) require(JPATH_VM_ADMINISTRATOR.'/helpers'.DS.'currencydisplay.php');
 				$currency = CurrencyDisplay::getInstance();
 				$this->assignRef('currency',$currency);
 			}

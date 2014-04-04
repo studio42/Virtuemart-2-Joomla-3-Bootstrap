@@ -60,6 +60,16 @@ class ShopFunctions {
 		if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
 		VmConfig::loadConfig();
 		VmConfig::loadJLang('com_virtuemart_countries');
+		if(Vmconfig::get('multix','none')!=='none'){
+			$toCheck = true;
+		}
+		// add for front editing
+		static $tmpl = null ;
+		if ($tmpl === null) {
+			if (jRequest::getWord('tmpl') === 'component')
+				$tmpl = '&tmpl=component';
+			else $tmpl = '';
+		}
 
 		//Sanitize input
 		$quantity = (int)$quantity;
@@ -73,6 +83,7 @@ class ShopFunctions {
 			$links = '';
 			$ttip = '';
 			$i = 0;
+			
 			foreach ($tempArray as $value) {
 				if ($translate) {
 					$mainTable = $table . '_' . VMLANG;
@@ -83,12 +94,13 @@ class ShopFunctions {
 				$db->setQuery ($q);
 				$tmp = $db->loadResult ();
 				if ($i < $quantity) {
-					if ($view != 'user') {
-						$cid = 'cid';
-					} else {
-						$cid = 'virtuemart_user_id';
-					}
-					$links .= JHTML::_ ('link', JRoute::_ ('index.php?option=com_virtuemart&view=' . $view . '&task=edit&' . $cid . '[]=' . $value, FALSE), JText::_($tmp)) . ', ';
+				// FIX STUDIO42 why multiple ? this are simple links and not select list
+					// if ($view != 'user') {
+						// $cid = 'cid';
+					// } else {
+						// $cid = 'virtuemart_user_id';
+					// }
+					$links .= JHTML::_ ('link', JRoute::_ ('index.php?option=com_virtuemart&view=' . $view . '&task=edit&' . $fieldnameXref . '=' . $value.$tmpl, FALSE), JText::_($tmp)) . ', ';
 				}
 				$ttip .= $tmp . ', ';
 
@@ -780,8 +792,8 @@ class ShopFunctions {
 
 		static $categoryTree = '';
 		static $isSite = null;
-		if  ($isSite ===null) $isSite = JFactory::getApplication()->isSite ();
-		$virtuemart_vendor_id = 1;
+		if  ($isSite ===null) $isSite = JFactory::getApplication()->isSite () && (jRequest::getWord('tmpl') !== 'component');
+		// $virtuemart_vendor_id = 1;
 
 // 		vmSetStartTime('getCategories');
 		$categoryModel = VmModel::getModel ('category');
@@ -789,7 +801,7 @@ class ShopFunctions {
 
 		$categoryModel->_noLimit = TRUE;
 		// $app = JFactory::getApplication ();
-		$records = $categoryModel->getCategories ($isSite , $cid);
+		$records = $categoryModel->getCategories (false , $cid);
 // 		vmTime('getCategories','getCategories');
 		$selected = "";
 		if (!empty($records)) {
@@ -1555,6 +1567,18 @@ class ShopFunctions {
 		return jText::_($string);
 
 
+	}
+	/* verify if vendor can do this task
+	 * @param   string   $task  task to verify.
+	 * @param   string   $className  the name of the view (eg. 'product')
+	 */
+	static public function can($task,$className){
+		static $vendor = null;
+		if ($vendor === null) $vendor = Permissions::getInstance()->isSuperVendor();
+		if ($vendor < 2 ) return $vendor; //vendor 1 can do all and 0 nothing;
+		static $params = null;
+		if ($params === null) $params = JComponentHelper::getParams('com_virtuemart', true);
+		return $params->get($className.'_'.$task,null);
 	}
 }
 

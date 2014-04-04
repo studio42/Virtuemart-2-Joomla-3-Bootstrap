@@ -21,7 +21,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 /**
  * HTML View class for maintaining the list of categories
@@ -34,14 +34,14 @@ class VirtuemartViewCategory extends VmView {
 
 	function display($tpl = null) {
 		//Template path and helper fix for Front-end editing
-		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'category'.DS.'tmpl');
-		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
+		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views'.DS.'category'.DS.'tmpl');
+		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.'/helpers');
 		$this->loadHelper('html');
 		if (!class_exists ('shopFunctionsF'))
 			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		$model = VmModel::getModel();
 
-		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers'.DS.'permissions.php');
 		$this->perms = Permissions::getInstance();
 		$this->catmodel = $model;
 		$this->addStandardDefaultViewCommands();

@@ -82,20 +82,17 @@ $document->addScriptDeclaration ( "
 </table>
 </div>
 <div class="modal-footer">
-	<a href="#" class="orderStatFormSubmit btn" >
-		<span class="icon-nofloat vmicon vmicon-16-save"></span>&nbsp;<?php echo JText::_('COM_VIRTUEMART_SAVE'); ?>
+	<a href="#" class="orderStatFormSubmit btn btn-success" >
+		<span class="icon icon-apply"></span>&nbsp;<?php echo JText::_('COM_VIRTUEMART_SAVE'); ?>
 	</a>&nbsp;&nbsp;&nbsp;
-	<button type="reset" title="<?php echo JText::_('COM_VIRTUEMART_CANCEL'); ?>" class="orderStatFormReset btn">
-		<span class="icon-nofloat vmicon vmicon-16-remove"></span>&nbsp;<?php echo JText::_('COM_VIRTUEMART_CANCEL'); ?>
+	<button type="reset" title="<?php echo JText::_('COM_VIRTUEMART_CANCEL'); ?>" class="orderStatFormReset btn btn-warning">
+		<span class="icon icon-cancel"></span> <?php echo JText::_('COM_VIRTUEMART_CANCEL'); ?>
 	</button>
 <!-- Hidden Fields -->
-<input type="hidden" name="task" value="updatestatus" />
 <input type="hidden" name="last_task" value="updatestatus" />
-<input type="hidden" name="option" value="com_virtuemart" />
-<input type="hidden" name="view" value="orders" />
 <input type="hidden" name="current_order_status" value="<?php echo $this->currentOrderStat; ?>" />
 <input type="hidden" name="virtuemart_order_id" value="<?php echo $this->orderID; ?>" />
-<?php echo JHTML::_( 'form.token' ); ?>
+<?php echo $this->addStandardHiddenToForm(null,'updatestatus'); ?>
 
 </div>
 </form>

@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 /**
  * HTML View class for maintaining the list of shipment
@@ -34,7 +34,7 @@ class VirtuemartViewShipmentmethod extends VmView {
 	function display($tpl = null) {
 
 		// Load the helper(s)
-		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
+		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.'/helpers');
 		$this->loadHelper('permissions');
 		$this->loadHelper('vmpsplugin');
 		$this->loadHelper('html');

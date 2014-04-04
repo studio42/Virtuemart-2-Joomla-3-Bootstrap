@@ -109,7 +109,7 @@ else $front = '';
 				<td><?php echo $checked;?></td>
 				<td align="left">
 					<span class="categoryLevel" style="padding-left:<?php echo $px ?>px"><?php echo $categoryLevel;?></span>
-					<?php echo $this->editLink($cat->virtuemart_category_id, $this->escape($cat->category_name), 'cid')?>
+					<?php echo $this->editLink($cat->virtuemart_category_id, $this->escape($cat->category_name), 'virtuemart_category_id')?>
 				</td>
 				<td class="autosize">
 

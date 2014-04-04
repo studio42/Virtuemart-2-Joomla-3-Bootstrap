@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @package		VirtueMart
  * @author RolandD,Max Milbers
  */
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 class VirtuemartViewProduct extends VmView {
 
@@ -84,7 +84,7 @@ class VirtuemartViewProduct extends VmView {
 				}
 				$this->assignRef('product_childs', $product_childs);
 
-				if(!class_exists('VirtueMartModelConfig')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'config.php');
+				if(!class_exists('VirtueMartModelConfig')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'config.php');
 				$this->productLayouts = VirtueMartModelConfig::getLayoutList('productdetails');
 
 				// Load Images
@@ -220,7 +220,7 @@ class VirtuemartViewProduct extends VmView {
 			case 'massxref_cats':
 			case 'massxref_cats_exe':
 //TODO test if path is ok addpath is now in the constructor
-				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'category'.DS.'tmpl');
+				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views'.DS.'category'.DS.'tmpl');
 				$this->SetViewTitle('PRODUCT_MASSXREF');
 				// $this->setLayout('massxref');
 				$this->loadHelper('permissions');
@@ -246,7 +246,7 @@ class VirtuemartViewProduct extends VmView {
 			case 'massxref_sgrps_exe':
 				$this->SetViewTitle('PRODUCT_MASSXREF');
 //TODO test if path is ok addpath is now in the constructor
-				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'shoppergroup'.DS.'tmpl');
+				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views'.DS.'shoppergroup'.DS.'tmpl');
 				$this->loadHelper('permissions');
 				$this->perms = Permissions::getInstance();
 				$this->showVendors = $this->perms->check('admin');
@@ -382,7 +382,7 @@ class VirtuemartViewProduct extends VmView {
 	 */
 	function renderDiscountList($selected,$name='product_discount_id',$id=null){
 		if ($id ===null) $id = $name ;
-		if(!class_exists('VirtueMartModelCalc')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'calc.php');
+		if(!class_exists('VirtueMartModelCalc')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'calc.php');
 		$discounts = VirtueMartModelCalc::getDiscounts();
 
 		$discountrates = array();

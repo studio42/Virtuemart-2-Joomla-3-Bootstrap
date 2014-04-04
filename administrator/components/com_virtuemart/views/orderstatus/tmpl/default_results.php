@@ -65,7 +65,7 @@ defined('_JEXEC') or die();
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<?php echo $this->editLink($row->virtuemart_orderstate_id, $row->order_status_name, 'virtuemart_user_id[]') ?>
+					<?php echo $this->editLink($row->virtuemart_orderstate_id, $row->order_status_name, 'virtuemart_orderstate_id[]') ?>
 					<?php
 						echo " (".ShopFunctions::altText($row->order_status_name,'COM_VIRTUEMART_ORDER_STATUS').")";
 					?>

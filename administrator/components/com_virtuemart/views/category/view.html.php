@@ -21,7 +21,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 jimport('joomla.html.pane');
 
 /**
@@ -58,13 +58,13 @@ class VirtuemartViewCategory extends VmView {
 
 			$model->addImages($category);
 
-			if ( $category->virtuemart_category_id > 1 ) {
+			if ( $category->virtuemart_category_id) {
 				$this->relationInfo = $model->getRelationInfo( $category->virtuemart_category_id );
 			}
 			$this->parent = $model->getParentCategory( $category->virtuemart_category_id );
 			$this->jTemplateList = ShopFunctions::renderTemplateList(JText::_('COM_VIRTUEMART_CATEGORY_TEMPLATE_DEFAULT'));
 
-			if(!class_exists('VirtueMartModelConfig'))require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'config.php');
+			if(!class_exists('VirtueMartModelConfig'))require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'config.php');
 			$this->categoryLayouts = VirtueMartModelConfig::getLayoutList('category');
 			$this->productLayouts = VirtueMartModelConfig::getLayoutList('productdetails');
 

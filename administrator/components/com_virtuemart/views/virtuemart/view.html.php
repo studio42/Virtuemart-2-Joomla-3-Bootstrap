@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 jimport('joomla.html.pane');
 
 /**
@@ -33,9 +33,10 @@ class VirtuemartViewVirtuemart extends VmView {
 
 	function display($tpl = null) {
 
+		$app = JFactory::getApplication();
 		// Load the helper(s)
 		if (JFactory::getUser()->authorise('core.admin', 'com_virtuemart')) {
-			JToolBarHelper::preferences('com_virtuemart');
+			if($app->isadmin()) JToolBarHelper::preferences('com_virtuemart');
 		}
 		$this->loadHelper('image');
 
@@ -48,7 +49,7 @@ class VirtuemartViewVirtuemart extends VmView {
 		$this->ordersByStatus = $model->getTotalOrdersByStatus();
 
 		$recentOrders = $model->getRecentOrders();
-			if(!class_exists('CurrencyDisplay'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
+			if(!class_exists('CurrencyDisplay'))require(JPATH_VM_ADMINISTRATOR.'/helpers'.DS.'currencydisplay.php');
 
 			/* Apply currency This must be done per order since it's vendor specific */
 			$_currencies = array(); // Save the currency data during this loop for performance reasons
@@ -62,12 +63,6 @@ class VirtuemartViewVirtuemart extends VmView {
 			}
 		$this->recentOrders = $recentOrders;
 		$this->recentCustomers = $model->getRecentCustomers();
-		// Options button. IF a Day config come from XML
-		// if ( !JVM_VERSION===1) {
-			// if (JFactory::getUser()->authorise('core.admin', 'com_virtuemart')) {
-				// JToolBarHelper::preferences('com_virtuemart');
-			// }
-		// }
 		parent::display($tpl);
 	}
 	/**
@@ -76,9 +71,12 @@ class VirtuemartViewVirtuemart extends VmView {
 	 * @param string $link Link to use in the href tag
 	 * @param string $image Name of the image file to display
 	 * @param string $text Text to use for the image alt text and to display under the image.
+	 * @param string $route internal links.
 	 */
-	static public function panelButton($link, $imageclass, $text, $btColor = '') {
-		$button = '<a class="span12 '.$btColor.'" title="' . $text . '" href="' . $link . '">';
+	public function panelButton($link, $imageclass, $text, $route = true) {
+
+		if ($route === true) $link = JROUTE::_('index.php?option=com_virtuemart&view='.$link.$this->tmpl);
+		$button = '<a class="span12 hasTooltip" title="' . $text . '" href="' . $link . '">';
 		$button .= '<i class="'.$imageclass.'"></i> ';
 		$button .=  $text.'</a>';
 		echo $button;

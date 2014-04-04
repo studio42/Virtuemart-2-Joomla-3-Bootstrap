@@ -78,18 +78,18 @@ defined ('_JEXEC') or die();
 				<?php
 				/* Print view URL */
 				$print_url = juri::root () . 'index.php?option=com_virtuemart&view=invoice&layout=invoice&tmpl=component&virtuemart_order_id=' . $order->virtuemart_order_id . '&order_number=' . $order->order_number . '&order_pass=' . $order->order_pass;
-				$print_link = "<a class='btn btn-mini' href=\"javascript:void window.open('$print_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
-				$print_link .= '<span class="hasTooltip print_24" title="' . JText::_ ('COM_VIRTUEMART_PRINT') . '">&nbsp;</span></a>';
+				$print_link = "<a class='btn hasTooltip' title='" . JText::_ ('COM_VIRTUEMART_PRINT') . "' href=\"javascript:void window.open('$print_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
+				$print_link .= '<span class="icon icon-print" ></span></a>';
 				$invoice_link = '';
 
 				if (!$order->invoiceNumber) {
 					$invoice_url = juri::root () . 'index.php?option=com_virtuemart&view=invoice&layout=invoice&format=pdf&tmpl=component&virtuemart_order_id=' . $order->virtuemart_order_id . '&order_number=' . $order->order_number . '&order_pass=' . $order->order_pass . '&create_invoice=1';
-					$invoice_link = "<a class='btn btn-mini' href=\"javascript:void window.open('$invoice_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
-					$invoice_link .= '<span class="hasTooltip invoicenew_24" title="' . JText::_ ('COM_VIRTUEMART_INVOICE_CREATE') . '"></span></a>';
+					$invoice_link = '<a class="btn hasTooltip" title="' . JText::_ ('COM_VIRTUEMART_INVOICE_CREATE') . '" href="javascript:void window.open(\''.$invoice_url.'\', \'win2\', \'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no\');"  >';
+					$invoice_link .= '<span class="icon icon-file-add"></span></a>';
 				} elseif (!shopFunctions::InvoiceNumberReserved ($order->invoiceNumber)) {
 					$invoice_url = juri::root () . 'index.php?option=com_virtuemart&view=invoice&layout=invoice&format=pdf&tmpl=component&virtuemart_order_id=' . $order->virtuemart_order_id . '&order_number=' . $order->order_number . '&order_pass=' . $order->order_pass;
-					$invoice_link = "<a class='btn btn-mini' href=\"javascript:void window.open('$invoice_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
-					$invoice_link .= '<span class="hasTooltip invoice_24" title="' . JText::_ ('COM_VIRTUEMART_INVOICE') . '"></span></a>';
+					$invoice_link = "<a class='btn hasTooltip' title='" . JText::_ ('COM_VIRTUEMART_INVOICE') . "' href=\"javascript:void window.open('$invoice_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
+					$invoice_link .= '<span class="icon-file"></span></a>';
 				}
 
 

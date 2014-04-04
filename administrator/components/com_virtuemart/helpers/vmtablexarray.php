@@ -69,7 +69,7 @@ class VmTableXarray extends VmTable {
 		$cid	= JRequest::getVar( $this->_pkey , array(), 'post', 'array' );
 		$order	= JRequest::getVar( 'order', array(), 'post', 'array' );
 
-		$query = 'SELECT `id` FROM `' . $this->_tbl . '` WHERE $this->_pkey = '.(int)$cid[0].' AND `virtuemart_category_id` = '.(int)$skeyId ;
+		$query = 'SELECT `id` FROM `' . $this->_tbl . '` WHERE '.$this->_pkey.' = '.(int)$cid[0].' AND `virtuemart_category_id` = '.(int)$skeyId ;
 		$this->_db->setQuery( $query );
 		$id = $this->_db->loadResult();
 		$keys = array_keys($order);

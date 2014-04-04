@@ -42,7 +42,8 @@ class AdminUIHelper {
 		// $document->addStyleSheet($admin.'css/admin_ui.css');
 		// $document->addStyleSheet($admin.'css/admin_menu.css');
 		if (JVM_VERSION===2 || self::$backEnd===false) {
-			JHtml::_('bootstrap.loadCss') ;
+			$document->addStyleSheet($front.'css/ui/bootstrap.css');
+			// JHtml::_('bootstrap.loadCss') ;
 			JHtml::_('bootstrap.tooltip') ;
 			if (JVM_VERSION===2) $document->addScript($admin.'js/j25fixes.js');
 			$document->setMetadata('viewport', 'width=device-width, initial-scale=1.0'); 
@@ -51,6 +52,7 @@ class AdminUIHelper {
 		$document->addStyleSheet($admin.'css/admin.styles.css');
 		$document->addStyleSheet($admin.'css/toolbar_images.css');
 		$document->addStyleSheet($admin.'css/menu_images.css');
+		$document->addStyleSheet($admin.'css/fileinput.css');
 		// $document->addStyleSheet($front.'css/chosen.css');
 		// $document->addStyleSheet($front.'css/vtip.css');
 		$document->addStyleSheet($front.'css/jquery.fancybox-1.3.4.css');
@@ -65,6 +67,7 @@ class AdminUIHelper {
 		// $document->addScript($front.'js/chosen.jquery.min.js');
 		JHtml::_('formbehavior.chosen', 'select');
 		$document->addScript($admin.'js/vm2admin.js');
+		$document->addScript($admin.'js/fileinput.js');
 		//$document->addScript($admin.'js/jquery.jqtransform.js');
 		if (JText::_('COM_VIRTUEMART_JS_STRINGS') == 'COM_VIRTUEMART_JS_STRINGS') $vm2string = "editImage: 'edit image',select_all_text: 'select all options',select_some_options_text: 'select some options'" ;
 		else $vm2string = JText::_('COM_VIRTUEMART_JS_STRINGS') ;
@@ -114,7 +117,7 @@ class AdminUIHelper {
 		<div class="row-fluid">
 		<div class="span12">
 			<div class="btn btn-large btn-inverse" id="sidebar-toggle"><i class="icon-chevron-left"></i></div>
-			<div class="span3 j-sidebar-container">
+			<div class="span3 j-sidebar-container" id="j-sidebar-container">
 				<div class="well well-small"><a href="index.php?option=com_virtuemart&view=virtuemart" ><div class="menu-vmlogo"></div></a></div>
 				<?php AdminUIHelper::showAdminMenu();
 				if ($admin = JFactory::getUser()->authorise('core.admin') ) {
@@ -129,7 +132,7 @@ class AdminUIHelper {
 			</div>
 		<?php } 
 		$view = jRequest::getWord('view','virtuemart');
-		if (!self::$backEnd)  $span = '';
+		if (!self::$backEnd)  $span = $view === 'virtuemart' ? 'span8' : '';
 		elseif ($view == 'virtuemart') $span = 'span5';
 		else $span='span9';
 		?>
@@ -145,9 +148,10 @@ class AdminUIHelper {
 	 */
 	static function endAdminArea($ajaxResults = false) {
 		if (!self::$backEnd) {
-			echo '</div></div></div>';
+			echo '</div></div></div></div>';
 			vmJsApi::js ('jquery.ui.autocomplete.html');
 			if ($ajaxResults) include('ajax/results.html.php');
+			include('front/langs.html.php');
 			return;
 		}
 		self::$vmAdminAreaStarted = false;
@@ -166,6 +170,7 @@ class AdminUIHelper {
 		<?php 
 		// add ajax results script
 		if ($ajaxResults) include('ajax/results.html.php');
+
 	}
 
 	/**
@@ -266,11 +271,11 @@ class AdminUIHelper {
 	static function showAdminMenu() {
 		$document = JFactory::getDocument ();
 		$moduleId = JRequest::getInt ( 'module_id', 0 );
-		$collapse_in= " in";
+		$collapse_in= "";//" in";
 		$menuItems = AdminUIHelper::_getAdminMenu ( $moduleId );
 		$modCount = 1; ?>
 <!--		<div>Virtuemart</div>-->
-		<div class="sidebar-nav accordion" id="vmmenu">
+		<div class="accordion sidebar-nav" id="vmmenu">
 		<?php
 		foreach ( $menuItems as $item ) { 
 			$vmd = 'vmd'.$modCount ;
@@ -301,7 +306,7 @@ class AdminUIHelper {
 							}
 							?>
 						<li>
-							<a href="<?php echo $url; ?>" <?php echo $target; ?>><span class="<?php echo $link ['icon_class'] ?>"></span><?php echo JText::_ ( $link ['name'] )?></a>
+							<a href="<?php echo $url; ?>" <?php echo $target; ?>><span class="<?php echo $link ['icon_class'] ?> pull-right"></span><?php echo JText::_ ( $link ['name'] )?></a>
 						</li>
 						<?php
 						}

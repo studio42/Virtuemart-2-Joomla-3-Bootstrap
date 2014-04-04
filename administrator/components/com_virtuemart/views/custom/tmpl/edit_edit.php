@@ -31,11 +31,14 @@ defined('_JEXEC') or die('Restricted access');
 	if (!empty($attribute_id))
 	    $this->customfields->addHidden('attribute_id', $attribute_id);
 	?>
-	<table class="admintable">
+	<table class="admintable table">
 	    <?php echo $this->customfields->displayCustomFields($this->custom); ?>
 	</table>
     <?php 
 	if (!empty($this->customPlugin->custom_jplugin_id)) { ?>
         <input type="hidden" name="custom_jplugin_id" value="<?php echo $this->customPlugin->virtuemart_custom_id ?>" >
+    <?php } 
+	if (!empty($this->tmpl)) { ?>
+        <input type="hidden" name="tmpl" value="component" >
     <?php } ?>
 

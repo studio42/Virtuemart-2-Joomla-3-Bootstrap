@@ -44,60 +44,60 @@ if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
 						<tr>
 							<td colspan="2">
 								<table>
-									<thead>
-										<columns>
-											<col width="33%">
-											<col width="17%">
-											<col width="17%">
-											<col width="33%">
-										</columns>
-									</thead>
 									<tbody>
 										<tr>
-											<td colspan=2 align="center">
-												<div>
-													<span class="key">
-														<label class="hasTip" for="vendor_letter_margin_top" id="vendor_letter_margin_top-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_TOP'); ?></label>:
-													</span><br/>
-													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_top; ?>" id="vendor_letter_margin_top" name="vendor_letter_margin_top">mm</span>
+											<td colspan=2>
+												<div class="pull-right">
+													<label class="hasTip" for="vendor_letter_margin_top" id="vendor_letter_margin_top-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_TOP'); ?></label>
+													<div class="input-append">
+														<input type="text" class="text_area input-mini" size="3"	value="<?php echo $this->vendor->vendor_letter_margin_top; ?>" name="vendor_letter_margin_top" />
+														<span class="add-on">mm</span>
+													</div>
 												</div>
 											</td>
-											<td colspan=2 align="center">
-												<div>
-													<span class="key">
-														<label class="hasTip" for="vendor_letter_margin_header" id="vendor_letter_margin_header-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_HEADER'); ?></label>:
-													</span> <br/>
-													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_header; ?>" id="vendor_letter_margin_header" name="vendor_letter_margin_header">mm</span>
+											<td colspan=2>
+												<label class="hasTip" for="vendor_letter_margin_header" id="vendor_letter_margin_header-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_HEADER'); ?></label>
+												<div class="input-append">
+													<input type="text" size="3" class="text_area input-mini" value="<?php echo $this->vendor->vendor_letter_margin_header; ?>" id="vendor_letter_margin_header" name="vendor_letter_margin_header">
+													<span class="add-on">mm</span>
 												</div>
 											</td>
 										</tr>
 										<tr>
-											<td align="center">
-												<div>
-													<span class="key"><label class="hasTip" for="vendor_letter_margin_left" id="vendor_letter_margin_left-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_LEFT'); ?></label>:</span> <br/>
-													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_left; ?>" id="vendor_letter_margin_left" name="vendor_letter_margin_left">mm</span>
+											<td >
+												<div class="pull-right">
+													<label class="hasTip" for="vendor_letter_margin_left" id="vendor_letter_margin_left-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_LEFT'); ?></label>
+													<div class="input-append">
+														<input type="text" size="3" class="text_area input-mini" value="<?php echo $this->vendor->vendor_letter_margin_left; ?>" id="vendor_letter_margin_left" name="vendor_letter_margin_left">
+														<span class="add-on">mm</span>	
+													</div>
 												</div>
 											</td>
 											<td align="center" colspan=2><img alt="" src="components/com_virtuemart/assets/images/margins-page.png"></td>
-											<td align="center" style="height: 50%">
-												<div>
-													<span class="key"><label class="hasTip" for="vendor_letter_margin_right" id="vendor_letter_margin_right-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_RIGHT'); ?></label>:</span> <br/>
-													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_right; ?>" id="vendor_letter_margin_right" name="vendor_letter_margin_right">mm</span>
+											<td style="height: 50%">
+												<label class="hasTip" for="vendor_letter_margin_right" id="vendor_letter_margin_right-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_RIGHT'); ?></label>:</span> <br/>
+												<div class="input-append">
+													<input type="text" size="3" class="text_area input-mini input-mini" value="<?php echo $this->vendor->vendor_letter_margin_right; ?>" id="vendor_letter_margin_right" name="vendor_letter_margin_right">
+													<span class="add-on">mm</span>	
 												</div>
 											</td>
 										</tr>
 										<tr>
-											<td align="center" colspan=2>
-												<div>
-													<span class="editlinktip"><label class="hasTip" for="vendor_letter_margin_bottom" id="vendor_letter_margin_bottom-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_BOTTOM'); ?></label>:</span> <br/>
-													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_bottom; ?>" id="vendor_letter_margin_bottom" name="vendor_letter_margin_bottom">mm</span>
+											<td colspan=2>
+												<div class="pull-right">
+													<div class="input-append">
+														<input type="text" size="3" class="text_area input-mini" value="<?php echo $this->vendor->vendor_letter_margin_bottom; ?>" id="vendor_letter_margin_bottom" name="vendor_letter_margin_bottom">
+														<span class="add-on">mm</span>	
+													</div>
+													<label class="hasTip" for="vendor_letter_margin_bottom" id="vendor_letter_margin_bottom-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_BOTTOM'); ?></label>
 												</div>
 											</td>
-											<td align="center" colspan=2>
-												<div>
-													<span class="editlinktip"><label class="hasTip" for="vendor_letter_margin_footer" id="vendor_letter_margin_footer-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_FOOTER'); ?></label>:</span> <br/>
-													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_footer; ?>" id="vendor_letter_margin_footer" name="vendor_letter_margin_footer">mm</span>
+											<td colspan=2>
+												<div class="input-append">
+													<input type="text" size="3" class="text_area input-mini" value="<?php echo $this->vendor->vendor_letter_margin_footer; ?>" id="vendor_letter_margin_footer" name="vendor_letter_margin_footer">
+													<span class="add-on">mm</span>	
 												</div>
+												<label class="hasTip" for="vendor_letter_margin_footer" id="vendor_letter_margin_footer-lbl"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_FOOTER'); ?></label>
 											</td>
 										</tr>
 									</tbody>
@@ -118,6 +118,7 @@ if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
 						<?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_FONTS') ?>
 					</legend>
 					<table class="admintable">
+						<?php /* not compatible with universal pdf. Simply use css
 						<tr>
 							<td class="key"><span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_FONT_TIP'); ?>">
 								<label for="vendor_letter_font"><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_FONT') ?></label> </span>
@@ -128,13 +129,16 @@ if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
 // 									echo JHTML::link('http://dev.virtuemart.net/','Get More Fonts!','target="_blank"');
 								?>
 							</td>
-						</tr>
+						</tr>*/ ?>
 						<tr>
 							<td class="key">
 								<?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_FONT_SIZE'); ?>:
 							</td>
 							<td >
-								<input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_font_size; ?>" id="vendor_letter_font_size" name="vendor_letter_font_size">pt
+								<div class="input-append">
+									<input type="text" class="input-mini" size="3"	value="<?php echo $this->vendor->vendor_letter_font_size; ?>" name="vendor_letter_font_size"/>
+									<span class="add-on">pt</span>
+								</div>
 							</td>
 						</tr>
 
@@ -142,16 +146,22 @@ if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
 							<td class="key">
 								<?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_FONT_SIZE_HEADER'); ?>:
 							</td>
-							<td >
-								<input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_header_font_size; ?>" id="vendor_letter_header_font_size" name="vendor_letter_header_font_size">pt
+							<td>
+								<div class="input-append">
+									<input type="text" class="input-mini" size="3"	value="<?php echo $this->vendor->vendor_letter_header_font_size; ?>" name="vendor_letter_header_font_size"/>
+									<span class="add-on">pt</span>
+								</div>
 							</td>
 						</tr>
 						<tr>
 							<td class="key">
 								<?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_FONT_SIZE_FOOTER'); ?>:
 							</td>
-							<td >
-								<input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_footer_font_size; ?>" id="vendor_letter_footer_font_size" name="vendor_letter_footer_font_size">pt
+							<td>
+								<div class="input-append">
+									<input type="text" class="input-mini" size="3"	value="<?php echo $this->vendor->vendor_letter_footer_font_size; ?>" name="vendor_letter_footer_font_size"/>
+									<span class="add-on">pt</span>
+								</div>
 							</td>
 						</tr>
 						<tr>

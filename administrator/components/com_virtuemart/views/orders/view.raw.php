@@ -24,7 +24,7 @@ defined('_JEXEC') or die('Restricted access');
  * @package		VirtueMart
  * @author
  */
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 class VirtuemartViewOrders extends VmView {
 
@@ -51,7 +51,7 @@ class VirtuemartViewOrders extends VmView {
 			$orderStates = $orderStatusModel->getOrderStatusList();
 			$this->orderstatuses = $orderStates;
 
-			if(!class_exists('CurrencyDisplay'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
+			if(!class_exists('CurrencyDisplay'))require(JPATH_VM_ADMINISTRATOR.'/helpers'.DS.'currencydisplay.php');
 
 			/* Apply currency This must be done per order since it's vendor specific */
 			$_currencies = array(); // Save the currency data during this loop for performance reasons
@@ -63,7 +63,7 @@ class VirtuemartViewOrders extends VmView {
 				    if(!empty($order->order_currency)){
 					    $currency = $order->order_currency;
 				    } else if($order->virtuemart_vendor_id){
-					    if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+					    if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'vendor.php');
 					    $currObj = VirtueMartModelVendor::getVendorCurrency($order->virtuemart_vendor_id);
 				        $currency = $currObj->virtuemart_currency_id;
 				   }

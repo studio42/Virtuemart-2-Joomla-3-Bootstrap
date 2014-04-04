@@ -22,7 +22,7 @@ defined('_JEXEC') or die('Restricted access');
 // Load the view framework
 jimport( 'joomla.application.component.view');
 		// Load some common models
-if(!class_exists('VirtueMartModelCustomfields')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'customfields.php');
+if(!class_exists('VirtueMartModelCustomfields')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'customfields.php');
 
 /**
  * HTML View class for the VirtueMart Component
@@ -134,8 +134,8 @@ class VirtuemartViewProduct extends JViewLegacy {
 							'.$field->layout_pos.'
 							'.$this->model->setEditCustomHidden($field, $this->row).'
 						</td>
-						 <td><span class="vmicon vmicon-16-remove"></span><input class="ordering" type="hidden" value="'.$this->row.'" name="field['.$this->row .'][ordering]" /></td>
-						 <td><span class="vmicon vmicon-16-move"></span></td>
+						 <td><span class="icon-remove"></span><input class="ordering" type="hidden" value="'.$this->row.'" name="field['.$this->row .'][ordering]" /></td>
+						 <td><span class="icon-move"></span></td>
 						</tr>';
 					$this->row++;
 				}
@@ -153,7 +153,7 @@ class VirtuemartViewProduct extends JViewLegacy {
 				$productModel = VmModel::getModel('product');
 				$productShoppers = $productModel->getProductShoppersByStatus($product_id ,$status);
 			}
-			if(!class_exists('ShopFunctions'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+			if(!class_exists('ShopFunctions'))require(JPATH_VM_ADMINISTRATOR.'/helpers'.DS.'shopfunctions.php');
 			$html = ShopFunctions::renderProductShopperList($productShoppers);
 			$this->json['value'] = $html;
 
@@ -183,7 +183,7 @@ class VirtuemartViewProduct extends JViewLegacy {
 			$html = '<div class="vm_thumb_image">
 				<span>'.$display.'</span>
 				'.$this->model->setEditCustomHidden($customs, $this->row).'
-				<div class="vmicon vmicon-16-remove"></div></div>';
+				<div class="icon-remove"></div></div>';
 
 			$related->label = $html;
 

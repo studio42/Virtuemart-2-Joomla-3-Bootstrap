@@ -56,6 +56,7 @@ defined('_JEXEC') or die();
 		$checked = JHTML::_('grid.id', $i, $row->virtuemart_manufacturer_id,null,'virtuemart_manufacturer_id');
 		$canDo = $this->canChange($row->created_by);
 		$published = $this->toggle( $row->published, $i, 'published' ,$canDo );
+		$categoryLink = $this->editLink($row->virtuemart_manufacturercategories_id, $row->mf_category_name, 'virtuemart_manufacturercategories_id','','manufacturercategories');
 		?>
 	    <tr >
 		<td width="10">
@@ -63,7 +64,9 @@ defined('_JEXEC') or die();
 		</td>
 		<td align="left">
 		    <?php echo $this->editLink($row->virtuemart_manufacturer_id, $row->mf_name, 'virtuemart_manufacturer_id') ?>
-			<div class="small visible-phone"><?php echo $row->mf_category_name; ?></div>
+			<div class="small visible-phone">
+				<?php echo $categoryLink ?>
+			</div>
 		</td>
 		<td align="left" class="autosize">
 			<?php if (!empty($row->mf_email)) echo  '<a href="mailto:'.$row->mf_name.'<'.$row->mf_email.'>">'.$row->mf_email ; ?>
@@ -72,7 +75,7 @@ defined('_JEXEC') or die();
 			<?php echo $row->mf_desc; ?>
 		</td>-->
 		<td class="hidden-phone">
-			<?php echo $row->mf_category_name; ?>
+			<?php echo $categoryLink ?>
 		</td>
 		<td class="autosize">
 			<?php if (!empty($row->mf_url)) echo '<a href="'. $row->mf_url.'">'. $row->mf_url ; ?>

@@ -22,20 +22,24 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <?php echo $this->langList; ?>
-<div class="col50">
-	<fieldset>
+<fieldset>
 	<legend><?php echo JText::_('COM_VIRTUEMART_MANUFACTURER_DETAILS'); ?></legend>
-	<table class="admintable">
-
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_NAME','mf_name',$this->manufacturer->mf_name); ?>
+	<div class="row-fluid">
+		<table class="span6">
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_NAME','mf_name',$this->manufacturer->mf_name); ?>
+			<?php echo VmHTML::row('input',$this->viewName.' '. JText::_('COM_VIRTUEMART_SLUG'),'slug',$this->manufacturer->slug); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_URL','mf_url',$this->manufacturer->mf_url); ?>
+		</table>
+		<table class="span6">
 	    	<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISHED','published',$this->manufacturer->published); ?>
-		<?php echo VmHTML::row('input',$this->viewName.' '. JText::_('COM_VIRTUEMART_SLUG'),'slug',$this->manufacturer->slug); ?>
-		<?php echo VmHTML::row('select','COM_VIRTUEMART_MANUFACTURER_CATEGORY_NAME','virtuemart_manufacturercategories_id',$this->manufacturerCategories,$this->manufacturer->virtuemart_manufacturercategories_id,'','virtuemart_manufacturercategories_id', 'mf_category_name',false); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_URL','mf_url',$this->manufacturer->mf_url); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_EMAIL','mf_email',$this->manufacturer->mf_email); ?>
-		<?php echo VmHTML::row('editor','COM_VIRTUEMART_MANUFACTURER_DESCRIPTION','mf_desc',$this->manufacturer->mf_desc); ?>
-
-
-	</table>
-	</fieldset>
-</div>
+			<?php echo VmHTML::row('select','COM_VIRTUEMART_MANUFACTURER_CATEGORY_NAME','virtuemart_manufacturercategories_id',$this->manufacturerCategories,$this->manufacturer->virtuemart_manufacturercategories_id,'','virtuemart_manufacturercategories_id', 'mf_category_name',false); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_EMAIL','mf_email',$this->manufacturer->mf_email); ?>
+		</table>
+	</div>
+</fieldset>
+<fieldset>
+	<legend><?php echo JText::_('COM_VIRTUEMART_DESCRIPTION'); ?></legend>
+	<div>
+		<?php echo VmHTML::editor('mf_desc',$this->manufacturer->mf_desc); ?>
+	</div>
+</fieldset>

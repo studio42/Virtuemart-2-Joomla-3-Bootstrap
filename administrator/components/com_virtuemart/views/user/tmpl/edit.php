@@ -58,6 +58,8 @@ if (($_ordcnt = count($this->orderlist)) > 0) {
 AdminUIHelper::buildTabs ( $this, $tabarray,'vm-user');
 
 ?>
+<input type="hidden" name="virtuemart_user_id" value="<?php echo $this->userDetails->virtuemart_user_id; ?>" />
+<input type="hidden" name="contact_id" value="" />
 
 <?php echo $this->addStandardHiddenToForm(); ?>
 </form>
@@ -69,14 +71,14 @@ function myValidator(f) {
 	if (document.formvalidator.isValid(f)) {
 		f.submit();
 		return true;
-	} else {
-		var msg = '<div><dl id="system-message" style="display: block;"><dt class="message">Message</dt><dd class="message message"><ul><li>';
-		 msg += "<?php echo JText::sprintf("COM_VIRTUEMART_USER_FORM_MISSING_REQUIRED_OTHER_TAB",JText::_("COM_VIRTUEMART_SHOPPER_FORM_LBL") ) ?>";
-		 msg += '</li></ul></dd></dl><div>';
-		jQuery('#element-box').before(msg);
 	}
+	var msg = '<div><dl id="system-message" style="display: block;"><dt class="message">Message</dt><dd class="message message"><ul><li>';
+	 msg += "<?php echo JText::sprintf("COM_VIRTUEMART_USER_FORM_MISSING_REQUIRED_OTHER_TAB",JText::_("COM_VIRTUEMART_SHOPPER_FORM_LBL") ) ?>";
+	 msg += '</li></ul></dd></dl><div>';
+	jQuery('#element-box').before(msg);
+	jQuery('#system-message-container').show();
 	//Funny, works for chrome etc, but throws error on FF, but the error stops the script, so the effect is the same
-    jQuery().event.preventDefault();
+    f.event.preventDefault();
     return false;
 }
 </script>

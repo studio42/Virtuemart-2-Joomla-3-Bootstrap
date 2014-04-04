@@ -54,7 +54,7 @@ $currency = CurrencyDisplay::getInstance ();
 			<?php echo $checked; ?>
 		</td>
 		<td align="left">
-		   <?php echo $this->editLink($row->virtuemart_coupon_id,$row->coupon_code) ?>
+		   <?php echo $this->editLink($row->virtuemart_coupon_id,$row->coupon_code,'virtuemart_coupon_id') ?>
 		</td>
 		<td align="left">
 			<?php echo JText::_($row->coupon_type); ?>

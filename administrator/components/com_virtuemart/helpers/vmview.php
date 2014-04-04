@@ -26,14 +26,11 @@ jimport( 'joomla.application.component.viewlegacy');
 // Load default helpers
 if (!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
 if (!class_exists('AdminUIHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'adminui.php');
-if (!class_exists('JToolBarHelper')) {
-	// jimport( 'joomla.html.toolbar');
-	require(JPATH_VM_ADMINISTRATOR.'/helpers/front/button.php');
-	require(JPATH_VM_ADMINISTRATOR.'/helpers/front/toolbar.php');
-	require(JPATH_VM_ADMINISTRATOR.'/helpers/front/toolbarhelper.php');
-}
-class VmView extends JViewLegacy{
 
+class VmView extends JViewLegacy{
+	
+	var $_cidName	= null;
+	var $tmpl ='';
 	/**
 	 * Sets automatically the shortcut for the language and the redirect path
 	 *
@@ -44,12 +41,25 @@ class VmView extends JViewLegacy{
 	// }
 	var $lists = array();
 	function __construct() {
+
 		parent::__construct();
+		// always use same method for cidName
+		$vName = $this->getName();
+		$this->_cidName = 'virtuemart_'.$vName.'_id'; 
 	// var_dump($this);
 		//Template path and helper fix for Front-end editing
 		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.$this->_name.DS.'tmpl');
 		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
 		$this->frontEdit = jRequest::getvar('tmpl') ==='component' ? true : false ;
+		if ($this->frontEdit) {
+			if (!class_exists('JToolBarHelper')) {
+				jimport( 'joomla.html.toolbar');
+				require(JPATH_VM_ADMINISTRATOR.'/helpers/front/button.php');
+				require(JPATH_VM_ADMINISTRATOR.'/helpers/front/toolbar.php');
+				require(JPATH_VM_ADMINISTRATOR.'/helpers/front/toolbarhelper.php');
+			}
+			$this->tmpl = '&tmpl=component';
+		}
 	}
 	/*
 	 * set all commands and options for BE default.php views
@@ -123,28 +133,40 @@ class VmView extends JViewLegacy{
 				<!--<label for="filter_search" class="element-invisible">'.JText::_($searchLabel).'</label>-->
 				<input type="text" name="' . $name . '" id="' . $id . '" placeholder="'.JText::_('COM_VIRTUEMART_FILTER') . ' ' . JText::_($searchLabel).'" value="'. $this->escape( $this->lists[$name] ).'" title="'.JText::_('COM_VIRTUEMART_FILTER') . ' '.JText::_($searchLabel).'" />
 			</div>
-			<div class="btn-group pull-left hidden-phone">
+			<div class="btn-group pull-left">
 				<button type="submit" id="searchsubmit" class="btn hasTooltip" title="'.JText::_('JSEARCH_FILTER_SUBMIT').'"><i class="icon-search"></i></button>
-				<button type="button" id="searchreset" class="btn hasTooltip" title="'.JText::_('JSEARCH_FILTER_CLEAR').'" onclick=\'document.id("' . $id . '").value="";this.form.submit();\'><i class="icon-remove"></i></button>
+				<button type="button" id="searchreset" class="btn hasTooltip hidden-phone" title="'.JText::_('JSEARCH_FILTER_CLEAR').'" onclick=\'document.id("' . $id . '").value="";this.form.submit();\'><i class="icon-remove"></i></button>
 			</div>';
 	}
 
-	function addStandardEditViewCommands($id = 0,$object = null) {
+	function addStandardEditViewCommands($id = 0,$save2new = true ) {
 		// if (JRequest::getCmd('tmpl') =='component' ) {
 			// if (!class_exists('JToolBarHelper')) require(JPATH_ADMINISTRATOR.DS.'includes'.DS.'toolbarhelper.php');
 		// } else {
 // 		JRequest::setVar('hidemainmenu', true);
 		JToolBarHelper::divider();
+		if ($id) JToolBarHelper::save2copy('save2copy', 'JTOOLBAR_SAVE_AS_COPY');
+		if ($save2new) JToolbarHelper::save2new('save2new', 'JTOOLBAR_SAVE_AND_NEW');
 		JToolBarHelper::save();
 		JToolBarHelper::apply();
 		JToolBarHelper::cancel();
+		// todo add filter by view
+		if ($id) JToolBarHelper::custom('preview','eye',null,'COM_VIRTUEMART_PREVIEW',false);
 		// }
 		// javascript for cookies setting in case of press "APPLY"
 		$document = JFactory::getDocument();
-
+		$name = $this->_name;
+		if ($name == 'product') $name='productdetails';
 		$j = "
 			Joomla.submitbutton=function(a){
-				var options = { path: '/', expires: 2}
+				var options = { path: '/', expires: 2},
+					link = '';
+				if (a == 'preview') {
+					link='".juri::root()."index.php?option=com_virtuemart&view=".$name."&".$this->_cidName."=".$id."';
+					window.location = link;
+					// console.log(link);
+					return false;
+				}
 				if (a == 'apply') {
 					var idx = jQuery('#tabs li.current').index();
 					jQuery.cookie('vmapply', idx, options);
@@ -164,6 +186,9 @@ class VmView extends JViewLegacy{
 		$params = JComponentHelper::getParams('com_languages');
 		//$config =JFactory::getConfig();$config->get('language');
 		$selectedLangue = $params->get('site', 'en-GB');
+
+            $lang = JFactory::getLanguage();
+        if($this->frontEdit)    $selectedLangue = $lang->getTag();
 
 		$lang = strtolower(strtr($selectedLangue,'-','_'));
 		// only add if ID and view not null
@@ -186,13 +211,14 @@ class VmView extends JViewLegacy{
 
 
 			$token = JSession::getFormToken();
+			
 			$j = '
 			jQuery(function($) {
 				var oldflag = "";
 				$("select#vmlang").chosen().change(function() {
 					langCode = $(this).find("option:selected").val();
 					flagClass = "flag-"+langCode.substr(0,2) ;
-					$.getJSON( "index.php?option=com_virtuemart&view=translate&task=paste&format=json&lg="+langCode+"&id='.$id.'&editView='.$editView.'&'.$token.'=1" ,
+					$.getJSON( "index.php?option=com_virtuemart&view=translate&task=paste&format=json&lg="+langCode+"&id='.$id.'&editView='.$editView.'&'.$token.'=1'.$this->tmpl.'" ,
 						function(data) {
 							var items = [];
 
@@ -201,7 +227,10 @@ class VmView extends JViewLegacy{
 								$.each(data.fields , function(key, val) {
 									cible = jQuery("#"+key);
 									if (oldflag !== "") cible.parent().removeClass(oldflag)
-									if (cible.parent().addClass(flagClass).children().hasClass("mce_editable") && data.structure !== "empty" ) tinyMCE.execInstanceCommand(key,"mceSetContent",false,val);
+									if (cible.parent().addClass(flagClass).children().hasClass("mce_editable") && data.structure !== "empty" ) {
+										if (tinyMCE.execInstanceCommand) tinyMCE.execInstanceCommand(key,"mceSetContent",false,val);
+										else tinymce.editors[key].setContent(val);
+									}
 									else if (data.structure !== "empty") cible.val(val);
 									});
 								oldflag = flagClass ;
@@ -381,11 +410,13 @@ class VmView extends JViewLegacy{
 	 * @param $attrib 	jhtml link attributes
 	 */
 
-	function editLink($id, $text, $name="cid[]",$attrib='',$view = null) {
+	function editLink($id, $text, $name= null,$attrib='',$view = null,$task ='edit') {
 		if ($view === null) $view = $this->_name;
+		if ($name === null) $name = $this->_cidName;
+		
 		$editlink = $name. '=' . $id;	
-		if ($this->frontEdit) $editlink .= "&tmpl=component";
-		$link = JROUTE::_('index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$editlink) ;
+		$editlink .= $this->tmpl;
+		$link = JROUTE::_('index.php?option=com_virtuemart&view='.$view.'&task='.$task.'&'.$editlink) ;
 		// echo 'index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$editlink ;
 		return JHTML::_('link', $link, $text, $attrib);
 	}
@@ -408,6 +439,14 @@ class VmView extends JViewLegacy{
 		if ($vendor == 1) return true; // can change all
 		if ($user_id === null) $user_id = JFactory::getUser()->get('id');
 		return ($created_by === $user_id);
+
+	}
+	function DisplayFilterPublish() {
+		$options = array( '' => JText::_('JOPTION_SELECT_PUBLISHED'),
+						  '1' => JText::_('JPUBLISHED'),
+						  '0' => JText::_('JUNPUBLISHED'));
+		return VmHTML::selectList('filter_published', JRequest::getVar('filter_published'),$options,1,'','onchange="Joomla.ajaxSearch(this); return false;"');
+		// return JHTML::_('select.genericlist', $options, 'filter.published', 'onChange="Joomla.ajaxSearch(this); return false;"', 'value', 'text', JRequest::getVar('filter.published'));
 
 	}
 }

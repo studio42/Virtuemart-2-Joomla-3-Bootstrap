@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 /**
  * HTML View class for maintaining the list of manufacturers
@@ -37,7 +37,6 @@ class VirtuemartViewManufacturer extends VmView {
 
 
 		$this->loadHelper('html');
-
 
 		// get necessary models
 		$model = VmModel::getModel('manufacturer');
@@ -64,7 +63,7 @@ class VirtuemartViewManufacturer extends VmView {
 
 			$this->addStandardEditViewCommands($manufacturer->virtuemart_manufacturer_id);
 
-			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'vendor.php');
 			$virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor();
 			$this->virtuemart_vendor_id = $virtuemart_vendor_id ;
 
@@ -83,7 +82,7 @@ class VirtuemartViewManufacturer extends VmView {
 			$this->pagination = $model->getPagination();
 
 			$virtuemart_manufacturercategories_id	= $mainframe->getUserStateFromRequest( 'com_virtuemart.virtuemart_manufacturercategories_id', 'virtuemart_manufacturercategories_id', 0, 'int' );
-			$this->lists['virtuemart_manufacturercategories_id'] =  JHTML::_('select.genericlist',   $categoryFilter, 'virtuemart_manufacturercategories_id', 'class="inputbox" onchange="this.form.submit()"', 'value', 'text', $virtuemart_manufacturercategories_id );
+			$this->lists['virtuemart_manufacturercategories_id'] =  JHTML::_('select.genericlist',   $categoryFilter, 'virtuemart_manufacturercategories_id', '', 'value', 'text', $virtuemart_manufacturercategories_id );
 
 		}
 

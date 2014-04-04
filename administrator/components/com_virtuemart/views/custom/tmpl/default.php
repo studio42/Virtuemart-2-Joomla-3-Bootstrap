@@ -25,6 +25,7 @@ jimport('joomla.filesystem.file');
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch('COM_VIRTUEMART_TITLE','keyword') ;
 		echo $this->customs->customsSelect ; ?>
+		<?php echo $this->DisplayFilterPublish() ?>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">
@@ -34,49 +35,50 @@ jimport('joomla.filesystem.file');
 	</div>
 	<?php //var_dump($this->lang); ?>
 	<!-- new custom  preselect in modal -->
-	<div id="customsModal" class="modal hide" tabindex="-1" aria-hidden="true">
-		<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_CUSTOM').' ('.JText::_('COM_VIRTUEMART_ADD').')'; ?><button type="button" class="close" aria-hidden="true">&times;</button></div>
+	<div id="customsModal" class="modal hide fade" tabindex="-1" aria-hidden="true">
+		<div class="module-title nav-header"><?php echo JText::_('COM_VIRTUEMART_CUSTOM').' ('.JText::_('COM_VIRTUEMART_ADD').')'; ?><button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button></div>
 		<div class="modal-body">
-		<div class="row-striped">
+		<ul class="nav nav-tabs nav-stacked">
 			<?php 
 			// var_dump($this->installedcustoms); 
 			// standard customfields
 			unset($this->customfieldTypes['E']);
 			foreach ($this->customfieldTypes as $key => $custom) {
 				
-				$link = JROUTE::_('index.php?option=com_virtuemart&view=custom&task=add&field_type=' . $key);
+				$link = JROUTE::_('index.php?option=com_virtuemart&view=custom&task=add&field_type=' . $key.$this->tmpl);
 				?>
-				<div class="row-fluid"><a href="<?php echo $link ?>"> <?php echo jText::_($custom)  ?></a></div>
+				<li><a href="<?php echo $link ?>"> <?php echo jText::_($custom)  ?></a></li>
 				<?php
 			}
 			// plugins
 			foreach ($this->installedCustoms as $key => $custom) {
 				if ($custom['enabled'] == 1 ) {
-					$link = JROUTE::_('index.php?option=com_virtuemart&view=custom&task=add&field_type=E&custom_jplugin_id=' . $key);
+					$link = JROUTE::_('index.php?option=com_virtuemart&view=custom&task=add&field_type=E&custom_jplugin_id=' . $key.$this->tmpl);
 					$langKey = 'vmcustom_'.$custom['element'];
 					if ( $this->lang->hasKey($langKey) ) $name= $langKey;
 					else $name= $custom['name'];
 					if ( $this->lang->hasKey($langKey.'_desc') ) $title = 'class="hasTooltip" title="'.jText::_($langKey.'_desc').'" ';
 					else $title = "";
 					?>
-					<div class="row-fluid"><a <?php echo $title ?> href="<?php echo $link ?>"> <?php echo jText::_($name) ?></a></div>
+					<li><a <?php echo $title ?> href="<?php echo $link ?>"> <?php echo jText::_($name) ?></a></li>
 					<?php
 				}
 				else
 				{
 					?>
-					<div class="row-fluid"><?php echo jText::_($custom['name']) // disabled plugin ?></div>
+					<li><?php echo jText::_($custom['name']) // disabled plugin ?></li>
 					<?php
 				}
 			} ?>
+		</ul>
 		</div>
-		</div>
-		<div class="close btn"><?php echo JText::_('JCANCEL') ?></div>
+		<div class="modal-footer"><div class="close btn"><?php echo JText::_('JCANCEL') ?></div></div>
 	</div>
 	<script type="text/javascript">
+
 		Joomla.submitbutton = function(pressbutton) {
 			if (pressbutton == 'add') {
-				jQuery('#customsModal').removeClass('hide');
+				jQuery('#customsModal').modal('show');
 				return false;
 			} else {
 				Joomla.submitform( pressbutton );
@@ -85,8 +87,15 @@ jimport('joomla.filesystem.file');
 		}
 				// Attach the modal to document
 		jQuery(function($){
-			jQuery('#customsModal .close').click( function() {
-				jQuery('#customsModal').addClass('hide');
+			// $('#customsModal').modal();
+			$('#toolbar-new button').click(function(e) {
+				e.preventDefault();
+				// jQuery('#customsModal').modal('show');
+				return false;
+			});
+
+			$('#customsModal .close').click( function() {
+				// $('#customsModal').modal('hide')://.addClass('hide');
 			});
 		});
 	</script>

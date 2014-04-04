@@ -71,7 +71,7 @@ defined('_JEXEC') or die('Restricted access');
 						array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$product->product_name), 'product') ?>
 				</td>
 				<td><?php echo $product->product_sku; ?></td>
-				<td width="5%"><span class="label <?php echo $stockstatut ?>"><?php echo $product->product_in_stock; ?></span></td>
+				<td width="5%"><a href="#updateStockModal" role="button" data-toggle="modal" class="updateStock" data-title="<?php echo $product->product_name ?>" data-id="<?php echo $product->virtuemart_product_id ?>"><span class="label <?php echo $stockstatut ?>"><?php echo $product->product_in_stock; ?></span></a></td>
 				<td width="5%"><span class="label <?php echo $orderedLabel ?>"><?php echo $product->product_ordered; ?></span></td>
 				<td><?php echo $product->product_price_display; ?></td>
 				<td><?php echo $product->product_instock_value; ?></td>

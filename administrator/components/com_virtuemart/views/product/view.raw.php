@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @package		VirtueMart
  * @author RolandD,Max Milbers
  */
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 class VirtuemartViewProduct extends VmView {
 
@@ -44,7 +44,7 @@ class VirtuemartViewProduct extends VmView {
 		switch ($this->task) {
 			case 'massxref_cats':
 			case 'massxref_cats_exe':
-				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'category'.DS.'tmpl');
+				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views'.DS.'category'.DS.'tmpl');
 				$this->loadHelper('permissions');
 				$this->perms = Permissions::getInstance();
 				$this->showVendors = $this->perms->check('admin');
@@ -61,7 +61,7 @@ class VirtuemartViewProduct extends VmView {
 				break;
 			case 'massxref_sgrps':
 			case 'massxref_sgrps_exe':
-				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.'shoppergroup'.DS.'tmpl');
+				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views'.DS.'shoppergroup'.DS.'tmpl');
 				$this->loadHelper('permissions');
 				$this->perms = Permissions::getInstance();
 				$this->showVendors = $this->perms->check('admin');
@@ -95,9 +95,10 @@ class VirtuemartViewProduct extends VmView {
 			$this->SetViewTitle($title, $msg );
 
 			$this->addStandardDefaultViewLists($model,'created_on');
-
+			$vendor = Permissions::getInstance()->isSuperVendor();
+			if ($vendor == 1 ) $vendor = null;
 			/* Get the list of products */
-			$productlist = $model->getProductListing(false,false,false,false,true);
+			$productlist = $model->getProductListing(false,false,false,false,true,true,0,$vendor);
 
 			//The pagination must now always set AFTER the model load the listing
 			$this->pagination = $model->getPagination();

@@ -20,6 +20,8 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.user.user');
+// import Joomla table library
+jimport('joomla.database.table');
 
 /**
  * Replaces JTable with some more advanced functions and fitting to the nooku conventions
@@ -52,12 +54,13 @@ class VmTable extends JTable{
 
 	function __construct( $table, $key, &$db ){
 
-		$this->_tbl		= $table;
-		$this->_tbl_key	= $key;
-		$this->_db		=& $db;
+		// $this->_tbl		= $table;
+		// $this->_tbl_key	= $key;
+		// $this->_db		=& $db;
 		$this->_pkey = $key;
 		$this->_cache = null;
 		$this->_query_cache = null;
+		parent::__construct($table, $key, $db);
 	}
 
 	function setPrimaryKey($key, $keyForm=0){
@@ -440,10 +443,22 @@ class VmTable extends JTable{
 	 */
 	function store($updateNulls = false){
 		$this->setLoggableFieldsForStore();
-
+		// fix for joomla 3.2
+		// if (class_exists('JObserverUpdater') ) $this->_observers = new JObserverUpdater($this);
 		$this->storeParams();
-
-		return parent::store($updateNulls);
+		
+		// If a primary key exists update the object, otherwise insert it.
+		// if (empty($this->_tbl_key)); unset 
+		if ($this->hasPrimaryKey())
+		{
+			$result = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_keys, $updateNulls);
+		}
+		else
+		{
+			$result = $this->_db->insertObject($this->_tbl, $this, $this->_tbl_keys[0]);
+		}
+		return $result;
+		// return parent::store($updateNulls);
 
 	}
 
@@ -464,7 +479,7 @@ class VmTable extends JTable{
 				// }
 				unset($this->$key);
 			}
-			$this->$paramFieldName = json_encode($this->_json);
+			if (isset($this->_json)) $this->$paramFieldName = json_encode($this->_json);
 		}
 		return true;
 	}

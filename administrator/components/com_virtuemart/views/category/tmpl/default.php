@@ -27,6 +27,7 @@ if (!class_exists ('shopFunctionsF'))
 
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch() ?>
+		<?php echo $this->DisplayFilterPublish() ?>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">

@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 /**
  * HTML View class for ratings (and customer reviews)
@@ -76,7 +76,8 @@ class VirtuemartViewRatings extends VmView {
 			case 'edit':
 			case 'add':
 				/* Get the data */
-				$this->rating = $model->getRating($cids);
+				$rating_id = JRequest::getVar('vrituemart_rating_id', 0);
+				$this->rating = $model->getRating($rating_id);
 				$this->addStandardEditViewCommands();
 				break;
 			case 'edit_review':

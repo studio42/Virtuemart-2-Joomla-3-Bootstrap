@@ -20,8 +20,6 @@
 defined('_JEXEC') or die();
 
 if ($product_parent_id=JRequest::getInt('product_parent_id', false))   $col_product_name='COM_VIRTUEMART_PRODUCT_CHILDREN_LIST'; else $col_product_name='COM_VIRTUEMART_PRODUCT_NAME';
-if (JRequest::getCmd('tmpl') =='component' ) $front = '&tmpl=component';
-else $front = '';
 ?>
 
 <div id="resultscounter"><?php echo $this->pagination->getResultsCounter(); ?></div>
@@ -36,7 +34,7 @@ else $front = '';
                 <th><?php echo $this->sort('product_parent_id','COM_VIRTUEMART_PRODUCT_CHILDREN_OF'); ?></th>
                 <?php } ?>
 		<th width="80px" ><?php echo JText::_('COM_VIRTUEMART_PRODUCT_PARENT_LIST_CHILDREN'); ?></th>
-		<th width="80px"  class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_PRODUCT_MEDIA'); ?></th>
+		<th width="48px"  class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_PRODUCT_MEDIA'); ?></th>
 		<!--<th class="hidden-phone"><?php echo $this->sort('product_sku') ?></th>-->
 		<th width="80px" ><?php echo $this->sort('product_price', 'COM_VIRTUEMART_PRODUCT_PRICE_TITLE') ; ?></th>
 <?php /*		<th><?php echo JHTML::_('grid.sort', 'COM_VIRTUEMART_CATEGORY', 'c.category_name', $this->lists['filter_order_Dir'], $this->lists['filter_order'] ); ?></th> */ ?>
@@ -74,7 +72,7 @@ else $front = '';
 			<tr >
 				<td align="right" ><?php echo $checked; ?></td>
 				<?php
-				$link = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$product->virtuemart_product_id.'&product_parent_id='.$product->product_parent_id.$front;
+				$link = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$product->virtuemart_product_id.'&product_parent_id='.$product->product_parent_id.$this->tmpl;
                 /* Product list should be ordered */
 				?>
 				<td>
@@ -98,7 +96,7 @@ else $front = '';
 				</td>
 				<?php
 					/* Create URL */
-					$link = JRoute::_('index.php?view=media&virtuemart_product_id='.$product->virtuemart_product_id.'&option=com_virtuemart'.$front);
+					$link = JRoute::_('index.php?view=media&virtuemart_product_id='.$product->virtuemart_product_id.'&option=com_virtuemart'.$this->tmpl);
 				?>
 				<td align="center"  class="hidden-phone">
 					<?php // We show the images only when less than 31 products are displayeed -->
@@ -106,9 +104,9 @@ else $front = '';
 					if($this->pagination->limit<=$mediaLimit or $total<=$mediaLimit){
 						// Product list should be ordered
 						$this->model->addImages($product,1);
-						$img = '<span >('.$product->mediaitems.')</span>'.$product->images[0]->displayMediaThumb('class="vm_mini_image"',false );
+						$img = '<span class="badge badge-'.($product->mediaitems ? 'info' : 'default').'">'.$product->mediaitems.'</span>'.$product->images[0]->displayMediaThumb('',false );
 					} else {
-						$img = '<span class="icon-nofloat vmicon vmicon-16-media"></span> ('.$product->mediaitems.')';
+						$img = '<span class="badge badge-'.($product->mediaitems ? 'info' : 'default').'">'.$product->mediaitems.'</span>';
 					}
 					echo JHTML::_('link', $link, $img,  array('class' => 'hasTooltip thumbnail' ,'title' => JText::_('COM_VIRTUEMART_MEDIA_MANAGER').' '.$product->product_name));
 				 ?></td>
@@ -125,7 +123,7 @@ else $front = '';
 						$ordering = true;
 						?>
 						<td class="order">
-						<span class="vmicon vmicon-16-move"></span>
+						<span class="icon-move"></span>
 							<span><?php echo $this->pagination->orderUpIcon( $i, true, 'orderup', JText::_('COM_VIRTUEMART_MOVE_UP'), $ordering ); ?></span>
 							<span><?php echo $this->pagination->orderDownIcon( $i, $total , true, 'orderdown', JText::_('COM_VIRTUEMART_MOVE_DOWN'), $ordering ); ?></span>
 							<input class="ordering input-mini" type="text" name="order[<?php echo $product->id?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $product->ordering; ?>" style="text-align: center" />
@@ -134,11 +132,11 @@ else $front = '';
 						<?php
 					} ?>
 				<td class="hidden-phone">
-					<?php echo $this->editLink(	$product->virtuemart_manufacturer_id, $product->mf_name, 		'virtuemart_manufacturer_id[]',
+					<?php echo $this->editLink(	$product->virtuemart_manufacturer_id, $product->mf_name, 'virtuemart_manufacturer_id',
 					array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$product->mf_name,'product'), 'manufacturer') ?>
 				</td>
 				<!-- Reviews -->
-				<?php $link = 'index.php?option=com_virtuemart&view=ratings&task=listreviews&virtuemart_product_id='.$product->virtuemart_product_id.$front; ?>
+				<?php $link = 'index.php?option=com_virtuemart&view=ratings&task=listreviews&virtuemart_product_id='.$product->virtuemart_product_id.$this->tmpl; ?>
 				<td align="center" ><?php echo JHTML::_('link', $link, $product->reviews); ?></td>
 				<td align="center" class="hidden-phone">
 					<?php

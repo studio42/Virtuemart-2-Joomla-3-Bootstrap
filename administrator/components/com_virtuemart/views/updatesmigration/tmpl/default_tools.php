@@ -51,9 +51,8 @@ if(!VmConfig::get('dangeroustools', false)){
 	<div class="span6">
 		<h3> <?php echo JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'); ?> </h3>
 		<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=portMedia&'.JSession::getFormToken().'=1' ); ?>
-		<a class="icon btn btn-block btn-primary btn-large" onclick="javascript:confirmation('<?php echo JText::sprintf('COM_VIRTUEMART_UPDATE_MIGRATION_STRING_CONFIRM', JText::_('COM_VIRTUEMART_MEDIA_S')); ?>', '<?php echo $link; ?>');">
-				<i class="vmicon vmicon-16-media icon-nofloat"></i><i class="vmicon vmicon-16-refresh"></i>
-				<?php echo JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'); ?>
+		<a class="btn btn-block btn-primary btn-large" onclick="javascript:confirmation('<?php echo JText::sprintf('COM_VIRTUEMART_UPDATE_MIGRATION_STRING_CONFIRM', JText::_('COM_VIRTUEMART_MEDIA_S')); ?>', '<?php echo $link; ?>');">
+				<i class="icon-images"></i> <?php echo JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'); ?> <i class="icon-refresh"></i>
 				
 		</a>
 		<div>
@@ -63,9 +62,8 @@ if(!VmConfig::get('dangeroustools', false)){
 	<div class="span6">
 		<h3> <?php echo JText::_('COM_VIRTUEMART_TOOLS_RENEW_CONFIG'); ?> </h3>
 		<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=renewConfig&'.JSession::getFormToken().'=1' ); ?>
-		<a class="icon btn btn-block btn-large" onclick="javascript:confirmation('<?php echo JText::_('COM_VIRTUEMART_TOOLS_RENEW_CONFIG_CONFIRM'); ?>', '<?php echo $link; ?>');">
-			<i class="vmicon vmicon-16-config icon-nofloat"></i><i class="vmicon vmicon-16-refresh"></i>
-			<?php echo Jtext::_('COM_VIRTUEMART_TOOLS_RENEW_CONFIG'); ?>
+		<a class="btn btn-block btn-large" onclick="javascript:confirmation('<?php echo JText::_('COM_VIRTUEMART_TOOLS_RENEW_CONFIG_CONFIRM'); ?>', '<?php echo $link; ?>');">
+			<i class="icon-cogs"></i> <?php echo Jtext::_('COM_VIRTUEMART_TOOLS_RENEW_CONFIG'); ?> <i class="icon-refresh"></i>
 			
 		</a>
 		<div class="span12">
@@ -82,19 +80,17 @@ if(!VmConfig::get('dangeroustools', false)){
 	<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=refreshCompleteInstall&'.JSession::getFormToken().'=1' ); ?>
 	<div class="span6">
 		<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=updateDatabase&'.JSession::getFormToken().'=1' ); ?>
-	    <a class="icon btn btn-block btn-large btn-warning"  onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATEDATABASE_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-			<i class="vmicon vmicon-16-database_gear icon-nofloat"></i>
-            <?php echo Jtext::_('COM_VIRTUEMART_UPDATEDATABASE'); ?>
+	    <a class="btn btn-block btn-large btn-warning"  onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATEDATABASE_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
+			<i class="icon-database"></i> <?php echo Jtext::_('COM_VIRTUEMART_UPDATEDATABASE'); ?>
 		</a>
-		<a class="icon btn btn-block btn-large btn-warning btn-danger"  onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_DELETES_ALL_VM_TABLES_AND_FRESH_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-			<i class="vmicon vmicon-16-database_gear icon-nofloat"></i>
+		<a class="btn btn-block btn-large btn-warning btn-danger"  onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_DELETES_ALL_VM_TABLES_AND_FRESH_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
+			<i class="icon-database"></i>
 	            <?php echo Jtext::_('COM_VIRTUEMART_DELETES_ALL_VM_TABLES_AND_FRESH'); ?>
 		</a>
 
 			<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=refreshCompleteInstallAndSample&'.JSession::getFormToken().'=1' ); ?>
-	    <a class="icon btn btn-block btn-large btn-danger"  onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_DELETES_ALL_VM_TABLES_AND_SAMPLE_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-		<i class="vmicon vmicon-16-database_gear icon-nofloat"></i>
-            <?php echo Jtext::_('COM_VIRTUEMART_DELETES_ALL_VM_TABLES_AND_SAMPLE'); ?>
+	    <a class="btn btn-block btn-large btn-danger"  onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_DELETES_ALL_VM_TABLES_AND_SAMPLE_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
+		<i class="icon-database"></i> <?php echo Jtext::_('COM_VIRTUEMART_DELETES_ALL_VM_TABLES_AND_SAMPLE'); ?> <i class="icon-remove"></i>
 		</a>
 </br>
 
@@ -102,18 +98,16 @@ if(!VmConfig::get('dangeroustools', false)){
 	<div class="span6">
 		<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=restoreSystemDefaults&'.JSession::getFormToken().'=1'); ?>
 	    <a class="icon btn btn-block btn-large btn-danger"  onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATE_RESTOREDEFAULTS_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-			<i class="vmicon vmicon-16-cog icon-nofloat"></i>
-			<?php echo JText::_('COM_VIRTUEMART_UPDATE_RESTOREDEFAULTS'); ?>
+			<i class="icon-cogs"></i>
+			<?php echo JText::_('COM_VIRTUEMART_UPDATE_RESTOREDEFAULTS'); ?> <i class="icon-restore"></i>
 		</a>
 		<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=deleteVmData&'.JSession::getFormToken().'=1'); ?>
 	    <a class="icon btn btn-block btn-large btn-danger"  onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATE_REMOVEDATA_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-			<i class="vmicon vmicon-16-database_gear icon-nofloat"></i>
-			<?php echo Jtext::_('COM_VIRTUEMART_UPDATE_REMOVEDATA'); ?>
+			<i class="icon-database"></i> <?php echo Jtext::_('COM_VIRTUEMART_UPDATE_REMOVEDATA'); ?> <i class="icon-remove"></i>
 		</a>
 		<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=deleteVmTables&'.JSession::getFormToken().'=1' ); ?>
 	    <a class="icon btn btn-block btn-large btn-danger"  onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATE_REMOVETABLES_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-			<i class="vmicon vmicon-16-database_gear icon-nofloat"></i>
-            <?php echo Jtext::_('COM_VIRTUEMART_UPDATE_REMOVETABLES'); ?>
+			<i class="icon-database"></i> <?php echo Jtext::_('COM_VIRTUEMART_UPDATE_REMOVETABLES'); ?> <i class="icon-remove"></i>
 		</a>
 	</div>
 </div>

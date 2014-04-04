@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 AdminUIHelper::startAdminArea();
  
-include(JPATH_VM_ADMINISTRATOR.DS.'COPYRIGHT.php');
+include(JPATH_VM_ADMINISTRATOR.'/COPYRIGHT.php');
 
 AdminUIHelper::endAdminArea();
 

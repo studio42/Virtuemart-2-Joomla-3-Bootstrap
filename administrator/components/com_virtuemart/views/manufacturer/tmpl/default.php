@@ -22,7 +22,13 @@ defined('_JEXEC') or die('Restricted access'); ?>
 	<?php AdminUIHelper::startAdminArea(); ?>
 
 	<div id="filter-bar" class="btn-toolbar">
-		<?php echo $this->displayDefaultViewSearch() ?>
+		<div class="btn-group pull-left">
+			<?php echo $this->displayDefaultViewSearch() ?>
+		</div>
+		<div class="btn-group pull-left">
+			<?php echo JText::_('COM_VIRTUEMART_MANUFACTURERCATEGORIES') . $this->lists['virtuemart_manufacturercategories_id']; ?>
+			<?php echo $this->DisplayFilterPublish() ?>
+		</div>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">
