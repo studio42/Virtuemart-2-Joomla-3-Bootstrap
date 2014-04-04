@@ -19,7 +19,14 @@
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
+if (!isset($this->newlayout)){
+	$this->newlayout = JRequest::getCmd( 'layout', 'default');
+	if ($layout !='default') {
+		$this->setLayout($this->newlayout);
+		echo $this->loadTemplate();
+	}
+	// var_dump($this);
+}
 // addon for joomla modal Box
 JHTML::_('behavior.modal');
 // JHTML::_('behavior.tooltip');
@@ -157,23 +164,16 @@ if (empty($this->product)) {
     } // Product Custom ontop end
     ?>
 
-    <div>
-	<div class="width60 floatleft">
+  <div class="row-fluid">
+
+	<div class="span4">
 <?php
 echo $this->loadTemplate('images');
 ?>
 	</div>
 
-	<div class="width40 floatright">
+    <div class="span8">
 	    <div class="spacer-buy-area">
-
-		<?php
-		// TODO in Multi-Vendor not needed at the moment and just would lead to confusion
-		/* $link = JRoute::_('index2.php?option=com_virtuemart&view=virtuemart&task=vendorinfo&virtuemart_vendor_id='.$this->product->virtuemart_vendor_id);
-		  $text = JText::_('COM_VIRTUEMART_VENDOR_FORM_INFO_LBL');
-		  echo '<span class="bold">'. JText::_('COM_VIRTUEMART_PRODUCT_DETAILS_VENDOR_LBL'). '</span>'; ?><a class="modal" href="<?php echo $link ?>"><?php echo $text ?></a><br />
-		 */
-		?>
 
 		<?php
 		if ($this->showRating) {
@@ -238,51 +238,98 @@ echo $this->loadTemplate('images');
 			<?php
 			}
 		}
-		?>
 
-<?php
-// Ask a question about this product
-if (VmConfig::get('ask_question', 1) == 1) {
-    ?>
-    		<div class="ask-a-question">
-    		    <a class="ask-a-question" href="<?php echo $this->askquestion_url ?>" ><?php echo JText::_('COM_VIRTUEMART_PRODUCT_ENQUIRY_LBL') ?></a>
-    		    <!--<a class="ask-a-question modal" rel="{handler: 'iframe', size: {x: 700, y: 550}}" href="<?php echo $this->askquestion_url ?>"><?php echo JText::_('COM_VIRTUEMART_PRODUCT_ENQUIRY_LBL') ?></a>-->
-    		</div>
-		<?php }
+		// Ask a question about this product
+		if (VmConfig::get('ask_question', 1) == 1) {
+			?>
+			<div class="ask-a-question">
+				<a class="ask-a-question" href="<?php echo $this->askquestion_url ?>" ><?php echo JText::_('COM_VIRTUEMART_PRODUCT_ENQUIRY_LBL') ?></a>
+				<!--<a class="ask-a-question modal" rel="{handler: 'iframe', size: {x: 700, y: 550}}" href="<?php echo $this->askquestion_url ?>"><?php echo JText::_('COM_VIRTUEMART_PRODUCT_ENQUIRY_LBL') ?></a>-->
+			</div>
+			<?php }
 		?>
 
 		<?php
-		// Manufacturer of the Product
-		if (VmConfig::get('show_manufacturers', 1) && !empty($this->product->virtuemart_manufacturer_id)) {
-		    echo $this->loadTemplate('manufacturer');
+
+		if ($this->vendor) {
+			$link = JRoute::_('index.php?option=com_virtuemart&view=vendor&virtuemart_vendor_id='.$this->product->virtuemart_vendor_id);
+			?>
+			<div>
+				<?php echo jText::_('COM_VIRTUEMART_PRODUCT_DETAILS_VENDOR_LBL').' : 
+				<a class="link" href="' . $link . '">'. $this->vendor->vendor_store_name .'</a>' ;
+				// TODO add link to vendor product list ?
+				?>
+				<?php echo JText::sprintf('COM_VIRTUEMART_CART_X_PRODUCTS',jText::_('JSHOW')); ?>
+			</div>
+			<?php
 		}
 		?>
-
+		
 	    </div>
 	</div>
-	<div class="clear"></div>
-    </div>
+  </div>
+<div class="clear"></div>
 
-	<?php // event onContentBeforeDisplay
-	echo $this->product->event->beforeDisplayContent; ?>
 
+<?php // event onContentBeforeDisplay
+echo $this->product->event->beforeDisplayContent; 
+$active = ' class="active"';
+?>
+
+<ul class="nav nav-tabs" id="product-tabs">
+	<?php if (!empty($this->product->product_desc)) { ?>
+		<li class="active"><a href="#product-tab-desc" data-toggle="tab"><?php echo JText::_('JGLOBAL_DESCRIPTION') ?></a></li>
+		<?php 
+		$active = '';
+	} if (!empty($this->product->customfieldsSorted['normal'])) { ?>
+		<li <?php echo $active ?>><a href="#product-tab-customfield" data-toggle="tab"><?php echo JText::_('JDETAILS') ?></a></li>
+		<?php
+		$active = '';
+	} if ($this->allowRating || $this->showReview) { ?>
+		<li <?php echo $active ?>><a href="#product-tab-comment" data-toggle="tab"><?php echo JText::_('COM_VIRTUEMART_COMMENT') ?></a></li>
+		<?php
+		$active = '';
+	} if (!empty($this->product->customfieldsRelatedProducts)) { ?>
+		<li <?php echo $active ?>><a href="#product-tab-RelatedProducts" data-toggle="tab"><?php echo JText::_('COM_VIRTUEMART_RELATED_PRODUCTS'); ?></a></li>
+		<?php
+		$active = '';
+	} if (!empty($this->product->customfieldsRelatedCategories)) { ?>
+		<li <?php echo $active ?>><a href="#product-tab-RelatedCategories" data-toggle="tab"><?php echo JText::_('COM_VIRTUEMART_RELATED_CATEGORIES'); ?></a></li>
+<?php } ?>
+</ul>
+ 
+<div class="tab-content">
+<?php $active = ' active';
+	if (!empty($this->product->product_desc)) { ?>
+		<div class="tab-pane active" id="product-tab-desc"><?php echo $this->product->product_desc; ?></div>
+		<?php
+		$active = '';
+	} if (!empty($this->product->customfieldsSorted['normal'])) { ?>
+		<div class="tab-pane<?php echo $active ?>" id="product-tab-customfield">
+		<?php
+		$active = '';
+		$this->position = 'normal';
+		echo $this->loadTemplate('customfields'); ?>
+		</div>
+	<?php } if ($this->allowRating || $this->showReview) { ?>
+		<div class="tab-pane<?php echo $active ?>" id="product-tab-comment">
+			<?php echo $this->loadTemplate('reviews'); ?>
+		</div>
+		<?php
+		$active = '';
+	} if (!empty($this->product->customfieldsRelatedProducts)) { ?>
+		<div class="tab-pane<?php echo $active ?>" id="product-tab-RelatedProducts">
+			<?php echo $this->loadTemplate('relatedproducts'); ?>
+		</div>
+		<?php
+		$active = '';
+	} if (!empty($this->product->customfieldsRelatedCategories)) { ?>
+		<div class="tab-pane<?php echo $active ?>" id="product-tab-RelatedCategories">
+			<?php echo $this->loadTemplate('relatedcategories'); ?>
+		</div>
+<?php } ?>
+</div>
 	<?php
-	// Product Description
-	if (!empty($this->product->product_desc)) {
-	    ?>
-        <div class="product-description">
-	<?php /** @todo Test if content plugins modify the product description */ ?>
-    	<span class="title"><?php echo JText::_('COM_VIRTUEMART_PRODUCT_DESC_TITLE') ?></span>
-	<?php echo $this->product->product_desc; ?>
-        </div>
-	<?php
-    } // Product Description END
-
-    if (!empty($this->product->customfieldsSorted['normal'])) {
-	$this->position = 'normal';
-	echo $this->loadTemplate('customfields');
-    } // Product custom_fields END
-    // Product Packaging
     $product_packaging = '';
     if ($this->product->product_box) {
 	?>
@@ -306,14 +353,14 @@ if (VmConfig::get('ask_question', 1) == 1) {
     // $link = JRoute::_('index.php?view=productdetails&task=getfile&virtuemart_media_id='.$file->virtuemart_media_id.'&virtuemart_product_id='.$this->product->virtuemart_product_id);
     // echo JHTMl::_('link', $link, $file->file_title.$filesize_display, array('target' => $target));
     // }
-    if (!empty($this->product->customfieldsRelatedProducts)) {
+/*     if (!empty($this->product->customfieldsRelatedProducts)) {
 	echo $this->loadTemplate('relatedproducts');
     } // Product customfieldsRelatedProducts END
 
     if (!empty($this->product->customfieldsRelatedCategories)) {
 	echo $this->loadTemplate('relatedcategories');
     } // Product customfieldsRelatedCategories END
-    // Show child categories
+ */    // Show child categories
     if (VmConfig::get('showCategory', 1)) {
 	echo $this->loadTemplate('showcategory');
     }
@@ -326,7 +373,5 @@ if (VmConfig::get('ask_question', 1) == 1) {
 <?php // onContentAfterDisplay event
 echo $this->product->event->afterDisplayContent; ?>
 
-<?php
-echo $this->loadTemplate('reviews');
-?>
+
 </div>

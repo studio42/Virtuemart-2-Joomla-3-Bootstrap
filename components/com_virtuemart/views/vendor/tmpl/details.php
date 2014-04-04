@@ -22,10 +22,11 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 
 <div class="vendor-details-view">
+	<?php echo $this->editLink('user',$this->vendor->virtuemart_vendor_id,null,'editshop',$this->vendor->virtuemart_vendor_id); ?>
 	<h1><?php echo $this->vendor->vendor_store_name;
 	if (!empty($this->vendor->images[0])) { ?>
 		<div class="vendor-image">
-		<?php echo $this->vendor->images[0]->displayMediaThumb('',false); ?>
+		<?php echo $this->vendor->images[0]->displayMediaFull('',false); ?>
 		</div>
 	<?php
 	}
@@ -33,11 +34,11 @@ defined('_JEXEC') or die('Restricted access');
 
 <div class="vendor-description">
 <?php echo $this->vendor->vendor_store_desc.'<br>';
-	if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
-	echo shopFunctions::renderVendorAddress($this->vendor->virtuemart_vendor_id);
+	// if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+	// echo shopFunctions::renderVendorAddress($this->vendor->virtuemart_vendor_id);
 
 	?></div>
-
+<?php if ($this->products) echo $this->loadTemplate('products'); ?>
 <?php	echo $this->vendor->vendor_legal_info; ?>
 
 	<br class="clear" />

@@ -44,9 +44,11 @@ if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
 if (Permissions::getInstance()->check("admin,storeadmin")) {
 	$edit_link = '<a href="'.JURI::root().'index.php?option=com_virtuemart&tmpl=component&view=category&task=edit&virtuemart_category_id='.$this->category->virtuemart_category_id.'">
 		'.JHTML::_('image', 'images/M_images/edit.png', JText::_('COM_VIRTUEMART_PRODUCT_FORM_EDIT_PRODUCT'), array('width' => 16, 'height' => 16, 'border' => 0)).'</a>';
-}
+} */
+	// Check for editing access
+	// $this->assignRef('edit_link', $edit_link);
 
-echo $edit_link; */
+echo $this->editLink('category',$this->category->virtuemart_category_id,$this->category->created_by);
 if (empty($this->keyword) and !empty($this->category)) {
 	?>
 <div class="category_description">
@@ -67,7 +69,8 @@ if (VmConfig::get ('showCategory', 1) and empty($this->keyword)) {
 		// Calculating Categories Per Row
 		$categories_per_row = VmConfig::get ('categories_per_row', 3);
 		$category_cellwidth = ' width' . floor (100 / $categories_per_row);
-
+		$span = ' span' . floor (12 / $categories_per_row);
+		$count_categories = count ($this->category->children);
 		// Separator
 		$verticalseparator = " vertical-separator";
 		?>
@@ -75,7 +78,7 @@ if (VmConfig::get ('showCategory', 1) and empty($this->keyword)) {
 		<div class="category-view">
 
 		<?php // Start the Output
-		if (!empty($this->category->children)) {
+		if ($count_categories) {
 			foreach ($this->category->children as $category) {
 
 				// Show the horizontal seperator
@@ -88,7 +91,7 @@ if (VmConfig::get ('showCategory', 1) and empty($this->keyword)) {
 				// this is an indicator wether a row needs to be opened or not
 				if ($iCol == 1) {
 					?>
-			<div class="row">
+			<div class=" row-fluid">
 			<?php
 				}
 
@@ -104,7 +107,7 @@ if (VmConfig::get ('showCategory', 1) and empty($this->keyword)) {
 
 				// Show Category
 				?>
-				<div class="category floatleft<?php echo $category_cellwidth . $show_vertical_separator ?>">
+				<div class="category floatleft<?php echo $span . $show_vertical_separator ?>">
 					<div class="spacer">
 						<h2>
 							<a href="<?php echo $caturl ?>" title="<?php echo $category->category_name ?>">
@@ -229,8 +232,8 @@ if (!empty($this->products)) {
 		// Show Products
 		?>
 		<div class="product floatleft<?php echo $Browsecellwidth . $show_vertical_separator ?>">
-			<div class="spacer">
-				<div class="width30 floatleft center">
+			<div class="row-fluid">
+				<div class="width30 floatleft center span4">
 				    <a title="<?php echo $product->product_name ?>" rel="vm-additional-images" href="<?php echo $product->link; ?>">
 						<?php
 							echo $product->images[0]->displayMediaThumb('class="browseProductImage"', false);
@@ -257,9 +260,9 @@ if (!empty($this->products)) {
 						<?php } ?>
 				</div>
 
-				<div class="width70 floatright">
+				<div class="width70 floatright span8">
 
-					<h2><?php echo JHTML::link ($product->link, $product->product_name); ?></h2>
+					<h4><?php echo JHTML::link ($product->link, $product->product_name); ?></h4>
 
 					<?php // Product Short Description
 					if (!empty($product->product_s_desc)) {

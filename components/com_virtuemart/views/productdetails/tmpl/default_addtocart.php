@@ -97,27 +97,26 @@ $alert=JText::sprintf ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED', $step);
 
 				<?php } else { ?>
 				<!-- <label for="quantity<?php echo $this->product->virtuemart_product_id; ?>" class="quantity_box"><?php echo JText::_ ('COM_VIRTUEMART_CART_QUANTITY'); ?>: </label> -->
-				<span class="quantity-box">
-		<input type="text" class="quantity-input js-recalculate" name="quantity[]" onblur="check(this);" value="<?php if (isset($this->product->step_order_level) && (int)$this->product->step_order_level > 0) {
-			echo $this->product->step_order_level;
-		} else if(!empty($this->product->min_order_level)){
-			echo $this->product->min_order_level;
-		}else {
-			echo '1';
-		} ?>"/>
-	    </span>
-				<span class="quantity-controls js-recalculate">
-		<input type="button" class="quantity-controls quantity-plus"/>
-		<input type="button" class="quantity-controls quantity-minus"/>
-	    </span>
+		<div class="quantity-controls js-recalculate input-prepend input-append">
+			<button type="button" class="quantity-controls quantity-minus btn"/><i class="icon icon-minus"></i></button>
+			<input type="text" class="quantity-input js-recalculate" name="quantity[]" onblur="check(this);" value="<?php if (isset($this->product->step_order_level) && (int)$this->product->step_order_level > 0) {
+				echo $this->product->step_order_level;
+			} else if(!empty($this->product->min_order_level)){
+				echo $this->product->min_order_level;
+			}else {
+				echo '1';
+			} ?>"/>
+			<button type="button" class="quantity-controls quantity-plus btn"/><i class="icon icon-plus"></i></button>
+
+	    </div>
 				<?php // Display the quantity box END ?>
 
 				<?php
 				// Display the add to cart button
 				?>
-				<span class="addtocart-button">
+		<div class="addtocart-button">
 		<?php echo shopFunctionsF::getAddToCartButton ($this->product->orderable); ?>
-		</span>
+		</div>
 				<?php } ?>
 
 			<div class="clear"></div>

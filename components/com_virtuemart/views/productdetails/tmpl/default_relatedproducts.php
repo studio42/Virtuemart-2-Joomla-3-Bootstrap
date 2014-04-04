@@ -20,15 +20,15 @@
 // Check to ensure this file is included in Joomla!
 defined ( '_JEXEC' ) or die ( 'Restricted access' );
 ?>
-        <div class="product-related-products">
-    	<h4><?php echo JText::_('COM_VIRTUEMART_RELATED_PRODUCTS'); ?></h4>
+	<h4 class="visible-phone"><?php echo JText::_('COM_VIRTUEMART_RELATED_PRODUCTS'); ?></h4>
+	<div class="product-related-products row-fluid">
 
     <?php
     foreach ($this->product->customfieldsRelatedProducts as $field) {
 	    if(!empty($field->display)) {
-	?><div class="product-field product-field-type-<?php echo $field->field_type ?>">
+	?><div class="span4 text-center product-field product-field-type-<?php echo $field->field_type ?>">
 		    <span class="product-field-display"><?php echo $field->display ?></span>
 		</div>
 	<?php }
 	    } ?>
-        </div>
+	</div>

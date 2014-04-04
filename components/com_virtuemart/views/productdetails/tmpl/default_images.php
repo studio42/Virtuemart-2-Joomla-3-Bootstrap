@@ -53,20 +53,32 @@ if (!empty($this->product->images)) {
 	$count_images = count ($this->product->images);
 	if ($count_images > 1) {
 		?>
-    <div class="additional-images">
+
+    <div class="additional-images thumbnails">
+	<div class="row-fluid">
 		<?php
+		$col = 1;
 		for ($i = 0; $i < $count_images; $i++) {
 			$image = $this->product->images[$i];
 			?>
-            <div class="floatleft">
+            <div class="span4">
+			<div class="thumbnail">
 	            <?php
 	                echo $image->displayMediaFull('class="product-image" style="cursor: pointer"',false,"");
 	            ?>
             </div>
+            </div>
 			<?php
+			if($col === 3 && $i < $count_images) {
+				$col=0;
+				?>
+				</div><div class="row-fluid">
+				<?php }
+			$col++;
 		}
 		?>
         <div class="clear"></div>
+    </div>
     </div>
 	<?php
 	}

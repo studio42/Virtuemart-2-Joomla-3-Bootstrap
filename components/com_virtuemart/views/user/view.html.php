@@ -185,13 +185,13 @@ class VirtuemartViewUser extends VmView {
 
 	// Implement the Joomla panels. If we need a ShipTo tab, make it the active one.
 	// In tmpl/edit.php, this is the 4th tab (0-based, so set to 3 above)
-	jimport('joomla.html.pane');
-	$pane = JPane::getInstance((__VM_USER_USE_SLIDERS ? 'Sliders' : 'Tabs'), $_paneOffset);
+	// jimport('joomla.html.pane');
+	// $pane = JPane::getInstance((__VM_USER_USE_SLIDERS ? 'Sliders' : 'Tabs'), $_paneOffset);
 
 	$this->assignRef('lists', $this->_lists);
 
 	$this->assignRef('editor', $editor);
-	$this->assignRef('pane', $pane);
+	// $this->assignRef('pane', $pane);
 
 	if ($layoutName == 'mailregisteruser') {
 	    $vendorModel = VmModel::getModel('vendor');
@@ -243,7 +243,7 @@ class VirtuemartViewUser extends VmView {
 	  $add_product_link="";
 	 if(!class_exists('Permissions')) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart' . DS . 'helpers' . DS . 'permissions.php');
 	if(!Permissions::getInstance()->isSuperVendor() or Vmconfig::get('multix','none')!=='none' ){
-	    $add_product_link = JRoute::_( '/index.php?option=com_virtuemart&tmpl=component&view=product&view=product&task=edit&virtuemart_product_id=0' );
+	    $add_product_link = JRoute::_( 'index.php?option=com_virtuemart&tmpl=component&view=product&view=product&task=edit&virtuemart_product_id=0' );
 	    $add_product_link = $this->linkIcon($add_product_link, 'COM_VIRTUEMART_PRODUCT_ADD_PRODUCT', 'new', false, false, true, true);
 	}
 	$this->assignRef('add_product_link', $add_product_link);
@@ -363,10 +363,10 @@ class VirtuemartViewUser extends VmView {
 	if (!class_exists('shopFunctionsF'))
 	    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 	$comUserOption = shopfunctionsF::getComUserOption();
-
-	$this->_lists['canBlock'] = ($this->_currentUser->authorize($comUserOption, 'block user')
+	if (method_exists($comUserOption,'authorize')) $authorize = 'authorize'; else $authorize = 'authorise';
+	$this->_lists['canBlock'] = ($this->_currentUser->$authorize($comUserOption, 'block user')
 		&& ($this->_model->getId() != $this->_cuid)); // Can't block myself TODO I broke that, please retest if it is working again
-	$this->_lists['canSetMailopt'] = $this->_currentUser->authorize('workflow', 'email_events');
+	$this->_lists['canSetMailopt'] = $this->_currentUser->$authorize('workflow', 'email_events');
 	$this->_lists['block'] = JHTML::_('select.booleanlist', 'block', 'class="inputbox"', $this->_userDetails->JUser->get('block'), 'COM_VIRTUEMART_YES', 'COM_VIRTUEMART_NO');
 	$this->_lists['sendEmail'] = JHTML::_('select.booleanlist', 'sendEmail', 'class="inputbox"', $this->_userDetails->JUser->get('sendEmail'), 'COM_VIRTUEMART_YES', 'COM_VIRTUEMART_NO');
 

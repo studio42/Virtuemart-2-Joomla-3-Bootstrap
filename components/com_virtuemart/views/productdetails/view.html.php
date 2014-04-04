@@ -21,7 +21,9 @@ defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
 if (!class_exists('VmView'))
-    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');
+    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');// Load the view framework
+if (!class_exists('ShopFunctions'))
+    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
 
 /**
  * Product details
@@ -55,8 +57,8 @@ class VirtueMartViewProductdetails extends VmView {
 	// add javascript for price and cart, need even for quantity buttons, so we need it almost anywhere
 	vmJsApi::jPrice();
 
-	$mainframe = JFactory::getApplication();
-	$pathway = $mainframe->getPathway();
+	$app = JFactory::getApplication();
+	$pathway = $app->getPathway();
 	$task = JRequest::getCmd('task');
 
 	if (!class_exists('VmImage'))
@@ -80,7 +82,18 @@ class VirtueMartViewProductdetails extends VmView {
     if (!empty($quantityArray[0])) {
 	    $quantity = $quantityArray[0];
     }
-    $product = $product_model->getProduct($virtuemart_product_id,TRUE,TRUE,TRUE,$quantity);
+	$onlyPublished = true;
+	// set unpublished product when it's editable by its owner for preview
+	if ($canEdit = ShopFunctions::can('edit','product')) {
+		$onlyPublished = false;
+	}
+    $product = $product_model->getProduct($virtuemart_product_id,TRUE,TRUE,$onlyPublished,$quantity);
+	if($product && $canEdit) {
+		if (!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
+		$vendor = Permissions::getInstance()->isSuperVendor();
+		if ($vendor > 1 || $product->virtuemart_vendor_id !== $vendor ) $product = null;
+		elseif ( !$product->published ) $app->enqueueMessage(JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_STATUS').' : '.JText::_('COM_VIRTUEMART_UNPUBLISHED'),'warning');
+	}
 
 // 		vmSetStartTime('customs');
 // 		for($k=0;$k<count($product->customfields);$k++){
@@ -93,7 +106,7 @@ class VirtueMartViewProductdetails extends VmView {
 	if (empty($product->slug)) {
 
 	    //Todo this should be redesigned to fit better for SEO
-	    $mainframe->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_NOT_FOUND'));
+	    $app->enqueueMessage(JText::_('COM_VIRTUEMART_PRODUCT_NOT_FOUND'));
 
 	    $categoryLink = '';
 	    if (!$last_category_id) {
@@ -103,7 +116,7 @@ class VirtueMartViewProductdetails extends VmView {
 		$categoryLink = '&virtuemart_category_id=' . $last_category_id;
 	    }
 
-	    $mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink . '&error=404', FALSE));
+	    $app->redirect(JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink . '&error=404', FALSE));
 
 	    return;
 	}
@@ -167,7 +180,12 @@ class VirtueMartViewProductdetails extends VmView {
     if (VmConfig::get('product_navigation', 1)) {
 	    $product->neighbours = $product_model->getNeighborProducts($product);
 	}
-
+	// Product vendor multiX
+	if ($multix = Vmconfig::get('multix','none') === 'admin') {
+		$vendor_model = VmModel::getModel('vendor');
+		$this->vendor = $vendor_model->getVendor($this->product->virtuemart_vendor_id);
+	} else $this->vendor = null;
+	// echo 'multi'.$multix;
 	// Load the category
 	$category_model = VmModel::getModel('category');
 
@@ -191,9 +209,9 @@ class VirtueMartViewProductdetails extends VmView {
 			}
 		}
 
-	    $vendorId = 1;
-	    $category->children = $category_model->getChildCategoryList($vendorId, $product->virtuemart_category_id);
-	    $category_model->addImages($category->children, 1);
+		$vendorId = JRequest::getInt('virtuemart_vendor_id', null);
+		$category->children = $category_model->getChildCategoryList($vendorId, $product->virtuemart_category_id);
+		$category_model->addImages($category->children, 1);
 	}
 
 	if (!empty($tpl)) {
@@ -247,7 +265,7 @@ class VirtueMartViewProductdetails extends VmView {
 	$this->assignRef('allowRating', $allowRating);
 
 	// Check for editing access
-    $edit_link = $this->editLink('product',$product->virtuemart_product_id,$product->created_by);
+    $edit_link = $this->editLink('product',$product->virtuemart_product_id,$product->created_by,'edit',$product->virtuemart_vendor_id);
 	$this->assignRef('edit_link', $edit_link);
 
 	// todo: atm same form for "call for price" and "ask a question". Title of the form should be different
@@ -275,10 +293,10 @@ class VirtueMartViewProductdetails extends VmView {
 	    $document->setMetaData('robots', $product->metarobot);
 	}
 
-	if ($mainframe->getCfg('MetaTitle') == '1') {
+	if ($app->getCfg('MetaTitle') == '1') {
 	    $document->setMetaData('title', $product->product_name);  //Maybe better product_name
 	}
-	if ($mainframe->getCfg('MetaAuthor') == '1') {
+	if ($app->getCfg('MetaAuthor') == '1') {
 	    $document->setMetaData('author', $product->metaauthor);
 	}
 

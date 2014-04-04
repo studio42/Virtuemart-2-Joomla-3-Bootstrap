@@ -24,6 +24,13 @@ defined('_JEXEC') or die('Restricted access');
 // Implement Joomla's form validation
 JHTML::_('behavior.formvalidation');
 JHTML::stylesheet('vmpanels.css', JURI::root().'components/com_virtuemart/assets/css/'); // VM_THEMEURL
+if($this->userDetails->user_is_vendor){
+	JHtml::_('jquery.ui');
+	vmJsApi::js ('jquery.ui.autocomplete.html');
+	vmJsApi::js('fancybox/jquery.fancybox-1.3.4.pack');
+	vmJsApi::js('jquery.coookie',JURI::root().'administrator/components/com_virtuemart/assets/js');
+	vmJsApi::js('vm2admin',JURI::root().'administrator/components/com_virtuemart/assets/js');
+}
 ?>
 <style type="text/css">
 .invalid {

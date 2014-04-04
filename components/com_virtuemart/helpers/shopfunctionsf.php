@@ -99,9 +99,9 @@ class shopFunctionsF {
 	static public function getAddToCartButton ($orderable) {
 
 		if($orderable) {
-			$html = '<input type="submit" name="addtocart" class="addtocart-button" value="'.JText::_( 'COM_VIRTUEMART_CART_ADD_TO' ).'" title="'.JText::_( 'COM_VIRTUEMART_CART_ADD_TO' ).'" />';
+			$html = '<button type="submit" name="addtocart" class="btn btn-large btn-primary btn-block addtocart-button" title="'.JText::_( 'COM_VIRTUEMART_CART_ADD_TO' ).'"><i class="icon icon-basket"></i> '.JText::_( 'COM_VIRTUEMART_CART_ADD_TO' ).'</button>';
 		} else {
-			$html = '<input name="addtocart" class="addtocart-button-disabled" value="'.JText::_( 'COM_VIRTUEMART_ADDTOCART_CHOOSE_VARIANT' ).'" title="'.JText::_( 'COM_VIRTUEMART_ADDTOCART_CHOOSE_VARIANT' ).'" />';
+			$html = '<input name="addtocart" class="addtocart-button-disabled disabled btn btn-default" value="'.JText::_( 'COM_VIRTUEMART_ADDTOCART_CHOOSE_VARIANT' ).'" title="'.JText::_( 'COM_VIRTUEMART_ADDTOCART_CHOOSE_VARIANT' ).'" />';
 		}
 
 		return $html;
@@ -219,7 +219,8 @@ class shopFunctionsF {
 
 		$vmtemplate = VmConfig::get( 'vmtemplate', 'default' );
 		if($vmtemplate == 'default') {
-			if(JVM_VERSION == 2) {
+		// var_dump(JVM_VERSION); jexit();
+			if(JVM_VERSION > 1) {
 				$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
 			} else {
 				$q = 'SELECT `template` FROM `#__templates_menu` WHERE `client_id`="0" AND `menuid`="0"';

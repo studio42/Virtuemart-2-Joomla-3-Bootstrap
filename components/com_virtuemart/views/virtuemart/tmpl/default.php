@@ -19,6 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 JHTML::_( 'behavior.modal' );
+echo $this->editLink('user',1,$this->vendor->virtuemart_vendor_id,'editshop');
 ?>
 
 <?php # Vendor Store Description

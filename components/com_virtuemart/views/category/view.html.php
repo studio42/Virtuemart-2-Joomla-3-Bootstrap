@@ -66,7 +66,8 @@ class VirtuemartViewCategory extends VmView {
 		$virtuemart_manufacturer_id = JRequest::getInt('virtuemart_manufacturer_id',0 );
 
 		$this->setCanonicalLink($tpl,$document,$categoryId);
-		$vendorId = JRequest::getInt('virtuemart_vendor_id', 1);
+		// $vendorId = JRequest::getInt('virtuemart_vendor_id', 1);
+		$vendorId = JRequest::getInt('virtuemart_vendor_id', null);
 		// Load the products in the given category
 		$products = $productModel->getProductsInCategory($categoryId,$vendorId);
 		$productModel->addImages($products,1);
@@ -228,7 +229,9 @@ class VirtuemartViewCategory extends VmView {
 		}
 
 		$this->assignRef('category', $category);
-
+		// Check for editing access
+		$edit_link = $this->editLink('category',$category->virtuemart_category_id,$category->created_by);
+		$this->assignRef('edit_link', $edit_link);
 	    // Set the titles
 		if (!empty($category->customtitle)) {
         	$title = strip_tags($category->customtitle);

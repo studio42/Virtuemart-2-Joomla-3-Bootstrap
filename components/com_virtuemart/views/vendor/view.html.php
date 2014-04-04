@@ -123,6 +123,24 @@ class VirtuemartViewVendor extends VmView {
 				$document->setTitle( JText::_('COM_VIRTUEMART_VENDOR_DETAILS') );
 				$pathway->addItem(JText::_('COM_VIRTUEMART_VENDOR_DETAILS'));
 				$this->setLayout('details');
+				$productModel = VmModel::getModel('product');
+				$this->products = $productModel->getProductsInCategory(0,$virtuemart_vendor_id);
+				if ($this->products) {
+					$productModel->addImages($this->products,1);
+					$currency = CurrencyDisplay::getInstance( );
+					$this->currency = $currency;
+					foreach($this->products as $product){
+						$product->stock = $productModel->getStockIndicator($product);
+					}
+					if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+					$this->showBasePrice = Permissions::getInstance()->check('admin'); //todo add config settings
+					$perRow = VmConfig::get('products_per_row',3);
+					$this->assignRef('perRow', $perRow);
+
+					$pagination = $productModel->getPagination($perRow);
+					// var_dump($pagination);
+					$this->assignRef('vmPagination', $pagination);
+				}
 			}
 
 			$linkdetails = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=details&virtuemart_vendor_id=' .
