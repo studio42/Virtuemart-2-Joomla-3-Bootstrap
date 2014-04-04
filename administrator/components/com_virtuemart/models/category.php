@@ -38,7 +38,6 @@ class VirtueMartModelCategory extends VmModel {
 	function __construct() {
 		parent::__construct();
 		$this->setMainTable('categories');
-
 		$this->addvalidOrderingFieldName(array('category_name','category_description','c.ordering','cx.category_shared','c.published'));
 
 		$toCheck = VmConfig::get('browse_cat_orderby_field','category_name');
@@ -163,7 +162,8 @@ class VirtueMartModelCategory extends VmModel {
 
 // 		vmRam('What take the cats?');
 		$this->_noLimit = true;
-		if($keyword!=''){
+		$published = JRequest::getvar('filter_published');
+		if($keyword!='' && $published !=='' ){
 			$sortedCats = self::getCategories($onlyPublished, false, false, $keyword);
 		} else {
 
@@ -223,6 +223,14 @@ class VirtueMartModelCategory extends VmModel {
 
 		if( $onlyPublished ) {
 			$where[] = " c.`published` = 1 ";
+		}
+		else {
+			$published = JRequest::getvar('filter_published');
+			if ($published === '1') {
+				$where[] = " c.`published` = 1 ";
+			} else if ($published === '0') {
+				$where[] = " c.`published` = 0 ";
+			}
 		}
 		if( $parentId !== false ){
 			$where[] = ' cx.`category_parent_id` = '. (int)$parentId;

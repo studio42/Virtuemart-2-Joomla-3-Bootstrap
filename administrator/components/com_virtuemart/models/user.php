@@ -48,7 +48,7 @@ class VirtueMartModelUser extends VmModel {
 	 */
 	function __construct(){
 
-		parent::__construct('virtuemart_user_id');
+		parent::__construct();
 
 		$this->setMainTable('vmusers');
 		$this->setToggleName('user_is_vendor');
@@ -510,7 +510,7 @@ class VirtueMartModelUser extends VmModel {
 			if ($doUserActivation )
 			{
 				jimport('joomla.user.helper');
-				$user->set('activation', JUtility::getHash( JUserHelper::genRandomPassword()) );
+				$user->set('activation', Japplication::getHash( JUserHelper::genRandomPassword()) );
 				$user->set('block', '1');
 				//$user->set('lastvisitDate', '0000-00-00 00:00:00');
 			}

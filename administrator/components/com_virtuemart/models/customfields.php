@@ -37,7 +37,7 @@ class VirtueMartModelCustomfields extends VmModel {
 	 * @author Max Milbers
 	 */
 // 	function __construct($modelName ='product') {
-	function __construct ($modelName = 'product') {
+	function __construct () {
 
 		parent::__construct ('virtuemart_customfield_id');
 		$this->setMainTable ('product_customfields');
@@ -475,10 +475,9 @@ class VirtueMartModelCustomfields extends VmModel {
 
 		if (isset ( $datas['custom_param'] )) $params = true ;
 		else $params = false ;
-		if (array_key_exists('field', $datas)) {
+		if (isset($datas['field'])) {
 			//vmdebug('datas save',$datas);
 			$customfieldIds = array();
-
 
 			foreach($datas['field'] as $key => $fields){
 				$fields['virtuemart_'.$table.'_id'] =$id;
@@ -628,8 +627,8 @@ class VirtueMartModelCustomfields extends VmModel {
 					break;
 				/* string or integer */
 				case 'S':
-				case 'I':
-					return '<input type="text" class="input-medium" value="' . $field->custom_value . '" name="field[' . $row . '][custom_value]" /></td><td>' . $priceInput;
+				case 'I': // FIX studio42 tmlspecialchars: "
+					return '<input type="text" class="input-medium" value="' . htmlspecialchars($field->custom_value) . '" name="field[' . $row . '][custom_value]" /></td><td>' . $priceInput;
 					break;
 				//'X'=>'COM_VIRTUEMART_CUSTOM_EDITOR',
 				case 'X':

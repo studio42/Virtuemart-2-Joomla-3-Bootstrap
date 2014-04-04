@@ -39,7 +39,7 @@ class VirtueMartModelOrders extends VmModel {
 	 * @author Max Milbers
 	 */
 	function __construct() {
-		parent::__construct();
+		parent::__construct('virtuemart_order_id');
 		$this->setMainTable('orders');
 		$this->addvalidOrderingFieldName(array('order_name','order_email','payment_method','virtuemart_order_id' ) );
 

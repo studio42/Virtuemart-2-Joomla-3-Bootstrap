@@ -35,7 +35,7 @@ class VirtueMartModelCustom extends VmModel {
 	 * @author Max Milbers
 	 */
 	function __construct() {
-		parent::__construct('virtuemart_custom_id');
+		parent::__construct();
 		$this->setMainTable('customs');
 		$this->setToggleName('admin_only');
 		$this->setToggleName('is_hidden');
@@ -131,6 +131,12 @@ class VirtueMartModelCustom extends VmModel {
 		if($search){
 			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 			$query .= ' AND `custom_title` LIKE '.$search;
+		}
+		$published = JRequest::getvar('filter_published');
+		if ($published === '1') {
+			$query .= " AND `published` = 1 ";
+		} else if ($published === '0') {
+			$query .= " AND `published` = 0 ";
 		}
 	    $datas = new stdClass();
 		$datas->items = $this->exeSortSearchListQuery(0, $query, '', $this->_getOrdering());
@@ -240,7 +246,7 @@ class VirtueMartModelCustom extends VmModel {
 			}
 			$data['custom_params'] = $data['params'];
 		}
-// var_dump($data); jexit();
+
 		if(empty($data['virtuemart_vendor_id'])){
 			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
 			$data['virtuemart_vendor_id'] = VirtueMartModelVendor::getLoggedVendor();
@@ -276,7 +282,7 @@ class VirtueMartModelCustom extends VmModel {
 
 		JPluginHelper::importPlugin('vmcustom');
 		$dispatcher = JDispatcher::getInstance();
-		$error = $dispatcher->trigger('plgVmOnStoreInstallPluginTable', array('custom' , $data, $data['custom_element']));
+		$error = $dispatcher->trigger('plgVmOnStoreInstallPluginTable', array('custom' , $data['custom_element']));
 
 		return $table->virtuemart_custom_id ;
 	}

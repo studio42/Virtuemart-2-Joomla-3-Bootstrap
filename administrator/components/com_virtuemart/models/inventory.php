@@ -86,9 +86,21 @@ class VirtueMartModelInventory extends VmModel {
      	if ($catId = JRequest::getInt('virtuemart_category_id', 0) > 0){
      		$filters[] = '`#__virtuemart_categories`.`virtuemart_category_id` = '.$catId;
      	}
+		$published = JRequest::getvar('filter_published');
+		if ($published === '1') {
+			$filters[] = "`#__virtuemart_products`.`published` = 1 ";
+
+		} else if ($published === '0') {
+			$filters[] = "`#__virtuemart_products`.`published` = 0 ";
+		}
      	$filters[] = '(`#__virtuemart_shoppergroups`.`default` = 1 OR `#__virtuemart_shoppergroups`.`default` is NULL)';
 
      	return ' WHERE '.implode(' AND ', $filters).$this->_getOrdering();
     }
+	public function updateStock($data){
+		$db = JFactory::getDbo ();
+		$db->setQuery ('UPDATE #__virtuemart_products SET product_in_stock='.(int)$data['product_in_stock'].' WHERE virtuemart_product_id=' . (int)$data['virtuemart_product_id']);
+		$db->execute ();
+	}
 }
 // pure php no closing tag

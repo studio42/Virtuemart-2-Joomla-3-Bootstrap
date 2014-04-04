@@ -7,5 +7,6 @@
 		<action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" />
 		<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />
 		<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" />
+		<action name="virtuemart.vendor" title="COM_VIRTUEMART_USER_IS_VENDOR" description="COM_VIRTUEMART_USER_ISVENDOR" />
 	</section>
 </access>

@@ -53,9 +53,6 @@ class VirtueMartModelCoupon extends VmModel {
 	 */
     function store(&$data)
 	{
-		$table = $this->getTable('coupons');
-		//$data = JRequest::get('post');
-		$table->bindChecknStore($data);
 		// Convert selected dates to MySQL format for storing.
 		if ($data['coupon_start_date']) {
 		    $startDate = JFactory::getDate($data['coupon_start_date']);
@@ -65,8 +62,7 @@ class VirtueMartModelCoupon extends VmModel {
 		    $expireDate = JFactory::getDate($data['coupon_expiry_date']);
 		    $data['coupon_expiry_date'] = $expireDate->toSql();
 		}
-		parent::store($data);
-                return $table->virtuemart_coupon_id;
+		return parent::store($data);
 	}
 
 

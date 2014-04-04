@@ -27,6 +27,19 @@ defined ('_JEXEC') or die('Restricted access');
 class VirtueMartModelWaitingList extends VmModel {
 
 	/**
+	 * constructs a VmModel
+	 * setMainTable defines the maintable of the model
+	 * @author Max Milbers
+	 */
+	function __construct() {
+		parent::__construct('virtuemart_waitinguser_id');
+		$this->setMainTable('waitingusers');
+		array_unshift($this->_validOrderingFieldName,'country_name');
+		$this->_selectedOrdering = 'country_name';
+		$this->_selectedOrderingDir = 'ASC';
+
+	}
+	/**
 	 * Load the customers on the waitinglist
 	 */
 	public function getWaitingusers ($virtuemart_product_id, $is_new = TRUE) {
@@ -129,31 +142,10 @@ class VirtueMartModelWaitingList extends VmModel {
 	 * @author Seyi Awofadeju
 	 * @return insert_id if the save was successful, false otherwise.
 	 */
-	public
-	function adduser ($data) {
+	public function adduser ($data) {
 
 		JSession::checkToken () or jexit ('Invalid Token, in notify customer');
-
-		$field = $this->getTable ('waitingusers');
-
-		if (!$field->bind ($data)) { // Bind data
-			vmError ($field->getError ());
-			return FALSE;
-		}
-
-		if (!$field->check ()) { // Perform data checks
-			vmError ($field->getError ());
-			return FALSE;
-		}
-
-		$_id = $field->store ();
-		if ($_id === FALSE) { // Write data to the DB
-			vmError ($field->getError ());
-			return FALSE;
-		}
-
-		//jexit();
-		return $_id;
+		return parent::store($data);
 	}
 
 }

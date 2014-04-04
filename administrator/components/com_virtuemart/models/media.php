@@ -34,7 +34,7 @@ class VirtueMartModelMedia extends VmModel {
 	 * @author Max Milbers
 	 */
 	function __construct() {
-		parent::__construct('virtuemart_media_id');
+		parent::__construct();
 		$this->setMainTable('medias');
 		$this->addvalidOrderingFieldName(array('ordering'));
 		$this->_selectedOrdering = 'created_on';
@@ -226,7 +226,14 @@ class VirtueMartModelMedia extends VmModel {
 		if ($onlyPublished) {
 			$whereItems[] = '`#__virtuemart_medias`.`published` = 1';
 		}
-
+		else {
+			$published = JRequest::getvar('filter_published');
+			if ($published === '1') {
+				$where[] = " `#__virtuemart_medias`.`published` = 1 ";
+			} else if ($published === '0') {
+				$where[] = " `#__virtuemart_medias`.`published` = 0 ";
+			}
+		}
 		if ($search = JRequest::getString('searchMedia', false)){
 			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 			$where[] = ' (`file_title` LIKE '.$search.'
@@ -301,67 +308,77 @@ class VirtueMartModelMedia extends VmModel {
 	 * @author Patrick Kohl
 	 * @param array $data Data from a from
 	 * @param string $type type of the media  category,product,manufacturer,shop, ...
+	 * Update for multiple files
 	 */
 	function storeMedia($data,$type){
 
 // 		vmdebug('my data in media to store start',$data['virtuemart_media_id']);
 		JSession::checkToken() or JSession::checkToken('get') or jexit( 'Invalid Token, while trying to save media' );
-
+		$fileIndex = 0;
 		if(empty($data['media_action'])){
 			$data['media_action'] = 'none';
 		}
-
+		$medias = JRequest::getVar('uploads', array(), 'files');
 		//the active media id is not empty, so there should be something done with it
-		if( (!empty($data['active_media_id']) && !empty($data['virtuemart_media_id']) ) || $data['media_action']=='upload'){
+		// var_dump($medias); jexit();
+		// if next upload exist then reloop all !
+		do {
+			if ( isset($medias['name'][$fileIndex]) ) {
+				$data['media_index'] = $fileIndex;
+			}
 
-			$oldIds = $data['virtuemart_media_id'];
-			$data['file_type'] = $type;
-			$data['virtuemart_media_id'] = (int)$data['active_media_id'];
+			if( (!empty($data['active_media_id']) && !empty($data['virtuemart_media_id']) ) || $data['media_action']=='upload'){
 
-			$this -> setId($data['virtuemart_media_id']);
+				$oldIds = $data['virtuemart_media_id'];
+				$data['file_type'] = $type;
+				$data['virtuemart_media_id'] = (int)$data['active_media_id'];
 
-			$virtuemart_media_id = $this->store($data,$type);
+				$this -> setId($data['virtuemart_media_id']);
 
-			//added by Mike,   Mike why did you add this? This function storeMedia is extremely nasty
-			$this->setId($virtuemart_media_id);
+				$virtuemart_media_id = $this->store($data,$type);
 
-			if(!empty($oldIds)){
-				if(!is_array($oldIds)) $oldIds = array($oldIds);
+				//added by Mike,   Mike why did you add this? This function storeMedia is extremely nasty
+				$this->setId($virtuemart_media_id);
 
-				if(!empty($data['mediaordering']) && $data['media_action']=='upload'){
-// 					array_push($data['mediaordering'],count($data['mediaordering'])+1);
-					$data['mediaordering'][$virtuemart_media_id] = count($data['mediaordering']);
+				if(!empty($oldIds)){
+					if(!is_array($oldIds)) $oldIds = array($oldIds);
+
+					if(!empty($data['mediaordering']) && $data['media_action']=='upload'){
+	// 					array_push($data['mediaordering'],count($data['mediaordering'])+1);
+						$data['mediaordering'][$virtuemart_media_id] = count($data['mediaordering']);
+					}
+					$virtuemart_media_ids = array_merge( (array)$virtuemart_media_id,$oldIds);
+	// 				vmdebug('merged old and new',$virtuemart_media_ids);
+					$data['virtuemart_media_id'] = array_unique($virtuemart_media_ids);
+				} else {
+					$data['virtuemart_media_id'] = $virtuemart_media_id;
 				}
-				$virtuemart_media_ids = array_merge( (array)$virtuemart_media_id,$oldIds);
-// 				vmdebug('merged old and new',$virtuemart_media_ids);
-				$data['virtuemart_media_id'] = array_unique($virtuemart_media_ids);
-			} else {
-				$data['virtuemart_media_id'] = $virtuemart_media_id;
+
 			}
 
-		}
-
-		if(!empty($data['mediaordering'])){
-			asort($data['mediaordering']);
-			$sortedMediaIds = array();
-			foreach($data['mediaordering'] as $k=>$v){
-				$sortedMediaIds[] = $k;
+			if(!empty($data['mediaordering'])){
+				asort($data['mediaordering']);
+				$sortedMediaIds = array();
+				foreach($data['mediaordering'] as $k=>$v){
+					$sortedMediaIds[] = $k;
+				}
+	// 			vmdebug('merging old and new',$oldIds,$virtuemart_media_id);
+				$data['virtuemart_media_id'] = $sortedMediaIds;
 			}
-// 			vmdebug('merging old and new',$oldIds,$virtuemart_media_id);
-			$data['virtuemart_media_id'] = $sortedMediaIds;
-		}
 
-// 		vmdebug('my data in media to store',$data['virtuemart_media_id'],$data['mediaordering']);
+	// 		vmdebug('my data in media to store',$data['virtuemart_media_id'],$data['mediaordering']);
 
-		//set the relations
-		$table = $this->getTable($type.'_medias');
-		// Bind the form fields to the country table
-		$table->bindChecknStore($data);
-		$errors = $table->getErrors();
-		foreach($errors as $error){
-			vmError($error);
-		}
-
+			//set the relations
+			$table = $this->getTable($type.'_medias');
+			// Bind the form fields to the country table
+			$table->bindChecknStore($data);
+			$errors = $table->getErrors();
+			foreach($errors as $error){
+				vmError($error);
+			}
+			$fileIndex++; // set to next for the test
+			if (isset($medias['name'][$fileIndex]) ) $data['filetitle'] = $medias['name'][$fileIndex];
+		} while ( isset($medias['name'][$fileIndex]) );
 		return $table->virtuemart_media_id;
 
 	}

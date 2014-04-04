@@ -68,12 +68,20 @@ class VirtueMartModelRatings extends VmModel {
      * Select the products to list on the product list page
      */
     public function getRatings() {
-
+		$where = array();
      	$tables = ' FROM `#__virtuemart_ratings` AS `r` JOIN `#__virtuemart_products_'.VMLANG.'` AS `p`
      			USING (`virtuemart_product_id`) ';
      	if ($filter_ratings = jrequest::getvar('filter_ratings'))
-			$whereString = 'where product_name like "%'.$this->_db->escape($filter_ratings).'%"';
-			else $whereString = '';
+			$where[] = 'product_name like "%'.$this->_db->escape($filter_ratings).'%"';
+		$published = JRequest::getvar('filter_published');
+		if ($published === '1') {
+			$where[] = "`r`.`published` = 1 ";
+		} else if ($published === '0') {
+			$where[] = "`r`.`published` = 0 ";
+		}
+		if (!empty($where)) $whereString ='where '.implode(" AND ", $where);
+		else $whereString ='';
+		echo $whereString;
      	$this->_data = $this->exeSortSearchListQuery(0,' r.*,p.`product_name` ',$tables,$whereString,'',$this->_getOrdering());
 // 	    $this->_data = $this->_getList($q, $this->getState('limitstart'), $this->getState('limit'));
 

@@ -37,7 +37,7 @@ class VirtueMartModelManufacturer extends VmModel {
 	 * @author Max Milbers
 	 */
 	function __construct() {
-		parent::__construct('virtuemart_manufacturer_id');
+		parent::__construct();
 		$this->setMainTable('manufacturers');
 		$this->addvalidOrderingFieldName(array('m.virtuemart_manufacturer_id','mf_name','mf_desc','mf_category_name','mf_url'));
 		$this->removevalidOrderingFieldName('virtuemart_manufacturer_id');
@@ -141,7 +141,14 @@ class VirtueMartModelManufacturer extends VmModel {
 		if ($onlyPublished) {
 			$where[] .= ' `m`.`published` = 1';
 		}
-
+		else {
+			$published = JRequest::getvar('filter_published');
+			if ($published === '1') {
+				$where[] = " m.`published` = 1 ";
+			} else if ($published === '0') {
+				$where[] = " m.`published` = 0 ";
+			}
+		}
 		$whereString = '';
 		if (count($where) > 0) $whereString = ' WHERE '.implode(' AND ', $where) ;
 
