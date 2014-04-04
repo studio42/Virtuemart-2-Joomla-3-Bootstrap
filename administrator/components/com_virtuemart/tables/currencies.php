@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTableData'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtabledata.php');
+if(!class_exists('VmTableData'))require(JPATH_VM_ADMINISTRATOR.'/helpers/vmtabledata.php');
 
 /**
  * Currency table class

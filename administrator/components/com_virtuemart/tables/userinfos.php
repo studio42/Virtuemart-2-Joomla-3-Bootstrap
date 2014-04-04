@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTableData'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtabledata.php');
+if(!class_exists('VmTableData'))require(JPATH_VM_ADMINISTRATOR.'/helpers/vmtabledata.php');
 
 /**
  * User Info table class
@@ -99,7 +99,7 @@ class TableUserinfos extends VmTableData {
 		if (!empty($this->virtuemart_userinfo_id)) {
 			$this->virtuemart_userinfo_id = (int)$this->virtuemart_userinfo_id;
 
-			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 			if(!Permissions::getInstance()->check("admin")) {
 				$q = "SELECT virtuemart_user_id
 										FROM #__virtuemart_userinfos

@@ -17,7 +17,7 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 * http://virtuemart.org
 */
 
-if(!class_exists('VmTable'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtable.php');
+if(!class_exists('VmTable'))require(JPATH_VM_ADMINISTRATOR.'/helpers/vmtable.php');
 
 /**
  * Report table class

@@ -18,7 +18,7 @@
 
 defined('_JEXEC') or die();
 
-if(!class_exists('VmTableData'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtabledata.php');
+if(!class_exists('VmTableData'))require(JPATH_VM_ADMINISTRATOR.'/helpers/vmtabledata.php');
 
 class TableCategory_categories extends VmTableData {
 

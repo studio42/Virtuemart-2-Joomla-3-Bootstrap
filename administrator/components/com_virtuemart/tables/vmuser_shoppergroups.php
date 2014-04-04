@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTableXarray'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtablexarray.php');
+if(!class_exists('VmTableXarray'))require(JPATH_VM_ADMINISTRATOR.'/helpers/vmtablexarray.php');
 
 /**
  * user_shoppergroup_xref table class

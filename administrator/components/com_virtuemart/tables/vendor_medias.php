@@ -18,7 +18,7 @@
 
 defined('_JEXEC') or die();
 
-if(!class_exists('VmTableXarray'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtablexarray.php');
+if(!class_exists('VmTableXarray'))require(JPATH_VM_ADMINISTRATOR.'/helpers/vmtablexarray.php');
 
 /**
  * Vendor media table class

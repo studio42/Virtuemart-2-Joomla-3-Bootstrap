@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 if (!class_exists('VmTable'))
-    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmtable.php');
+    require(JPATH_VM_ADMINISTRATOR '/helpers/vmtable.php');
 
 /**
  * Shipment  table class
