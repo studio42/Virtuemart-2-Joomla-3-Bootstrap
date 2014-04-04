@@ -19,7 +19,7 @@
 if(!class_exists('VmTable'))require(JPATH_VM_ADMINISTRATOR.'/helpers/vmtable.php');
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 
 class TableOrder_userinfos extends VmTable {
 

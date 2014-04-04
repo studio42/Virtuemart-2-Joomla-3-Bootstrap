@@ -17,7 +17,7 @@
  * @version $Id: product_prices.php 5913 2012-04-16 15:07:25Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die;
 
 if(!class_exists('VmTableData'))require(JPATH_VM_ADMINISTRATOR.'/helpers/vmtabledata.php');
 
