@@ -1,7 +1,7 @@
 Virtuemart 2.0 Joomla 3 Bootstrapped
 =============
 
-**This is an enhanced convertion compatible with joomla 3.0**
+**This is an enhanced convertion compatible with joomla 3.0, works now on joomla 3.2!**
 
 Virtuemart 2 is a online shop solution for Joomla 2.5.
 
