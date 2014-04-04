@@ -19,9 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-
 if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
-
 
 /**
  * Orders Controller
@@ -55,16 +53,16 @@ class VirtuemartControllerOrders extends VmController {
 	 * TODO rename, the name is ambigous notice by Max Milbers
 	 * @author Kohl Patrick
 	 */
-	public function next($dir = 'ASC'){
+	public function nextItem($dir = 'ASC'){
 		$model = VmModel::getModel('orders');
 		$id = JRequest::getInt('virtuemart_order_id');
 		if (!$order_id = $model->getOrderId($id, $dir)) {
 			$order_id  = $id;
 			$msg = JText::_('COM_VIRTUEMART_NO_MORE_ORDERS');
 		} else {
-			$msg ='';
+			$msg =null;
 		}
-		$this->setRedirect('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$order_id ,$msg );
+		$this->setRedirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$order_id ,$msg );
 	}
 
 	/**
@@ -72,9 +70,9 @@ class VirtuemartControllerOrders extends VmController {
 	 * TODO rename, the name is ambigous notice by Max Milbers
 	 * @author Kohl Patrick
 	 */
-	public function prev(){
+	public function prevItem(){
 
-		$this->next('DESC');
+		$this->nextItem('DESC');
 	}
 	/**
 	 * Generic cancel task
@@ -83,7 +81,7 @@ class VirtuemartControllerOrders extends VmController {
 	 */
 	public function cancel(){
 		// back from order
-		$this->setRedirect('index.php?option=com_virtuemart&view=orders' );
+		$this->setRedirect($this->redirectPath );
 	}
 	/**
 	 * Shows the order details
@@ -140,10 +138,10 @@ class VirtuemartControllerOrders extends VmController {
 		if ($result['error'] > 0)
 		$msg .= JText::sprintf('COM_VIRTUEMART_ORDER_NOT_UPDATED_SUCCESSFULLY', $result['error'] , $result['total']);
 		if ('updatestatus'== $lastTask ) {
-			$app->redirect('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$virtuemart_order_id , $msg);
+			$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$virtuemart_order_id , $msg);
 		}
 		else {
-			$app->redirect('index.php?option=com_virtuemart&view=orders', $msg);
+			$app->redirect($this->redirectPath, $msg);
 		}
 	}
 
@@ -166,7 +164,7 @@ class VirtuemartControllerOrders extends VmController {
 		$model = VmModel::getModel();
 		$model->updateItemStatus(JArrayHelper::toObject($data), $data['new_status']);
 
-		$app->redirect('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$data['virtuemart_order_id']);
+		$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$data['virtuemart_order_id']);
 	}
 
 
@@ -222,17 +220,17 @@ class VirtuemartControllerOrders extends VmController {
 			$model->updateSingleItem((int)$key, $data, true);
 		}
 
-		$app->redirect('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$_orderID);
+		$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$_orderID);
 	}
 
 	public function updateOrderHead()
 	{
 		$app = Jfactory::getApplication();
 		$model = VmModel::getModel();
-		$_items = JRequest::getVar('item_id',  0, '', 'array');
+		// $_items = JRequest::getVar('item_id',  0, '', 'array');
 		$_orderID = JRequest::getInt('virtuemart_order_id', '');
 		$model->UpdateOrderHead((int)$_orderID, JRequest::get('post'));
-		$app->redirect('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$_orderID);
+		$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$_orderID);
 	}
 
 	public function CreateOrderHead()
@@ -240,7 +238,7 @@ class VirtuemartControllerOrders extends VmController {
 		$app = Jfactory::getApplication();
 		$model = VmModel::getModel();
 		$orderid = $model->CreateOrderHead();
-		$app->redirect('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$orderid );
+		$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$orderid );
 	}
 
 	/**
@@ -252,7 +250,7 @@ class VirtuemartControllerOrders extends VmController {
 		$app = Jfactory::getApplication();
 		$model = VmModel::getModel('orders');
 		//	$model->updateSingleItem();
-		$app->redirect('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.JRequest::getInt('virtuemart_order_id', ''));
+		$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.JRequest::getInt('virtuemart_order_id', ''));
 		}
 		*/
 
@@ -266,7 +264,7 @@ class VirtuemartControllerOrders extends VmController {
 			$msg = $model->getError();
 		}
 
-		$editLink = 'index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $orderId;
+		$editLink = $this->redirectPath.'&task=edit&virtuemart_order_id=' . $orderId;
 		$this->setRedirect($editLink, $msg);
 	}
 
@@ -286,7 +284,7 @@ class VirtuemartControllerOrders extends VmController {
 			$msg = $model->getError();
 		}
 
-		$editLink = 'index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $orderId;
+		$editLink = $this->redirectPath.'&task=edit&virtuemart_order_id=' . $orderId;
 		$this->setRedirect($editLink, $msg);
 	}
 

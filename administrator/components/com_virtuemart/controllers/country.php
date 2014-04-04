@@ -35,10 +35,6 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  */
 class VirtuemartControllerCountry extends VmController {
 
-	function __construct() {
-		parent::__construct();
-
-	}
 
 }
 

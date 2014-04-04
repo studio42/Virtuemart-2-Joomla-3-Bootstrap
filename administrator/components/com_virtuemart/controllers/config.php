@@ -78,17 +78,27 @@ class VirtuemartControllerConfig extends VmController {
 			$msg = $model->getError();
 		}
 
-		$redir = 'index.php?option=com_virtuemart';
-		if(JRequest::getCmd('task') == 'apply'){
-			$redir = $this->redirectPath;
-		}
-
-		$this->setRedirect($redir, $msg);
-
+		if(JRequest::getCmd('task') !== 'apply'){
+			$redir = 'index.php?option=com_virtuemart';
+			if (JRequest::getWord( 'tmpl') === 'component') 
+				$redir .= '&tmpl=component' ;
+			$this->setRedirect($redir, $msg,'notice');
+		} else $this->setRedirect(null, $msg);
 
 	}
 
-
+	/**
+	 * Generic cancel task
+	 *
+	 * @author Max Milbers
+	 */
+	public function cancel(){
+		$msg = JText::sprintf('COM_VIRTUEMART_STRING_CANCELLED',$this->mainLangKey); //'COM_VIRTUEMART_OPERATION_CANCELED'
+		$redir = 'index.php?option=com_virtuemart';
+		if (JRequest::getWord( 'tmpl') === 'component') 
+			$redir .= '&tmpl=component' ;
+		$this->setRedirect($redir, $msg,'notice');
+	}
 	/**
 	 * Overwrite the remove task
 	 * Removing config is forbidden.
@@ -98,7 +108,7 @@ class VirtuemartControllerConfig extends VmController {
 
 		$msg = JText::_('COM_VIRTUEMART_ERROR_CONFIGS_COULD_NOT_BE_DELETED');
 
-		$this->setRedirect( $this->redirectPath , $msg);
+		$this->setRedirect( null , $msg);
 	}
 }
 

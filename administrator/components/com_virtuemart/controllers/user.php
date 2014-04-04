@@ -19,11 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
-
 if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
-
 
 /**
  * Controller class for the user
@@ -43,13 +39,31 @@ class VirtuemartControllerUser extends VmController {
 	 */
 	function __construct(){
 		VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
-		parent::__construct('virtuemart_user_id');
+		parent::__construct();
+	}
+	/*
+	 * control the vendor access
+	 * restrict acces to vendor only
+	 * edit own and new is not checked here.
+	 */
+	protected function checkOwn($id = null){
+		if ($this->_vendor > 1) {
+			//check if this is my own
+			$vendor = Permissions::getInstance()->isSuperVendor();
+			$model = VmModel::getModel('vendor');
+			$vendor_userid = $model::getUserIdByVendorId($vendor);
+			$user_id = JFactory::getUser()->get('id');
+			// $model = VmModel::getModel($this->_cname);
+			// $own = $model->checkOwn($id);
+			return $vendor_userid == $user_id;
+		}
+		return true;
 	}
 
 	/**
 	 * Handle the edit task
 	 */
-	function edit($view=0){
+/* 	function edit(){
 
 		//We set here the virtuemart_user_id, when no virtuemart_user_id is set to 0, for adding a new user
 		//In every other case the virtuemart_user_id is sent.
@@ -57,7 +71,7 @@ class VirtuemartControllerUser extends VmController {
 		if(!isset($cid)) JRequest::setVar('virtuemart_user_id', (int)0);
 
 		parent::edit('edit');
-	}
+	} */
 
 	function addST(){
 
@@ -75,8 +89,8 @@ class VirtuemartControllerUser extends VmController {
 	function cancel(){
 
 		$lastTask = JRequest::getWord('last_task');
-		if ($lastTask == 'edit_shop') $this->setRedirect('index.php?option=com_virtuemart');
-		else $this->setRedirect('index.php?option=com_virtuemart&view=user');
+		if ( $lastTask !== 'edit') $this->redirectPath = str_replace('&view=user', '', $this->redirectPath);
+		parent::cancel();
 	}
 
 	/**
@@ -87,17 +101,13 @@ class VirtuemartControllerUser extends VmController {
 	 */
 	function save($data = 0){
 
-		$document = JFactory::getDocument();
-		$viewType = $document->getType();
-		$view = $this->getView('user', $viewType);
-
 		$_currentUser = JFactory::getUser();
 // TODO sortout which check is correctt.....
 //		if (!$_currentUser->authorize('administration', 'manage', 'components', 'com_users')) {
-		if (!$_currentUser->authorise('com_users', 'manage')) {
-			$msg = JText::_(_NOT_AUTH);
+		if (!$_currentUser->authorise('com_users', 'manage') && !$this->checkOwn() ) {
+			$msg = JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED');
 		} else {
-			$model = VmModel::getModel('user');
+			// $model = VmModel::getModel('user');
 
 			$data = JRequest::get('post');
 
@@ -110,26 +120,27 @@ class VirtuemartControllerUser extends VmController {
 			$data['vendor_store_desc'] = JRequest::getVar('vendor_store_desc','','post','STRING',JREQUEST_ALLOWHTML);
 			$data['vendor_terms_of_service'] = JRequest::getVar('vendor_terms_of_service','','post','STRING',JREQUEST_ALLOWHTML);
 			$data['vendor_legal_info'] = JRequest::getVar('vendor_legal_info','','post','STRING',JREQUEST_ALLOWHTML);
+			$data['vendor_legal_info'] = VmRequest::getHtml('vendor_legal_info');
+			$data['vendor_letter_css'] = JRequest::getVar('vendor_letter_css','','post','STRING',JREQUEST_ALLOWHTML);
+			$data['vendor_letter_header_html'] = JRequest::getVar('vendor_letter_header_html','','post','STRING',JREQUEST_ALLOWHTML);
+			$data['vendor_letter_footer_html'] = JRequest::getVar('vendor_letter_footer_html','','post','STRING',JREQUEST_ALLOWHTML);
 
-			$ret=$model->store($data);
-			if(!$ret){
-				$msg = '';
-			} else {
-				$msg = $ret['message'];
-			}
+			$data['vendor_invoice_free1'] = JRequest::getVar('vendor_invoice_free1','','post','STRING',JREQUEST_ALLOWHTML);
+			$data['vendor_invoice_free2'] = JRequest::getVar('vendor_invoice_free2','','post','STRING',JREQUEST_ALLOWHTML);
+			$data['vendor_mail_free1'] = JRequest::getVar('vendor_mail_free1','','post','STRING',JREQUEST_ALLOWHTML);
+			$data['vendor_mail_free2'] = JRequest::getVar('vendor_mail_free2','','post','STRING',JREQUEST_ALLOWHTML);
+			$data['vendor_mail_css'] =  JRequest::getVar('vendor_mail_css','','post','STRING',JREQUEST_ALLOWHTML);
+			parent::store($data);
 
 		}
 		$cmd = JRequest::getCmd('task');
 		$lastTask = JRequest::getWord('last_task');
 		if($cmd == 'apply'){
-			if ($lastTask == 'editshop') $redirection = 'index.php?option=com_virtuemart&view=user&task=editshop';
-			else $redirection = 'index.php?option=com_virtuemart&view=user&task=edit&virtuemart_user_id[]='.$ret['newId'];
+			if ($this->_vendor) $this->redirectPath = str_replace('edit', 'editshop', $this->redirectPath);
 		} else {
-			if ($lastTask == 'editshop') $redirection = 'index.php?option=com_virtuemart';
-			else $redirection = 'index.php?option=com_virtuemart&view=user';
+			if ( $lastTask !== 'edit') $this->redirectPath = str_replace('&view=user', '', $this->redirectPath);
 		}
-// 		$this->setRedirect($redirection, $ret['message']);
-		$this->setRedirect($redirection);
+		$this->redirect = $this->redirectPath ; //$this->setRedirect(null,$msg);
 	}
 
 

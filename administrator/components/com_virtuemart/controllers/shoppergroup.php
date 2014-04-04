@@ -5,7 +5,7 @@
 *
 * @package	VirtueMart
 * @subpackage ShopperGroup
-* @author Markus �hler
+* @author Markus ahler
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -18,9 +18,6 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the controller framework
-jimport('joomla.application.component.controller');
 
 if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
 
@@ -40,14 +37,13 @@ class VirtuemartControllerShopperGroup extends VmController
 	 * @access	public
 	 */
 	function __construct() {
-		parent::__construct('virtuemart_shoppergroup_id');
+		parent::__construct();
 		$this->registerTask( 'default','makeDefault' );
 	}
 
 	function makeDefault() {
-		$mainframe = Jfactory::getApplication();
 
-		/* Load the view object */
+	/* Load the view object */
 		$view = $this->getView('shoppergroup', 'html');
 
 		$model = VmModel::getModel('shoppergroup');
@@ -59,7 +55,7 @@ class VirtuemartControllerShopperGroup extends VmController
 // 			$msg = JText::_('COM_VIRTUEMART_SET_TO_DEFAULT_ERROR');
 			$msgtype = 'error';
 		}
-		$mainframe->redirect('index.php?option=com_virtuemart&view=shoppergroup', $msg, $msgtype);
+		$this->setRedirect(null, $msg, $msgtype);
 	}
 }
 // pure php no closing tag

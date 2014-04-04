@@ -16,10 +16,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the controller framework
-
-jimport('joomla.application.component.controller');
-
 if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
 
 /**
@@ -32,17 +28,6 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
 
 class VirtuemartControllerUsergroups extends VmController {
 
-	/**
-	 * Method to display the view
-	 *
-	 * @access	public
-	 * @author
-	 */
-
-	function __construct() {
-
-		parent::__construct();
-	}
  }
 
 // pure php no closing tag

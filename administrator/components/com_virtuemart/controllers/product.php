@@ -30,17 +30,6 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  */
 class VirtuemartControllerProduct extends VmController {
 
-	/**
-	 * Method to display the view
-	 *
-	 * @access	public
-	 * @author
-	 */
-	function __construct() {
-		parent::__construct('virtuemart_product_id');
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
-	}
-
 
 	/**
 	 * Shows the product add/edit screen
@@ -56,7 +45,7 @@ class VirtuemartControllerProduct extends VmController {
 	 */
 	function save($data = 0){
 
-		$data = JRequest::get('post');
+		if($data===0)$data = JRequest::get('post');
 
 		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
 		if(Permissions::getInstance()->check('admin')){
@@ -163,17 +152,17 @@ class VirtuemartControllerProduct extends VmController {
 			$msg = JText::_('COM_VIRTUEMART_PRODUCT_NO_CHILD_CREATED_SUCCESSFULLY');
 // 			$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$cid;
 		} else {
+			;
 			if ($id=$model->createChild($cid)){
 				$msgtype='message';
 				$msg = JText::_('COM_VIRTUEMART_PRODUCT_CHILD_CREATED_SUCCESSFULLY');
-				$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$cid;
+				$this->redirectPath .= '&task=edit&virtuemart_product_id='.$cid;
 			} else {
 				$msg = JText::_('COM_VIRTUEMART_PRODUCT_NO_CHILD_CREATED_SUCCESSFULLY');
 				$msgtype = 'error';
-				$redirect = 'index.php?option=com_virtuemart&view=product';
 			}
 // 			vmdebug('$redirect '.$redirect);
-			$app->redirect($redirect, $msg, $msgtype);
+			$this->setRedirect(null, $msg, $msgtype);
 		}
 
 	}
@@ -282,7 +271,7 @@ class VirtuemartControllerProduct extends VmController {
 	 * @author RolandD, Max Milbers
 	 */
 	public function CloneProduct() {
-		$mainframe = Jfactory::getApplication();
+		// $mainframe = Jfactory::getApplication();
 
 		/* Load the view object */
 		$view = $this->getView('product', 'html');
@@ -302,8 +291,9 @@ class VirtuemartControllerProduct extends VmController {
 				$msgtype = 'error';
 			}
 		}
-
-		$mainframe->redirect('index.php?option=com_virtuemart&view=product', $msg, $msgtype);
+		jRequest::setVar('task',null);
+		$this->display();
+		// $mainframe->redirect('index.php?option=com_virtuemart&view=product', $msg, $msgtype);
 	}
 
 

@@ -33,12 +33,6 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  */
 class VirtuemartControllerCategory extends VmController {
 
-	public function __construct() {
-		parent::__construct('virtuemart_category_id');
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
-
-	}
-
 	/**
 	 * We want to allow html so we need to overwrite some request data
 	 *
@@ -73,7 +67,7 @@ class VirtuemartControllerCategory extends VmController {
 		if (isset($cid[0]) && $cid[0]) {
 			$id = $cid[0];
 		} else {
-			$this->setRedirect( 'index.php?option=com_virtuemart&view=category', JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
+			$this->setRedirect( null, JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
 			return false;
 		}
 
@@ -86,7 +80,7 @@ class VirtuemartControllerCategory extends VmController {
 			$msg = $model->getError();
 		}
 
-		$this->setRedirect( 'index.php?option=com_virtuemart&view=category', $msg );
+		$this->setRedirect( null, $msg );
 	}
 
 
@@ -108,7 +102,7 @@ class VirtuemartControllerCategory extends VmController {
 		if (isset($cid[0]) && $cid[0]) {
 			$id = $cid[0];
 		} else {
-			$this->setRedirect( 'index.php?option=com_virtuemart&view=category', JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
+			$this->setRedirect( null, JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
 			return false;
 		}
 
@@ -121,7 +115,7 @@ class VirtuemartControllerCategory extends VmController {
 			$msg = $model->getError();
 		}
 
-		$this->setRedirect( 'index.php?option=com_virtuemart&view=category', $msg );
+		$this->setRedirect( null, $msg );
 	}
 
 
@@ -146,7 +140,7 @@ class VirtuemartControllerCategory extends VmController {
 		} else {
 			$msg = $model->getError();
 		}
-		$this->setRedirect('index.php?option=com_virtuemart&view=category', $msg );
+		$this->setRedirect(null, $msg );
 	}
 
 }

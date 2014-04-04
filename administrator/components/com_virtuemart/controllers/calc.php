@@ -34,18 +34,6 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
 class VirtuemartControllerCalc extends VmController {
 
 	/**
-	 * Method to display the view
-	 *
-	 * @access	public
-	 */
-	public function __construct() {
-		parent::__construct();
-
-	}
-
-
-
-	/**
 	 * We want to allow html so we need to overwrite some request data
 	 *
 	 * @author Max Milbers
@@ -78,7 +66,7 @@ class VirtuemartControllerCalc extends VmController {
 		if (isset($cid[0]) && $cid[0]) {
 			$id = $cid[0];
 		} else {
-			$this->setRedirect( 'index.php?option=com_virtuemart&view=calc', JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
+			$this->setRedirect( null, JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
 			return false;
 		}
 
@@ -91,7 +79,7 @@ class VirtuemartControllerCalc extends VmController {
 			$msg = $model->getError();
 		}
 
-		$this->setRedirect( 'index.php?option=com_virtuemart&view=calc', $msg );
+		$this->setRedirect( null, $msg );
 	}
 
 
@@ -112,7 +100,7 @@ class VirtuemartControllerCalc extends VmController {
 		if (isset($cid[0]) && $cid[0]) {
 			$id = $cid[0];
 		} else {
-			$this->setRedirect( 'index.php?option=com_virtuemart&view=calc', JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
+			$this->setRedirect( null, JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
 			return false;
 		}
 
@@ -125,7 +113,7 @@ class VirtuemartControllerCalc extends VmController {
 			$msg = $model->getError();
 		}
 
-		$this->setRedirect( 'index.php?option=com_virtuemart&view=calc', $msg );
+		$this->setRedirect( null, $msg );
 	}
 
 
@@ -150,7 +138,7 @@ class VirtuemartControllerCalc extends VmController {
 		} else {
 			$msg = $model->getError();
 		}
-		$this->setRedirect('index.php?option=com_virtuemart&view=calc', $msg );
+		$this->setRedirect(null, $msg );
 	}
 
 }

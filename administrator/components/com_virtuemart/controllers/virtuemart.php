@@ -27,11 +27,6 @@ jimport('joomla.application.component.controller');
  */
 class VirtuemartControllerVirtuemart extends JControllerLegacy {
 
-
-	public function __construct() {
-		parent::__construct();
-	}
-
 	/**
 	 *
 	 * Task for disabling dangerous database tools, used after install

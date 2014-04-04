@@ -19,9 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
-
 if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
 
 
@@ -35,16 +32,6 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  */
 class VirtuemartControllerManufacturer extends VmController {
 
-	/**
-	 * Method to display the view
-	 *
-	 * @access	public
-	 * @author
-	 */
-	function __construct() {
-		parent::__construct('virtuemart_manufacturer_id');
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
-	}
 
 	/**
 	 * Handle the save task

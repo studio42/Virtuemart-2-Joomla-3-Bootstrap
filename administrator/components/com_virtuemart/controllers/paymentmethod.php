@@ -19,11 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
-
 if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
-
 
 /**
  * Calculator Controller
@@ -33,17 +29,6 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  * @author Max Milbers
  */
 class VirtuemartControllerPaymentmethod extends VmController {
-
-	/**
-	 * Method to display the view
-	 *
-	 * @access	public
-	 */
-	public function __construct() {
-		parent::__construct();
-
-	}
-
 
 	function save($data = 0){
 		$data = JRequest::get('post');

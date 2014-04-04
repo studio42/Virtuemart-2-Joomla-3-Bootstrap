@@ -34,18 +34,6 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
 class VirtuemartControllerMedia extends VmController {
 
 	/**
-	 * Method to display the view
-	 *
-	 * @access	public
-	 * @author
-	 */
-	function __construct() {
-		parent::__construct('virtuemart_media_id');
-
-	}
-
-
-	/**
 	 * for ajax call media
 	 */
 	function viewJson() {
@@ -82,12 +70,10 @@ class VirtuemartControllerMedia extends VmController {
 
 		$cmd = JRequest::getCmd('task');
 		if($cmd == 'apply'){
-			$redirection = 'index.php?option=com_virtuemart&view=media&task=edit&virtuemart_media_id='.$id;
-		} else {
-			$redirection = 'index.php?option=com_virtuemart&view=media';
+			$this->redirectPath .= '&task=edit&virtuemart_media_id='.$id;
 		}
 
-		$this->setRedirect($redirection, $msg);
+		$this->setRedirect(null, $msg);
 	}
 
 	function synchronizeMedia(){
@@ -103,7 +89,7 @@ class VirtuemartControllerMedia extends VmController {
 		$migrator = new Migrator();
 		$result = $migrator->portMedia();
 
-		$this->setRedirect($this->redirectPath, $result);
+		$this->setRedirect(null, $result);
 	}
 
 }

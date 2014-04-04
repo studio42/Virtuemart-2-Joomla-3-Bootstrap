@@ -6,6 +6,7 @@
 * @package	VirtueMart
 * @subpackage
 * @author Max Milbers
+* @author Patrick Kohl
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -19,9 +20,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
-
 if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
 
 
@@ -33,18 +31,6 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  */
 class VirtuemartControllerCustom extends VmController {
 
-	/**
-	 * Method to display the view
-	 *
-	 * @access	public
-	 * @author
-	 */
-	function __construct() {
-		parent::__construct('virtuemart_custom_id');
-
-	}
-
-
 	function viewJson() {
 
 		// Create the view object.
@@ -52,12 +38,6 @@ class VirtuemartControllerCustom extends VmController {
 
 		// Now display the view.
 		$view->display(null);
-	}
-
-	function save($data = 0) {
-		$data = JRequest::get('post');
-		// onSaveCustom plugin;
-		parent::save($data);
 	}
 
 	/**

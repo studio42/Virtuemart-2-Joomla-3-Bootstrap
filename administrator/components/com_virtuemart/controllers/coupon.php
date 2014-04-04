@@ -6,6 +6,7 @@
 * @package	VirtueMart
 * @subpackage Coupon
 * @author RickG
+* @ Re author Patrick Kohl
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -19,9 +20,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
-
 if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
 
 
@@ -30,19 +28,9 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  *
  * @package    VirtueMart
  * @subpackage Coupon
- * @author RickG
+ * @author Patrick Kohl
  */
 class VirtuemartControllerCoupon extends VmController {
-
-	/**
-	 * Method to display the view
-	 *
-	 * @access	public
-	 * @author
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 
 }

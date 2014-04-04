@@ -19,13 +19,9 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
-
 if (!class_exists ('VmController')){
 	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmcontroller.php');
 }
-
 
 /**
  * Review Controller
@@ -36,35 +32,14 @@ if (!class_exists ('VmController')){
 class VirtuemartControllerRatings extends VmController {
 
 	/**
-	 * Method to display the view
-	 *
-	 * @access	public
-	 */
-	function __construct() {
-		parent::__construct();
-
-		$task = JRequest::getVar('task');
-		vmdebug('cconstruct',$task);
-	}
-
-	/**
 	 * Generic edit task
 	 *
 	 * @author Max Milbers
 	 */
 	function edit_review(){
 
-		JRequest::setVar('controller', $this->_cname);
-		JRequest::setVar('view', $this->_cname);
 		JRequest::setVar('layout', 'edit_review');
-// 		JRequest::setVar('hidemenu', 1);
-
-		if(empty($view)){
-			$document = JFactory::getDocument();
-			$viewType = $document->getType();
-			$view = $this->getView($this->_cname, $viewType);
-		}
-
+		JRequest::setVar('hidemainmenu', 1);
 
 		parent::display();
 	}
@@ -170,20 +145,15 @@ class VirtuemartControllerRatings extends VmController {
 			$msg = ($error).'<br />';
 		}
 
-		$redir = $this->redirectPath;
 		if($apply){
-			$redir = 'index.php?option=com_virtuemart&view=ratings&task=edit_review&virtuemart_rating_review_id='.$id;
+			$this->redirectPath .= '&task=edit_review&virtuemart_rating_review_id='.$id;
 		} else {
-			$virtuemart_product_id = JRequest::getVar('virtuemart_product_id',array(),'', 'array');
-			if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
-				$virtuemart_product_id = (int)$virtuemart_product_id[0];
-			} else {
-				$virtuemart_product_id = (int)$virtuemart_product_id;
-			}
-			$redir = 'index.php?option=com_virtuemart&view=ratings&task=listreviews&virtuemart_product_id='.$virtuemart_product_id;
+				$virtuemart_product_id = JRequest::getInt('virtuemart_product_id');
+
+			$this->redirectPath .= 'task=listreviews&virtuemart_product_id='.$virtuemart_product_id;
 		}
 
-		$this->setRedirect($redir, $msg);
+		$this->setRedirect(null, $msg);
 	}
 	/**
 	 * Save task for review
@@ -192,14 +162,10 @@ class VirtuemartControllerRatings extends VmController {
 	 */
 	function cancelEditReview(){
 
-		$virtuemart_product_id = JRequest::getVar('virtuemart_product_id',array(),'', 'array');
-		if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
-			$virtuemart_product_id = (int)$virtuemart_product_id[0];
-		} else {
-			$virtuemart_product_id = (int)$virtuemart_product_id;
-		}
+		$virtuemart_product_id = JRequest::getInt('virtuemart_product_id');
 		$msg = JText::sprintf('COM_VIRTUEMART_STRING_CANCELLED',$this->mainLangKey); //'COM_VIRTUEMART_OPERATION_CANCELED'
-		$this->setRedirect('index.php?option=com_virtuemart&view=ratings&task=listreviews&virtuemart_product_id='.$virtuemart_product_id, $msg);
+		$this->redirectPath.='&task=listreviews&virtuemart_product_id='.$virtuemart_product_id;
+		$this->setRedirect(null, $msg);
 	}
 
 }
