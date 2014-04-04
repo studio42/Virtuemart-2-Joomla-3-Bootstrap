@@ -8,7 +8,7 @@ th.autosize,td.autosize {
 		white-space: nowrap;
 	}
 	#content .row-fluid .span12 [class*="span"] {
-		margin-left: 1%;
+		/* margin-left: 1%; */
 	}
 	td.key{min-width:100px;}
 	.status-change .row-fluid{
@@ -40,7 +40,7 @@ a.btn.btn-inverse i,a.btn.btn.btn-primary i {
 .vm2admin .row-fluid .j-sidebar-container{margin-left:0}
 #j-main-container.span12{margin-left:0}
 
-td.key{min-width:60px;vertical-align:top;width:auto;float:none}
+td.key{min-width:60px;vertical-align:top;width:200px;float:none;font-weight:bold;}
 table.admintable td.span6{width:50%}
 .chzn-container{width:200px}
 .btn-toggle input[type="checkbox"]{
@@ -267,6 +267,7 @@ font-size: 12px;
     overflow: auto;
     position: relative;
     text-align: center;
+	margin-bottom:10px;
 }
 .remove{cursor:pointer;}
 .vm-order_comment{
@@ -414,3 +415,22 @@ a.fg-button, .always-left{
 .stock-out{background-color:#f9a7aa !important;color : black}
 .stock-low{background-color:#F7B77B !important;color : black}
 .stock-normal{background-color:#F0F9D0 !important;color : black}
+
+.sidebar-nav .well{min-height:0px:}
+
+input.upload-btn{display:none;}
+
+
+/*table fix*/
+.row-fluid table.table,.row-fluid table.span6{display:table}
+.span6 >table{width:100%}
+.orderedit{width:55px;}
+#orderForm .tab-content{-moz-box-shadow: 2px 2px 2px 0px #a3a3a3;
+-webkit-box-shadow: 2px 2px 2px 0px #a3a3a3;
+-o-box-shadow: 2px 2px 2px 0px #a3a3a3;
+box-shadow: 2px 2px 2px 0px #a3a3a3;
+filter:progid:DXImageTransform.Microsoft.Shadow(color=#a3a3a3, Direction=134, Strength=2);}
+/*toolbar button size fix*/
+#toolbar button.btn-success {
+width: inherit;
+}

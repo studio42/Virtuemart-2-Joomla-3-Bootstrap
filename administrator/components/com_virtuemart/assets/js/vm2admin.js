@@ -66,7 +66,7 @@
                                 $(tbod).parents('table').first().hide();
                             }
                             // we want to remove the class remove
-                            $().removeClass("vmicon-16-remove");
+                            $().removeClass("icon-remove");
                             options.onTableEmpty();
                         }
                     });
@@ -227,12 +227,12 @@
                 return '<div class="media-pagination">' + (title && title.length ? '<b>' + title + '</b>' : '' ) + ' ' + pagination + '</div>';
             }
 
-            jQuery("#fancybox-title").delegate(".media-pagination span", "click", function (event) {
+            jQuery("#fancybox-title").on( "click", ".media-pagination span", function (event) {
                 var newPage = $(this).text();
                 display(newPage);
                 event.preventDefault();
             });
-            container.delegate("a.vm_thumb", "click", function (event) {
+            container.on("click", "a.vm_thumb", function (event) {
                 jQuery.fancybox({
                     "type":"image",
                     "titlePosition":"inside",
@@ -241,7 +241,7 @@
                 });
                 event.preventDefault();
             });
-            jQuery("#media-dialog").delegate(".vm_thumb_image", "click", function (event) {
+            jQuery("#media-dialog").on( "click", ".vm_thumb_image", function (event) {
                 event.preventDefault();
                 var id = $(this).find('input').val(), ok = 0;
                 var inputArray = new Array();
@@ -252,21 +252,21 @@
                 );
                 if ($.inArray(id, inputArray) == -1) {
                     that = jQuery(this);
-                    jQuery(this).clone().appendTo(container).unbind("click").append('<div class="vmicon vmicon-16-remove" title="remove"></div><div class="edit-24-grey" title="' + vm2string.editImage + '"><div>');
+                    jQuery(this).clone().appendTo(container).unbind("click").append('<div class="icon-remove pull-right" title="remove"></div><div class="icon-edit pull-left" title="' + vm2string.editImage + '"><div>');
                     that.hide().fadeIn();
                 }
 
             });
 
-            jQuery("#adminForm").delegate("div.vmicon-16-remove", "click", function () {
+            jQuery("#adminForm").on("click", "div.icon-remove, div.icon-remove", function () {
                 jQuery(this).closest(".vm_thumb_image").fadeOut("500", function () {
                     jQuery(this).remove()
                 });
             });
-            jQuery("#adminForm").delegate("span.vmicon-16-remove", "click", function () {
+            jQuery("#adminForm").on("click", "span.icon-remove, span.icon-remove", function () {
 				var removable = jQuery(this).closest(".removable") ;
 				parent = removable.parent();
-				console.log(parent.children().length,parent.data("lastrowunremovable"));
+				// console.log(parent.children().length,parent.data("lastrowunremovable"));
 				if (parent.data('lastrowunremovable') == true && parent.children().length == 1 ) {
 					alert('Last item cannot be removed');
 					return ;
@@ -287,9 +287,11 @@
                 }
             });
 
-            container.delegate(".edit-24-grey", "click", function () {
+            container.on("click",".icon-edit",  function () {
 
                 var data = jQuery(this).parent().find("input").val();
+					tmpl = $('#adminForm input[name=tmpl]').val();
+				if (tmpl == 'component') data+='&tmpl=component';
                 jQuery.getJSON( vmBaseUrl+"index.php?option=com_virtuemart&view=media&task=viewjson&format=json&virtuemart_media_id=" + data,
                     function (datas, textStatus) {
                         if (datas.msg == "OK") {
@@ -591,14 +593,49 @@ jQuery(document).ready(function($) {
 		if (sidebarHide=="1") sidebarHide="0";
 		else sidebarHide="1";
 		$.cookie('sidebarHide', sidebarHide);
-		console.log(sidebarHide);
+		// console.log(sidebarHide);
 	});
 	if (sidebarHide == "1") {
 		// hide it
 		sidebarHide = "0";
 		 $('#sidebar-toggle').trigger('click');
 	}
+	$('.hasTooltip').tooltip();
+	var timeout,lastSearch = null;
+	$('#search').on('keypress input',function(){
+		// TODO add ajax keyup on search
+		var value = this.value;
+		if(value != lastSearch) {
+			// Save the "last" value
+			lastSearch = value;
+			// Delay before search in the case of typing
+			if(timeout) { clearTimeout(timeout); }
+			// Start new time out
+			timeout = setTimeout(function() {
+				// Do the search
+				Joomla.ajaxSearch(this);
+				// console.warn("Doing search for " + value + ", time waited");
+				// Process....
+			},'600');
+		}
+	});
+	$( "#j-main-container" ).on("click", "ul.pagination-list a",function(){
 
+		var form = $('#adminForm'),url = $(this).attr('href');
+		if (url) {
+			form.find('input[name="limitstart"]').remove();
+			// console.log('clicked');
+			// e.preventDefault();
+			inputs = form.serialize();
+			$.post( url, inputs+'&format=raw',
+				function(html, status) {
+					$('#results').html(html);
+				
+				}
+			);
+			return false;
+		}
+	});
 
     // $('.btn-toggle').each(function() {
         // var btn = $(this),
