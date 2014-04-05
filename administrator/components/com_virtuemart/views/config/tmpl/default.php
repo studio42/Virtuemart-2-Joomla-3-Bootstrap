@@ -21,7 +21,7 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
 AdminUIHelper::startAdminArea ();
 ?>
 
-<form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
+<form action="index.php" method="post" name="adminForm" id="adminForm" class="_form-horizontal">
 
 <?php // Loading Templates in Tabs
 AdminUIHelper::buildTabs ( $this,  array (

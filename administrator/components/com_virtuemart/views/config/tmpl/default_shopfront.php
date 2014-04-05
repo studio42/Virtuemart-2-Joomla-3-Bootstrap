@@ -21,109 +21,18 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <div class="row-fluid">
-<div class="span6">
-	<fieldset>
+	<fieldset class="span6">
 		<legend><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_MORE_CORE_SETTINGS') ?></legend>
-		<table width="100%">
-			<tr>
-				<td class="key"><div
-					class="hasTooltip"
-					title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_SHOW_EMAILFRIEND_TIP'); ?>">
-						<label for="show_emailfriend"><?php echo JText::_('COM_VIRTUEMART_ADMIN_SHOW_EMAILFRIEND') ?>
-					</label> </div>
-				</td>
-				<td>
-				<?php echo VmHTML::checkbox('show_emailfriend', VmConfig::get('show_emailfriend',0)); ?>
-				</td>
-			</tr>
-			<tr>
-				<td class="key"><div
-					class="hasTooltip"
-					title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_SHOW_PRINTICON_TIP'); ?>">
-						<label for="show_printicon"><?php echo JText::_('COM_VIRTUEMART_ADMIN_SHOW_PRINTICON') ?>
-					</label> </div>
-				</td>
-				<td>
-				<?php echo VmHTML::checkbox('show_printicon', VmConfig::get('show_printicon',1)); ?>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="key"><div
-					class="hasTooltip"
-					title="<?php echo JText::_('COM_VIRTUEMART_PDF_ICON_SHOW_EXPLAIN'); ?>">
-						<label for="pdf_icon"><?php echo JText::_('COM_VIRTUEMART_PDF_ICON_SHOW') ?>
-					</label> </div>
-				</td>
-				<td>
-				<?php echo VmHTML::checkbox('pdf_icon', VmConfig::get('pdf_icon')); ?>
-				</td>
-			</tr>
-			<tr>
-				<td class="key"><div
-					class="hasTooltip"
-					title="<?php echo JText::_('COM_VIRTUEMART_ASK_QUESTION_SHOW_EXPLAIN'); ?>">
-						<label for="ask_question"><?php echo JText::_('COM_VIRTUEMART_ASK_QUESTION_SHOW') ?>
-					</label> </div>
-				</td>
-				<td>
-				<?php echo VmHTML::checkbox('ask_question', VmConfig::get('ask_question')); ?>
-				</td>
-			</tr>
-			<tr>
-				<td class="key"><div
-					class="hasTooltip"
-					title="<?php echo JText::_('COM_VIRTUEMART_ASK_QUESTION_MIN_LENGTH_EXPLAIN'); ?>">
-						<label for="asks_minimum_comment_length"><?php echo JText::_('COM_VIRTUEMART_ASK_QUESTION_MIN_LENGTH') ?>
-					</label> </div>
-				</td>
-				<td>
-					<input type="text" value="<?php echo VmConfig::get('asks_minimum_comment_length',50); ?>" class="inputbox input-mini" size="4" name="asks_minimum_comment_length">
-				</td>
-			</tr>
-			<tr>
-				<td class="key"><div
-					class="hasTooltip"
-					title="<?php echo JText::_('COM_VIRTUEMART_ASK_QUESTION_MAX_LENGTH_EXPLAIN'); ?>">
-						<label for="asks_maximum_comment_length"><?php echo JText::_('COM_VIRTUEMART_ASK_QUESTION_MAX_LENGTH') ?>
-					</label> </div>
-				</td>
-				<td>
-					<input type="text" value="<?php echo VmConfig::get('asks_maximum_comment_length',2000); ?>" class="inputbox input-mini" size="4" name="asks_maximum_comment_length">
-				</td>
-			</tr>
-			<tr>
-				<td class="key"><div
-					class="hasTooltip"
-					title="<?php echo JText::_('COM_VIRTUEMART_PRODUCT_NAVIGATION_SHOW_EXPLAIN'); ?>">
-						<label for="product_navigation"><?php echo JText::_('COM_VIRTUEMART_PRODUCT_NAVIGATION_SHOW') ?>
-					</label> </div>
-				</td>
-				<td>
-				<?php echo VmHTML::checkbox('product_navigation', VmConfig::get('product_navigation')); ?>
-				</td>
-			</tr>
-			<tr>
-				<td class="key"><div
-					class="hasTooltip"
-					title="<?php echo JText::_('COM_VIRTUEMART_RECCOMEND_UNATUH_EXPLAIN'); ?>">
-						<label for="recommend_unauth"><?php echo JText::_('COM_VIRTUEMART_RECCOMEND_UNATUH') ?>
-					</label> </div>
-				</td>
-				<td>
-				<?php echo VmHTML::checkbox('recommend_unauth', VmConfig::get('recommend_unauth')); ?>
-				</td>
-			</tr>
-			<tr>
-			<td class="key">
-				<div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_LIST_LIMIT_EXPLAIN'); ?>">
-				<label for="list_limit"><?php echo JText::_('COM_VIRTUEMART_LIST_LIMIT') ?></label>
-				</div>
-			</td>
-			<td>
-				<input type="text" value="<?php echo VmConfig::get('list_limit',10); ?>" class="inputbox input-mini" size="4" name="list_limit">
-			</td>
-			</tr>
+		<table>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_ADMIN_SHOW_EMAILFRIEND','show_emailfriend',VmConfig::get('show_emailfriend',0) ); ?>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_ADMIN_SHOW_PRINTICON','show_printicon',VmConfig::get('show_printicon',1) ); ?>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PDF_ICON_SHOW','pdf_icon',VmConfig::get('pdf_icon',0) ); ?>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_ASK_QUESTION_SHOW','ask_question',VmConfig::get('ask_question',0) ); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_ASK_QUESTION_MIN_LENGTH','asks_minimum_comment_length',VmConfig::get('asks_minimum_comment_length',50),'class="inputbox input-mini"' ); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_ASK_QUESTION_MAX_LENGTH','asks_maximum_comment_length',VmConfig::get('asks_maximum_comment_length',2000),'class="inputbox input-mini"' ); ?>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_NAVIGATION_SHOW','asks_maximum_comment_length',VmConfig::get('product_navigation',0),'class="inputbox input-mini"' ); ?>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_RECCOMEND_UNATUH','recommend_unauth',VmConfig::get('recommend_unauth',0) ); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_LIST_LIMIT','list_limit',VmConfig::get('list_limit',10),'class="inputbox input-mini"' ); ?>
 <?php	/*		<tr>
 	    	<td class="key">
 				<div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SHOW_OUT_OF_STOCK_PRODUCTS_EXPLAIN'); ?>">
@@ -135,94 +44,26 @@ defined('_JEXEC') or die('Restricted access');
 	    	</td>
 			</tr>
 			<tr> */?>
-			<tr>
-	    	<td class="key">
-				<div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_DISPLAY_STOCK_EXPLAIN'); ?>">
-				<label for="display_stock"><?php echo JText::_('COM_VIRTUEMART_DISPLAY_STOCK') ?></label>
-				</div>
-	   	 	</td>
-	    	<td>
-				<?php echo VmHTML::checkbox('display_stock', VmConfig::get('display_stock')); ?>
-	    	</td>
-			</tr>
-			<tr>
-	    	<td class="key">
-				<div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_COUPONS_ENABLE_EXPLAIN'); ?>">
-				<label for="coupons_enable"><?php echo JText::_('COM_VIRTUEMART_COUPONS_ENABLE') ?></label>
-				</div>
-	   	 	</td>
-	    	<td>
-				<?php echo VmHTML::checkbox('coupons_enable', VmConfig::get('coupons_enable')); ?>
-	    	</td>
-			</tr>
-			<tr>
-	    	<td class="key">
-				<div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_UNCAT_CHILD_PRODUCTS_SHOW_EXPLAIN'); ?>">
-				<label for="show_uncat_child_products"><?php echo JText::_('COM_VIRTUEMART_UNCAT_CHILD_PRODUCTS_SHOW') ?></label>
-				</div>
-	   	 	</td>
-	    	<td>
-				<?php echo VmHTML::checkbox('show_uncat_child_products', VmConfig::get('show_uncat_child_products')); ?>
-	    	</td>
-			</tr>
-			<tr>
-	    	<td class="key">
-				<div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_COUPONS_EXPIRE_EXPLAIN'); ?>">
-				<label for="coupons_default_expire"><?php echo JText::_('COM_VIRTUEMART_COUPONS_EXPIRE') ?></label>
-				</div>
-	    	</td>
-			<td>
-				<?php
-					// TODO This must go to the view.html.php.... but then... that goes for most of the config sruff I'ld say :-S
-					$_defaultExpTime = array(
-						 '1,D' => '1 '.JText::_('COM_VIRTUEMART_DAY')
-						,'1,W' => '1 '.JText::_('COM_VIRTUEMART_WEEK')
-						,'2,W' => '2 '.JText::_('COM_VIRTUEMART_WEEK_S')
-						,'1,M' => '1 '.JText::_('COM_VIRTUEMART_MONTH')
-						,'3,M' => '3 '.JText::_('COM_VIRTUEMART_MONTH_S')
-						,'6,M' => '6 '.JText::_('COM_VIRTUEMART_MONTH_S')
-						,'1,Y' => '1 '.JText::_('COM_VIRTUEMART_YEAR')
-					);
-				echo VmHTML::selectList('coupons_default_expire',VmConfig::get('coupons_default_expire'),$_defaultExpTime,1, '', '','input-medium')
-				?>
-			</td>
-		</tr>
-		<tr>
-	    	<td class="key">
-				<div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_WEIGHT_UNIT_DEFAULT_EXPLAIN'); ?>">
-				<label for="weight_unit_default"><?php echo JText::_('COM_VIRTUEMART_WEIGHT_UNIT_DEFAULT') ?></label>
-				</div>
-	    	</td>
-			<td>
-				<?php
-				echo ShopFunctions::renderWeightUnitList('weight_unit_default', VmConfig::get('weight_unit_default') );
-				?>
-			</td>
-			</tr>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_DISPLAY_STOCK','display_stock',VmConfig::get('display_stock') ); ?>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_COUPONS_ENABLE','coupons_enable',VmConfig::get('coupons_enable',0) ); ?>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_UNCAT_CHILD_PRODUCTS_SHOW','show_uncat_child_products',VmConfig::get('show_uncat_child_products',0) ); ?>
+			<?php
+				// TODO This must go to the view.html.php.... but then... that goes for most of the config sruff I'ld say :-S
+				$_defaultExpTime = array(
+					 '1,D' => '1 '.JText::_('COM_VIRTUEMART_DAY')
+					,'1,W' => '1 '.JText::_('COM_VIRTUEMART_WEEK')
+					,'2,W' => '2 '.JText::_('COM_VIRTUEMART_WEEK_S')
+					,'1,M' => '1 '.JText::_('COM_VIRTUEMART_MONTH')
+					,'3,M' => '3 '.JText::_('COM_VIRTUEMART_MONTH_S')
+					,'6,M' => '6 '.JText::_('COM_VIRTUEMART_MONTH_S')
+					,'1,Y' => '1 '.JText::_('COM_VIRTUEMART_YEAR')
+				);
+			echo VmHTML::row('selectList','COM_VIRTUEMART_COUPONS_EXPIRE','coupons_default_expire',VmConfig::get('coupons_default_expire'),$_defaultExpTime,1, '', '','input-medium')
+			?>
+			<?php echo VmHTML::row('raw','COM_VIRTUEMART_WEIGHT_UNIT_DEFAULT',ShopFunctions::renderWeightUnitList('weight_unit_default', VmConfig::get('weight_unit_default')) ); ?>
+			<?php echo VmHTML::row('raw','COM_VIRTUEMART_LWH_UNIT_DEFAULT',  ShopFunctions::renderLWHUnitList('lwh_unit_default', VmConfig::get('lwh_unit_default')) ); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_LATEST_PRODUCTS_DAYS','latest_products_days',VmConfig::get('latest_products_days',7),'class="inputbox input-mini"' ); ?>
 
-			<tr>
-	    	<td class="key">
-				<div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_LWH_UNIT_DEFAULT_EXPLAIN'); ?>">
-				<label for="weight_unit_default"><?php echo JText::_('COM_VIRTUEMART_LWH_UNIT_DEFAULT') ?></label>
-				</div>
-	    	</td>
-			<td>
-				<?php
-				echo ShopFunctions::renderLWHUnitList('lwh_unit_default', VmConfig::get('lwh_unit_default') );
-				?>
-			</td>
-			</tr>
-			
-			<tr>
-	    	<td class="key">
-				<div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_LATEST_PRODUCTS_DAYS_EXPLAIN'); ?>">
-				<label for="latest_products_weeks"><?php echo JText::_('COM_VIRTUEMART_LATEST_PRODUCTS_DAYS') ?></label>
-				</div>
-	    	</td>
-			<td>
-				<input type="text" value="<?php echo VmConfig::get('latest_products_days',7); ?>" class="inputbox input-mini" size="4" name="latest_products_days">
-			</td>
-			</tr>
 			
 			<tr>
 	    	<td class="key">
@@ -244,51 +85,46 @@ defined('_JEXEC') or die('Restricted access');
 
 		</table>
 	</fieldset>
-</div>
-<div class="span6">
-	<fieldset class="form-horizontal">
+	<fieldset class="span6">
 		<legend><div class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_CFG_POOS_ENABLE_EXPLAIN'); ?>">
 			<?php echo JText::_('COM_VIRTUEMART_CFG_POOS_ENABLE') ?></div></legend>
 
 		<?php
 
 		$options = array(
-		'none'	=>	JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_NONE'),
-		'disableit'	=>	JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_DISABLE_IT'),
-		'disableit_children'	=>	JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_DISABLE_IT_CHILDREN'),
-		'disableadd'	=>	JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_DISABLE_ADD'),
-		'risetime'	=> JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_RISE_AVATIME')
-	);
-
+			'none'	=>	JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_NONE'),
+			'disableit'	=>	JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_DISABLE_IT'),
+			'disableit_children'	=>	JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_DISABLE_IT_CHILDREN'),
+			'disableadd'	=>	JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_DISABLE_ADD'),
+			'risetime'	=> JText::_('COM_VIRTUEMART_ADMIN_CFG_POOS_RISE_AVATIME')
+		);
+		
 		echo VmHTML::selectList('stockhandle', VmConfig::get('stockhandle','none'),$options, 1, '', '','input-xlarge');
 		?>
-		<div class="control-group">
-			<span class="control-label hasTooltip"
-				title="<?php echo JText::_('COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY_TIP'); ?>">
-				<?php echo JText::_('COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY') ?>
-			</span>
-			<div class="controls">
-
-			<?php echo VmHTML::checkbox('lstockmail', VmConfig::get('lstockmail')); ?>
-			</div>
-		</div>
-		<div style="font-weight:bold;" class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_AVAILABILITY_EXPLAIN'); ?>">
+		<table>
+			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY','lstockmail',VmConfig::get('lstockmail') ); ?>
+		 <tr>
+			<td colspan="2">
+				<div style="font-weight:bold;" class="hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_AVAILABILITY_EXPLAIN'); ?>">
 					<?php echo JText::_('COM_VIRTUEMART_AVAILABILITY') ?>
-		</div>
-		<div class="control-group">
-			<span class="control-label hasTooltip">
-				<?php echo JText::_('COM_VIRTUEMART_AVAILABILITY') ?>
-			</span>
-			<div class="controls">
-				<input type="text" class="input-mini hasTooltip" title="<?php echo '<b>'.JText::_('COM_VIRTUEMART_AVAILABILITY').'</b><br/ >'.JText::_('COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP1') ?>" id="product_availability" name="rised_availability" value="<?php echo VmConfig::get('rised_availability'); ?>" />
-			</div>
-		</div>
-		<?php echo JHTML::_('list.images', 'image', VmConfig::get('rised_availability'), " ", $this->imagePath); ?>
-		<span class="icon-info hasTooltip" title="<?php echo '<b>'.JText::_('COM_VIRTUEMART_AVAILABILITY').'</b><br/ >'.JText::sprintf('COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP2',  $this->imagePath ) ?>"></span>
-		<div class="clearfix"></div>
-		<img border="0" id="imagelib" alt="<?php echo JText::_('COM_VIRTUEMART_PREVIEW'); ?>" name="imagelib" src="<?php if (VmConfig::get('rised_availability')) echo JURI::root(true).$this->imagePath.VmConfig::get('rised_availability');?>"/>
+				</div>
+				<div class="control-group">
+					<span class="control-label hasTooltip">
+						<?php echo JText::_('COM_VIRTUEMART_AVAILABILITY') ?>
+					</span>
+					<div class="controls">
+						<input type="text" class="input-mini hasTooltip" title="<?php echo '<b>'.JText::_('COM_VIRTUEMART_AVAILABILITY').'</b><br/ >'.JText::_('COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP1') ?>" id="product_availability" name="rised_availability" value="<?php echo VmConfig::get('rised_availability'); ?>" />
+					</div>
+				</div>
+				<?php echo JHTML::_('list.images', 'image', VmConfig::get('rised_availability'), " ", $this->imagePath); ?>
+				<span class="icon-info hasTooltip" title="<?php echo '<b>'.JText::_('COM_VIRTUEMART_AVAILABILITY').'</b><br/ >'.JText::sprintf('COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP2',  $this->imagePath ) ?>"></span>
+				<div class="clearfix"></div>
+				<img border="0" id="imagelib" alt="<?php echo JText::_('COM_VIRTUEMART_PREVIEW'); ?>" name="imagelib" src="<?php if (VmConfig::get('rised_availability')) echo JURI::root(true).$this->imagePath.VmConfig::get('rised_availability');?>"/>
+			</td>
+		  </tr>
+		</table>
 	</fieldset>
-	<fieldset class="row-fluid">
+	<fieldset class="span6">
 		<legend><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_REVIEW_TITLE') ?></legend>
 		<table width="100%">
 			<tr>
@@ -399,7 +235,7 @@ defined('_JEXEC') or die('Restricted access');
 		</table>
 	</fieldset>
 </div>
-</div>
+
 <script type="text/javascript">
 	jQuery('#image').change( function() {
 		var $newimage = jQuery(this).val();
