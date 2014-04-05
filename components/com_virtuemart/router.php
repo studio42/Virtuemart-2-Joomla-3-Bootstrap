@@ -36,7 +36,10 @@ function virtuemartBuildRoute(&$query) {
 		}
 		return $segments;
 	}
-
+	if ($helper->logged_vendor) {
+		if (isset($segments['tmp']) && $segments['tmp'] === 'component')
+		return $segments;
+	}
 	// if ($helper->edit) return $segments;
 
 	/* Full route , heavy work*/
@@ -688,6 +691,12 @@ class vmrouterHelper {
 			// $this->edit = ('edit' == JRequest::getCmd('task') );
 			// if language switcher we must know the $query
 			$this->query = $query;
+			// get logged vendors and return unSEF link for front admin
+			if ($usr_id = JFactory::getUser()->get('id')) {
+				if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+				$this->logged_vendor = Permissions::getInstance()->isSuperVendor();
+			} else $this->logged_vendor = null;
+			
 		}
 
 	}
@@ -708,7 +717,7 @@ class vmrouterHelper {
 			self::$_instances[$instanceKey] = new vmrouterHelper ($instanceKey,$query);
 
 			if (self::$limit===null){
-				$mainframe = Jfactory::getApplication(); ;
+				$mainframe = Jfactory::getApplication();
 				$view = 'virtuemart';
 				if(isset($query['view'])) $view = $query['view'];
 				self::$limit= $mainframe->getUserStateFromRequest('com_virtuemart.'.$view.'.limit', VmConfig::get('list_limit', 20), 'int');
