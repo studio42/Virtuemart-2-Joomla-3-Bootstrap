@@ -421,7 +421,11 @@ class VmController extends JControllerLegacy{
 	{
 		if ($url === null) $url = $this->redirectPath;
 		$format = JRequest::getWord('format');
-		if ($format !== 'json') return parent::setRedirect($url, $msg , $type );
+		if ($format !== 'json') {
+			// add menu item id in front
+			if (JFactory::getApplication()->isSite()) $url = jRoute::_($url);
+			return parent::setRedirect($url, $msg , $type );
+		}
 		if ($msg !== null)
 		{
 			// Controller may have set this directly

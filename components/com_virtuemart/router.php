@@ -32,15 +32,18 @@ function virtuemartBuildRoute(&$query) {
 				$vendor = Permissions::getInstance()->isSuperVendor();
 			} else $vendor = false;
 	}
+
+	$helper = vmrouterHelper::getInstance($query);
 	if ($vendor) {
 
-		if (isset($query['tmpl']) && $query['tmpl'] === 'component')
-		return $segments;
-			// var_dump($query);
+		if (isset($query['tmpl']) && $query['tmpl'] === 'component'){
+			$query['Itemid'] = $helper->menu['admin'];
+			return $segments;
+		}
 		
 	}
 
-	$helper = vmrouterHelper::getInstance($query);
+
 	/* simple route , no work , for very slow server or test purpose */
 	if ($helper->router_disabled) {
 		foreach ($query as $key => $value){
@@ -55,7 +58,9 @@ function virtuemartBuildRoute(&$query) {
 		return $segments;
 	}
 	// fix for bad link to root Shop
-	if ($vendor && !isset($query['view']) ) $query['Itemid'] = $helper->menu['virtuemart'];
+	if ($vendor && !isset($query['view']) ) {
+		$query['Itemid'] = $helper->menu['virtuemart'];
+	}
 	// if ($helper->edit) return $segments;
 
 	/* Full route , heavy work*/
@@ -1024,7 +1029,8 @@ class vmrouterHelper {
 					$link[ (substr($tosplit, 0, $splitpos) ) ] = substr($tosplit, $splitpos+1);
 				}
 				//vmDebug('menu view link',$link);
-
+				// admin menu links
+				if(!empty($link['tmpl']) && $link['tmpl'] =='component') $link['view'] = 'admin';
 				//This is fix to prevent entries in the errorlog.
 				if(!empty($link['view'])){
 					$view = $link['view'] ;
@@ -1060,6 +1066,9 @@ class vmrouterHelper {
 			if (isset ($this->menu['virtuemart_category_id'][0]) ) {
 				$this->menu['virtuemart'] = $this->menu['virtuemart_category_id'][0] ;
 			}else $this->menu['virtuemart'] = $homeid;
+		}
+		if ( !isset( $this->menu['admin']) ) {
+			$this->menu['admin'] = 0;
 		}
 		// if ( !isset( $this->menu['manufacturer']) ) {
 		// $this->menu['manufacturer'] = $this->menu['virtuemart'] ;
