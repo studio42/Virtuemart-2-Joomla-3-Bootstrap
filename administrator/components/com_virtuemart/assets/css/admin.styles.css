@@ -40,7 +40,7 @@ a.btn.btn-inverse i,a.btn.btn.btn-primary i {
 .vm2admin .row-fluid .j-sidebar-container{margin-left:0}
 #j-main-container.span12{margin-left:0}
 
-td.key{min-width:60px;vertical-align:top;width:200px;float:none;font-weight:bold;}
+td.key{min-width:200px;vertical-align:top;width:45%;float:none;font-weight:bold;}
 table.admintable td.span6{width:50%}
 .chzn-container{width:200px}
 .btn-toggle input[type="checkbox"]{
@@ -433,4 +433,7 @@ filter:progid:DXImageTransform.Microsoft.Shadow(color=#a3a3a3, Direction=134, St
 /*toolbar button size fix*/
 #toolbar button.btn-success {
 width: inherit;
+}
+.input-block {
+width: 90%;
 }
