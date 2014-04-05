@@ -32,7 +32,7 @@ jimport('joomla.html.pane');
 class VirtuemartViewVirtuemart extends VmView {
 
 	function display($tpl = null) {
-
+		VmConfig::loadJLang('com_virtuemart_orders',TRUE);
 		$app = JFactory::getApplication();
 		// Load the helper(s)
 		if (JFactory::getUser()->authorise('core.admin', 'com_virtuemart')) {
