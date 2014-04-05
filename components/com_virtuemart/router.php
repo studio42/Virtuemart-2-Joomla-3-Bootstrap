@@ -20,7 +20,24 @@ if(  !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not
 function virtuemartBuildRoute(&$query) {
 
 	$segments = array();
+	static $vendor = null;
+	// do not sef admin links !
+	if ($vendor === null) {
+			// get logged vendors and return unSEF link for front admin
+			if ($usr_id = JFactory::getUser()->get('id')) {
+				if (!class_exists( 'VmConfig' )) {
+					require(JPATH_ADMINISTRATOR .'/components/com_virtuemart/helpers/config.php');
+				}
+				if(!class_exists('Permissions')) require(JPATH_ADMINISTRATOR.'/components/com_virtuemart/helpers/permissions.php');
+				$vendor = Permissions::getInstance()->isSuperVendor();
+			} else $vendor = false;
+	}
+	if ($vendor) {
 
+		if (isset($query['tmpl']) && $query['tmpl'] === 'component')
+		return $segments;
+			// var_dump($query);
+	}
 
 	$helper = vmrouterHelper::getInstance($query);
 	/* simple route , no work , for very slow server or test purpose */
@@ -36,10 +53,7 @@ function virtuemartBuildRoute(&$query) {
 		}
 		return $segments;
 	}
-	if ($helper->logged_vendor) {
-		if (isset($segments['tmp']) && $segments['tmp'] === 'component')
-		return $segments;
-	}
+
 	// if ($helper->edit) return $segments;
 
 	/* Full route , heavy work*/
@@ -682,6 +696,7 @@ class vmrouterHelper {
 
 			$this->seo_translate = VmConfig::get('seo_translate', false);
 			$this->setLangs($instanceKey);
+
 			if ( JVM_VERSION===1 ) $this->setMenuItemId();
 			else $this->setMenuItemIdJ17();
 			$this->setActiveMenu();
@@ -691,11 +706,7 @@ class vmrouterHelper {
 			// $this->edit = ('edit' == JRequest::getCmd('task') );
 			// if language switcher we must know the $query
 			$this->query = $query;
-			// get logged vendors and return unSEF link for front admin
-			if ($usr_id = JFactory::getUser()->get('id')) {
-				if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
-				$this->logged_vendor = Permissions::getInstance()->isSuperVendor();
-			} else $this->logged_vendor = null;
+
 			
 		}
 
