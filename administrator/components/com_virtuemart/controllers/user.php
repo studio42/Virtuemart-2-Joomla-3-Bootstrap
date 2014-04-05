@@ -120,7 +120,7 @@ class VirtuemartControllerUser extends VmController {
 			$data['vendor_store_desc'] = JRequest::getVar('vendor_store_desc','','post','STRING',JREQUEST_ALLOWHTML);
 			$data['vendor_terms_of_service'] = JRequest::getVar('vendor_terms_of_service','','post','STRING',JREQUEST_ALLOWHTML);
 			$data['vendor_legal_info'] = JRequest::getVar('vendor_legal_info','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_legal_info'] = VmRequest::getHtml('vendor_legal_info');
+			$data['vendor_legal_info'] = JRequest::getVar('vendor_legal_info');
 			$data['vendor_letter_css'] = JRequest::getVar('vendor_letter_css','','post','STRING',JREQUEST_ALLOWHTML);
 			$data['vendor_letter_header_html'] = JRequest::getVar('vendor_letter_header_html','','post','STRING',JREQUEST_ALLOWHTML);
 			$data['vendor_letter_footer_html'] = JRequest::getVar('vendor_letter_footer_html','','post','STRING',JREQUEST_ALLOWHTML);
@@ -130,7 +130,7 @@ class VirtuemartControllerUser extends VmController {
 			$data['vendor_mail_free1'] = JRequest::getVar('vendor_mail_free1','','post','STRING',JREQUEST_ALLOWHTML);
 			$data['vendor_mail_free2'] = JRequest::getVar('vendor_mail_free2','','post','STRING',JREQUEST_ALLOWHTML);
 			$data['vendor_mail_css'] =  JRequest::getVar('vendor_mail_css','','post','STRING',JREQUEST_ALLOWHTML);
-			parent::store($data);
+			parent::save($data);
 
 		}
 		$cmd = JRequest::getCmd('task');
