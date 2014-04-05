@@ -37,6 +37,7 @@ function virtuemartBuildRoute(&$query) {
 		if (isset($query['tmpl']) && $query['tmpl'] === 'component')
 		return $segments;
 			// var_dump($query);
+		
 	}
 
 	$helper = vmrouterHelper::getInstance($query);
@@ -53,7 +54,8 @@ function virtuemartBuildRoute(&$query) {
 		}
 		return $segments;
 	}
-
+	// fix for bad link to root Shop
+	if ($vendor && !isset($query['view']) ) $query['Itemid'] = $helper->menu['virtuemart'];
 	// if ($helper->edit) return $segments;
 
 	/* Full route , heavy work*/
