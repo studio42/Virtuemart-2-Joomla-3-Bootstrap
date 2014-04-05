@@ -23,8 +23,8 @@ defined('_JEXEC') or die('Restricted access');
 <fieldset>
     <legend><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SEO_SETTINGS') ?></legend>
     <table class="admintable">
-		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_ADMIN_CFG_SEO_DISABLE','seo_disabled',VmConfig::get('seo_disabled') ); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_SEO_SUFIX','seo_disabled',VmConfig::get('seo_sufix','-detail'),'class="input-mini"' ); ?>
+		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_ADMIN_CFG_SEO_DISABLE','seo_disabled',VmConfig::get('seo_disabled',0) ); ?>
+		<?php echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_SEO_SUFIX','seo_sufix',VmConfig::get('seo_sufix','-detail'),'class="input-mini"' ); ?>
 		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_ADMIN_CFG_SEO_TRANSLATE','seo_translate',VmConfig::get('seo_translate',1) ); ?>
 		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_ADMIN_CFG_SEO_USE_ID','seo_use_id',VmConfig::get('seo_use_id',1) ); ?>
 	</table>
