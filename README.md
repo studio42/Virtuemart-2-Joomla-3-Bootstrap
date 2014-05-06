@@ -7,9 +7,9 @@ Virtuemart 2 is a online shop solution for Joomla 2.5.
 
 Last updates
 ------------
-**Multi file** uploads in product,category
+**Multi file** uploads in product,category ...
 
-**Simplfied** editing for all the shop
+**Simplified** editing for all the shop
 
 **Full front vendor shop** with bootstrap design
 
@@ -158,4 +158,5 @@ TO `mprices-product_price_publish_up-0` (OK)
 22- after `echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_PARENT')`, closing tag `div` is missing  
 23- do not load customer for new product :  
 24- remove intnotes unwanted "tabs" :  
-
+25- some router errors
+26- infinite loop in categories
