@@ -28,6 +28,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 		<div class="btn-group pull-left">
 			<?php echo JText::_('COM_VIRTUEMART_MANUFACTURERCATEGORIES') . $this->lists['virtuemart_manufacturercategories_id']; ?>
 			<?php echo $this->DisplayFilterPublish() ?>
+			<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
 		</div>
 	</div>
 	<div class="clearfix"> </div>

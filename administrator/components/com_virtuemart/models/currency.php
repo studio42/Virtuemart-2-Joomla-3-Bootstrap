@@ -42,22 +42,6 @@ class VirtueMartModelCurrency extends VmModel {
 	}
 
 	/**
-	 * Retrieve the detail record for the current $id if the data has not already been loaded.
-	 *
-	 * @author Max Milbers
-	 */
-	function getCurrency($currency_id=0) {
-		if(!empty($currency_id)) $this->setId((int)$currency_id);
-		if (empty($this->_data)   ) {
-			$this->_data = $this->getTable('currencies');
-			$this->_data->load((int)$this->_id);
-		}
-
-		return $this->_data;
-	}
-
-
-	/**
 	 * Retireve a list of currencies from the database.
 	 * This function is used in the backend for the currency listing, therefore no asking if enabled or not
 	 * @author Max Milbers
@@ -82,18 +66,18 @@ class VirtueMartModelCurrency extends VmModel {
 			//$search = $this->_db->Quote($search, false);
 			$where[] = '`currency_name` LIKE '.$search.' OR `currency_code_2` LIKE '.$search.' OR `currency_code_3` LIKE '.$search;
 		}
-
+		$published = JRequest::getVar('filter_published', false);
+		if ($published !== false) {
+			if ($published === '1') {
+				$where[] = " `published` = 1 ";
+			} else if ($published === '0') {
+				$where[] = " `published` = 0 ";
+			}
+		}
 		// 		if (JRequest::getString('search', false)) $where[] = '`currency_name` LIKE "%'.$this->_db->escape(JRequest::getString('search')).'%"';
 
 		$whereString='';
 		if (count($where) > 0) $whereString = ' WHERE '.implode(' AND ', $where) ;
-
-		// 		if (count($where) > 0) $this->_query .= ' WHERE '.implode(' AND ', $where) ;
-		// 		$this->_query .= $this->_getOrdering('currency_name');
-		// 		$this->_data = $this->_getList($this->_query, $this->getState('limitstart'), $this->getState('limit'));
-		// 		$this->_total = $this->_getListCount($this->_query) ;
-
-		// 		$object, $select, $joinedTables, $whereString = '', $groupBy = '', $orderBy = '', $filter_order_Dir = '', $nbrReturnProducts = false
 		$this->_data = $this->exeSortSearchListQuery(0,'*',' FROM `#__virtuemart_currencies`',$whereString,'',$this->_getOrdering());
 
 		return $this->_data;

@@ -231,7 +231,7 @@ if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
 				</tr>
 				<tr>
 					<td colspan="4">
-						<?php echo $this->editor->display('vendor_letter_header_html', $this->vendor->vendor_letter_header_html, '100%', 200, 70, 15)?><br clear="all"/>
+						<?php echo $this->editor->display('vendor_letter_header_html', $this->vendor->vendor_letter_header_html, '100%', 200, 70, 15,false)?><br clear="all"/>
 						<p><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_REPLACEMENTS_DESC'); ?></p>
 					</td>
 				</tr>
@@ -284,7 +284,7 @@ if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
 				</tr>
 				<tr>
 					<td colspan="4">
-					<?php echo $this->editor->display('vendor_letter_footer_html', $this->vendor->vendor_letter_footer_html, '100%', 200, 70, 15)?><br clear="all"/>
+					<?php echo $this->editor->display('vendor_letter_footer_html', $this->vendor->vendor_letter_footer_html, '100%', 200, 70, 15,false)?><br clear="all"/>
 						<p><?php echo JText::_('COM_VIRTUEMART_VENDOR_LETTER_REPLACEMENTS_DESC'); ?></p>
 					</td>
 				</tr>

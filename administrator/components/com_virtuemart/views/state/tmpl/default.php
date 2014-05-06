@@ -25,6 +25,8 @@ defined('_JEXEC') or die();
     <div><?php echo JHTML::_('link','index.php?option=com_virtuemart&view=country&task=edit&cid[]='.$this->virtuemart_country_id,JText::sprintf('COM_VIRTUEMART_STATES_COUNTRY',$this->country_name)); ?></div>
 	<div class="btn-toolbar" id="filter-bar">
 		<?php echo $this->displayDefaultViewSearch() ?>
+		<?php echo $this->DisplayFilterPublish() ?>
+		<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">

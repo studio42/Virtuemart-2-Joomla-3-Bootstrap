@@ -153,47 +153,6 @@
 (function ($) {
 
     var methods = {
-
-        tabs:function (cookie) {
-		// console.log(cookie);
-		return;
-            var tabscount = this.find('div.tabs').length;
-            if ($.cookie(cookie) == null || cookie == "product0" || tabscount == 1) var idx = 0;
-            else var idx = $.cookie(cookie);
-            if (idx == null) idx = 0;
-            var options = { path:'/', expires:2},
-                list = '<ul id="tabs">';
-
-            var tabswidth = 100 / tabscount;
-            this.find('div.tabs').each(
-                function (i) {
-                    list += '<li style="width:' + tabswidth + '%"><span>' + $(this).attr('title') + '</span></li>';
-                    $(this).removeAttr('title');
-                }
-            );
-            this.prepend(list + '</ul>');
-            this.children('div').hide();
-            // select & open menu
-            var li = $('#tabs li'),
-                div = this.children('div');
-            li.eq(idx).addClass('current');
-            div.eq(idx).slideDown(1000);
-
-            li.click(
-                function () {
-                    if ($(this).not(".current")) {
-                        var idx = li.index(this);
-                        oldIndex = $(this).addClass("current").siblings('li.current').removeClass("current").index();
-                        if (oldIndex !== -1) {
-                            if (cookie !== "") $.cookie(cookie, idx, options);
-                            div.eq(idx).slideDown();
-                            div.eq(oldIndex).slideUp();
-                        }
-                    }
-                }
-            );
-            return this;
-        },
         accordeon:function () {
 			var last=$.cookie('vmmenuActiveAccordion');
 			if (last!=null) {
@@ -295,13 +254,17 @@
                 jQuery.getJSON( vmBaseUrl+"index.php?option=com_virtuemart&view=media&task=viewjson&format=json&virtuemart_media_id=" + data,
                     function (datas, textStatus) {
                         if (datas.msg == "OK") {
-                            jQuery("#vm_display_image").attr("src", datas.file_root + datas.file_url);
-                            jQuery("#vm_display_image").attr("alt", datas.file_title);
+							var form = jQuery("#adminForm");
+                            jQuery("#vm_display_image")
+								.attr("src", datas.file_root + datas.file_url)
+								.attr("alt", datas.file_title)
+								.attr("title", datas.file_title);
                             jQuery("#file_title").html(datas.file_title);
 							var lang = datas.file_lang.split(',');
 							jQuery("#vmlangimg").val(lang).trigger("liszt:updated");
-                            if (datas.published == 1) jQuery("#adminForm [name=media_published]").attr('checked', true);
-                            else jQuery("#adminForm [name=media_published]").attr('checked', false);
+                            // if (datas.published == 1) 
+							jQuery("#media_published"+datas.published,form).trigger('click');
+                            // else jQuery("[name=media_published]",form).attr('checked', false);
                             if (datas.file_is_downloadable == 0) {
                                 jQuery("#media_rolesfile_is_displayable").attr('checked', true);
                                 //jQuery("#adminForm [name=media_roles]").filter("value='file_is_downloadable'").attr('checked', false);
@@ -310,20 +273,28 @@
                                 //jQuery("#adminForm [name=media_roles]").filter("value='file_is_displayable'").attr('checked', false);
                                 jQuery("#media_rolesfile_is_downloadable").attr('checked', true);
                             }
-                            jQuery("#adminForm [name=file_title]").val(datas.file_title);
-                            jQuery("#adminForm [name=file_description]").val(datas.file_description);
-                            jQuery("#adminForm [name=file_meta]").val(datas.file_meta);
-                            jQuery("#adminForm [name=file_url]").val(datas.file_url);
-                            jQuery("#adminForm [name=file_url_thumb]").val(datas.file_url_thumb);
-                            jQuery("[name=active_media_id]").val(datas.virtuemart_media_id);
+                            jQuery("[name=file_title]",form).val(datas.file_title);
+                            jQuery("[name=file_description]",form).val(datas.file_description);
+                            jQuery("[name=file_meta]",form).val(datas.file_meta);
+                            jQuery("[name=file_url]",form).val(datas.file_url);
+                            jQuery("[name=file_url_thumb]",form).val(datas.file_url_thumb);
+                            jQuery("[name=active_media_id]",form).val(datas.virtuemart_media_id);
                             if (datas.file_url_thumb !== "undefined") {
-                                jQuery("#vm_thumb_image").attr("src", datas.file_root + datas.file_url_thumb);
+                                jQuery("#vm_thumb_image").attr("src", datas.file_root + datas.file_url_thumb)
+								.attr("alt", datas.file_title)
+								.attr("title", datas.file_title);
                             }
                             else {
-                                jQuery("#vm_thumb_image").attr("src", "");
+                                jQuery("#vm_thumb_image").attr("src", "")
+								.attr("alt", datas.file_title)
+								.attr("title", datas.file_title);
                             }
                         } else jQuery("#file_title").html(datas.msg);
-                    });
+						$('#image_desc_accordion').collapse('show');
+                    }).fail(function() {
+						location.reload();
+					});
+
             });
 
             var display = function (num) {
@@ -367,7 +338,9 @@
                                     jQuery(".page").text("No  more results : Page(s) " + (start + 1));
                                 }
                             }
-                        );
+                        ).fail(function() {
+							location.reload();
+						});
                     } else jQuery("#media-dialog").html(display.cache[start]);
                     page = this.oldPage = this.page;
                     $('.media-pagination').children().removeClass('media-page-selected');
@@ -619,22 +592,25 @@ jQuery(document).ready(function($) {
 			},'600');
 		}
 	});
-	$( "#j-main-container" ).on("click", "ul.pagination-list a",function(){
+	$( "#j-main-container" ).on("click", "ul.pagination-list a",function(e){
 
 		var form = $('#adminForm'),url = $(this).attr('href');
-		if (url) {
+		// administrator pagination is different as front shop
+		if (url.length > 2) {
 			form.find('input[name="limitstart"]').remove();
-			// console.log('clicked');
-			// e.preventDefault();
+			e.preventDefault();
 			inputs = form.serialize();
 			$.post( url, inputs+'&format=raw',
 				function(html, status) {
 					$('#results').html(html);
 				
 				}
-			);
+			).fail(function() {
+				location.reload();
+			});
 			return false;
 		}
+
 	});
 
     // $('.btn-toggle').each(function() {

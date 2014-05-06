@@ -106,9 +106,7 @@ class VirtuemartControllerOrders extends VmController {
 	 */
 	public function updatestatus() {
 		//vmdebug('updatestatus');
-		$app = Jfactory::getApplication();
 		$lastTask = JRequest::getWord('last_task');
-
 
 		/* Load the view object */
 		$view = $this->getView('orders', 'html');
@@ -138,10 +136,10 @@ class VirtuemartControllerOrders extends VmController {
 		if ($result['error'] > 0)
 		$msg .= JText::sprintf('COM_VIRTUEMART_ORDER_NOT_UPDATED_SUCCESSFULLY', $result['error'] , $result['total']);
 		if ('updatestatus'== $lastTask ) {
-			$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$virtuemart_order_id , $msg);
+			$this->setRedirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$virtuemart_order_id , $msg);
 		}
 		else {
-			$app->redirect($this->redirectPath, $msg);
+			$this->setRedirect( null, $msg );
 		}
 	}
 
@@ -152,7 +150,6 @@ class VirtuemartControllerOrders extends VmController {
 	 */
 	public function saveItemStatus() {
 		//vmdebug('saveItemStatus');
-		$app = Jfactory::getApplication();
 
 		/* Load the view object */
 		$view = $this->getView('orders', 'html');
@@ -163,8 +160,7 @@ class VirtuemartControllerOrders extends VmController {
 		$data = JRequest::get('post');
 		$model = VmModel::getModel();
 		$model->updateItemStatus(JArrayHelper::toObject($data), $data['new_status']);
-
-		$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$data['virtuemart_order_id']);
+		$this->setRedirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$data['virtuemart_order_id']);
 	}
 
 
@@ -203,7 +199,6 @@ class VirtuemartControllerOrders extends VmController {
 	public function updateOrderItemStatus()
 	{
 		//vmdebug('updateOrderItemStatus');
-		$app = Jfactory::getApplication();
 		$model = VmModel::getModel();
 		$_items = JRequest::getVar('item_id',  0, '', 'array');
 		//JArrayHelper::toInteger($_items);
@@ -219,26 +214,23 @@ class VirtuemartControllerOrders extends VmController {
 			// 			$model->updateSingleItem((int)$key, $value['order_status'],$value['comments'],$_orderID);
 			$model->updateSingleItem((int)$key, $data, true);
 		}
-
-		$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$_orderID);
+		$this->setRedirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$_orderID);
 	}
 
 	public function updateOrderHead()
 	{
-		$app = Jfactory::getApplication();
 		$model = VmModel::getModel();
 		// $_items = JRequest::getVar('item_id',  0, '', 'array');
 		$_orderID = JRequest::getInt('virtuemart_order_id', '');
 		$model->UpdateOrderHead((int)$_orderID, JRequest::get('post'));
-		$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$_orderID);
+		$this->setRedirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$_orderID);
 	}
 
 	public function CreateOrderHead()
 	{
-		$app = Jfactory::getApplication();
 		$model = VmModel::getModel();
 		$orderid = $model->CreateOrderHead();
-		$app->redirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$orderid );
+		$this->setRedirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$orderid);
 	}
 
 	/**

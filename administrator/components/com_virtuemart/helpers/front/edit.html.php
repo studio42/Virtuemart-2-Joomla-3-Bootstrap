@@ -109,14 +109,18 @@ $task = 'edit';
 				<a target="_blank" title="<?php echo jtext::_('COM_VIRTUEMART_INSTALL_GO_SHOP') ?>" href="<?php echo jRoute::_('index.php?option=com_virtuemart&view=virtuemart') ?>" class="brand"><?php echo $store->vendor_store_name ?> <i class="icon-out-2 small"></i></a>
 				<div class="nav-collapse collapse" id="mainvmnav">
 					<ul class="nav navbar-nav" id="menu">
-						<li><a href="<?php echo jRoute::_('index.php?option=com_virtuemart&view=virtuemart&tmpl=component') ?>"><i class="icon icon-dashboard"></i><span class="desktop"><?php echo jtext::_('COM_VIRTUEMART_SHOP_HOME') ?></span></a></li>
+						<li><a href="<?php echo jRoute::_('index.php?option=com_virtuemart&tmpl=component') ?>"><i class="icon icon-dashboard"></i><span class="desktop"><?php echo jtext::_('COM_VIRTUEMART_SHOP_HOME') ?></span></a></li>
 						<?php foreach ($treemenu as $topname => $menus) {
 							if ($topname == 'COM_VIRTUEMART_ADD') $task='add';
 							$hasLink = false; ?>
 							<li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="icon icon-<?php echo $mainIcons[$topname] ?>"></i><span class="desktop"><?php echo jtext::_($topname) ?></span><span class="caret"></span></a>
 								<ul class="dropdown-menu">
 									<?php foreach ($menus as $link => $name) {
-											if ( !ShopFunctions::can($task,$link) ) continue;
+											if ($task === 'add') {
+												$viewArray = explode('&',$link);
+												$view = $viewArray[0];
+											} else $view = $link;
+											if ( !ShopFunctions::can($task,$view) ) continue;
 											$hasLink = true;
 										?>
 										<li>

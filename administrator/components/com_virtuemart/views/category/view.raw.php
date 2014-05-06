@@ -47,7 +47,8 @@ class VirtuemartViewCategory extends VmView {
 		$this->addStandardDefaultViewCommands();
 		$this->addStandardDefaultViewLists($model,'category_name');
 		$this->task = JRequest::getWord('task','');
-		$this->categories = $model->getCategoryTree(0,0,false,$this->lists['search']);
+		$category_id = JRequest::getInt('filter_category_id');
+		$this->categories = $model->getCategoryTree($category_id,0,false,$this->lists['search']);
 		$this->pagination = $model->getPagination();
 		//we need a function of the FE shopfunctions helper to cut the category descriptions
 		jimport('joomla.filter.output');

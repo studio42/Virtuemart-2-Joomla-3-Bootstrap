@@ -27,7 +27,7 @@ defined('_JEXEC') or die();
 				<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 		    </th>
 		    <th>
-			<?php echo   JText::_('COM_VIRTUEMART_STATE_NAME'); ?>
+			<?php echo $this->sort('state_name') ?>
 		    </th>
 		    <th>
 			<?php echo JText::_('COM_VIRTUEMART_ZONE_ASSIGN_CURRENT_LBL'); ?>

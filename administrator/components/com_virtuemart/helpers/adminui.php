@@ -41,6 +41,7 @@ class AdminUIHelper {
 		//loading defaut admin CSS
 		// $document->addStyleSheet($admin.'css/admin_ui.css');
 		// $document->addStyleSheet($admin.'css/admin_menu.css');
+		JHtml::_('bootstrap.framework');
 		if (JVM_VERSION===2 || self::$backEnd===false) {
 			$document->addStyleSheet($front.'css/ui/bootstrap.css');
 			// JHtml::_('bootstrap.loadCss') ;
@@ -59,6 +60,7 @@ class AdminUIHelper {
 		//$document->addStyleSheet($admin.'css/jqtransform.css');
 
 		//loading defaut script
+		JHtml::_('behavior.framework');
 		// JHtml::_('bootstrap.tooltip');
 		$document->addScript($front.'js/fancybox/jquery.mousewheel-3.0.4.pack.js');
 		$document->addScript($front.'js/fancybox/jquery.easing-1.3.pack.js');
@@ -86,9 +88,10 @@ class AdminUIHelper {
 			$('dl#system-message').hide().slideDown(400);
 			$('.virtuemart-admin-area .toggler').vm2admin('toggle');
 			$('#admin-ui-menu').vm2admin('accordeon');
-			if ( $('#admin-ui-tabs').length  ) {
-				$('#admin-ui-tabs').vm2admin('tabs',virtuemartcookie).find('select').chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text}); 
-			}
+			// if ( $('#adminForm > ul').length  ) {
+				// $('#adminForm > ul').vm2admin('tabs',virtuemartcookie);
+				//.find('select').chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text}); 
+			// }
 
 			// TIPS IS now from bootstrap  $('#content-box [title]').vm2admin('tips',tip_image);
 			jQuery('.hasTip').tooltip({});
@@ -181,13 +184,15 @@ class AdminUIHelper {
 	 * @example 'shop' => 'COM_VIRTUEMART_ADMIN_CFG_SHOPTAB'
 	 */
 	static public function buildTabs($view, $load_template = array(),$cookieName='') {
+		$defaultTab = 'page-'.key($load_template);
+		$defaultTab = JRequest::getcmd('lastTab',$defaultTab);
+		$app = JFactory::getApplication();
+		if ($lastTab = $app->getUserState( "com_virtuemart.lasttab" ) ) {
+			$defaultTab = $lastTab;
+			$app->setUserState( "com_virtuemart.lasttab",null );
+		}
 		$cookieName = JRequest::getWord('view','virtuemart').$cookieName;
-		$document = JFactory::getDocument ();
-		$document->addScriptDeclaration ( '
-		var virtuemartcookie="'.$cookieName.'";
-		');
-		$defaultTab = key($load_template);
-		$html = JHtml::_('bootstrap.startTabSet', $cookieName, array('active' => 'page-'.$defaultTab)); 
+		$html = JHtml::_('bootstrap.startTabSet', $cookieName, array('active' => $defaultTab)); 
 		// $html = JHtml::_('bootstrap.startTabSet', $cookieName); 
 		foreach ( $load_template as $tab_content => $tab_title ) {
 			$html .= JHtml::_('bootstrap.addTab', $cookieName , 'page-'.$tab_content, JText::_($tab_title, true)); 
@@ -197,6 +202,16 @@ class AdminUIHelper {
 		}
 		$html .= JHtml::_('bootstrap.endTabSet'); 
 		echo $html;
+		echo '<input id="lastTab" type="hidden" name="lastTab" value="'.$defaultTab.'">';
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration ( ' 
+		jQuery( function($) {
+			$( "#adminForm" ).delegate( "#'.$cookieName.'Tabs a", "click", function(){
+				var href = this.href, from = href.lastIndexOf("#") + 1, last = href.substring(from);
+				$("#lastTab").val(last);
+			});
+		});
+		');
 	}
 
 	/**
@@ -207,10 +222,6 @@ class AdminUIHelper {
 	 */
 	static function imitateTabs($return,$language = '') {
 		if ($return == 'start') {
-			$document = JFactory::getDocument ();
-			$document->addScriptDeclaration ( '
-			var virtuemartcookie="vm-tab";
-			');
 			$html = JHtml::_('bootstrap.startTabSet', 'solo', array('active' => 'page-solo')); 
 			$html .= JHtml::_('bootstrap.addTab', 'solo' , 'page-solo', JText::_($language, true)); 
 			echo $html;

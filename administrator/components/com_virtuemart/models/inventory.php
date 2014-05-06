@@ -62,7 +62,7 @@ class VirtueMartModelInventory extends VmModel {
 			ON `#__virtuemart_product_prices`.`virtuemart_shoppergroup_id` = `#__virtuemart_shoppergroups`.`virtuemart_shoppergroup_id`';
 
 
-		return $this->_data = $this->exeSortSearchListQuery(0,$select,$joinedTables,$this->getInventoryFilter(),'',$this->_getOrdering());
+		return $this->exeSortSearchListQuery(0,$select,$joinedTables,$this->getInventoryFilter(),'',$this->_getOrdering());
 
     }
 

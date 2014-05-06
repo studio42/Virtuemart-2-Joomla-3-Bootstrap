@@ -28,11 +28,11 @@ jQuery(document).ready(function() {
 		"transitionIn"	:	"elastic",
 		"transitionOut"	:	"elastic"
 	});
-	jQuery(".additional-images .product-image").click(function() {
-		jQuery(".main-image img").attr("src",this.src );
-		jQuery(".main-image img").attr("alt",this.alt );
-		jQuery(".main-image a").attr("href",this.src );
-		jQuery(".main-image a").attr("title",this.alt );
+	jQuery(".additional-images a").click(function(e) {
+		e.preventDefault();
+		jQuery(".main-image img,.main-image a").attr("src",this.href );
+		jQuery(".main-image img,.main-image a").attr("alt",this.title );
+		return false;
 	}); 
 });
 ';
@@ -64,7 +64,7 @@ if (!empty($this->product->images)) {
             <div class="span4">
 			<div class="thumbnail">
 	            <?php
-	                echo $image->displayMediaFull('class="product-image" style="cursor: pointer"',false,"");
+	                echo $image->displayMediaThumb('class="product-image" style="cursor: pointer"',true,"");
 	            ?>
             </div>
             </div>

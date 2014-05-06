@@ -55,13 +55,16 @@ class VirtuemartViewRatings extends VmView {
 		$task = JRequest::getWord('task');
 		switch ($task) {
 			case 'listreviews':
+				if ( JRequest::getWord('format', '') === 'raw') {
+					$tpl = 'results';
+				}
+				else 
+				{
+					$this->addStandardDefaultViewCommands(false, true);
+				}
 				/* Get the data */
 				$this->addStandardDefaultViewLists($model,0,'ASC','filter_ratings');
-				//TODO note this is not assigned, old code ?
-				// $lists = array();
-				// $lists['filter_order'] = $mainframe->getUserStateFromRequest($option.'filter_order', 'filter_order', '', 'cmd');
-				// $lists['filter_order_Dir'] = $mainframe->getUserStateFromRequest($option.'filter_order_Dir', 'filter_order_Dir', '', 'word');
-				$this->setLayout('listreviews');
+
 				$virtuemart_product_id = JRequest::getVar('virtuemart_product_id',array(),'', 'array');
 				if(is_array($virtuemart_product_id) && count($virtuemart_product_id) > 0){
 					$virtuemart_product_id = (int)$virtuemart_product_id[0];
@@ -70,7 +73,6 @@ class VirtuemartViewRatings extends VmView {
 				}
 				$this->reviewslist = $model->getReviews($virtuemart_product_id);
 				$this->pagination = $model->getPagination();
-				$this->addStandardDefaultViewCommands(false,true);
 
 				break;
 			case 'edit':
@@ -98,7 +100,13 @@ class VirtuemartViewRatings extends VmView {
 				$this->rating = $rating ;
 				break;
 			default:
-				$this->addStandardDefaultViewCommands(false, true);
+				if ( JRequest::getWord('format', '') === 'raw') {
+					$tpl = 'results';
+				}
+				else 
+				{
+					$this->addStandardDefaultViewCommands(false, true);
+				}
 				$this->addStandardDefaultViewLists($model,0,'ASC','filter_ratings');
 				$this->ratingslist = $model->getRatings();
 				$this->pagination = $model->getPagination();
@@ -106,6 +114,7 @@ class VirtuemartViewRatings extends VmView {
 				break;
 		}
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 }

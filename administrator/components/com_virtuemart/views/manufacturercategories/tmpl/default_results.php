@@ -51,8 +51,7 @@ defined('_JEXEC') or die();
 			$canDo = $this->canChange($row->created_by);
 			$published = $this->toggle( $row->published, $i, 'published',$canDo);
 			$manufacturersList ='index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id;
-			if ($this->frontEdit) $manufacturersList .='&tmpl=component';
-			$manufacturersList = JROUTE::_($manufacturersList);
+			$manufacturersList = JROUTE::_($manufacturersList.$this->tmpl);
 
 			?>
 			<tr >
@@ -60,7 +59,7 @@ defined('_JEXEC') or die();
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<?php echo $this->editLink($row->virtuemart_manufacturercategories_id, $row->mf_category_name, 'virtuemart_manufacturercategories_id') ?>
+					<?php echo $this->editLink($row->virtuemart_manufacturercategories_id, $row->mf_category_name) ?>
 
 				</td>
 				<td>

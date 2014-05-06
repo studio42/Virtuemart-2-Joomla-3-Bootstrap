@@ -37,8 +37,8 @@ class VirtueMartModelOrderstatus extends VmModel {
 	 * setMainTable defines the maintable of the model
 	 * @author Max Milbers
 	 */
-	function __construct() {
-		parent::__construct();
+	function __construct($cidName=null, $config=array()) {
+		parent::__construct('virtuemart_orderstate_id', $config);
 		VmConfig::loadJLang('com_virtuemart_orders',TRUE);
 		$this->setMainTable('orderstates');
 	}

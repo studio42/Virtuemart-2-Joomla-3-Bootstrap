@@ -57,7 +57,7 @@ $feedDescriptionType = array(
 					<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_CATEGORY_LAYOUT') ?>
 			    </div>
 			    <?php
-			    echo JHTML::_('Select.genericlist', $this->categoryLayoutList, 'categorylayout', 'size=1', 'value', 'text', VmConfig::get('categorylayout',0));
+			    echo $this->categoryLayoutList;
 			    ?>
 			</td>
 		    </tr>
@@ -69,12 +69,12 @@ $feedDescriptionType = array(
 					<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRODUCT_LAYOUT') ?>
 			    </div>
 			    <?php
-			    echo JHTML::_('Select.genericlist', $this->productLayoutList, 'productlayout', 'size=1', 'value', 'text', VmConfig::get('productlayout',0));
+			    echo $this->productLayoutList ;
 			    ?>
 			</td>
 		    </tr>
 			<?php echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_PRODUCTS_PER_ROW','products_per_row',VmConfig::get('products_per_row',3),'class="inputbox input-mini"' ); ?>
-			<?php echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_PRODUCTS_PER_ROW','manufacturer_per_row',VmConfig::get('manufacturer_per_row',3),'class="inputbox input-mini"' ); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MANUFACTURER_PER_ROW','manufacturer_per_row',VmConfig::get('manufacturer_per_row',3),'class="inputbox input-mini"' ); ?>
       </table>
     </fieldset>
 	<fieldset>
@@ -261,7 +261,7 @@ $feedDescriptionType = array(
 			</td>
 			<td>
 			    <?php
-			    echo JHTML::_('Select.genericlist', $this->vmLayoutList, 'vmlayout', 'size=1 class="input-medium"', 'value', 'text', VmConfig::get('vmlayout',0));
+			    echo $this->vmLayoutList;
 			    ?>
 			</td>
 		    </tr>

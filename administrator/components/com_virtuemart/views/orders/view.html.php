@@ -157,8 +157,7 @@ class VirtuemartViewOrders extends VmView {
 			}
 			$this->orderStatusList = $_orderStatusList ;
 			$this->loadHelper('currencydisplay');
-			$vendor = Permissions::getInstance()->isSuperVendor();
-			if ( $vendor > 1 ) $this->setLayout('vendor');
+			if ( $this->adminVendor > 1 ) $this->setLayout('vendor');
 			/* Apply currency This must be done per order since it's vendor specific */
 			$_currencies = array(); // Save the currency data during this loop for performance reasons
 

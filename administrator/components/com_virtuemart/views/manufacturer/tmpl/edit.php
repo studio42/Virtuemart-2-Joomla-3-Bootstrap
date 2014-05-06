@@ -24,14 +24,33 @@ AdminUIHelper::startAdminArea();
 ?>
 
 <form enctype="multipart/form-data" action="index.php" method="post" name="adminForm" id="adminForm">
+<fieldset>
+	<legend><?php echo JText::_('COM_VIRTUEMART_MANUFACTURER_DETAILS'); ?><div class="pull-right"><?php echo $this->langList ?></div></legend>
+	<div class="row-fluid">
+		<table class="span6">
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_NAME','mf_name',$this->manufacturer->mf_name); ?>
+			<?php echo VmHTML::row('input',$this->viewName.' '. JText::_('COM_VIRTUEMART_SLUG'),'slug',$this->manufacturer->slug); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_URL','mf_url',$this->manufacturer->mf_url); ?>
+		</table>
+		<table class="span6">
+	    	<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISHED','published',$this->manufacturer->published); ?>
+			<?php echo VmHTML::row('select','COM_VIRTUEMART_MANUFACTURER_CATEGORY_NAME','virtuemart_manufacturercategories_id',$this->manufacturerCategories,$this->manufacturer->virtuemart_manufacturercategories_id,'','virtuemart_manufacturercategories_id', 'mf_category_name',false); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_EMAIL','mf_email',$this->manufacturer->mf_email); ?>
+		</table>
+	</div>
+</fieldset>
+<div class="accordion">
+		<?php 
+		$this->manufacturer->images[0]->addHidden('virtuemart_vendor_id',$this->virtuemart_vendor_id);
 
-<?php // Loading Templates in Tabs
-$tabarray = array();
-$tabarray['description'] = 'COM_VIRTUEMART_DESCRIPTION';
-$tabarray['images'] = 'COM_VIRTUEMART_IMAGES';
-
-AdminUIHelper::buildTabs ( $this,  $tabarray ,$this->manufacturer->virtuemart_manufacturer_id);
-// Loading Templates in Tabs END ?>
+		echo $this->manufacturer->images[0]->displayFilesHandler($this->manufacturer->virtuemart_media_id,'manufacturer'); ?>
+</div>
+<fieldset>
+	<legend><?php echo JText::_('COM_VIRTUEMART_DESCRIPTION'); ?></legend>
+	<div>
+		<?php echo VmHTML::editor('mf_desc',$this->manufacturer->mf_desc,'100%',null,null,false); ?>
+	</div>
+</fieldset>
 
 	<input type="hidden" name="virtuemart_manufacturer_id" value="<?php echo $this->manufacturer->virtuemart_manufacturer_id; ?>" />
 	<?php echo $this->addStandardHiddenToForm(); ?>

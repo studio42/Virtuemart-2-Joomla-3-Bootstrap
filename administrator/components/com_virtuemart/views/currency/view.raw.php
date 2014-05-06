@@ -5,7 +5,7 @@
 *
 * @package	VirtueMart
 * @subpackage Currency
-* @author RickG
+* @author Patrick Kohl/Studio 42
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -17,37 +17,10 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
+// Load the main HTML view 
 
-/**
- * HTML View class for maintaining the list of currencies
- *
- * @package	VirtueMart
- * @subpackage Currency
- * @author RickG, Max Milbers
- */
-class VirtuemartViewCurrency extends VmView {
+$vmview = dirname(__FILE__);
+require($vmview.'/view.html.php');
 
-	function display($tpl = null) {
-
-		// Load the helper(s)
-
-
-		$this->loadHelper('html');
-
-		$model = VmModel::getModel();
-		$this->addStandardDefaultViewCommands();
-		$this->addStandardDefaultViewLists($model,0,'ASC');
-
-		$this->currencies = $model->getCurrenciesList(JRequest::getWord('search', false));
-		$this->pagination = $model->getPagination();
-
-		parent::display('results');
-		echo $this->AjaxScripts();
-	}
-
-}
-// pure php no closing tag

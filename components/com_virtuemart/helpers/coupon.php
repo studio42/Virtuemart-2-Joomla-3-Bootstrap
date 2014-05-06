@@ -51,7 +51,7 @@ abstract class CouponHelper
 			. ', IFNULL( 0, IF( NOW() > `coupon_expiry_date`, 1, 0 )) AS ended '
 			. ', `coupon_value_valid` '
 			. 'FROM `#__virtuemart_coupons` '
-			. 'WHERE `coupon_code` = "' . $_db->getEscaped($_code) . '"';
+			. 'WHERE `coupon_code` = "' . $_db->escape($_code) . '"';
 			$_db->setQuery($_q);
 			$couponData = $_db->loadObject();
 		}
@@ -91,7 +91,7 @@ abstract class CouponHelper
 			. ', `coupon_type` '
 			. ', `coupon_value` '
 			. 'FROM `#__virtuemart_coupons` '
-			. 'WHERE `coupon_code` = "' . $_db->getEscaped($_code) . '"';
+			. 'WHERE `coupon_code` = "' . $_db->escape($_code) . '"';
 		$_db->setQuery($_q);
 		return $_db->loadObject();
 	}
@@ -126,7 +126,7 @@ abstract class CouponHelper
 		}
 		$_db = JFactory::getDBO();
 		$_q = 'DELETE FROM `#__virtuemart_coupons` '
-			. 'WHERE `coupon_code` = "' . $_db->getEscaped($_code) . '"';
+			. 'WHERE `coupon_code` = "' . $_db->escape($_code) . '"';
 		$_db->setQuery($_q);
 		return ($_db->execute() !== false);
 	}

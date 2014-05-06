@@ -36,10 +36,9 @@ class VirtueMartControllerCategory extends JControllerLegacy {
     * @access public
     * @author RolandD
     */
-    public function __construct() {
-     	 parent::__construct();
-
-     	 $this->registerTask('browse','category');
+    public function __construct($config = array()) {
+     	 parent::__construct($config);
+     	 // $this->registerTask('browse','category');
    	}
 
 	/**
@@ -52,16 +51,19 @@ class VirtueMartControllerCategory extends JControllerLegacy {
 	public function display($cachable = false, $urlparams = false)  {
 
 		if (JRequest::getvar('search')) {
-			$view = $this->getView('category', 'html');
-			$view->display();
+			// $view = $this->getView('category', 'html');
+			// $view->display();
+			$safeurlparams = '';
+			$cachable = false;
 		} else {
 			// Display it all
 			$safeurlparams = array('virtuemart_category_id'=>'INT','virtuemart_manufacturer_id'=>'INT','virtuemart_currency_id'=>'INT','return'=>'BASE64','lang'=>'CMD','orderby'=>'CMD','limitstart'=>'CMD','order'=>'CMD','limit'=>'CMD');
-			parent::display(true, $safeurlparams);
 		}
+		parent::display(true, $safeurlparams);
 		if($categoryId = JRequest::getInt('virtuemart_category_id',0)){
 			shopFunctionsF::setLastVisitedCategoryId($categoryId);
 		}
+		return $this;
 	}
 }
 // pure php no closing tag

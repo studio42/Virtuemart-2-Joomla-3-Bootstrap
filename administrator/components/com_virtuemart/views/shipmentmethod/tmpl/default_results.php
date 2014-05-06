@@ -18,6 +18,10 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+$multivendor = Vmconfig::get('multix','none');
+$multiX = $multivendor !=='none' && $multivendor !='' ? true : false ;
+// $cols = $multiX ? 10 : 9 ;
 ?>
 	<table class="table table-striped">
 		<thead>
@@ -37,7 +41,12 @@ defined('_JEXEC') or die();
 			<th>
 				<?php echo JText::_('COM_VIRTUEMART_LIST_ORDER'); ?>
 			</th>
-			<th width="20" class="autosize"><?php echo JText::_('COM_VIRTUEMART_PUBLISHED'); ?></th>
+			<th width="10" class="autosize"><?php echo JText::_('COM_VIRTUEMART_PUBLISHED'); ?></th>
+			<?php if ($multiX ){ ?>
+			<th width="10"  class="autosize">
+				<?php echo JText::_('COM_VIRTUEMART_SHARED'); ?>
+			</th>
+			<?php } ?>
 			 <th class="hidden-phone"><?php echo $this->sort('virtuemart_shipmentmethod_id', 'COM_VIRTUEMART_ID')  ?></th>
 		</tr>
 		</thead>
@@ -71,6 +80,12 @@ defined('_JEXEC') or die();
 					<?php echo $row->ordering; ?>
 				</td>
 				<td><?php echo $published; ?></td>
+				<?php if ($multiX ){ ?>
+				<td align="center">
+					<?php echo $row->shared ? 
+						'<i class="icon-featured"></i>' : '<i class="icon-star-empty"></i>'; ?>
+				</td>
+				<?php } ?>
 				<td align="center" class="hidden-phone">
 					<?php echo $row->virtuemart_shipmentmethod_id; ?>
 				</td>

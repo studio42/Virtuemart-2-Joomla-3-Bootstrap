@@ -49,6 +49,7 @@ class calculationHelper {
 	public $product_marge_id = 0;
 	public $vendorCurrency = 0;
 	public $inCart = FALSE;
+	public $checkAutomaticSelected = false;
 	protected $exchangeRateVendor = 0;
 	protected $exchangeRateShopper = 0;
 	protected $_internalDigits = 8;
@@ -151,7 +152,7 @@ class calculationHelper {
 
             //By Maik, key of array is directly virtuemart_calc_id
 			foreach ($allrules as $rule){
-				$this->allrules[$this->productVendorId][$rule["calc_kind"]][] = $rule;
+				$this->allrules[$this->productVendorId][$rule["calc_kind"]][$rule["virtuemart_calc_id"]] = $rule;
 			}
 		}
 
@@ -309,11 +310,11 @@ class calculationHelper {
 		$basePriceMargin = $this->roundInternal($this->executeCalculation($this->rules['Marge'], $basePriceShopCurrency));
 		$this->basePrice = $basePriceShopCurrency = $this->productPrices['basePrice'] = !empty($basePriceMargin) ? $basePriceMargin : $basePriceShopCurrency;
 
-		$this->rules['Tax'] = $this->gatherEffectingRulesForProductPrice('Tax', $this->product_tax_id);
-		$this->rules['VatTax'] = $this->gatherEffectingRulesForProductPrice('VatTax', $this->product_tax_id);
 
-		$this->rules['DBTax'] = $this->gatherEffectingRulesForProductPrice('DBTax', $this->product_discount_id);
-		$this->rules['DATax'] = $this->gatherEffectingRulesForProductPrice('DATax', $this->product_discount_id);
+
+
+
+
 
 		if (!empty($variant)) {
 			$basePriceShopCurrency = $basePriceShopCurrency + doubleval($variant);
@@ -326,13 +327,16 @@ class calculationHelper {
 			$this->productPrices['basePriceVariant'] = $this->productPrices['basePrice'];
 		}
 
-
+		$this->rules['Tax'] = $this->gatherEffectingRulesForProductPrice('Tax', $this->product_tax_id);
 		$this->productPrices['basePriceWithTax'] = $this->roundInternal($this->executeCalculation($this->rules['Tax'], $this->productPrices['basePrice'], true),'basePriceWithTax');
+
+		$this->rules['VatTax'] = $this->gatherEffectingRulesForProductPrice('VatTax', $this->product_tax_id);
 		if(!empty($this->rules['VatTax'])){
 			$price = !empty($this->productPrices['basePriceWithTax']) ? $this->productPrices['basePriceWithTax'] : $this->productPrices['basePrice'];
 			$this->productPrices['basePriceWithTax'] = $this->roundInternal($this->executeCalculation($this->rules['VatTax'], $price,true),'basePriceWithTax');
 		}
 
+		$this->rules['DBTax'] = $this->gatherEffectingRulesForProductPrice('DBTax', $this->product_discount_id);
 		$this->productPrices['discountedPriceWithoutTax'] = $this->roundInternal($this->executeCalculation($this->rules['DBTax'], $this->productPrices['basePrice']),'discountedPriceWithoutTax');
 
 		if ($override==-1) {
@@ -353,6 +357,7 @@ class calculationHelper {
 			$salesPrice = !empty($this->productPrices['salesPrice']) ? $this->productPrices['salesPrice'] : $salesPrice;
 		}
 
+		$this->rules['DATax'] = $this->gatherEffectingRulesForProductPrice('DATax', $this->product_discount_id);
 		$this->productPrices['salesPriceWithDiscount'] = $this->roundInternal($this->executeCalculation($this->rules['DATax'], $salesPrice),'salesPriceWithDiscount');
 
 // 		vmdebug('$$override salesPriceWithDiscount',$override,$this->productPrices['salesPriceWithDiscount'],$salesPrice);
@@ -452,7 +457,7 @@ class calculationHelper {
 					if(!isset($this->_cartData['VatTax'][$rule['virtuemart_calc_id']]['taxAmount'])) $this->_cartData['VatTax'][$rule['virtuemart_calc_id']]['taxAmount'] = $this->productPrices['taxAmount'] * $this->_product->quantity;
 					if(!isset($this->_cartData['VatTax'][$rule['virtuemart_calc_id']]['subTotal'])) $this->_cartData['VatTax'][$rule['virtuemart_calc_id']]['subTotal'] = $this->productPrices['salesPrice'] * $this->_product->quantity;
 				}
-				vmdebug('subtotal vattax id '.$rule['virtuemart_calc_id'].' =  '.$this->_cartData['VatTax'][$rule['virtuemart_calc_id']]['taxAmount']);
+				//vmdebug('subtotal vattax id '.$rule['virtuemart_calc_id'].' =  '.$this->_cartData['VatTax'][$rule['virtuemart_calc_id']]['taxAmount']);
 			}
 		}
 
@@ -476,8 +481,7 @@ class calculationHelper {
 					$this->product_tax_id = $row['product_tax_id'];
 					$this->product_discount_id = $row['product_discount_id'];
 				} else {
-					$app = Jfactory::getApplication();
-					$app->enqueueMessage('cost Price empty, if child, everything okey, this is just a dev note');
+					vmdebug('cost Price empty, if child, everything okey, this is just a dev note');
 					return false;
 				}
 			}
@@ -605,11 +609,20 @@ class calculationHelper {
 	//	function getCheckoutPrices($productIds,$variantMods=array(), $cartVendorId=1,$couponId=0,$shipId=0,$paymId=0){
 	public function getCheckoutPrices($cart, $checkAutomaticSelected=true) {
 
-		if(isset($this->_cartPrices) and is_array($this->_cartPrices) and count($this->_cartPrices)>0 and isset($this->_cartData['totalProduct']) and $this->_cartData['totalProduct']==count($cart->products)){
+		if(isset($this->_cartPrices) and
+			is_array($this->_cartPrices) and
+			count($this->_cartPrices)>0 and
+			isset($this->_cartData['totalProduct']) and
+			$this->_cartData['totalProduct']==count($cart->products) and
+			$cart->couponCode == $this->couponCode and
+			$checkAutomaticSelected ===$this->_checkAutomaticSelected 	){
 			return $this->_cartPrices;
 		}
 
+		$this->_checkAutomaticSelected = $checkAutomaticSelected;
+
 		$this->_cart = $cart;
+		$this->couponCode = $cart->couponCode;
 		$this->inCart = TRUE;
 		$pricesPerId = array();
 		$this->_cartPrices = array();
@@ -643,7 +656,7 @@ class calculationHelper {
 				JError::raiseWarning(710, 'Error the quantity of the product for calculation is 0, please notify the shopowner, the product id ' . $product->virtuemart_product_id);
 				continue;
 			}
-
+			$this->productCurrency = isset($product->product_currency)? $product->product_currency:0;
 			$variantmods = $this->parseModifier($name);
 			$variantmod = $this->calculateModificators($product, $variantmods);
 
@@ -798,8 +811,7 @@ class calculationHelper {
 
 		//Avalara wants to calculate the tax of the shipment. Only disadvantage to set shipping here is that the discounts per bill respectivly the tax per bill
 		// is not considered.
-		$shipment_id = empty($cart->virtuemart_shipmentmethod_id) ? 0 : $cart->virtuemart_shipmentmethod_id;
-		$this->calculateShipmentPrice($cart,  $shipment_id, $checkAutomaticSelected);
+		$this->calculateShipmentPrice($cart, $checkAutomaticSelected);
 
 		// next step is handling a coupon, if given
 		$this->_cartData['vmVat'] = TRUE;
@@ -829,10 +841,7 @@ class calculationHelper {
 		$cartdiscountAfterTax = $this->roundInternal($this->cartRuleCalculation($this->_cartData['DATaxRulesBill'], $toDisc));
 		$this->_cartPrices['withTax'] = $toDisc + $cartdiscountAfterTax;
 
-		
-		$paymentId = empty($cart->virtuemart_paymentmethod_id) ? 0 : $cart->virtuemart_paymentmethod_id;
-
-		$this->calculatePaymentPrice($cart, $paymentId, $checkAutomaticSelected);
+		$this->calculatePaymentPrice($cart, $checkAutomaticSelected);
 
 		//		$sub =!empty($this->_cartPrices['discountedPriceWithoutTax'])? $this->_cartPrices['discountedPriceWithoutTax']:$this->_cartPrices['basePrice'];
 		if($this->_currencyDisplay->_priceConfig['salesPrice']) $this->_cartPrices['billSub'] = $this->_cartPrices['basePrice'] + $this->_cartPrices['shipmentValue'] + $this->_cartPrices['paymentValue'];
@@ -1030,7 +1039,7 @@ class calculationHelper {
 
 				if(isset($rule['subTotal'])){
 					$cIn = $rule['subTotal'];
-					vmdebug('executeCalculation use subTotal of rule '.$rule['subTotal']);
+					//vmdebug('executeCalculation use subTotal of rule '.$rule['subTotal']);
 				}
 				else if ($relateToBaseAmount) {
 					$cIn = $baseprice;
@@ -1175,7 +1184,7 @@ class calculationHelper {
 		}
 
 		//Test rules in plugins
-		if(!empty($testedRules)){
+		if(!empty($testedRules) and count($testedRules)>0){
 			JPluginHelper::importPlugin('vmcalculation');
 			$dispatcher = JDispatcher::getInstance();
 			$dispatcher->trigger('plgVmInGatherEffectRulesProduct',array(&$this,&$testedRules));
@@ -1250,7 +1259,7 @@ class calculationHelper {
 		}
 
 		//Test rules in plugins
-		if(!empty($testedRules)){
+		if(!empty($testedRules) and count($testedRules)>0){
 			JPluginHelper::importPlugin('vmcalculation');
 			$dispatcher = JDispatcher::getInstance();
 			$dispatcher->trigger('plgVmInGatherEffectRulesBill', array(&$this, &$testedRules));
@@ -1267,7 +1276,7 @@ class calculationHelper {
 	 * @param 	$code 	The Id of the coupon
 	 * @return 	$rules 	ids of the coupons
 	 */
-	function calculateShipmentPrice(  $cart, $ship_id, $checkAutomaticSelected=true) {
+	function calculateShipmentPrice(  $cart, $checkAutomaticSelected=true) {
 
 		$this->_cartData['shipmentName'] = JText::_('COM_VIRTUEMART_CART_NO_SHIPMENT_SELECTED');
 		$this->_cartPrices['shipmentValue'] = 0; //could be automatically set to a default set in the globalconfig
@@ -1276,9 +1285,11 @@ class calculationHelper {
 		$this->_cartPrices['shipment_calc_id'] = 0;
 		// check if there is only one possible shipment method
 
-		$automaticSelectedShipment =   $cart->CheckAutomaticSelectedShipment($this->_cartPrices, $checkAutomaticSelected);
-		if ($automaticSelectedShipment) $ship_id=$cart->virtuemart_shipmentmethod_id;
-		if (empty($ship_id)) return;
+		//if (empty($cart->virtuemart_shipmentmethod_id)){
+			$cart->CheckAutomaticSelectedShipment($this->_cartPrices, $checkAutomaticSelected);
+			if (empty($cart->virtuemart_shipmentmethod_id)) return;
+		//}
+
 
 		// Handling shipment plugins
 		if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
@@ -1313,7 +1324,7 @@ class calculationHelper {
 	 * @param	$value	$cartVendorId
 	 * @return 	$paymentCosts 	The amount of money the customer has to pay. Calculated in shop currency
 	 */
-	function calculatePaymentPrice($cart,   $payment_id , $checkAutomaticSelected=true) {
+	function calculatePaymentPrice($cart, $checkAutomaticSelected=true) {
 		//		if (empty($code)) return 0.0;
 		//		$code=4;
 		$this->_cartData['paymentName'] = JText::_('COM_VIRTUEMART_CART_NO_PAYMENT_SELECTED');
@@ -1322,10 +1333,12 @@ class calculationHelper {
 		$this->_cartPrices['paymentTotal'] = 0;
 		$this->_cartPrices['salesPricePayment'] = 0;
 		$this->_cartPrices['payment_calc_id'] = 0;
+
 		// check if there is only one possible payment method
-		$cart->automaticSelectedPayment =   $cart->CheckAutomaticSelectedPayment( $this->_cartPrices, $checkAutomaticSelected);
-		if ($cart->automaticSelectedPayment) $payment_id=$cart->virtuemart_paymentmethod_id;
-		if (empty($payment_id)) return;
+		//if (empty($cart->virtuemart_paymentmethod_id)){
+			$cart->CheckAutomaticSelectedPayment($this->_cartPrices, $checkAutomaticSelected);
+			if (empty($cart->virtuemart_paymentmethod_id)) return;
+		//}
 
 		if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
 		JPluginHelper::importPlugin('vmpayment');

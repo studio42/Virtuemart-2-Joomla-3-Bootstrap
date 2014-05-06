@@ -239,10 +239,10 @@ class VirtueMartModelVendor extends VmModel {
 	 * @return string Currency code
 	 */
 
-	static $_vendorCurrencies = array();
+	
 	static function getVendorCurrency ($_vendorId) {
-
-		if(!isset(self::$_vendorCurrencies[$_vendorId])){
+		static $_vendorCurrencies = array();
+		if(!isset($_vendorCurrencies[$_vendorId])){
 			$db = JFactory::getDBO ();
 
 			$q = 'SELECT *  FROM `#__virtuemart_currencies` AS c
@@ -250,23 +250,10 @@ class VirtueMartModelVendor extends VmModel {
 			WHERE v.virtuemart_vendor_id = ' . (int)$_vendorId . '
 			AND   v.vendor_currency = c.virtuemart_currency_id';
 			$db->setQuery ($q);
-			self::$_vendorCurrencies[$_vendorId] = $db->loadObject ();
+			$_vendorCurrencies[$_vendorId] = $db->loadObject ();
 		}
 
-		return self::$_vendorCurrencies[$_vendorId];
-	}
-
-	/**
-	 * Retrieve a lost of vendor objects
-	 *
-	 * @author Oscar van Eijk
-	 * @return Array with all Vendor objects
-	 */
-	function getVendorCategories () {
-
-		$_q = 'SELECT * FROM `#__vm_vendor_category`';
-		$this->_db->setQuery ($_q);
-		return $this->_db->loadObjectList ();
+		return $_vendorCurrencies[$_vendorId];
 	}
 
 	function getUserIdByOrderId ($virtuemart_order_id) {

@@ -28,6 +28,14 @@ if (!class_exists ('shopFunctionsF'))
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch() ?>
 		<?php echo $this->DisplayFilterPublish() ?>
+		<?php if (isset($this->categorylist)) { 
+			echo '
+			<select name="filter_category_id" id="filter_category_id" class="inputbox" onchange="Joomla.ajaxSearch(this); return false;">
+				<option value="">'.JText::_('COM_VIRTUEMART_CATEGORY_FORM_TOP_LEVEL').'</option>
+				'.$this->categorylist.'
+			</select>'; 
+		}?>
+			<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">
@@ -63,7 +71,10 @@ if (!class_exists ('shopFunctionsF'))
 						f.task.value = oldTask;
 
 					}
-					, "json" );
+					, "json" )
+					.fail(function() {
+						location.reload();
+					});
 				return false;
 
 			} else {

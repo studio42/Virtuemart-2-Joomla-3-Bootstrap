@@ -148,29 +148,25 @@ class VirtuemartViewUserfields extends VmView {
 			$this->userFieldValues = $userFieldValues;
 			$this->editor = $editor;
 		} else {
-			JToolBarHelper::title( JText::_('COM_VIRTUEMART_MANAGE_USER_FIELDS'));
-			// JToolBarHelper::addNew();
-			// JToolBarHelper::editList();
-			// JToolBarHelper::divider();
-			// JToolBarHelper::publishList();
-			// JToolBarHelper::unpublishList();
-			// JToolBarHelper::divider();
-			// $barText = JText::_('COM_VIRTUEMART_FIELDMANAGER_SHOW_HIDE');
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				JToolBarHelper::title( JText::_('COM_VIRTUEMART_MANAGE_USER_FIELDS'));
 
-			// $bar= JToolBar::getInstance( 'toolbar' );
-			// $bar->appendButton( 'Separator', '"><span class="bartext">'.$barText.'</span><hr style="display: none;' );
-//$bar->appendButton( 'publish', 'upload', $alt, '', 550, 400 );
-			JToolBarHelper::custom('toggle.registration.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_REGISTRATION');
-			JToolBarHelper::custom('toggle.registration.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_REGISTRATION');
-			JToolBarHelper::custom('toggle.shipment.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_SHIPPING');
-			JToolBarHelper::custom('toggle.shipment.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_SHIPPING');
-			JToolBarHelper::custom('toggle.account.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_ACCOUNT');
-			JToolBarHelper::custom('toggle.account.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_ACCOUNT');
-			JToolBarHelper::divider();
-			// JToolBarHelper::deleteList();
-			JToolBarHelper::custom('toggle.required.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_REQUIRE');
-			JToolBarHelper::custom('toggle.required.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_UNREQUIRE');
-			$this->addStandardDefaultViewCommands();
+				JToolBarHelper::custom('toggle.registration.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_REGISTRATION');
+				JToolBarHelper::custom('toggle.registration.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_REGISTRATION');
+				JToolBarHelper::custom('toggle.shipment.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_SHIPPING');
+				JToolBarHelper::custom('toggle.shipment.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_SHIPPING');
+				JToolBarHelper::custom('toggle.account.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_ACCOUNT');
+				JToolBarHelper::custom('toggle.account.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_ACCOUNT');
+				JToolBarHelper::divider();
+				// JToolBarHelper::deleteList();
+				JToolBarHelper::custom('toggle.required.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_REQUIRE');
+				JToolBarHelper::custom('toggle.required.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_UNREQUIRE');
+				$this->addStandardDefaultViewCommands();
+			}
 			$this->addStandardDefaultViewLists($model,'ordering','ASC');
 
 			$this->userfieldsList = $model->getUserfieldsList();
@@ -178,6 +174,7 @@ class VirtuemartViewUserfields extends VmView {
 		}
 		$this->lists['coreFields'] = $lists['coreFields'];
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 	/**

@@ -24,7 +24,6 @@ jimport( 'joomla.application.component.view');
 // Load default helpers
 
 class VmView extends JViewLegacy{
-
 	function linkIcon($link,$altText ='',$boutonName,$verifyConfigValue=false, $modal = true, $use_icon=true,$use_text=false){
 		if ($verifyConfigValue) {
 			if ( !VmConfig::get($verifyConfigValue, 0) ) return '';
@@ -37,32 +36,44 @@ class VmView extends JViewLegacy{
 		if ($modal) return '<a class="modal" rel="{handler: \'iframe\', size: {x: 700, y: 550}}" title="'. JText::_($altText).'" href="'.JRoute::_($link).'">'.$text.'</a>';
 		else 		return '<a title="'. JText::_($altText).'" href="'.JRoute::_($link, FALSE).'">'.$text.'</a>';
 	}
-	// display edit link if the user have the rights.
-	function editLink($view,$id,$created_by,$task="edit",$vendorId = null) {
+	function can($task,$view,$created_by = null,$vendorId = null){
 		static $user_id = null;
-		static $vendor = null;
 		static $isAdmin = null;
-		static $canEdit = null;
-		if(!$id) return;
+		static $vendor = null;
 		if ($vendor === null) {
 			if (!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
 			$vendor = Permissions::getInstance()->isSuperVendor();
-			$user_id = JFactory::getUser()->get('id');
-			$isAdmin = Permissions::getInstance()->check("admin,storeadmin");
-			
-			$canEdit = ShopFunctions::can($task,$view);
+			if ( $user_id = JFactory::getUser()->get('id') ) {
+				$isAdmin = Permissions::getInstance()->check("admin,storeadmin");
+				if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php'); 
+			}
 		}
 		if (!$vendor) return '';
 
 		if ( $vendor > 1) {
-			if (!$canEdit )  return '';
+
+			if (!ShopFunctions::can($task,$view) )  return false;
 			// only link to own entries or same vendor id
 			if ($vendorId) {
-				if( $vendorId != $vendor) return '';
+				if( $vendorId != $vendor) return false;
 			}
-			elseif ($created_by != $user_id) return '';
+			elseif ($created_by != $user_id) return false;
 		}
-	    $edit_link = JURI::root() . 'index.php?option=com_virtuemart&tmpl=component&view='.$view.'&task='.$task.'&virtuemart_'.$view.'_id='.$id ;
+		return true;
+	}
+	// display edit link if the user have the rights.
+	function newLink($view,$idLink,$created_by,$task="add",$vendorId = null) {
+
+		if($idLink === null) return;
+		if (!$this->can($task,$view,$created_by,$vendorId)) return '';
+	    $edit_link = 'index.php?option=com_virtuemart&tmpl=component&view='.$view.'&task='.$task.$idLink ;
+		return '<a title="'. JText::_('JNEW').' '.$view.'" href="'.JRoute::_($edit_link, FALSE).'" class="btn btn-default pull-right"><span class="icon icon-new"> </span> '.$view.'</a>';		
+	}	// display edit link if the user have the rights.
+	function editLink($view,$id,$created_by,$task="edit",$vendorId = null) {
+
+		if(!$id) return;
+		if (!$this->can($task,$view,$created_by,$vendorId)) return '';
+	    $edit_link = 'index.php?option=com_virtuemart&tmpl=component&view='.$view.'&task='.$task.'&virtuemart_'.$view.'_id='.$id ;
 		return '<a title="'. JText::_('JGLOBAL_EDIT').'" href="'.JRoute::_($edit_link, FALSE).'" class="btn btn-default pull-right"><span class="icon icon-edit"> </span></a>';		
 	}
 

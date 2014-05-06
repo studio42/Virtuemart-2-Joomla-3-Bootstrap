@@ -28,14 +28,15 @@
 		if (id === 'searchreset') {
 			jQuery('#filter-bar input').val('');
 		}
-		
+		jQuery('#results').css('opacity','0.3');
 		inputs = form.serialize();
 		jQuery.post( url, inputs+'&format=raw',
-			function(html, status) {
-				jQuery('#results').html(html);
-			
+			function(html) {
+				jQuery('#results').css('opacity','1').html(html);
 			}
-		);
+		).fail(function() {
+			location.reload();
+		});
 		return false;
 	}
 	jQuery('#searchreset').removeAttr('onClick');
@@ -56,7 +57,7 @@
 		// }
 		xref = form.task.value.substring(0,8);
 		if (xref != 'massxref') form.task.value = task;
-		console.log(xref,task,form.task.value);
+		// console.log(xref,task,form.task.value);
 		form.filter_order.value = order;
 		form.filter_order_Dir.value = dir;
 		Joomla.ajaxSearch(form);
@@ -133,7 +134,9 @@
 				$img.toggleClass('icon-'+text.img[val]+' icon-'+text.img[valNew]); //attr('src', src.replace(text.img[val],text.img[valNew]) );
 				f.task.value = oldTask;
 			}
-			, "json" );
+		, "json" ).fail(function() {
+			location.reload();
+		});
 		return false;
 	}
 -->

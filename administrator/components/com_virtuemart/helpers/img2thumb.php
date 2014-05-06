@@ -109,13 +109,43 @@ class Img2Thumb	{
 // 			$app->enqueueMessage('This server does NOT suppport auto generating Thumbnails by jpg');
 // 		}
 
-		$type = $this->GetImgType($filename);
+		if(function_exists('imagecreatefromstring')){
 
+			$content = file_get_contents($filename);
+			if($content){
+				$gd = @imagecreatefromstring($content);
+				if ($gd === false) {
+					vmWarn('Img2Thumb NewImgCreate with imagecreatefromstring failed '.$filename.' ');
+				} else {
 		$pathinfo = pathinfo( $fileout );
-		if( empty( $pathinfo['extension'])) {
-			$fileout .= '.'.$type;
-		}
+					$type = empty($type)? $pathinfo['extension']:$type;
 		$this->fileout = $fileout;
+					$new_img =$this->NewImgResize($gd,$newxsize,$newysize,$filename);
+					if (!empty($fileout))
+					{
+						$this-> NewImgSave($new_img,$fileout,$type);
+					}
+					else
+					{
+						$this->NewImgShow($new_img,$type);
+					}
+
+					ImageDestroy($new_img);
+					ImageDestroy($gd);
+				}
+			}
+
+		} else {
+			$type = $this->GetImgType($filename);
+
+			$pathinfo = pathinfo( $fileout );
+
+			$type = empty($type)? $pathinfo['extension']:$type;
+
+			if( empty( $pathinfo['extension'])) {
+				$fileout .= '.'.$type;
+			}
+			$this->fileout = $fileout;
 
 		switch($type){
 
@@ -124,20 +154,27 @@ class Img2Thumb	{
 				// via the precompiled php installation :(
 				// it should work on all other systems however.
 				if( function_exists("imagecreatefromgif") ) {
+
 					$orig_img = imagecreatefromgif($filename);
 				} else {
 					$app = JFactory::getApplication();
 					$app->enqueueMessage('This server does NOT suppport auto generating Thumbnails by gif');
-					exit;
+						return false;
 				}
 				break;
 			case "jpg":
 				if( function_exists("imagecreatefromjpeg") ) {
+						if($this->check_jpeg($filename,true)){
 					$orig_img = imagecreatefromjpeg($filename);
 				} else {
+							vmWarn('Img2Thumb NewImgCreate $orig_img empty, type was not in switch for file '.$filename.' this happens due missing exif data or broken origin file');
+							return false;
+						}
+
+					} else {
 					$app = JFactory::getApplication();
 					$app->enqueueMessage('This server does NOT suppport auto generating Thumbnails by jpg');
-					exit;
+						return false;
 				}
 				break;
 			case "png":
@@ -146,14 +183,17 @@ class Img2Thumb	{
 				} else {
 					$app = JFactory::getApplication();
 					$app->enqueueMessage('This server does NOT suppport auto generating Thumbnails by png');
-					exit;
+						return false;
 				}
 				break;
 
 		}
 
+			if(empty($orig_img)){
+				vmWarn('Img2Thumb NewImgCreate $orig_img empty, type was not in switch for file '.$filename.' this happens due missing exif data or broken origin file');
+				return false;
+			} else {
 		$new_img =$this->NewImgResize($orig_img,$newxsize,$newysize,$filename);
-
 		if (!empty($fileout))
 		{
 			 $this-> NewImgSave($new_img,$fileout,$type);
@@ -165,6 +205,37 @@ class Img2Thumb	{
 
 		ImageDestroy($new_img);
 		ImageDestroy($orig_img);
+	}
+		}
+	}
+
+	/**
+	 * check for jpeg file header and footer - also try to fix it
+	 * @author willertan1980 at yahoo dot com http://www.php.net/manual/de/function.imagecreatefromjpeg.php
+	 * @param $f
+	 * @param bool $fix
+	 * @return bool
+	 */
+	function check_jpeg($f, $fix=false ){
+
+		if ( false !== (@$fd = fopen($f, 'r+b' )) ){
+			if ( fread($fd,2)==chr(255).chr(216) ){
+				fseek ( $fd, -2, SEEK_END );
+				if ( fread($fd,2)==chr(255).chr(217) ){
+					fclose($fd);
+					vmdebug('valid jpg '.$f);
+					return true;
+				}else{
+					if ( $fix && fwrite($fd,chr(255).chr(217)) ){vmdebug('corrected jpg '.$f);return true;}
+					fclose($fd);
+					vmInfo('broken jpg, cannot create thumb '.$f);
+					return false;
+				}
+			}else{fclose($fd); return false;}
+		}else{
+			vmWarn('check_jpeg could not open file '.$f);
+			return false;
+		}
 	}
 
 	/**
@@ -315,7 +386,8 @@ class Img2Thumb	{
 			case "jpg":
 				if (strtolower(substr($fileout,strlen($fileout)-4,4))!=".jpg")
 					$fileout .= ".jpg";
-				return imagejpeg($new_img, $fileout, 100);
+				$quality = 89;
+				return imagejpeg($new_img, $fileout, $quality);
 				break;
 			case "png":
 				if (strtolower(substr($fileout,strlen($fileout)-4,4))!=".png")

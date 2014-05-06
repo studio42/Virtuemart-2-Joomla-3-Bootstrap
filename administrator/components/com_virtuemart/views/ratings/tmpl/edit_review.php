@@ -22,7 +22,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 vmJsApi::cssSite();
-AdminUIHelper::startAdminArea();
 AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_REVIEW_DETAILS');
 ?>
 
@@ -107,7 +106,6 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_REVIEW_DETAILS');
 </form>
 
 <?php
-AdminUIHelper::imitateTabs('end');
 AdminUIHelper::endAdminArea(); ?>
 <script type="text/javascript">
 function refresh_counter() {

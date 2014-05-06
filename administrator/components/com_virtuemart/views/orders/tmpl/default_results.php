@@ -30,12 +30,13 @@ defined ('_JEXEC') or die();
 			<th><?php echo $this->sort ('order_name', 'COM_VIRTUEMART_ORDER_PRINT_NAME')  ?></th>
 			<th><?php echo $this->sort ('order_email', 'COM_VIRTUEMART_EMAIL')  ?></th>
 			<th><?php echo $this->sort ('payment_method', 'COM_VIRTUEMART_ORDER_PRINT_PAYMENT_LBL')  ?></th>
-			<th><?php echo JText::_ ('COM_VIRTUEMART_PRINT_VIEW'); ?></th>
-			<th><?php echo $this->sort ('created_on', 'COM_VIRTUEMART_ORDER_CDATE')  ?></th>
+			<th align="center" width="1%" class="nowrap center text-center"><span class="hidden-phone"><?php echo JText::_ ('COM_VIRTUEMART_PRINT_VIEW'); ?></span>
+				<span><i class="visible-phone icon icon-print"></i></span></th>
+			<th ><?php echo $this->sort ('created_on', 'COM_VIRTUEMART_ORDER_CDATE')  ?></th>
 			<th><?php echo $this->sort ('modified_on', 'COM_VIRTUEMART_ORDER_LIST_MDATE')  ?></th>
 			<th><?php echo $this->sort ('order_status', 'COM_VIRTUEMART_STATUS')  ?></th>
 			<th><?php echo $this->sort ('order_total', 'COM_VIRTUEMART_TOTAL')  ?></th>
-			<th><?php echo $this->sort ('virtuemart_order_id', 'COM_VIRTUEMART_ID')  ?></th>
+			<th class="hidden-phone"><?php echo $this->sort ('virtuemart_order_id', 'COM_VIRTUEMART_ID')  ?></th>
 
 		</tr>
 		</thead>
@@ -69,7 +70,7 @@ defined ('_JEXEC') or die();
 				</td>
 				<td class="autosize">
 					<?php if ($order->order_email) { ?>
-						<a href="mailto:<?php echo $order->order_email ?>?subject=<?php echo jText::_('COM_VIRTUEMART_ORDER_LIST_NUMBER') ?>&body=new" target="_top"><i class="icon-envelope"></i></a>
+						<a href="mailto:<?php echo $order->order_email ?>?subject=<?php echo jText::_('COM_VIRTUEMART_ORDER_LIST_NUMBER') .' '. $order->order_number?>&body=new" target="_top"><i class="icon-envelope"></i></a>
 					<?php } ?>
 				</td>
 				<!-- Payment method -->
@@ -96,9 +97,16 @@ defined ('_JEXEC') or die();
 				?>
 				<td><?php echo $print_link; echo $invoice_link; ?></td>
 				<!-- Order date -->
-				<td><?php echo vmJsApi::date ($order->created_on, 'LC2', TRUE); ?></td>
+				<td>
+					<span class="hidden-phone"><?php echo vmJsApi::date ($order->created_on, 'LC2', TRUE); ?></span>
+					<span class="visible-phone"><?php echo vmJsApi::date ($order->created_on, 'LC4', TRUE); ?></span>
+				</td>
 				<!-- Last modified -->
-				<td><?php echo vmJsApi::date ($order->modified_on, 'LC2', TRUE); ?></td>
+				<td>
+				
+					<span class="hidden-phone"><?php echo vmJsApi::date ($order->modified_on, 'LC2', TRUE); ?></span>
+					<span class="visible-phone"><?php echo vmJsApi::date ($order->modified_on, 'LC4', TRUE); ?></span>
+				</td>
 				<!-- Status -->
 				<td class="status-change">
 					<?php echo JHTML::_ ('select.genericlist', $this->orderstatuses, "orders[" . $order->virtuemart_order_id . "][order_status]", 'class="input-medium"', 'order_status_code', 'order_status_name', $order->order_status, 'order_status' . $i, TRUE); ?>
@@ -120,10 +128,8 @@ defined ('_JEXEC') or die();
 				</td>
 				<!-- Total -->
 				<td><?php echo $order->order_total; ?></td>
-				<td>
-					<?php echo $this->editLink(	$order->virtuemart_order_id, $order->virtuemart_order_id, 'virtuemart_order_id',
-						array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_ID') . ' ' .  $order->virtuemart_order_id) );
-					?>
+				<td class="hidden-phone">
+					<?php echo $order->virtuemart_order_id ?>
 				</td>
 
 			</tr>

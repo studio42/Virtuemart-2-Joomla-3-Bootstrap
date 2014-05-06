@@ -159,8 +159,11 @@ class GenericTableUpdater extends JModelLegacy {
 				}
 			} else {
 				$fields['vendor_terms_of_service'] = 'text '.$linedefaulttext;
+				$key = array_search('vendor_terms_of_service', $translatableFields);
+				unset($translatableFields[$key]);
 
-				$key = array_search('vendor_store_desc', $translatableFields);
+				$fields['vendor_legal_info'] = 'text '.$linedefaulttext;
+				$key = array_search('vendor_legal_info', $translatableFields);
 				unset($translatableFields[$key]);
 			}
 
@@ -218,7 +221,11 @@ class GenericTableUpdater extends JModelLegacy {
 
 	}
 
-	public function updateMyVmTables($file = 0, $like ='_virtuemart_'){
+	/**
+	 * Note Patrick Kohl STUDIO42
+	 * added prefix from joomla in like to prevent getting false results for multiple use of joomla in same database
+	 */
+	public function updateMyVmTables($file = 0, $like ='virtuemart_'){
 
 		if(empty($file)){
 			$file = JPATH_VM_ADMINISTRATOR.DS.'install'.DS.'install.sql';
@@ -287,7 +294,8 @@ class GenericTableUpdater extends JModelLegacy {
 
 // 		vmdebug('updateMyVmTables $tables',$tables); return false;
 		// 	vmdebug('Parsed tables',$tables); //return;
-		$this->_db->setQuery('SHOW TABLES LIKE "%'.$like.'%"');
+		$prefix = $this->_db->getPrefix();
+		$this->_db->setQuery('SHOW TABLES LIKE "'.$prefix.$like.'%"');
 		if (!$existingtables = $this->_db->loadColumn()) {
 			vmError('updateMyVmTables '.$this->_db->getErrorMsg());
 			return false;

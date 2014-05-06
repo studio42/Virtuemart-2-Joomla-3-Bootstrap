@@ -19,7 +19,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 AdminUIHelper::startAdminArea();
-AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_ORDERSTATUS_DETAILS');
 ?>
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
@@ -44,18 +43,20 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_ORDERSTATUS_DETAILS');
 
 		<?php echo VmHTML::row('select','COM_VIRTUEMART_ORDER_STATUS_STOCK_HANDLE', 'order_stock_handle', $this->stockHandelList ,$this->orderStatus->order_stock_handle,'','value', 'text',false) ; ?>
 		<?php echo VmHTML::row('input', 'COM_VIRTUEMART_ORDER_STATUS_CODE', 'order_status_code', $this->orderStatus->order_status_code, 'class="inputbox '.$readonly.'" '.$readonly.'', '', 3, 1); ?>
-		<?php echo VmHTML::row('editor', 'COM_VIRTUEMART_DESCRIPTION', 'order_status_description', $this->orderStatus->order_status_description, '100%;', '250', array('image', 'pagebreak', 'readmore')); ?>
 		<?php echo VmHTML::row('raw', 'COM_VIRTUEMART_VENDOR', $this->lists['vendors']); ?>
+		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISHED','published',$this->orderStatus->published); ?>
 		<?php echo VmHTML::row('raw', 'COM_VIRTUEMART_ORDERING', $this->ordering); ?>
-
+		<?php echo VmHTML::row('raw', 'COM_VIRTUEMART_DESCRIPTION', ''); ?>
 	    </table>
+		<div>
+			<?php echo VmHTML::editor('order_status_description',$this->orderStatus->order_status_description, '100%;', '250', false); ?>
+		</div>
 	</fieldset>
-    <input type="hidden" name="virtuemart_orderstate_id" value="<?php echo $this->orderStatus->virtuemart_orderstate_id; ?>" />
+	<input type="hidden" name="virtuemart_orderstate_id" value="<?php echo $this->orderStatus->virtuemart_orderstate_id; ?>" />
     <?php echo $this->addStandardHiddenToForm(); ?>
 </form>
 
 
 <?php
-AdminUIHelper::imitateTabs('end');
 AdminUIHelper::endAdminArea();
 ?>

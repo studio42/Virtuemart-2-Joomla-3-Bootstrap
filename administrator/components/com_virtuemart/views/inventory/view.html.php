@@ -36,7 +36,6 @@ class VirtuemartViewInventory extends VmView {
 		//Load helpers
 
 		$this->loadHelper('currencydisplay');
-
 		$this->loadHelper('html');
 
 		// Get the data
@@ -68,12 +67,18 @@ class VirtuemartViewInventory extends VmView {
 		$this->lists['stockfilter'] = JHTML::_('select.genericlist', $options, 'search_type', 'onChange="Joomla.ajaxSearch(this); return false;"', 'value', 'text', JRequest::getVar('search_type'));
 		$this->lists['filter_product'] = JRequest::getVar('filter_product');
 
-		/* Toolbar */
-		$this->SetViewTitle('PRODUCT_INVENTORY');
-		JToolBarHelper::publish();
-		JToolBarHelper::unpublish();
-
+		if ( JRequest::getWord('format', '') === 'raw') {
+			$tpl = 'results';
+		}
+		else 
+		{
+			/* Toolbar */
+			$this->SetViewTitle('PRODUCT_INVENTORY');
+			JToolBarHelper::publish();
+			JToolBarHelper::unpublish();
+		}
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 }

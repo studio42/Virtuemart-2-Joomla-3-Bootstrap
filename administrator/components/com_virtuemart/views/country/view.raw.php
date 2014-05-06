@@ -5,7 +5,7 @@
 *
 * @package	VirtueMart
 * @subpackage Country
-* @author RickG
+* @author Patrick Kohl/Studio 42
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -50,7 +50,7 @@ class VirtuemartViewCountry extends VmView {
 		//First the view lists, it sets the state of the model
 		$this->addStandardDefaultViewLists($model,0,'ASC','filter_country');
 		$filter_country = JRequest::getWord('filter_country', false);
-		$this->countries = $model->getCountries(false, false, $filter_country);
+		$this->countries = $model->getCountries(false, false, $filter_country,true);
 		$this->pagination = $model->getPagination();
 
 		parent::display('results');

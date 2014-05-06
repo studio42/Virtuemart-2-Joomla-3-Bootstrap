@@ -39,7 +39,8 @@ class VirtueMartModelState extends VmModel {
 	function __construct() {
 		parent::__construct();
 		$this->setMainTable('states');
-		$this->_selectedOrderingDir = 'ASC';
+		$this->_selectedOrdering = 'state_name';
+		$this->_selectedOrderingDir = 'DESC';
 	}
 
     /**
@@ -68,28 +69,30 @@ class VirtueMartModelState extends VmModel {
 	 */
 	public function getStates($countryId, $noLimit=false, $published = false, $search ='')
 	{
-		$q= 'SELECT * FROM `#__virtuemart_states`  WHERE `virtuemart_country_id`= "'.(int)$countryId.'"';
+		$where = array();
+		$where[] = '`virtuemart_country_id`= "'.(int)$countryId.'"';
 		if($search){
 			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
-			$q .= ' AND `state_name` LIKE '.$search;
+			$where[] = '`state_name` LIKE '.$search;
 		}
 		if($published){
-			$quer .= 'AND `published`="1" ';
-		}
-		$q .= ' ORDER BY `state_name`';
-
-		if ($noLimit) {
-		    $this->_data = $this->_getList($q);
+			$where[] = '`published`="1"';
 		}
 		else {
-		    $this->_data = $this->_getList($q, $this->getState('limitstart'), $this->getState('limit'));
+			$published = JRequest::getvar('filter_published');
+			if ($published === '1') {
+				$where[] = '`published` = 1';
+			} else if ($published === '0') {
+				$where[] = '`published` = 0';
+			}
 		}
 
-		if(count($this->_data) >0){
-			$this->_total = $this->_getListCount($q);
-		}
+		$whereString = '';
+		if (count($where) > 0) $whereString = ' WHERE '.implode(' AND ', $where) ;
 
-		return $this->_data;
+		$ordering = $this->_getOrdering();
+		// var_dump($ordering,$this->_selectedOrdering); jexit();
+		return $this->_data = $this->exeSortSearchListQuery(0,'*',' FROM `#__virtuemart_states`',$whereString,'',$ordering );
 	}
 
 	/**

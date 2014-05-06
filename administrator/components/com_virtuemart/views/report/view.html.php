@@ -106,6 +106,8 @@ class VirtuemartViewReport extends VmView {
 		$this->until_period = $model->until_period;
 		$this->pagination = $model->getPagination();
 
+		if ( JRequest::getWord('format', '') === 'raw') $tpl = 'results';
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 }

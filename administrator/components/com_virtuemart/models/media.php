@@ -38,7 +38,7 @@ class VirtueMartModelMedia extends VmModel {
 		$this->setMainTable('medias');
 		$this->addvalidOrderingFieldName(array('ordering'));
 		$this->_selectedOrdering = 'created_on';
-
+		$this->setToggleName('shared');
 	}
 
 	/**
@@ -176,7 +176,11 @@ class VirtueMartModelMedia extends VmModel {
 		$this->_noLimit = $noLimit;
 
 		if(empty($this->_db)) $this->_db = JFactory::getDBO();
-		$vendorId = 1; //TODO set to logged user or requested vendorId, not easy later
+		static $vendorId = null ;
+		if ($vendorId === null) {
+			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+			$vendorId = Permissions::getInstance()->isSupervendor();
+		}
 		$query = '';
 
 		$selectFields = array();
@@ -215,14 +219,10 @@ class VirtueMartModelMedia extends VmModel {
 		else {
 			$mainTable = '`#__virtuemart_medias`';
 			$selectFields[] = ' `virtuemart_media_id` ';
-
-			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
-			if(!Permissions::getInstance()->check('admin') ){
-				$whereItems[] = '(`virtuemart_vendor_id` = "'.(int)$vendorId.'" OR `shared`="1")';
-			}
-
 		}
-
+		if( $vendorId >1 ){
+			$whereItems[] = '(`virtuemart_vendor_id` = "'.(int)$vendorId.'" OR `shared`="1")';
+		}
 		if ($onlyPublished) {
 			$whereItems[] = '`#__virtuemart_medias`.`published` = 1';
 		}
@@ -250,9 +250,7 @@ class VirtueMartModelMedia extends VmModel {
 		if ($role = JRequest::getWord('search_role')) {
 			if ($role == "file_is_downloadable") {
 				$where[] = '`file_is_downloadable` = 1';
-				$where[] = '`file_is_forSale` = 0';
 			} elseif ($role == "file_is_forSale") {
-				$where[] = '`file_is_downloadable` = 0';
 				$where[] = '`file_is_forSale` = 1';
 			} else {
 				$where[] = '`file_is_downloadable` = 0';
@@ -405,25 +403,26 @@ class VirtueMartModelMedia extends VmModel {
 			unset($data['file_url_thumb']);
 		}*/
 		//unset($data['file_url_thumb']);
+		if (isset($data['media_published'])){
+			// $tmpPublished = $data['published'];
+			$data['published'] = (int)$data['media_published'];
+			//vmdebug('$data["published"]',$data['published']);
+		}
 		$table->bind($data);
 		$data = VmMediaHandler::prepareStoreMedia($table,$data,$type); //this does not store the media, it process the actions and prepares data
 
 		// workarround for media published and product published two fields in one form.
 		$tmpPublished = false;
-		if (isset($data['media_published'])){
-			$tmpPublished = $data['published'];
-			$data['published'] = $data['media_published'];
-			//vmdebug('$data["published"]',$data['published']);
-		}
+
 
 		$table->bindChecknStore($data);
 		$errors = $table->getErrors();
 		foreach($errors as $error){
 			vmError('store medias '.$error);
 		}
-		if($tmpPublished){
-			$data['published'] = $tmpPublished;
-		}
+		// if($tmpPublished){
+			// $data['published'] = $tmpPublished;
+		// }
 // 		vmdebug('store media $table->virtuemart_media_id '.$table->virtuemart_media_id);
 		return $table->virtuemart_media_id;
 	}

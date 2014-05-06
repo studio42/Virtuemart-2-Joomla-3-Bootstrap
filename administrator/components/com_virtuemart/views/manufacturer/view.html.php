@@ -17,7 +17,7 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 // Load the view framework
 if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
@@ -43,7 +43,7 @@ class VirtuemartViewManufacturer extends VmView {
 
 		$categoryModel = VmModel::getModel('manufacturercategories');
 
-		$this->SetViewTitle();
+
 
 		$layoutName = JRequest::getWord('layout', 'default');
 		if ($layoutName == 'edit') {
@@ -61,33 +61,41 @@ class VirtuemartViewManufacturer extends VmView {
 			$manufacturerCategories = $categoryModel->getManufacturerCategories(false,true);
 			$this->manufacturerCategories =	$manufacturerCategories ;
 
+			$this->SetViewTitle('',$manufacturer->mf_name);
 			$this->addStandardEditViewCommands($manufacturer->virtuemart_manufacturer_id);
 
 			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'vendor.php');
 			$virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor();
 			$this->virtuemart_vendor_id = $virtuemart_vendor_id ;
-
+			
 
 		}
 		else {
-
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle();
+				$this->addStandardDefaultViewCommands();
+			}
 			$mainframe = JFactory::getApplication();
 
 			$categoryFilter = $categoryModel->getCategoryFilter();
 
-			$this->addStandardDefaultViewCommands();
 			$this->addStandardDefaultViewLists($model,'mf_name');
 
 			$this->manufacturers = $model->getManufacturers();
 			$this->pagination = $model->getPagination();
 
 			$virtuemart_manufacturercategories_id	= $mainframe->getUserStateFromRequest( 'com_virtuemart.virtuemart_manufacturercategories_id', 'virtuemart_manufacturercategories_id', 0, 'int' );
-			$this->lists['virtuemart_manufacturercategories_id'] =  JHTML::_('select.genericlist',   $categoryFilter, 'virtuemart_manufacturercategories_id', '', 'value', 'text', $virtuemart_manufacturercategories_id );
+			$this->lists['virtuemart_manufacturercategories_id'] =  JHTML::_('select.genericlist',   $categoryFilter, 'virtuemart_manufacturercategories_id', ' onChange="Joomla.ajaxSearch(this); return false;" ', 'value', 'text', $virtuemart_manufacturercategories_id );
 
 		}
 
 
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 }

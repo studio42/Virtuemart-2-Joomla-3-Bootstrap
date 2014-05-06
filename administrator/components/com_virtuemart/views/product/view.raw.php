@@ -38,15 +38,14 @@ class VirtuemartViewProduct extends VmView {
 		$this->loadHelper('currencydisplay');
 		$this->loadHelper('html');
 		$this->loadHelper('image');
-
+		$this->loadHelper('permissions');
+		$this->perms = Permissions::getInstance();
 		$model = VmModel::getModel();
 		
 		switch ($this->task) {
 			case 'massxref_cats':
 			case 'massxref_cats_exe':
-				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views'.DS.'category'.DS.'tmpl');
-				$this->loadHelper('permissions');
-				$this->perms = Permissions::getInstance();
+				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views/category/tmpl');
 				$this->showVendors = $this->perms->check('admin');
 
 				$keyWord ='';
@@ -61,9 +60,7 @@ class VirtuemartViewProduct extends VmView {
 				break;
 			case 'massxref_sgrps':
 			case 'massxref_sgrps_exe':
-				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views'.DS.'shoppergroup'.DS.'tmpl');
-				$this->loadHelper('permissions');
-				$this->perms = Permissions::getInstance();
+				$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views/shoppergroup/tmpl');
 				$this->showVendors = $this->perms->check('admin');
 				$sgrpmodel = VmModel::getModel('shoppergroup');
 				$this->addStandardDefaultViewLists($sgrpmodel);
@@ -92,10 +89,9 @@ class VirtuemartViewProduct extends VmView {
 			}
 			$this->db = JFactory::getDBO();
 
-			$this->SetViewTitle($title, $msg );
 
 			$this->addStandardDefaultViewLists($model,'created_on');
-			$vendor = Permissions::getInstance()->isSuperVendor();
+			$vendor = $this->adminVendor;
 			if ($vendor == 1 ) $vendor = null;
 			/* Get the list of products */
 			$productlist = $model->getProductListing(false,false,false,false,true,true,0,$vendor);
@@ -177,7 +173,7 @@ class VirtuemartViewProduct extends VmView {
 	function displayLinkToParent($product_parent_id) {
 
 		//$this->db = JFactory::getDBO();
-		$this->db->setQuery(' SELECT `product_name` FROM `#__virtuemart_products_'.VMLANG.'` as l JOIN `#__virtuemart_products` using (`virtuemart_product_id`) WHERE `virtuemart_product_id` = '.$product_parent_id);
+		$this->db->setQuery(' SELECT `product_name` FROM `#__virtuemart_products_'.VMLANG.'` WHERE `virtuemart_product_id` = '.$product_parent_id);
 		if ($product_name = $this->db->loadResult()){
 			$result = JText::sprintf('COM_VIRTUEMART_LIST_CHILDREN_FROM_PARENT', $product_name);
 			if ($this->frontEdit) $front = "&tmpl=component";

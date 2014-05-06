@@ -25,6 +25,8 @@ $states = JText::_('COM_VIRTUEMART_STATE_S');
 
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch('COM_VIRTUEMART_FILTER','filter_country') ?>
+		<?php echo $this->DisplayFilterPublish() ?>
+		<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">

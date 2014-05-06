@@ -38,7 +38,7 @@ class VirtueMartModelCategory extends VmModel {
 	function __construct() {
 		parent::__construct();
 		$this->setMainTable('categories');
-		$this->addvalidOrderingFieldName(array('category_name','category_description','c.ordering','cx.category_shared','c.published'));
+		$this->addvalidOrderingFieldName(array('category_name','category_description','cx.ordering','cx.category_shared','c.published'));
 
 		$toCheck = VmConfig::get('browse_cat_orderby_field','category_name');
 		if(!in_array($toCheck, $this->_validOrderingFieldName)){
@@ -108,7 +108,7 @@ class VirtueMartModelCategory extends VmModel {
 
     /**
 	 * Get the list of child categories for a given category
-	 *
+	 * Modified by studio42 for multivendor mode
 	 * @param int $virtuemart_category_id Category id to check for child categories
 	 * @return object List of objects containing the child categories
 	 */
@@ -124,15 +124,14 @@ class VirtueMartModelCategory extends VmModel {
 			$query .= ' LEFT JOIN `#__virtuemart_category_categories` as CC on C.`virtuemart_category_id` = CC.`category_child_id`';
 			$query .= 'WHERE CC.`category_parent_id` = ' . (int)$virtuemart_category_id . ' ';
 			//$query .= 'AND C.`virtuemart_category_id` = CC.`category_child_id` ';
-			$query .= 'AND C.`virtuemart_vendor_id` = ' . (int)$vendorId . ' ';
+			// commented by STUDIO42, this does not work in multivendor mode
+			// $query .= 'AND C.`virtuemart_vendor_id` = ' . (int)$vendorId . ' ';
 			$query .= 'AND C.`published` = 1 ';
 			$query .= ' ORDER BY C.`ordering`, L.`category_name` ASC';
 
 			$db = JFactory::getDBO();
 			$db->setQuery( $query);
 			$childList = $db->loadObjectList();
-// 			$childList = $this->_getList( $query );
-
 			if(!empty($childList)){
 				if(!class_exists('TableCategory_medias'))require(JPATH_VM_ADMINISTRATOR.DS.'tables'.DS.'category_medias.php');
 				foreach($childList as $child){
@@ -164,7 +163,7 @@ class VirtueMartModelCategory extends VmModel {
 		$this->_noLimit = true;
 		$published = JRequest::getvar('filter_published');
 		if($keyword!='' && $published !=='' ){
-			$sortedCats = self::getCategories($onlyPublished, false, false, $keyword);
+			$sortedCats = $this->getCategories($onlyPublished, $parentId, false, $keyword);
 		} else {
 
 			$this->rekurseCats($parentId,$level,$onlyPublished,$keyword,$sortedCats);
@@ -194,7 +193,7 @@ class VirtueMartModelCategory extends VmModel {
 
 		if($this->hasChildren($virtuemart_category_id)){
 
-			$childCats = self::getCategories($onlyPublished, $virtuemart_category_id, false, $keyword);
+			$childCats = $this->getCategories($onlyPublished, $virtuemart_category_id, false, $keyword);
 
 			if(!empty($childCats)){
 				foreach ($childCats as $key => $category) {
@@ -210,9 +209,14 @@ class VirtueMartModelCategory extends VmModel {
 
 	public function getCategories($onlyPublished = true, $parentId = false, $childId = false, $keyword = "") {
 
-		$vendorId = Permissions::getInstance()->isSupervendor();
+		static $vendorId = null ;
+		static $published = null ;
+		if ($vendorId === null) {
+			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+			$vendorId = Permissions::getInstance()->isSupervendor();
+		}
 
-		$select = ' c.`virtuemart_category_id`, l.`category_description`, l.`category_name`, c.`ordering`, c.`published`, c.`created_by`, cx.`category_child_id`, cx.`category_parent_id`, c.`shared` ';
+		$select = ' c.`virtuemart_category_id`, l.`category_description`, l.`category_name`, c.`ordering`, c.`published`, c.`virtuemart_vendor_id`, c.`created_by`, cx.`category_child_id`, cx.`category_parent_id`, c.`shared` ';
 
 		$joinedTables = ' FROM `#__virtuemart_categories_'.VMLANG.'` l
 				  JOIN `#__virtuemart_categories` AS c using (`virtuemart_category_id`)
@@ -225,7 +229,7 @@ class VirtueMartModelCategory extends VmModel {
 			$where[] = " c.`published` = 1 ";
 		}
 		else {
-			$published = JRequest::getvar('filter_published');
+			if ($published === null) $published = JRequest::getvar('filter_published');
 			if ($published === '1') {
 				$where[] = " c.`published` = 1 ";
 			} else if ($published === '0') {
@@ -239,11 +243,10 @@ class VirtueMartModelCategory extends VmModel {
 		if( $childId !== false ){
 			$where[] = ' cx.`category_child_id` = '. (int)$childId;
 		}
-
-		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
-		if( !Permissions::getInstance()->check('admin') ){
-			$where[] = ' (c.`virtuemart_vendor_id` = "'. (int)$vendorId. '" OR c.`shared` = "1") ';
-		}
+		// Note Studio42 : this does not work as needed because child can be outside a shared category
+		// if( !Permissions::getInstance()->check('admin') ){
+			// $where[] = ' (c.`virtuemart_vendor_id` = "'. (int)$vendorId. '" OR c.`shared` = "1") ';
+		// }
 
 		if( !empty( $keyword ) ) {
 			$keyword = '"%' . $this->_db->escape( $keyword, true ) . '%"' ;
@@ -253,14 +256,16 @@ class VirtueMartModelCategory extends VmModel {
 		}
 
 		$whereString = '';
-		if (count($where) > 0){
+		if (!empty($where)){
 			$whereString = ' WHERE '.implode(' AND ', $where) ;
 		} else {
 			$whereString = 'WHERE 1 ';
 		}
-
+		// if (jRequest::getVar('filter_order') == 'cx.ordering') {
+			// $this->_selectedOrdering = 'cx.ordering';
+			
+		// }
 		$ordering = $this->_getOrdering();
-
 		$this->_category_tree = $this->exeSortSearchListQuery(0,$select,$joinedTables,$whereString,'',$ordering );
 
 		return $this->_category_tree;
@@ -414,44 +419,76 @@ class VirtueMartModelCategory extends VmModel {
 	/**
 	 * Order category group
 	 *
-     * @author jseros
+	 * order is saved for all viewed records, this mean old function was obselete
+     * @author Patrick Kohl/Studio42
      * @param  array $cats categories to order
 	 * @return bool
 	 */
-	public function setOrder($cats, $order){
-		$total		= count( $cats );
-		$groupings	= array();
-		$row = $this->getTable('categories');
+	public function saveorder($cids, $order){
+		$category_id = JRequest::getInt('filter_category_id');
+		$search = jRequest::getVar('search');
+		$orderDir = (jRequest::getWord('filter_order_Dir') == 'ASC' ) ? 'ASC' : 'DESC';
+		
+		// impossible case
+		if (empty($cids[0])) return 0 ;
+		// get old orders(including all items from same parent to get the right INDEX in array)
+		$q = 'SELECT * FROM `#__virtuemart_category_categories`
+			WHERE category_parent_id in 
+				(SELECT category_parent_id
+				FROM `#__virtuemart_category_categories` 
+				WHERE category_child_id = '.(int)$cids[0].') 
+			ORDER BY `ordering` ASC';
+		$this->_db->setQuery ($q);
+		$categories = $this->_db->loadObjectList ();
+		$ordered = 0;
+		$msg ='';
+		// set new order array();
+		$newOrders = array();
+		foreach ($cids as $key => $cid) {
+			$newOrders[$cid] = $key ;
+		}
 
-		$query = 'SELECT `category_parent_id` FROM `#__virtuemart_categories` c
-				  LEFT JOIN `#__virtuemart_category_categories` cx
-				  ON c.`virtuemart_category_id` = cx.`category_child_id`
-			      WHERE c.`virtuemart_category_id` = %s';
-
-		// update ordering values
-		for( $i=0; $i < $total; $i++ ) {
-
-			$row->load( $cats[$i] );
-			$this->_db->setQuery( sprintf($query,  (int)$cats[$i] ), 0 ,1 );
-			$parent = $this->_db->loadObject();
-
-			$groupings[] = $parent->category_parent_id;
-			if ($row->ordering != $order[$i]) {
-				$row->ordering = $order[$i];
-				if (!$row->toggle('ordering',$row->ordering)) {
-					vmError($row->getError());
-					return false;
+		$toUpdate = array();// list of category to update
+		$when ='';
+		// check ordered categories from DB
+		foreach ($categories as $oldOrder => $category) {
+			$ordering = $oldOrder; // set the theorical ordering from this level
+			
+			//test if we have a new ordering
+			if ( isset($newOrders[$category->category_child_id])) {
+				if (!isset($start) ) {
+					$start = $ordering ;
+					if ($orderDir === 'DESC') $start += count($cids);// add counted from request to start for DESC order 
 				}
+				// set the new order from request
+				$tmpOrder = $newOrders[$category->category_child_id];
+				$ordering = $start;
+				if ($orderDir === 'ASC') $ordering = $ordering+$tmpOrder;
+				else $ordering = $ordering-$tmpOrder;
+			}
+			//only apply for new orderings
+			if ($category->ordering === $ordering) continue;
+			$when .= '  WHEN '.$category->category_child_id.' THEN "'.$ordering.'" ';
+			$toUpdate[] = $category->category_child_id ;
+			$msg .= $ordering.' '.$category->category_child_id.', ';
+			$ordered++;
+		
+		}
+		if ($ordered) {
+			$in = implode(",", $toUpdate);
+			// this update all, in one sql connection
+			$this->_db->setQuery ('UPDATE `#__virtuemart_category_categories`
+				SET ordering = CASE category_child_id
+				'.$when.'
+				END
+				WHERE category_child_id IN ('. $in .')' );
+			if (!$this->_db->execute ()) {
+				vmError ($this->_db->getErrorMsg ());
+				return FALSE;
 			}
 		}
-
-		// execute reorder for each parent group
-		$groupings = array_unique( $groupings );
-		foreach ($groupings as $group){
-			$row->reorder($group);
-		}
-
-		return true;
+		// echo json_encode($newOrders);
+		return $ordered.' '.$msg;
 	}
 
     /**
@@ -504,6 +541,27 @@ class VirtueMartModelCategory extends VmModel {
     	JSession::checkToken() or jexit( 'Invalid Token, in store category');
 
 		$table = $this->getTable('categories');
+		// add the new entry in last ordering position
+		$parent_id = empty($data['category_parent_id']) ? 0:(int)$data['category_parent_id'];
+		$parents_id = array();
+		if (empty($data['virtuemart_category_id']) && empty($data['ordering'])) {
+			$new = true;
+
+			$this->_db->setQuery('SELECT count(*) 
+				FROM `j3_virtuemart_category_categories`
+				WHERE `category_parent_id` = '.$parent_id 
+				);
+			$data['ordering'] = $this->_db->loadResult();
+		}
+		// STUDIO42 Fix, infinite loop if child is parent !!!
+		if ($parent_id && !empty($data['virtuemart_category_id']) ) {
+			$parents_id = array_reverse($this->getCategoryRecurse($parent_id,0));
+
+			if (in_array($data['virtuemart_category_id'],$parents_id)) {
+				$data['category_parent_id'] = 0;
+			}
+			
+		}
 
 /*		vmdebug('categorytemplate to null',VmConfig::get('categorytemplate'),$data['category_template']);
  * VmConfig::get('categorytemplate') = default
@@ -548,14 +606,9 @@ class VirtueMartModelCategory extends VmModel {
 		// Process the images
 		$mediaModel = VmModel::getModel('Media');
 		$file_id = $mediaModel->storeMedia($data,'category');
-      $errors = $mediaModel->getErrors();
+		$errors = $mediaModel->getErrors();
 		foreach($errors as $error){
 			vmError($error);
-		}
-		if ($this->_cleanCache === true) {
-			$cache = JFactory::getCache();
-			$cache->clean('_virtuemart');
-			$this->_cleanCache = false;
 		}
 		//jexit();
 		return $data['virtuemart_category_id'] ;

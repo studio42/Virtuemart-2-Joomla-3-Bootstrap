@@ -1,74 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
 	<fieldset name="vendor" label="COM_VIRTUEMART_VENDOR">
+		<field name="vendor_rights" type="spacer" class="star gi label label-info" label="JACTION_COMPONENT_SETTINGS"/>
+		<field name="publish" type="radio" default="0" label="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" class="btn-group btn-group-yesno">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="max_uploads" type="text" default="1" label="COM_VIRTUEMART_IMAGES" description="COM_VIRTUEMART_TOTAL"/>
 		<field name="shop" type="spacer" class="star gi label label-info" label="COM_VIRTUEMART_VENDOR"/>
-		<field name="user_editshop" type="radio" default="0" label="JACTION_EDIT" class="btn-group btn-group-yesno">
+		<field name="user_editshop" type="radio" default="0" label="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
 		<field name="product" type="spacer" class="star gi label label-info" label="COM_VIRTUEMART_PRODUCT_S"/>
-		<field name="product_edit" type="radio" default="0" label="JACTION_EDITOWN" class="btn-group btn-group-yesno">
+		<field name="product_edit" type="radio" default="0" label="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-		<field name="product_add" type="radio" default="0" label="JACTION_CREATE" class="btn-group btn-group-yesno">
+		<field name="product_add" type="radio" default="0" label="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
 
 		<field name="category" type="spacer" class="star gi label label-info" label="COM_VIRTUEMART_CATEGORY_S"/>
-		<field name="category_edit" type="radio" default="0" label="JACTION_EDITOWN" class="btn-group btn-group-yesno">
+		<field name="category_edit" type="radio" default="0" label="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-		<field name="category_add" type="radio" default="0" label="JACTION_CREATE" class="btn-group btn-group-yesno">
+		<field name="category_add" type="radio" default="0" label="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
 
 		<field name="manufacturer" type="spacer" class="star gi label label-info" label="COM_VIRTUEMART_MANUFACTURER_S"/>
-		<field name="manufacturer_edit" type="radio" default="0" label="JACTION_EDITOWN" class="btn-group btn-group-yesno">
+		<field name="manufacturer_edit" type="radio" default="0" label="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-		<field name="manufacturer_add" type="radio" default="0" label="JACTION_CREATE" class="btn-group btn-group-yesno">
+		<field name="manufacturer_add" type="radio" default="0" label="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
 
 		<field name="media" type="spacer" class="star gi label label-info" label="COM_VIRTUEMART_MEDIA_S"/>
-		<field name="media_edit" type="radio" default="0" label="JACTION_EDITOWN" class="btn-group btn-group-yesno">
+		<field name="media_edit" type="radio" default="0" label="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-		<field name="media_add" type="radio" default="0" label="JACTION_CREATE" class="btn-group btn-group-yesno">
+		<field name="media_add" type="radio" default="0" label="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
 		<field name="custom" type="spacer" class="star gi label label-info" label="COM_VIRTUEMART_CUSTOM"/>
 
-		<field name="custom_edit" type="radio" default="0" label="JACTION_EDITOWN" class="btn-group btn-group-yesno">
+		<field name="custom_edit" type="radio" default="0" label="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-		<field name="custom_add" type="radio" default="0" label="JACTION_CREATE" class="btn-group btn-group-yesno">
+		<field name="custom_add" type="radio" default="0" label="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
 		<field name="sales_spacer2" type="spacer" class="star gi label label-info" label="JSHOW"/>
-		<field name="orders_edit" type="radio" default="0" label="COM_VIRTUEMART_ORDER_S" class="btn-group btn-group-yesno">
+		<field name="orders_edit" type="radio" default="0" label="COM_VIRTUEMART_ORDER_S" description="JACTION_MANAGE_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-		<field name="shoppers_edit" type="radio" default="0" label="COM_VIRTUEMART_USER_S" class="btn-group btn-group-yesno">
+		<field name="shoppers_edit" type="radio" default="0" label="COM_VIRTUEMART_USER_S" description="JACTION_MANAGE_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-		<field name="coupons_edit" type="radio" default="0" label="COM_VIRTUEMART_COUPON_S" class="btn-group btn-group-yesno">
+		<field name="coupons_edit" type="radio" default="0" label="COM_VIRTUEMART_COUPON_S" description="JACTION_MANAGE_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-		<field name="report_edit" type="radio" default="0" label="COM_VIRTUEMART_REPORT" class="btn-group btn-group-yesno">
+		<field name="report_edit" type="radio" default="0" label="COM_VIRTUEMART_REPORT" description="JACTION_MANAGE_COMPONENT_DESC" class="btn-group btn-group-yesno">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>

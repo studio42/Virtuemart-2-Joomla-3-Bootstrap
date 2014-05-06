@@ -24,8 +24,7 @@ AdminUIHelper::startAdminArea();
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
 
-<div class="col50">
-	<fieldset>
+<fieldset>
 <?php /*	<legend><?php echo JText::_('COM_VIRTUEMART_STATE_DETAILS'); ?></legend> */?>
 	<legend><?php echo JHTML::_('link','index.php?option=com_virtuemart&view=state&virtuemart_country_id='.$this->virtuemart_country_id,JText::sprintf('COM_VIRTUEMART_STATE_COUNTRY',$this->country_name).' '. JText::_('COM_VIRTUEMART_DETAILS') ); ?></legend>
 	<table class="admintable">
@@ -84,8 +83,6 @@ AdminUIHelper::startAdminArea();
 		</tr>
 	</table>
 	</fieldset>
-</div>
-
 	<input type="hidden" name="virtuemart_country_id" value="<?php echo $this->virtuemart_country_id; ?>" />
 	<input type="hidden" name="virtuemart_state_id" value="<?php echo $this->state->virtuemart_state_id; ?>" />
 

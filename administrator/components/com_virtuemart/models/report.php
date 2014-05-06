@@ -385,7 +385,7 @@ class VirtuemartModelReport extends VmModel {
 		foreach ($this->date_presets as $name => $value) {
 			$options[] = JHTML::_ ('select.option', $name, JText::_ ($value['name']), 'text', 'value');
 		}
-		$listHTML = JHTML::_ ('select.genericlist', $options, 'period', 'size="7" class="inputbox" onchange="this.form.submit();" ', 'text', 'value', $select);
+		$listHTML = JHTML::_ ('select.genericlist', $options, 'period', 'size="7" class="inputbox input-medium" onchange="this.form.submit();" ', 'text', 'value', $select);
 		//$listHTML = JHTML::_ ('select.genericlist', $options, 'period', 'size="7" class="inputbox" ', 'text', 'value', $select);
 
 		return $listHTML;

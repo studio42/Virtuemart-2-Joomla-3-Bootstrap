@@ -41,7 +41,7 @@ class VirtueMartModelConfig extends JModelLegacy  {
 	 * @param name of the view
 	 * @return object List of flypage objects
 	 */
-	static function getLayoutList($view) {
+	static function getLayoutListOld($view) {
 
 		$dirs[] = JPATH_ROOT.DS.'components'.DS.'com_virtuemart'.DS.'views'.DS.$view.DS.'tmpl';
 
@@ -91,8 +91,112 @@ class VirtueMartModelConfig extends JModelLegacy  {
 		}
 		return $result;
 	}
+		function getLayoutList($view,$layout ='default',$name ='layout') {
+			jimport('joomla.filesystem.folder');
+			jimport('joomla.filesystem.file');
+			$lang = JFactory::getLanguage();
+			$client = JApplicationHelper::getClientInfo(0);
+			// Get the database object and a new query object.
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
 
+			// Build the query.
+			$query->select('element, name')
+				->from('#__extensions as e')
+				->where('e.client_id = 0')
+				->where('e.type = ' . $db->quote('template'))
+				->where('e.enabled = 1');
 
+			// Set the query and load the templates.
+			$db->setQuery($query);
+			$templates = $db->loadObjectList('element');
+
+			// Build the search paths for layouts.
+			$path = JPath::clean(JPATH_ROOT.'/components/com_virtuemart/views/'.$view.'/tmpl/');
+
+			// Prepare array of component layouts
+			$layouts = array();
+
+			// Prepare the grouped list
+			$groups = array();
+
+			// Add the layout options from the view path.
+			if (is_dir($path) && ($layouts = JFolder::files($path, '^[^_]*\.php$')))
+			{
+				// Create the group for the view
+				$groups['_'] = array();
+				$groups['_']['id'] = $name . '__';
+				$groups['_']['text'] = JText::sprintf('COM_VIRTUEMART');
+				$groups['_']['items'] = array();
+
+				foreach ($layouts as $file)
+				{
+					// Add an option to the view group
+					$value = basename($file, '.php');
+					$text = $lang->hasKey($key = strtoupper('COM_VIRTUEMART_LAYOUT_' . $value)) ? JText::_($key) : $value;
+					$groups['_']['items'][] = JHtml::_('select.option', '_:' . $value, $text);
+				}
+			}
+
+			// Loop on all templates
+			if ($templates)
+			{
+
+				foreach ($templates as $template)
+				{
+					// Load language file
+					$lang->load('tpl_' . $template->element . '.sys', $client->path, null, false, true)
+						|| $lang->load('tpl_' . $template->element . '.sys', $client->path . '/templates/' . $template->element, null, false, true);
+
+					$template_path = JPath::clean($client->path . '/templates/' . $template->element . '/html/com_virtuemart/' . $view.'/');
+
+					// Add the layout options from the template path.
+					if (is_dir($template_path) && ($files = JFolder::files($template_path, '^[^_]*\.php$')))
+					{
+						foreach ($files as $i => $file)
+						{
+							// Remove layout that already exist in component ones
+							if (in_array($file, $layouts))
+							{
+								unset($files[$i]);
+							}
+						}
+
+						if (count($files))
+						{
+							// Create the group for the template
+							$groups[$template->element] = array();
+							$groups[$template->element]['id'] = $name . '_' . $template->element;
+							$groups[$template->element]['text'] = JText::sprintf('JOPTION_FROM_TEMPLATE', $template->name);
+							$groups[$template->element]['items'] = array();
+
+							foreach ($files as $file)
+							{
+								// Add an option to the template group
+								$value = basename($file, '.php');
+								$text = $lang->hasKey($key = strtoupper('TPL_' . $template->element . '_' . $view . '_LAYOUT_' . $value))
+									? JText::_($key) : $value;
+								$groups[$template->element]['items'][] = JHtml::_('select.option', $template->element . ':' . $value, $text);
+							}
+						}
+					}
+				}
+			}
+
+			// Prepare HTML code
+			$html = array();
+
+			// Compute the current selected values
+			$selected = array($layout);
+
+			// Add a grouped list
+			$html[] = JHtml::_(
+				'select.groupedlist', $groups, $name,
+				array('id' => $name, 'group.id' => 'id', 'list.attr' => '', 'list.select' => $selected)
+			);
+
+			return implode($html);
+		}
 	/**
 	 * Retrieve a list of possible images to be used for the 'no image' image.
 	 *

@@ -53,9 +53,9 @@ class VirtuemartViewConfig extends VmView {
 
 		$this->userparams = JComponentHelper::getParams('com_users');
 		$this->jTemplateList = ShopFunctions::renderTemplateList(JText::_('COM_VIRTUEMART_ADMIN_CFG_JOOMLA_TEMPLATE_DEFAULT'));
-		$this->vmLayoutList = $model->getLayoutList('virtuemart');
-		$this->categoryLayoutList = $model->getLayoutList('category');
-		$this->productLayoutList = $model->getLayoutList('productdetails');
+		$this->vmLayoutList = $model->getLayoutList('virtuemart',VmConfig::get('vmlayout',0),'vmlayout');
+		$this->categoryLayoutList = $model->getLayoutList('category',VmConfig::get('categorylayout',0),'categorylayout');
+		$this->productLayoutList = $model->getLayoutList('productdetails',VmConfig::get('productlayout',0),'productlayout');
 		$this->noimagelist = $model->getNoImageList();
 		$this->orderStatusModel=VmModel::getModel('orderstatus');
 		$this->currConverterList = $model->getCurrencyConverterList();
@@ -84,12 +84,12 @@ class VirtuemartViewConfig extends VmView {
 		$db = JFactory::getDBO();
 		$multix = Vmconfig::get('multix','none');
 
-		$q = 'select * from #__virtuemart_vmusers where user_is_vendor = 1';// and virtuemart_vendor_id '.$vendorWhere.' limit 1';
+		$q = 'select virtuemart_user_id,virtuemart_vendor_id from #__virtuemart_vmusers where user_is_vendor = 1';// and virtuemart_vendor_id '.$vendorWhere.' limit 1';
 		$db->setQuery($q);
 		$r = $db->loadAssocList();
 
 		if (empty($r)){
-			vmWarn('Your Virtuemart installation contains an error: No user as marked as vendor. Please fix this in your phpMyAdmin and set #__virtuemart_vmusers.user_is_vendor = 1 and #__virtuemart_vmusers.virtuemart_vendor_id = 1 to one of your administrator users. Please update all users to be associated with virtuemart_vendor_id 1.');
+			vmWarn('Your Virtuemart installation contains an error: No user as marked as vendor. Please update all users to be associated with virtuemart_vendor_id 1.');
 		} else {
 			if($multix=='none' and count($r)!=1){
 				vmWarn('You are using single vendor mode, but it seems more than one user is set as vendor');

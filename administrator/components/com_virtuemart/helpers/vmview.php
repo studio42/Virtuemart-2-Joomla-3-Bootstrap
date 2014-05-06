@@ -31,6 +31,7 @@ class VmView extends JViewLegacy{
 	
 	var $_cidName	= null;
 	var $tmpl ='';
+	protected $vendor = 0;
 	/**
 	 * Sets automatically the shortcut for the language and the redirect path
 	 *
@@ -48,7 +49,7 @@ class VmView extends JViewLegacy{
 		$this->_cidName = 'virtuemart_'.$vName.'_id'; 
 	// var_dump($this);
 		//Template path and helper fix for Front-end editing
-		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.DS.'views'.DS.$this->_name.DS.'tmpl');
+		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views/'.$this->_name.'/tmpl');
 		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
 		$this->frontEdit = jRequest::getvar('tmpl') ==='component' ? true : false ;
 		if ($this->frontEdit) {
@@ -60,22 +61,24 @@ class VmView extends JViewLegacy{
 			}
 			$this->tmpl = '&tmpl=component';
 		}
+		$this->adminVendor = Permissions::getInstance()->isSuperVendor();
 	}
 	/*
 	 * set all commands and options for BE default.php views
 	* return $list filter_order and
 	*/
 	function addStandardDefaultViewCommands($showNew=true, $showDelete=true, $showHelp=true) {
-
-
-		JToolBarHelper::publishList();
-		JToolBarHelper::unpublishList();
-		JToolBarHelper::divider();
+		$view = $this->getName();
+		if (ShopFunctions::can('publish')) {
+			JToolBarHelper::publishList();
+			JToolBarHelper::unpublishList();
+			JToolBarHelper::divider();
+		}
 		JToolBarHelper::editList();
-		if ($showNew) {
+		if ($showNew && ShopFunctions::can('add',$view)) {
 			JToolBarHelper::addNew();
 		}
-		if ($showDelete) {
+		if ($showDelete && ShopFunctions::can('add',$view)) {
 			JToolBarHelper::deleteList();
 		}
 		self::showHelp ( $showHelp);
@@ -135,7 +138,7 @@ class VmView extends JViewLegacy{
 			</div>
 			<div class="btn-group pull-left">
 				<button type="submit" id="searchsubmit" class="btn hasTooltip" title="'.JText::_('JSEARCH_FILTER_SUBMIT').'"><i class="icon-search"></i></button>
-				<button type="button" id="searchreset" class="btn hasTooltip hidden-phone" title="'.JText::_('JSEARCH_FILTER_CLEAR').'" onclick=\'document.id("' . $id . '").value="";this.form.submit();\'><i class="icon-remove"></i></button>
+				<button type="button" id="searchreset" class="btn hasTooltip" title="'.JText::_('JSEARCH_FILTER_CLEAR').'" onclick=\'document.id("' . $id . '").value="";this.form.submit();\'><i class="icon-remove"></i></button>
 			</div>';
 	}
 
@@ -144,9 +147,13 @@ class VmView extends JViewLegacy{
 			// if (!class_exists('JToolBarHelper')) require(JPATH_ADMINISTRATOR.DS.'includes'.DS.'toolbarhelper.php');
 		// } else {
 // 		JRequest::setVar('hidemainmenu', true);
+		$view = $this->getName();
 		JToolBarHelper::divider();
-		if ($id) JToolBarHelper::save2copy('save2copy', 'JTOOLBAR_SAVE_AS_COPY');
-		if ($save2new) JToolbarHelper::save2new('save2new', 'JTOOLBAR_SAVE_AND_NEW');
+		
+		if (ShopFunctions::can('add',$view)) {
+			if ($id) JToolBarHelper::save2copy('save2copy', 'JTOOLBAR_SAVE_AS_COPY');
+			if ($save2new) JToolbarHelper::save2new('save2new', 'JTOOLBAR_SAVE_AND_NEW');
+		}
 		JToolBarHelper::save();
 		JToolBarHelper::apply();
 		JToolBarHelper::cancel();
@@ -168,7 +175,8 @@ class VmView extends JViewLegacy{
 					return false;
 				}
 				if (a == 'apply') {
-					var idx = jQuery('#tabs li.current').index();
+					jQuery('#searchMedia-div ul').remove();
+					var idx = jQuery('#adminForm ul li.active').index();
 					jQuery.cookie('vmapply', idx, options);
 				} else {
 					jQuery.cookie('vmapply', '0', options);
@@ -181,7 +189,7 @@ class VmView extends JViewLegacy{
 
 		// LANGUAGE setting
 
-		$editView = JRequest::getWord('view',JRequest::getWord('controller','' ) );
+		$editView = JRequest::getWord('view','' );
 
 		$params = JComponentHelper::getParams('com_languages');
 		//$config =JFactory::getConfig();$config->get('language');
@@ -192,7 +200,7 @@ class VmView extends JViewLegacy{
 
 		$lang = strtolower(strtr($selectedLangue,'-','_'));
 		// only add if ID and view not null
-		if ($editView and $id and (count(vmconfig::get('active_languages'))>1) ) {
+		if ($editView && $id && (count(vmconfig::get('active_languages'))>1) ) {
 
 			if ($editView =='user') $editView ='vendor';
 			//$params = JComponentHelper::getParams('com_languages');
@@ -216,7 +224,7 @@ class VmView extends JViewLegacy{
 			jQuery(function($) {
 				var oldflag = "";
 				$("select#vmlang").chosen().change(function() {
-					langCode = $(this).find("option:selected").val();
+					langCode = $(this).val();
 					flagClass = "flag-"+langCode.substr(0,2) ;
 					$.getJSON( "index.php?option=com_virtuemart&view=translate&task=paste&format=json&lg="+langCode+"&id='.$id.'&editView='.$editView.'&'.$token.'=1'.$this->tmpl.'" ,
 						function(data) {
@@ -277,14 +285,18 @@ class VmView extends JViewLegacy{
 		if ($name == '')
 		$name = $view;
 		if ($msg) {
-			$msg = ' <span style="color: #666666; font-size: large;">' . $msg . '</span>';
+			$msg = ' <span style="font-size:90%">' . $msg . '</span>';
 		}
+		
 		//$text = strtoupper('COM_VIRTUEMART_'.$name );
-		$viewText = JText::_('COM_VIRTUEMART').' '.ShopFunctions::altText($name);
+		$viewText = JText::_('COM_VIRTUEMART').' : '.ShopFunctions::altText($name);
 		if (!$task = JRequest::getWord('task')) $task = 'list';
+		
 		$taskName = ShopFunctions::altText($task);
 		$taskName = ' <small><small>[ ' . $taskName . ' ]</small></small>';
-		JToolBarHelper::title($viewText . ' ' . $taskName . $msg, 'head vm_' . $view . '_48');
+		if ($task === 'add') $task='new';
+		elseif ($task === 'editshop') $task='edit';
+		JToolBarHelper::title($viewText . ' ' . $taskName . $msg, $task.' head vm_' . $view . '_48');
 		$document = JFactory::getDocument();
 		$title = $document->getTitle();
 		$document->setTitle( trim(strip_tags($title)) );
@@ -410,9 +422,10 @@ class VmView extends JViewLegacy{
 	 * @param $attrib 	jhtml link attributes
 	 */
 
-	function editLink($id, $text, $name= null,$attrib='',$view = null,$task ='edit') {
+	function editLink($id, $text, $name= null,$attrib= null,$view = null,$task ='edit') {
 		if ($view === null) $view = $this->_name;
 		if ($name === null) $name = $this->_cidName;
+		if ($attrib === null) $attrib = array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$text);
 		
 		$editlink = $name. '=' . $id;	
 		$editlink .= $this->tmpl;

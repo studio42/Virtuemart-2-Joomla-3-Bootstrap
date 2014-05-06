@@ -43,13 +43,19 @@ class VirtuemartViewUsergroups extends VmView {
 			$this->usergroup = $model->getUsergroup();
 			$this->addStandardEditViewCommands();
 		} else {
-			$this->addStandardDefaultViewCommands();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->addStandardDefaultViewCommands();
+			}
 			$this->addStandardDefaultViewLists($model);
 			$this->usergroups = $model->getUsergroups(false,true);
 			$this->pagination = $model->getPagination();
 		}
-
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 }
 // pure php no closing tag

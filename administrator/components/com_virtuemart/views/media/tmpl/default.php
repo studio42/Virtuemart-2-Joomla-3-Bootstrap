@@ -27,6 +27,8 @@ jimport('joomla.filesystem.file'); ?>
 		}
 		else echo $this->lists['search_type']; ?>
 		<?php echo $this->DisplayFilterPublish() ?>
+		<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
+		<div class="btn-group pull-left"><?php echo $this->lists['search_role'] ?></div>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">
@@ -34,5 +36,11 @@ jimport('joomla.filesystem.file'); ?>
 		// split to use ajax search
 		echo $this->loadTemplate('results'); ?>
 	</div>
+	<?php if (ShopFunctions::can('removeAll')) { ?>
+		<div class="btn-wrapper" id="toolbar-removeAll">
+		<button onclick="Joomla.submitbutton('removeUnused')" class="btn btn-small">
+		<span class="icon-delete"></span> remove all unused media and delete the files</button>
+	<?php } ?>
+</div>
 </form>
 <?php AdminUIHelper::endAdminArea(true);

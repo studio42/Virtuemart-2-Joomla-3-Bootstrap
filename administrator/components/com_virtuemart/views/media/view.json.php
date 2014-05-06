@@ -34,8 +34,8 @@ class VirtuemartViewMedia extends JViewLegacy {
 	private $json = null;
 
 	function display($tpl = null) {
-		$document =JFactory::getDocument();
-		$document->setMimeEncoding( 'application/json' );
+		// $document =JFactory::getDocument();
+		// $document->setMimeEncoding( 'application/json' );
 
 		if ($virtuemart_media_id = JRequest::getInt('virtuemart_media_id')) {
 			//JResponse::setHeader( 'Content-Disposition', 'attachment; filename="media'.$virtuemart_media_id.'.json"' );
@@ -62,7 +62,6 @@ class VirtuemartViewMedia extends JViewLegacy {
 			echo @json_encode($list);
 		}
 
-		// jExit();
 	}
 
 

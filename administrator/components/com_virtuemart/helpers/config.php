@@ -21,50 +21,46 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
  *  $vmConfig -> jQuery(); // for use of jQuery
  *  Then always use the defined paths below to ensure future stability
  */
-define( 'JPATH_VM_SITE', JPATH_ROOT.DS.'components'.DS.'com_virtuemart' );
-defined('JPATH_VM_ADMINISTRATOR') or define('JPATH_VM_ADMINISTRATOR', JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart');
-// define( 'JPATH_VM_ADMINISTRATOR', JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart' );
-define( 'JPATH_VM_PLUGINS', JPATH_VM_ADMINISTRATOR.DS.'plugins' );
-defined ('JPATH_VM_LIBRARIES') or define ('JPATH_VM_LIBRARIES', JPATH_LIBRARIES);
+ if (!defined('JPATH_VM_ADMINISTRATOR')) {
+	define( 'JPATH_VM_SITE', JPATH_ROOT.DS.'components'.DS.'com_virtuemart' );
+	define('JPATH_VM_ADMINISTRATOR', JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart');
+	define( 'JPATH_VM_PLUGINS', JPATH_VM_ADMINISTRATOR.DS.'plugins' );
+	define ('JPATH_VM_LIBRARIES', JPATH_LIBRARIES);
 
-// Set path to bootstrap,jquery ...
-defined ('J3UI') or define ('J3UI', 'administrator/components/com_virtuemart/assets/jui/');
+	// Set path to bootstrap,jquery ...
+	defined ('J3UI') or define ('J3UI', 'administrator/components/com_virtuemart/assets/jui/');
 
-// overide jquery ui core and jquery
-JLoader::register('JHtmlJquery', JPATH_VM_ADMINISTRATOR.'/html/jquery.php');
-if (version_compare (JVERSION, '3.0.0', 'ge')) {
-	
-	defined ('JVM_VERSION') or define ('JVM_VERSION', 3);
-}
-else {
-	defined ('JVM_VERSION') or define ('JVM_VERSION', 2);
-	// load missing bootstrap +css library ... in joomla 2.5
-
+	// overide jquery ui core and jquery
 	JLoader::register('JHtmlJquery', JPATH_VM_ADMINISTRATOR.'/html/jquery.php');
-	JLoader::register('JHtmlBootstrap', JPATH_VM_ADMINISTRATOR.'/html/bootstrap.php');
-	JLoader::register('JHtmlFormbehavior', JPATH_VM_ADMINISTRATOR.'/html/formbehavior.php');
-	JLoader::register('JHtmlIcons', JPATH_VM_ADMINISTRATOR.'/html/icons.php');
-	JLoader::register('JHtmlSidebar', JPATH_VM_ADMINISTRATOR.'/html/sidebar.php');
-	JLoader::register('JHtmlSortablelist', JPATH_VM_ADMINISTRATOR.'/html/sortablelist.php');
+	if (version_compare (JVERSION, '3.0.0', 'ge')) {
+		define ('JVM_VERSION', 3);
+	}
+	else {
+		define ('JVM_VERSION', 2);
+		// load missing bootstrap +css library ... in joomla 2.5
+
+		JLoader::register('JHtmlJquery', JPATH_VM_ADMINISTRATOR.'/html/jquery.php');
+		JLoader::register('JHtmlBootstrap', JPATH_VM_ADMINISTRATOR.'/html/bootstrap.php');
+		JLoader::register('JHtmlFormbehavior', JPATH_VM_ADMINISTRATOR.'/html/formbehavior.php');
+		JLoader::register('JHtmlIcons', JPATH_VM_ADMINISTRATOR.'/html/icons.php');
+		JLoader::register('JHtmlSidebar', JPATH_VM_ADMINISTRATOR.'/html/sidebar.php');
+		JLoader::register('JHtmlSortablelist', JPATH_VM_ADMINISTRATOR.'/html/sortablelist.php');
+	}
+
+	//This number is for obstruction, similar to the prefix jos_ of joomla it should be avoided
+	//to use the standard 7, choose something else between 1 and 99, it is added to the ordernumber as counter
+	// and must not be lowered.
+	defined('VM_ORDER_OFFSET') or define('VM_ORDER_OFFSET',3);
+
+
+	require(JPATH_VM_ADMINISTRATOR.DS.'version.php');
+
+	JTable::addIncludePath(JPATH_VM_ADMINISTRATOR.DS.'tables');
+
+	if (!class_exists ('VmModel')) {
+		require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
+	}
 }
-
-
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
-
-//This number is for obstruction, similar to the prefix jos_ of joomla it should be avoided
-//to use the standard 7, choose something else between 1 and 99, it is added to the ordernumber as counter
-// and must not be lowered.
-defined('VM_ORDER_OFFSET') or define('VM_ORDER_OFFSET',3);
-
-
-require(JPATH_VM_ADMINISTRATOR.DS.'version.php');
-
-JTable::addIncludePath(JPATH_VM_ADMINISTRATOR.DS.'tables');
-
-if (!class_exists ('VmModel')) {
-	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
-}
-
 /**
  * This function shows an info message, the messages gets translated with JText::,
  * you can overload the function, so that automatically sprintf is taken, when needed.
@@ -81,7 +77,7 @@ function vmInfo($publicdescr,$value=NULL){
 	$app = JFactory::getApplication();
 
 	$msg = '';
-	$type = 'info';
+	$type = 'message';
 	if(VmConfig::$maxMessageCount<VmConfig::$maxMessage){
 		$lang = JFactory::getLanguage();
 		if($value!==NULL){
@@ -137,19 +133,19 @@ function vmAdminInfo($publicdescr,$value=NULL){
 				if (count($args) > 0) {
 					$args[0] = $lang->_($args[0]);
 					VmConfig::$maxMessageCount++;
-					$app ->enqueueMessage(call_user_func_array('sprintf', $args),'info');
+					$app ->enqueueMessage(call_user_func_array('sprintf', $args),'message');
 				}
 			}	else {
 				VmConfig::$maxMessageCount++;
-				// 		$app ->enqueueMessage('Info: '.JText::_($publicdescr));
+				// 		$app ->enqueueMessage('message: '.JText::_($publicdescr));
 				$publicdescr = $lang->_($publicdescr);
-				$app ->enqueueMessage('Info: '.JText::_($publicdescr),'info');
+				$app ->enqueueMessage('Info: '.JText::_($publicdescr),'message');
 				// 		debug_print_backtrace();
 			}
 		}
 		else {
 			if (VmConfig::$maxMessageCount == VmConfig::$maxMessage) {
-				$app->enqueueMessage ('Max messages reached', 'info');
+				$app->enqueueMessage ('Max messages reached', 'message');
 			}else {
 				return false;
 			}
@@ -168,7 +164,7 @@ function vmWarn($publicdescr,$value=NULL){
 		if($value!==NULL){
 
 			$args = func_get_args();
-			if (count($args) > 0) {
+			if ($args) {
 				$args[0] = $lang->_($args[0]);
 				$msg = call_user_func_array('sprintf', $args);
 
@@ -495,6 +491,8 @@ class VmConfig {
 	 *
 	 * @author Max Milbers
 	 * @param $force boolean Forces the function to load the config from the db
+	 * Note Patrick Kohl STUDIO42
+	 * added prefix from joomla in like to prevent getting false config for multiple use of joomla in same database
 	 */
 	static public function loadConfig($force = FALSE,$fresh = FALSE) {
 
@@ -512,7 +510,8 @@ class VmConfig {
 		self::$_jpConfig = new VmConfig();
 
 		$db = JFactory::getDBO();
-		$query = 'SHOW TABLES LIKE "%virtuemart_configs%"';
+		$prefix = $db->getPrefix();
+		$query = 'SHOW TABLES LIKE "'.$prefix.'virtuemart_configs"';
 		$db->setQuery($query);
 		$configTable = $db->loadResult();
 // 		self::$_debug = true;

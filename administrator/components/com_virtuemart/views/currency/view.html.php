@@ -41,26 +41,22 @@ class VirtuemartViewCurrency extends VmView {
 		$model = VmModel::getModel();
 
 		$layoutName = JRequest::getWord('layout', 'default');
+
 		if ($layoutName == 'edit') {
-			$cid	= JRequest::getVar( 'cid' );
+			$this->currency = $model->getData();
 
-			$task = JRequest::getWord('task', 'add');
-			//JArrayHelper::toInteger($cid);
-			if($task!='add' && !empty($cid) && !empty($cid[0])){
-				$cid = (int)$cid[0];
-			} else {
-				$cid = 0;
-			}
-
-			$model->setId($cid);
-			$this->currency = $model->getCurrency();
-
-			$this->SetViewTitle('',$currency->currency_name);
+			$this->SetViewTitle('',$this->currency->currency_name);
 			$this->addStandardEditViewCommands();
 
 		} else {
-			$this->SetViewTitle();
-			$this->addStandardDefaultViewCommands();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle();
+				$this->addStandardDefaultViewCommands();
+			}
 			$this->addStandardDefaultViewLists($model,0,'ASC');
 
 			$this->currencies = $model->getCurrenciesList(JRequest::getWord('search', false));
@@ -68,6 +64,7 @@ class VirtuemartViewCurrency extends VmView {
 		}
 
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 }

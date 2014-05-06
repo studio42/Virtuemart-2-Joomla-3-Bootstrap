@@ -54,6 +54,7 @@ class AdminUIHelper {
 		$document->addScript($admin.'js/jquery.coookie.js');
 		$document->addScript($front.'js/chosen.jquery.min.js');
 		$document->addScript($admin.'js/vm2admin.js');
+		JText::script('jnone');
 		//$document->addScript($admin.'js/jquery.jqtransform.js');
 		if (JText::_('COM_VIRTUEMART_JS_STRINGS') == 'COM_VIRTUEMART_JS_STRINGS') $vm2string = "editImage: 'edit image',select_all_text: 'select all options',select_some_options_text: 'select some options'" ;
 		else $vm2string = JText::_('COM_VIRTUEMART_JS_STRINGS') ;

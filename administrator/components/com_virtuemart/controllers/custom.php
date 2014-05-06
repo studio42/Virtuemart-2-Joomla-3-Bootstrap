@@ -33,11 +33,8 @@ class VirtuemartControllerCustom extends VmController {
 
 	function viewJson() {
 
-		// Create the view object.
-		$view = $this->getView('custom', 'json');
-
 		// Now display the view.
-		$view->display(null);
+		$this->display(null);
 	}
 
 	/**

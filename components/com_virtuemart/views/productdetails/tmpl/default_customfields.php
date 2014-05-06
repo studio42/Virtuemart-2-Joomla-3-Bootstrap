@@ -19,14 +19,34 @@
 
 // Check to ensure this file is included in Joomla!
 defined ( '_JEXEC' ) or die ( 'Restricted access' );
-?>
-<table class="product-fields table">
-	    <?php
-	    $custom_title = null;
-	    foreach ($this->product->customfieldsSorted[$this->position] as $field) {
-	    	if ( $field->is_hidden ) continue;//OSP http://forum.virtuemart.net/index.php?topic=99320.0
 
-			if ($field->display) { ?>
+$custom_title = null;
+if ($this->position =='normal') {
+?>
+	<table class="product-fields table">
+	<?php
+
+	foreach ($this->product->customfieldsSorted[$this->position] as $field) {
+		if ( $field->is_hidden ) continue;//OSP http://forum.virtuemart.net/index.php?topic=99320.0
+		
+		if ($field->display) { 
+			if ($field->field_type == 'E') {
+			  if ($field->custom_title != $custom_title && $field->show_title) {
+				?>
+				<tr class="product-field product-field-type-<?php echo $field->field_type ?>">
+				  <td colspan="3" class="product-fields-title" >
+					<?php 
+					
+						echo JText::_($field->custom_title); 
+						if ($field->custom_tip) echo JHTML::tooltip($field->custom_tip, JText::_($field->custom_title), 'tooltip.png');
+					?><small><?php echo jText::_($field->custom_field_desc) ?></small>
+				  </td>
+				</tr>
+				<?php } 
+				// moved field row in plugin
+				?>
+				<?php echo $field->display ?>
+			<?php } else { ?>
 			 <tr class="product-field product-field-type-<?php echo $field->field_type ?>">
 			  <td class="product-fields-title" >
 					<?php 
@@ -38,10 +58,27 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
 				</td>
 				<td class="product-field-display"><?php echo $field->display ?></td>
 				<td class="product-field-desc"><?php echo jText::_($field->custom_field_desc) ?></td>
-	    	  </tr>
-		      <?php
-		      $custom_title = $field->custom_title;
-			}
-	    }
-	    ?>
-</table>
+			  </tr>
+		  <?php } 
+		  $custom_title = $field->custom_title;
+		}
+	}
+	?>
+	</table>
+<?php } else {
+	foreach ($this->product->customfieldsSorted[$this->position] as $field) { 
+	  if ($field->custom_title != $custom_title && $field->show_title) {
+		?>
+		<div class="product-fields-title" >
+			<?php 
+			
+				echo JText::_($field->custom_title); 
+				if ($field->custom_tip) echo JHTML::tooltip($field->custom_tip, JText::_($field->custom_title), 'tooltip.png');
+			?><small><?php echo jText::_($field->custom_field_desc) ?></small>
+		</div>
+		<?php 
+		} ?> 
+		<div class="product-field-display"><?php echo $field->display ?></div>
+		<?php
+	}
+}

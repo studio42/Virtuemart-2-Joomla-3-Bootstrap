@@ -70,50 +70,60 @@ class VmController extends JControllerLegacy{
 	protected function checkVendor(){
 		$input = JFactory::getApplication()->input;
 		$this->_vendor = Permissions::getInstance()->isSuperVendor();
+		if ($this->_vendor == 1 ) return true; // can do all
+		if (!$this->_vendor) { //non vendor have no access !
+			$msg = JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
+			jRequest::setVar('task','');
+			$input->set('task','');
+			$this->setRedirect('index.php', $msg,'error');
+			return false;
+		}
 		if ($this->_cname === 'user') $this->_canEdit = ShopFunctions::can('editshop',$this->_cname);
 		else $this->_canEdit = ShopFunctions::can('edit',$this->_cname);
-
 		$this->_canAdd =  ShopFunctions::can('add',$this->_cname);
+		// publish is for all controllers
+		$this->_canPublish =  ShopFunctions::can('publish');
 		$tasks = explode ('.',JRequest::getCmd( 'task','default'));
+		$task = $tasks[0];
+
+		$addTasks =array('add','edit','apply','save','save2new','save2copy');
 		$canDo = true;
-		// var_dump($this->_vendor,$this->_canEdit,$this->_canAdd);
-		if ($this->_vendor > 1 && !$this->_canEdit) {
+		if (!$this->_canEdit) {
 			// toggle is checked in controller
-			$taskBlacklist =array('add','edit','apply','save','publish','unpublish','apply','toggle','orderUp','orderDown','saveOrder');
+			$taskBlacklist =array('edit','apply','save','apply','toggle','orderUp','orderDown','saveOrder');
 			// only check non admin
-			if (in_array($tasks[0],$taskBlacklist) ) {
+			if (in_array($task,$taskBlacklist) ) {
 				$msg = JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
 				jRequest::setVar('task','');
 				$input->set('task','');
 				$this->setRedirect(null, $msg,'error');
 				$canDo = false;
 			}
-		}elseif (!$this->_vendor) { //non vendor have no access !
-			$msg = JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
+		} elseif (!$this->_canPublish && ($task=='publish' || $task=='unpublish' || $task=='toggle') ) {
+			$msg = JText::_('JLIB_APPLICATION_ERROR_PUBLISH_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
 			jRequest::setVar('task','');
 			$input->set('task','');
-			$this->setRedirect('index.php', $msg,'error');
+			$this->setRedirect(null, $msg,'error');
 			$canDo = false;
-		} elseif (!$this->_canAdd && $tasks[0]=='add') {
+		} elseif (!$this->_canAdd && $task=='add') {
 			$msg = JText::_('JLIB_APPLICATION_ERROR_CREATE_RECORD_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
 			jRequest::setVar('task','');
 			$input->set('task','');
 			$this->setRedirect(null, $msg,'error');
 			$canDo = false;
-		} elseif ($this->_vendor > 1) {
+		} elseif ($this->_canAdd && isset($addTasks[$task])) {
+			$canDo = true;
+		} else {
 			//$taskBlacklist =array('add','edit','apply','save');
-			// "add" is checked before;
-			$taskBlacklist =array('edit','apply','save','save2new','save2copy');
 			// verify if it's own item
-			if (in_array($tasks[0],$taskBlacklist) && !$this->checkOwn() ) {
+			if (isset($addTasks[$task]) && !$this->checkOwn() ) {
 				$msg = JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).' '.$tasks[0].' vendor '.$this->_vendor.')' ;
 				jRequest::setVar('task','');
 				$input->set('task','');
 				$this->setRedirect(null, $msg,'error');
 				$canDo = false;
 			}
-		} elseif ($this->_vendor == 1 ) $canDo = true; // can do all
-		else $canDo = false; // can do nothing
+		}
 		return $canDo;
 	}
 	
@@ -221,8 +231,21 @@ class VmController extends JControllerLegacy{
 		JSession::checkToken() or jexit( 'Invalid Token save' );
 		if($data===0)$data = JRequest::get('post');
 		$task = JRequest::getCmd('task');
-		
-		// save2copy is same only unset the primary ID
+		// remove shared when not superVendor
+		if ($this->_vendor>1) {
+			if (isset($data['shared'])) $data['shared']= 0;
+			if (!ShopFunctions::can('publish') ) {
+				$data['published']= 0;
+			}
+			// check vendor max uploaded images
+			if (!$max_uploads = ShopFunctions::can('max_uploads') ) {
+				JRequest::setVar('uploads', null, 'files');
+				 jexit( 'save file error' );
+			}
+			// better filter in mediaManager
+			// else $medias = JRequest::getVar('uploads', array(), 'files');
+		}
+		// save2copy is same as save, only unset the primary ID
 		if ($task == 'save2copy') {
 			unset($data[$this->_cidName]);
 			$data['published'] = 0;
@@ -246,6 +269,11 @@ class VmController extends JControllerLegacy{
 			$redir .= '&task=edit&'.$this->_cidName.'='.$id;
 		} else if ($task == 'save2new') {
 			$redir .= '&task=add';
+		}
+		if ($task == 'apply') {
+			$app = JFactory::getApplication();
+			$lastTab = $app->input->get('lastTab', '','cmd');
+			$app->setUserState( "com_virtuemart.lasttab", $lastTab );
 		}
 		//else $this->display();
 
@@ -390,9 +418,13 @@ class VmController extends JControllerLegacy{
 		JArrayHelper::toInteger($order);
 
 		$model = VmModel::getModel($this->_cname);
-		if (!$model->saveorder($cid, $order)) $msg = 'error';
-		else $msg = JText::sprintf('COM_VIRTUEMART_STRING_SAVE_ORDER_SUCCESS',$this->mainLangKey);
+		$ordered = $model->saveorder($cid, $order);
+		
+		// if (!$ordered ) $msg = JText::sprintf ('COM_VIRTUEMART_ITEMS_MOVED', $ordered);
+		if (!$ordered ) $msg = JText::_ ('COM_VIRTUEMART_ITEMS_NOT_MOVED');
+		else $msg = JText::sprintf ('COM_VIRTUEMART_ITEMS_MOVED', $ordered);
 		$this->setRedirect( null, $msg);
+		return $ordered;
 	}
 
 	/**
@@ -423,7 +455,7 @@ class VmController extends JControllerLegacy{
 		$format = JRequest::getWord('format');
 		if ($format !== 'json') {
 			// add menu item id in front
-			if (JFactory::getApplication()->isSite()) $url = jRoute::_($url);
+			if (JFactory::getApplication()->isSite()) $url = jRoute::_($url, false);
 			return parent::setRedirect($url, $msg , $type );
 		}
 		if ($msg !== null)
@@ -454,5 +486,28 @@ class VmController extends JControllerLegacy{
 		header("Content-type: application/json;; charset=utf-8");
 		echo json_encode($this->json);
 		jexit();
+	}
+	/**
+	 * Clean the cache
+	 *
+	 * @param   string   $group      The cache group
+	 * @param   integer  $client_id  The ID of the client
+	 *
+	 * @return  void
+	 *
+	 * @since   12.2
+	 * NOTE studio42 category tree cache is $group '_virtuemart'
+	 */
+	protected function cleanCache($group = null)
+	{
+		$conf = JFactory::getConfig();
+		$options = array(
+			'defaultgroup' => ($group) ? $group : (isset($this->option) ? $this->option : JFactory::getApplication()->input->get('option')),
+			'cachebase' => $conf->get('cache_path', JPATH_SITE . '/cache')) ;
+		$cache = JCache::getInstance('', $options);
+		$cache->clean($group);
+
+		// Trigger the onContentCleanCache event.
+		// $dispatcher->trigger($this->event_clean_cache, $options);
 	}
 }

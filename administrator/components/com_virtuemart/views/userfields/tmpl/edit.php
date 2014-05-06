@@ -21,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
 
 vmJsApi::JvalideForm();
 AdminUIHelper::startAdminArea();
-AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_USERFIELD_DETAILS');
+// AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_USERFIELD_DETAILS');
 // vmdebug ('$this->userField',$this->userField);
 ?>
 
@@ -154,7 +154,7 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_USERFIELD_DETAILS');
 </form>
 
 <?php
-AdminUIHelper::imitateTabs('end');
+// AdminUIHelper::imitateTabs('end');
 AdminUIHelper::endAdminArea(); ?>
 
 <?php $duration = 650;
@@ -180,7 +180,7 @@ jQuery(".readonly").click( function(e) {
 	return false});
 
 jQuery('select#type').chosen().change(function() {
-		selected = jQuery(this).find( 'option:selected').val() ;
+		selected = jQuery(this).val() ;
 	toggleType(selected)
 });
 function toggleType( sType ) {
@@ -267,12 +267,7 @@ function prep4SQL(o){
 }
 <?php if($this->userField->virtuemart_userfield_id > 0) { ?>
 document.adminForm.name.readOnly = true;
-toggleType(jQuery('#type').val()) ;
-<?php } else { ?>
-	toggleType(jQuery('#type').find( 'option:selected').val()) ;
 <?php } ?>
-//toggleType('<?php echo $this->userField->type;?>');
-
-//<?php if ($this->userField->type !== "E") { ?>jQuery('#userField_plg').hide();<?php } ?>
+toggleType(jQuery('#type').val()) ;
 
 </script>

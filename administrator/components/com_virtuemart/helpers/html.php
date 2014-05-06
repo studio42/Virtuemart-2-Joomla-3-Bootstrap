@@ -315,12 +315,12 @@ static function vmGetCharset() {
 	 * @param string $yesno
 	 *
 	 */
-	public static function booleanlist (  $name, $value,$class='class="inputbox"',$yesno =' btn-group-yesno'){
+	public static function booleanlist (  $name, $value,$class='inputbox',$yesno =' btn-group-yesno'){
 		$arr = array(
 			'0'	=>	JText::_('JNO'),
 			'1'	=>	JText::_('JYES')
 		);
-		return '<fieldset class="radio btn-group'.$yesno.'">'.self::radioList($name, $value, &$arr, $class, "radio-btn").'</fieldset>' ;
+		return '<fieldset class="radio btn-group'.$yesno.'">'.self::radioList($name, (int)$value, &$arr, $class, "radio-btn").'</fieldset>' ;
 		// return '<fieldset class="radio btn-group'.$yesno.'">'.JHTML::_( 'select.booleanlist',  $name , $class , $value).'</fieldset>' ;
 	}
 		/**

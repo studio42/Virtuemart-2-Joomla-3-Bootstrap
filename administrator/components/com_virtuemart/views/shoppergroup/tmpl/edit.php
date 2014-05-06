@@ -37,7 +37,7 @@ defined('_JEXEC') or die('Restricted access');
 $document = JFactory::getDocument();
 $document->addScriptDeclaration($js);
 AdminUIHelper::startAdminArea();
-AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_SHOPPERGROUP_NAME');
+
 ?>
 
 
@@ -50,6 +50,10 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_SHOPPERGROUP_NAME');
 
 		<?php echo VmHTML::row('input', 'COM_VIRTUEMART_SHOPPERGROUP_NAME', 'shopper_group_name', $this->shoppergroup->shopper_group_name); ?>
 		<?php echo VmHTML::row('booleanlist', 'COM_VIRTUEMART_PUBLISHED', 'published', $this->shoppergroup->published); ?>
+		<?php if(Vmconfig::get('multix','none')!=='none' && $this->perms->check('admin') ){
+			echo VmHTML::row('booleanlist','COM_VIRTUEMART_SHARED','shared', $this->shoppergroup->shared);
+			echo VmHTML::row('raw','COM_VIRTUEMART_VENDOR', $this->vendorList );
+		} ?>
 		<?php /*
 		  <tr>
 		  <td width="110" class="key">
@@ -65,22 +69,10 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_SHOPPERGROUP_NAME');
 		 */
 		?>
 		<?php
-		if ($this->shoppergroup->default == 1) {
-		    ?>
-    		<tr>
-    		    <td width="110" class="key">
-    			<label for="default">
-    			    <span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT_TIP'); ?>">
-				    <?php echo JText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT'); ?>
-    			    </span>
-    			</label>
-    		    </td>
-    		    <td>
-    				<?php echo JHtml::_('image','menu/icon-16-default.png', JText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT'), NULL, true);
-					?>
-    		    </td>
-    		</tr>
-		    <?php } ?>
+		if ($this->shoppergroup->default) {
+			echo VmHTML::row('raw', 'COM_VIRTUEMART_SHOPPERGROUP_DEFAULT', 
+				'<i class="icon-featured btn btn-micro hasTooltip disabled" title="'.JText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT').'">');
+		} ?>
 		<?php echo VmHTML::row('textarea', 'COM_VIRTUEMART_SHOPPERGROUP_DESCRIPTION', 'shopper_group_desc', $this->shoppergroup->shopper_group_desc); ?>
 	    </table>
 	</fieldset>
@@ -88,29 +80,13 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_SHOPPERGROUP_NAME');
 	<fieldset>
 	    <legend><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICES') ?></legend>
 
-	    <table class="admintable">
-		<tr>
-		    <td>
-<?php echo JText::_('COM_VIRTUEMART_SHOPPERGROUP_ENABLE_PRICE_DISPLAY'); ?>
-		    </td>
-		    <td>
-<?php
-			     $attributes='';
-			    echo VmHTML::checkbox('custom_price_display', $this->shoppergroup->custom_price_display,1,0,$attributes) ?>
-		    </td>
-		</tr>
+	    <table class="admintable" width="100%">
+		<?php echo VmHTML::row('checkbox','COM_VIRTUEMART_SHOPPERGROUP_ENABLE_PRICE_DISPLAY',
+			'custom_price_display', $this->shoppergroup->custom_price_display); ?>
 		</table>
 		<table class="admintable" id="show_hide_prices">
-		<tr>
-		    <td>
-			<span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SHOW_PRICES_EXPLAIN'); ?>">
-<?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_SHOW_PRICES'); ?>
-		    </td>
-		    <td>
-<?php echo VmHTML::checkbox('show_prices', $this->shoppergroup->price_display->get('show_prices')); ?>
-		    </td>
-		</tr>
-
+		<?php echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_SHOW_PRICES',
+			'show_prices', $this->shoppergroup->price_display->get('show_prices') ); ?>
 		    <tr>
 			<th></th>
 			<th><?php echo JText::_('COM_VIRTUEMART_ADMIN_CFG_PRICES_LABEL'); ?></th>
@@ -140,8 +116,4 @@ echo ShopFunctions::writePriceConfigLine($this->shoppergroup->price_display, 'ta
 <?php echo $this->addStandardHiddenToForm(); ?>
 
 </form>
-
-<?php
-AdminUIHelper::imitateTabs('end');
-AdminUIHelper::endAdminArea();
-?>
+<?php AdminUIHelper::endAdminArea();

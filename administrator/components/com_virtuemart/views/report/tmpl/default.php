@@ -17,10 +17,10 @@ if( !defined( '_JEXEC' ) ) die();
 * http://virtuemart.org
 */
 /* Load some variables */
-$rows = count( $this->report );
-$intervalTitle = JRequest::getVar('intervals','day');
-if ( ($intervalTitle =='week') or ($intervalTitle =='month') ) $addDateInfo = true ;
-else $addDateInfo = false;
+// $rows = count( $this->report );
+// $intervalTitle = JRequest::getVar('intervals','day');
+// if ( ($intervalTitle =='week') or ($intervalTitle =='month') ) $addDateInfo = true ;
+// else $addDateInfo = false;
 // JHtml::_('behavior.framework', true);
 ?>
 <form action="index.php" method="post" name="adminForm" id="adminForm">
@@ -33,6 +33,7 @@ else $addDateInfo = false;
 		<div class="btn-group pull-left">
 			<button type="submit" id="searchsubmit" class="btn hasTooltip" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT') ?>"><i class="icon-search"></i></button>
 		</div>
+		<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
 		<div class="btn-group pull-right">
 			<?php echo JText::_('COM_VIRTUEMART_REPORT_INTERVAL') . $this->lists['intervals']; ?>
 		</div>

@@ -44,10 +44,10 @@ class VmModel extends JModelLegacy  {
 	public function __construct($cidName=null, $config=array()){
 
 		$this->_cname = strtolower(substr(get_class( $this ), 15));
-		if ( !$cidName) {
+		if ( $cidName === null) {
 			$cidName = 'virtuemart_'.$this->_cname.'_id';
 			$this->_cidName = $cidName;
-		}
+		} elseif ( $cidName ) $this->_cidName = $cidName;
 
 		parent::__construct($config);
 
@@ -125,8 +125,6 @@ class VmModel extends JModelLegacy  {
 		if(is_array($id) && count($id)!==0) $id = $id[0];
 		if($this->_id!=$id){
 			$this->_id = (int)$id;
-			//			$idName = $this->_idName;
-			//			$this->$idName = $this->_id;
 			$this->_data = null;
 		}
 		return $this->_id;
@@ -160,7 +158,9 @@ class VmModel extends JModelLegacy  {
 
 	function removevalidOrderingFieldName($name){
 		$key=array_search($name, $this->_validOrderingFieldName);
+		if($key!==false){
 		unset($this->_validOrderingFieldName[$key]) ;
+	}
 	}
 
 	var $_tablePreFix = '';
@@ -208,16 +208,28 @@ class VmModel extends JModelLegacy  {
 
 	function checkFilterOrder($toCheck){
 
+		if(empty($toCheck)) return $this->_selectedOrdering;
 		if(!in_array($toCheck, $this->_validOrderingFieldName)){
 
-			vmdebug('checkValidOrderingField:'.get_class($this).' programmer choosed invalid ordering '.$toCheck.', use '.$this->_selectedOrdering);
+			$break = false;
 			$toCheck = $this->_selectedOrdering;
+			foreach($this->_validOrderingFieldName as $name){
+				if(!empty($name) and strpos($name,$toCheck)!==FALSE){
+					$this->_selectedOrdering = $name;
+					$break = true;
+					break;
+				}
+			}
+			if(!$break){
 			$app = JFactory::getApplication();
 			$view = JRequest::getWord('view','virtuemart');
 			$app->setUserState( 'com_virtuemart.'.$view.'.filter_order',$this->_selectedOrdering);
+			}
+		} else {
+			$this->_selectedOrdering = $toCheck;
 		}
-		$this->_selectedOrdering = $toCheck;
-		return $toCheck;
+
+		return $this->_selectedOrdering;
 	}
 
 	var $_validFilterDir = array('ASC','DESC');
@@ -689,9 +701,11 @@ class VmPagination extends JPagination {
 
 		// Initialize variables
 		$limits = array ();
-		$selected = $this->_viewall ? 0 : $this->limit;
+		//_viewall removed in j3
+		$viewall = isset($this->viewall) ? $this->viewall : $this->_viewall ;
+		$selected = $viewall ? 0 : $this->limit;
 		// Build the select list
-		if ($app->isAdmin()) {
+		if ($app->isAdmin() || jRequest::getWord('tmpl') =="component") {
 
 			if(empty($sequence)){
 				$sequence = VmConfig::get('pagseq',0);
@@ -707,24 +721,21 @@ class VmPagination extends JPagination {
 			}
 
 			if(empty($limits)){
-				$limits[15] = JHTML::_('select.option', 15);
-				$limits[30] = JHTML::_('select.option', 30);
+				// $limits[15] = JHTML::_('select.option', 15);
+				$limits[20] = JHTML::_('select.option', 20);
 				$limits[50] = JHTML::_('select.option', 50);
 				$limits[100] = JHTML::_('select.option', 100);
 				$limits[200] = JHTML::_('select.option', 200);
-				$limits[400] = JHTML::_('select.option', 400);
+				$limits[500] = JHTML::_('select.option', 500);
 			}
 
 			if(!array_key_exists($this->limit,$limits)){
 				$limits[$this->limit] = JHTML::_('select.option', $this->limit);
 				ksort($limits);
-			}
-			$namespace = '';
-			if (JVM_VERSION!==1) {
-			$namespace = 'Joomla.';
+				
 			}
 
-			$html = JHTML::_('select.genericlist',  $limits, 'limit', 'class="inputbox" size="1" onchange="'.$namespace.'submitform();"', 'value', 'text', $selected);
+			$html = JHTML::_('select.genericlist',  $limits, 'limit', 'class="inputbox input-mini" onchange="Joomla.submitform();"', 'value', 'text', $selected);
 		} else {
 
 			$getArray = (JRequest::get( 'get' ));
@@ -764,7 +775,7 @@ class VmPagination extends JPagination {
 				$limits[$this->_perRow * 50] = JHTML::_('select.option',JRoute::_( $link.'&limit='. $this->_perRow * 50, false) , $this->_perRow * 50 );
 			}
 			if(!array_key_exists($this->limit,$limits)){
-				$limits[] = JHTML::_('select.option', JRoute::_( $link.'&limit='.$this->limit,false),$this->limit);
+				$limits[$this->limit] = JHTML::_('select.option', JRoute::_( $link.'&limit='.$this->limit,false),$this->limit);
 				ksort($limits);
 			}
 			// fix studio42 false missing

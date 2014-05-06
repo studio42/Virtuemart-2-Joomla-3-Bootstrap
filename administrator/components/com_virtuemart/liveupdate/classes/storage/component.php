@@ -45,7 +45,7 @@ class LiveUpdateStorageComponent extends LiveUpdateStorage
 				
 		jimport('joomla.registry.registry');
 		self::$registry = new JRegistry('update');
-		
+		// TODO loadINI >> loadString in j3
 		self::$registry->loadINI($data);
 	}
 	
@@ -70,13 +70,13 @@ class LiveUpdateStorageComponent extends LiveUpdateStorage
 		*/
 
 		if( version_compare(JVERSION,'1.6.0','ge') ) {
-			$sql = 'SELECT '.$db->nameQuote('params').' FROM '.$db->nameQuote('#__extensions').
-				' WHERE '.$db->nameQuote('type').' = '.$db->Quote('component').' AND '.
-				$db->nameQuote('element').' = '.$db->Quote(self::$component);
+			$sql = 'SELECT '.$db->quoteName('params').' FROM '.$db->quoteName('#__extensions').
+				' WHERE '.$db->quoteName('type').' = '.$db->Quote('component').' AND '.
+				$db->quoteName('element').' = '.$db->Quote(self::$component);
 			$db->setQuery($sql);
 		} else {
-			$sql = 'SELECT '.$db->nameQuote('params').' FROM '.$db->nameQuote('#__components').
-				' WHERE '.$db->nameQuote('option').' = '.$db->Quote(self::$component).
+			$sql = 'SELECT '.$db->quoteName('params').' FROM '.$db->quoteName('#__components').
+				' WHERE '.$db->quoteName('option').' = '.$db->Quote(self::$component).
 				" AND `parent` = 0 AND `menuid` = 0";
 			$db->setQuery($sql);
 		}

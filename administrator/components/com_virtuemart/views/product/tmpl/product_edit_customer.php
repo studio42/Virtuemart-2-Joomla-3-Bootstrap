@@ -198,7 +198,9 @@ if ($this->jsonPath !=='') return;
 							}
 						);
 					}
-				);
+				).fail(function() {
+					location.reload();
+				});
 
 			}
 			else if (email_type = 'customer') {

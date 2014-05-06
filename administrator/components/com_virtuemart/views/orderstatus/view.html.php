@@ -47,7 +47,7 @@ class VirtuemartViewOrderstatus extends VmView {
 // 'A' : sotck Available
 		// 'O' : stock Out
 		// 'R' : stock reserved
-			$stockHandelList = array(
+			$this->stockHandelList = array(
 				'A' => 'COM_VIRTUEMART_ORDER_STATUS_STOCK_AVAILABLE',
 				'R' => 'COM_VIRTUEMART_ORDER_STATUS_STOCK_RESERVED',
 				'O' => 'COM_VIRTUEMART_ORDER_STATUS_STOCK_OUT'
@@ -56,7 +56,7 @@ class VirtuemartViewOrderstatus extends VmView {
 		if ($layoutName == 'edit') {
 			$orderStatus = $model->getData();
 			$this->SetViewTitle('',JText::_($orderStatus->order_status_name) );
-			if ($orderStatus->virtuemart_orderstate_id < 1) {
+			if ( !$orderStatus->virtuemart_orderstate_id) {
 
 				$this->assignRef('ordering', JText::_('COM_VIRTUEMART_NEW_ITEMS_PLACE'));
 			} else {
@@ -65,14 +65,13 @@ class VirtuemartViewOrderstatus extends VmView {
 				. ' FROM #__virtuemart_orderstates'
 				. ' ORDER BY ordering';
 				// $ordering = JHTML::_('list.specificordering',  $orderStatus, $orderStatus->virtuemart_orderstate_id, $qry);
-				$ordering = JHTML::_('list.ordering', 'ordering', $qry,'', $orderStatus, 0);
+				$ordering = JHTML::_('list.ordering', 'ordering', $qry,'', $orderStatus->ordering, 0);
 				$this->assignRef('ordering', $ordering);
 
 
 			}
 			$lists['vmCoreStatusCode'] = $model->getVMCoreStatusCode();
 
-			$this->assignRef('stockHandelList', $stockHandelList);
 			// Vendor selection
 			$vendor_model = VmModel::getModel('vendor');
 			$vendor_list = $vendor_model->getVendors();
@@ -84,20 +83,22 @@ class VirtuemartViewOrderstatus extends VmView {
 
 			$this->addStandardEditViewCommands();
 		} else {
-			$this->SetViewTitle('');
-			$this->addStandardDefaultViewCommands();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle();
+				$this->addStandardDefaultViewCommands();
+			}
+
 			$this->addStandardDefaultViewLists($model);
 			$this->lists['vmCoreStatusCode'] = $model->getVMCoreStatusCode();
-
-			$orderStatusList = $model->getOrderStatusList();
-			$this->assignRef('orderStatusList', $orderStatusList);
-
-			$this->assignRef('stockHandelList', $stockHandelList);
-
+			$this->orderStatusList = $model->getOrderStatusList();
 			$this->pagination = $model->getPagination();
 		}
-
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 }
 

@@ -518,7 +518,8 @@ class VmTable extends JTable{
 
 	}
 
-
+	// strange error :: static does not work in check function as static
+	static $checkloggedVendorMsg =0  ;
 	/**
 	 * @author Max Milbers
 	 * @param
@@ -668,9 +669,14 @@ class VmTable extends JTable{
 					}
 
 				} else if (!empty($virtuemart_vendor_id) and $loggedVendorId!=$virtuemart_vendor_id) {
-					vmInfo('Admin with vendor id '.$loggedVendorId.' is using for storing vendor id '.$this->virtuemart_vendor_id);
-					vmdebug('Admin with vendor id '.$loggedVendorId.' is using for storing vendor id '.$this->virtuemart_vendor_id);
+					// only display 1 time logged Vendor Msg
+
+					if (!self::$checkloggedVendorMsg ) {
+						self::$checkloggedVendorMsg = true;
+						vmInfo('Admin vendor '.$checkloggedVendorMsg.$loggedVendorId.' has set vendor '.$this->virtuemart_vendor_id.' in recorded item');
+					}
 					$this->virtuemart_vendor_id = $virtuemart_vendor_id;
+
 				}
 			}
 
@@ -1207,7 +1213,7 @@ class VmTable extends JTable{
 
 		$time = $date->toMysql();
 
-		$query = 'UPDATE ' . $this->_db->nameQuote($this->_tbl) .
+		$query = 'UPDATE ' . $this->_db->quoteName($this->_tbl) .
 	' SET locked_by = ' . (int)$who . ', locked_on = "' . $this->_db->escape($time) . '"
 			 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->escape($this->$k) . '"';
 		$this->_db->setQuery($query);
@@ -1243,7 +1249,7 @@ class VmTable extends JTable{
 			return false;
 		}
 
-		$query = 'UPDATE ' . $this->_db->nameQuote($this->_tbl) .
+		$query = 'UPDATE ' . $this->_db->quoteName($this->_tbl) .
 	' SET locked_by = 0, locked_on = "' . $this->_db->escape($this->_db->getNullDate()) . '"
 				 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->escape($this->$k) . '"';
 		$this->_db->setQuery($query);

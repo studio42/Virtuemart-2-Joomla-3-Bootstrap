@@ -27,12 +27,12 @@ defined('_JEXEC') or die('Restricted access');
 				<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 			</th>
 			<th><?php echo $this->sort('product_name') ?></th>
-			<th><?php echo $this->sort('product_sku')?></th>
+			<th class="hidden-phone"><?php echo $this->sort('product_sku')?></th>
 			<th><?php echo $this->sort('product_in_stock','COM_VIRTUEMART_PRODUCT_FORM_IN_STOCK') ?></th>
 			<th><?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_ORDERED_STOCK') ?> </th>
 			<th><?php echo $this->sort('product_price','COM_VIRTUEMART_PRODUCT_FORM_PRICE_COST') ?></th>
-			<th><?php echo $this->sort('product_price', 'COM_VIRTUEMART_PRODUCT_INVENTORY_PRICE') ?></th>
-			<th><?php echo $this->sort('product_weight','COM_VIRTUEMART_PRODUCT_INVENTORY_WEIGHT') ?></th>
+			<th class="hidden-phone"><?php echo $this->sort('product_price', 'COM_VIRTUEMART_PRODUCT_INVENTORY_PRICE') ?></th>
+			<th class="hidden-phone"><?php echo $this->sort('product_weight','COM_VIRTUEMART_PRODUCT_INVENTORY_WEIGHT') ?></th>
 			<th><?php echo $this->sort('published')?></th>
 		</tr>
 	</thead>
@@ -68,14 +68,15 @@ defined('_JEXEC') or die('Restricted access');
 				<!-- Product name -->
 				<td>
 					<?php echo $this->editLink($product->virtuemart_product_id, $product->product_name, 'virtuemart_product_id',
-						array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$product->product_name), 'product') ?>
+						null, 'product') ?>
+					<small class="visible-phone"><?php echo $product->product_sku; ?><small>
 				</td>
-				<td><?php echo $product->product_sku; ?></td>
+				<td class="hidden-phone"><?php echo $product->product_sku; ?></td>
 				<td width="5%"><a href="#updateStockModal" role="button" data-toggle="modal" class="updateStock" data-title="<?php echo $product->product_name ?>" data-id="<?php echo $product->virtuemart_product_id ?>"><span class="label <?php echo $stockstatut ?>"><?php echo $product->product_in_stock; ?></span></a></td>
 				<td width="5%"><span class="label <?php echo $orderedLabel ?>"><?php echo $product->product_ordered; ?></span></td>
-				<td><?php echo $product->product_price_display; ?></td>
-				<td><?php echo $product->product_instock_value; ?></td>
-				<td><?php echo $product->product_weight." ". $product->weigth_unit_display; ?></td>
+				<td ><?php echo $product->product_price_display; ?></td>
+				<td class="hidden-phone"><?php echo $product->product_instock_value; ?></td>
+				<td class="hidden-phone"><?php echo $product->product_weight." ". $product->weigth_unit_display; ?></td>
 				<td><?php echo $published; ?></td>
 			</tr>
 		<?php

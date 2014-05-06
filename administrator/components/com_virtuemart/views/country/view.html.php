@@ -48,7 +48,7 @@ class VirtuemartViewCountry extends VmView {
 		$model = VmModel::getModel('country');
 		$zoneModel = VmModel::getModel('worldzones');
 
-		$this->SetViewTitle();
+
 
 
 		$layoutName = JRequest::getWord('layout', 'default');
@@ -57,17 +57,20 @@ class VirtuemartViewCountry extends VmView {
 			$this->country = $model->getData();
 			$this->worldZones = $zoneModel->getWorldZonesSelectList();
 			$this->addStandardEditViewCommands();
-
+			$lang = JFactory::getLanguage();
+			$prefix="COM_VIRTUEMART_COUNTRY_";
+			$country_string = $lang->hasKey($prefix.$this->country->country_3_code) ? JText::_($prefix.$this->country->country_3_code) : $this->country->country_name;
+			$this->SetViewTitle('',$country_string);
 		}
 		else {
-
+			$this->SetViewTitle();
 			$this->addStandardDefaultViewCommands(true,false);
 
 			//First the view lists, it sets the state of the model
 			$this->addStandardDefaultViewLists($model,0,'ASC','filter_country');
 
 			$filter_country = JRequest::getWord('filter_country', false);
-			$this->countries = $model->getCountries(false, false, $this->lists['filter_country']);
+			$this->countries = $model->getCountries(false, false, $this->lists['filter_country'],true);
 
 			$this->pagination = $model->getPagination();
 

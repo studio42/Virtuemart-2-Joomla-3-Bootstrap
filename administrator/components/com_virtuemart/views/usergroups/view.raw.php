@@ -15,34 +15,10 @@
 * other free or open source software licenses.
 * @version $Id: view.html.php 5601 2012-03-04 18:22:24Z Milbo $
 */
-
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
+// Load the main HTML view 
 
-/**
- * HTML View class for maintaining the list of extensions
- *
- * @package	VirtueMart
- * @subpackage Extensions
- * @author Max Milbers
- */
-class VirtuemartViewUsergroups extends VmView {
-
-	function display( $tpl = null ){
-
-		$this->loadHelper('html');
-		$model = VmModel::getModel();
-
-		$this->addStandardDefaultViewCommands();
-		$this->addStandardDefaultViewLists($model);
-		$this->usergroups = $model->getUsergroups(false,true);
-		$this->pagination = $model->getPagination();
-
-		parent::display('results');
-		echo $this->AjaxScripts();
-	}
-}
-// pure php no closing tag
+$vmview = dirname(__FILE__);
+require($vmview.'/view.html.php');

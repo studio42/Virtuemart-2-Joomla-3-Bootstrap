@@ -65,6 +65,11 @@ class VirtuemartViewProduct extends VmView {
 				$manufacturers = $mf_model->getManufacturerDropdown($product->virtuemart_manufacturer_id);
 				$this->manufacturers = $manufacturers;
 
+				// set category in front edit link
+				if ($task == 'add') {
+					if ($category_id = jRequest::getInt('virtuemart_category_id',0) )
+						$product->categories = array($category_id);
+				}
 				// Get the category tree
 				if (isset($product->categories)) $this->category_tree = ShopFunctions::categoryListTree($product->categories);
 				else $this->category_tree = ShopFunctions::categoryListTree();
@@ -85,7 +90,7 @@ class VirtuemartViewProduct extends VmView {
 				$this->assignRef('product_childs', $product_childs);
 
 				if(!class_exists('VirtueMartModelConfig')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'config.php');
-				$this->productLayouts = VirtueMartModelConfig::getLayoutList('productdetails');
+				$this->productLayouts = VirtueMartModelConfig::getLayoutList('productdetails',$product->layout);
 
 				// Load Images
 				$model->addImages($product);
@@ -101,7 +106,7 @@ class VirtuemartViewProduct extends VmView {
 				$vendor_model = VmModel::getModel('vendor');
 
 				if(Vmconfig::get('multix','none')!=='none'){
-					if ($task =='add') $vendor_id = Permissions::getInstance()->isSuperVendor();
+					if ($task =='add') $vendor_id = $this->adminVendor;
 					else $vendor_id = $product->virtuemart_vendor_id ;
 					$lists['vendors'] = Shopfunctions::renderVendorList($vendor_id);
 				}
@@ -114,9 +119,16 @@ class VirtuemartViewProduct extends VmView {
 				if(empty($product->product_currency)){
 					$product->product_currency = $vendor->vendor_currency;
 				}
-				//$currencies = JHTML::_('select.genericlist', $currency_model->getCurrencies(), 'product_currency', '', 'virtuemart_currency_id', 'currency_name', $product->product_currency);
-				$this->product_currency = $currency_model->getCurrency($product->product_currency)->currency_symbol;
-				$this->vendor_currency = $currency_model->getCurrency($vendor->vendor_currency)->currency_symbol;
+				//STUDIO42  fix for currency, old method set 2 time same currency symbol
+				// TODO verify all others
+				$currencyModel = VmModel::getModel('currency');
+				$currencyModel->setId($vendor->vendor_currency);
+				$currency = $currencyModel->getData();
+				$this->vendor_currency = $currency->currency_symbol;
+
+				$currencyModel->setId($product->product_currency);
+				$currency = $currencyModel->getData();
+				$this->product_currency = $currency->currency_symbol;
 
 				if(count($manufacturers)>0 ){
 					$lists['manufacturers'] = JHTML::_('select.genericlist', $manufacturers, 'virtuemart_manufacturer_id', 'class="inputbox"', 'value', 'text', $product->virtuemart_manufacturer_id );
@@ -145,8 +157,17 @@ class VirtuemartViewProduct extends VmView {
 				$this->assignRef('fieldTypes', $fieldTypes);
 
 				/* Load product types lists */
-				$customsList = $field_model->getCustomsList();
-				$customlist = JHTML::_('select.genericlist', $customsList,'customlist');
+				if ($customsList = $field_model->getCustomsList()) {
+					$emptyOption = JHTML::_ ('select.option', '', '- '.JText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION').' :', 'value', 'text');
+					array_unshift ($customsList, $emptyOption);
+					$customlist = JHTML::_('select.genericlist', $customsList,'customlist');
+					if ($task="add") {
+						if ($customfieldsDefault = $this->getBLankCustomfields()) {
+						$product->customfields = $customfieldsDefault ;
+						// var_dump( $customfieldsDefault);jexit();
+						}
+					}
+				}
 				$this->assignRef('customsList', $customlist);
 
 				$ChildCustomRelation = $field_model->getProductChildCustomRelation();
@@ -284,11 +305,12 @@ class VirtuemartViewProduct extends VmView {
 			$this->SetViewTitle($title, $msg );
 
 			$this->addStandardDefaultViewLists($model,'created_on', 'DESC', 'filter_product');
-			$vendor = Permissions::getInstance()->isSuperVendor();
-			if ($vendor == 1 ) $vendor = null;
-
+			$vendor_id = $this->adminVendor;
+			if ($vendor_id == 1 ) $vendor_id = null;
+			// fix ???
+			$catid = JRequest::getInt('uctlist = ',0);
 			/* Get the list of products */
-			$productlist = $model->getProductListing(false,false,false,false,true,true,0,$vendor);
+			$productlist = $model->getProductListing(false,false,false,false,true,true,$catid,$vendor_id);
 
 			//The pagination must now always set AFTER the model load the listing
 			$this->pagination = $model->getPagination();
@@ -420,7 +442,28 @@ class VirtuemartViewProduct extends VmView {
 			echo JHTML::_('link', JRoute::_('index.php?view=product&product_parent_id='.$product_parent_id.'&option=com_virtuemart'.$front ), '<div class="small">'.$product_name.'</div>', array('class'=> 'hasTooltip', 'title' => $result));
 		}
 	}
-
+	// add the default customfields by parent_id and admin_only setting
+	function getBLankCustomfields(){
+		$db = JFactory::getDBO();
+		$model = VmModel::getModel('Customfields') ;
+		$vendor = $this->adminVendor;
+		$query = 'SELECT *,custom_value as value  FROM `#__virtuemart_customs` WHERE `custom_parent_id` in 
+			(
+				SELECT `virtuemart_custom_id` FROM `#__virtuemart_customs` WHERE `field_type` = "P" AND `admin_only` = 1
+			)';
+		if ($vendor > 1) {
+			$query .= " AND shared = 1";
+		}
+		$query .= ' order by custom_parent_id asc';
+		$db->setQuery($query);
+		$fields = $db->loadObjectlist();
+		$row = 0;
+		foreach ($fields as &$field) {
+			$field->display = $model->displayProductCustomfieldBE($field,0,$row);
+			$row++;
+		}
+		return $fields;
+	}
 }
 
 //pure php no closing tag

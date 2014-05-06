@@ -82,6 +82,10 @@ class VmImage extends VmMediaHandler {
 	public function createThumbFileUrl(){
 
 		$file_name = $this->createThumbName();
+		if(empty($this->file_name_thumb)) {
+			vmdebug('createThumbFileUrl empty file_name_thumb ',$this);
+			return false;
+		}
 		$file_url_thumb = $this->file_url_folder.'resized/'.$this->file_name_thumb.'.'.$this->file_extension;
 		return $file_url_thumb;
 	}
@@ -109,11 +113,16 @@ class VmImage extends VmMediaHandler {
 	public function createThumb($width=0,$height=0) {
 
 		if(empty($this->file_url_folder)){
-			vmError('Couldnt create thumb, no directory given. Activate vmdebug to understand which database entry is creating thies error');
+			vmError('Couldnt create thumb, no directory given. Activate vmdebug to understand which database entry is creating this error');
 			vmdebug('createThumb, no directory given',$this);
 			return FALSE;
 		}
 
+		if(empty($this->file_name)){
+			vmError('Couldnt create thumb, no name given. Activate vmdebug to understand which database entry is creating this error');
+			vmdebug('createThumb, no name given',$this);
+			return false;
+		}
 		$synchronise = JRequest::getString('synchronise',false);
 
 		if(!VmConfig::get('img_resize_enable') || $synchronise) return;
@@ -134,11 +143,9 @@ class VmImage extends VmMediaHandler {
 		$this->file_name_thumb = $this->createThumbName($width,$height);
 
 		if($this->file_is_forSale==0){
-
 			$rel_path = str_replace('/',DS,$this->file_url_folder);
 			$fullSizeFilenamePath = JPATH_ROOT.DS.$rel_path.$this->file_name.'.'.$this->file_extension;
 		} else {
-			$rel_path = str_replace('/',DS,$this->file_url_folder);
 			$fullSizeFilenamePath = $this->file_url_folder.$this->file_name.'.'.$this->file_extension;
 		}
 

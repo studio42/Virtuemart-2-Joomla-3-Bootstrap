@@ -323,11 +323,14 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	 * This is a security feature
 	 *
 	 * @author Max Milbers
+	 * Note Patrick Kohl STUDIO42
+	 * added prefix from joomla in like to prevent getting false config for multiple use of joomla in same database
 	 */
 	function setDangerousToolsOff(){
 
 		$db = JFactory::getDBO();
-		$q = 'SHOW TABLES LIKE "%virtuemart_configs%"'; //=>jos_virtuemart_shipment_plg_weight_countries
+		$prefix = $db->getPrefix();
+		$q = 'SHOW TABLES LIKE "'.$prefix.'virtuemart_configs"';
 		$db->setQuery($q);//vmdebug('$db',$db->loadResult());
 		$res = $db->loadResult();
 		if(!empty($res)){
@@ -500,11 +503,14 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	 * This is executing the update table commands to adjust tables to the latest layout
 	 *
 	 * @author Max Milbers
+	 * Note Patrick Kohl STUDIO42
+	 * added prefix from joomla in like to prevent getting false config for multiple use of joomla in same database
 	 */
 	function updateTable(){
 
 		$db = JFactory::getDBO();
-		$query = 'SHOW TABLES LIKE "%virtuemart_adminmenuentries"';
+		$prefix = $db->getPrefix();
+		$query = 'SHOW TABLES LIKE "'.$prefix.'virtuemart_adminmenuentries"';
 
 		$db->setQuery($query);
 		$result = $db->loadResult();

@@ -54,8 +54,10 @@ defined('_JEXEC') or die();
 						var t=setTimeout(function(){$alert.alert('close')},5000);
 						f.task.value = oldTask;
 
-					}
-					, "json" );
+					}, "json" )
+					.fail(function() {
+						location.reload();
+					});
 				return false;
 
 			} else {

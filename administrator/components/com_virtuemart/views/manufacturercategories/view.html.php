@@ -39,19 +39,26 @@ class VirtuemartViewManufacturercategories extends VmView {
 		// get necessary model
 		$model = VmModel::getModel();
 
-		$this->SetViewTitle('MANUFACTURER_CATEGORY');
+		
 
      	$layoutName = JRequest::getWord('layout', 'default');
 		if ($layoutName == 'edit') {
-
+			
 			$manufacturerCategory = $model->getData();
 			$this->manufacturerCategory = $manufacturerCategory ;
-
+			$this->SetViewTitle('MANUFACTURER_CATEGORY',$manufacturerCategory->mf_category_name);
 			$this->addStandardEditViewCommands($manufacturerCategory->virtuemart_manufacturercategories_id);
 
         }
         else {
-        	$this->addStandardDefaultViewCommands();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle('MANUFACTURER_CATEGORY');
+				$this->addStandardDefaultViewCommands();
+			}
         	$this->addStandardDefaultViewLists($model);
 
 			$this->manufacturerCategories = $model->getManufacturerCategories();
@@ -59,6 +66,7 @@ class VirtuemartViewManufacturercategories extends VmView {
 
 		}
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 }

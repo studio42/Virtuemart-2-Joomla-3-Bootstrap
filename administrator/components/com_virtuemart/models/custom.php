@@ -39,6 +39,7 @@ class VirtueMartModelCustom extends VmModel {
 		$this->setMainTable('customs');
 		$this->setToggleName('admin_only');
 		$this->setToggleName('is_hidden');
+		$this->setToggleName('shared');
 	}
 
     /**

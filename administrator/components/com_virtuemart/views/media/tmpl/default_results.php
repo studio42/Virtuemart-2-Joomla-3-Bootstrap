@@ -31,10 +31,15 @@ jimport('joomla.filesystem.file');
 		<th><?php echo JText::_('COM_VIRTUEMART_VIEW'); ?></th>
 		<th><?php echo $this->sort('file_title', 'COM_VIRTUEMART_FILES_LIST_FILETITLE') ?></th>
 		<th><?php echo $this->sort('file_type', 'COM_VIRTUEMART_FILES_LIST_ROLE') ?></th>
-		<th class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_FILES_LIST_FILENAME'); ?></th>
+		<th><span class="icon-eye-open"></span></th>
 		<th class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_FILES_LIST_FILETYPE'); ?></th>
 		<th><?php echo $this->sort('published','COM_VIRTUEMART_PUBLISHED'); ?></th>
-	  <th  class="hidden-phone"><?php echo $this->sort('virtuemart_media_id', 'COM_VIRTUEMART_ID')  ?></th>
+		<?php if(Vmconfig::get('multix','none')!=='none' and $this->perms->check('admin') ){ ?>
+			<th width="20" class="autosize">
+				<?php echo jText::_('COM_VIRTUEMART_SHARED') ?>
+			</th>
+		<?php } ?>
+	  <th class="hidden-phone"><?php echo $this->sort('virtuemart_media_id', 'COM_VIRTUEMART_ID')  ?></th>
 	</tr>
 	</thead>
 	<tbody>
@@ -47,7 +52,7 @@ jimport('joomla.filesystem.file');
 			$checked = JHTML::_('grid.id', $i , $media->virtuemart_media_id,null,'virtuemart_media_id');
 			$canDo = $this->canChange($media->created_by);
 			$published = $this->toggle( $media->published, $i, 'published',$canDo);
-			
+			$shared = $this->toggle($media->shared, $i, 'toggle.shared',$canDo);
 			?>
 			<tr >
 				<!-- Checkbox -->
@@ -61,9 +66,8 @@ jimport('joomla.filesystem.file');
 				</td>
 				<!-- File name -->
 				<td>
-					<?php echo $this->editLink(	$media->virtuemart_media_id, $media->file_title, 'virtuemart_media_id[]',
-						array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$media->file_title) ) ?>
-					<small class="visible-phone"><?php echo $media->file_name; ?> (<?php echo $media->file_extension; ?>)</small>
+					<?php echo $this->editLink(	$media->virtuemart_media_id, $media->file_title ) ?>
+					<br/><small><?php echo $media->file_name; ?> (<?php echo $media->file_extension; ?>)</small>
 				</td>
 				<!-- File role -->
 				<td><?php
@@ -74,13 +78,16 @@ jimport('joomla.filesystem.file');
 
 					?>
 				</td>
+				<td>
+					<?php echo $this->displayUsedIn( $media->virtuemart_media_id, $media->file_type ) ?>
+				</td>
 
-				<!-- File title -->
-				<td  class="hidden-phone autosize"><?php echo $media->file_name; ?></td>
 				<!-- File extension -->
 				<td  class="hidden-phone"><span class="vmicon vmicon-16-ext_<?php echo $media->file_extension; ?>"></span><?php echo $media->file_extension; ?></td>
-				<!-- published -->
 				<td><?php echo $published; ?></td>
+				<?php if(Vmconfig::get('multix','none')!=='none' and $this->perms->check('admin') ){ ?>
+					<td><?php echo $shared; ?></td>
+				<?php }?>
 				<td  class="hidden-phone"><?php echo $media->virtuemart_media_id; ?></td>
 			</tr>
 		<?php

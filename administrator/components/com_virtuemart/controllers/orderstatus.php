@@ -30,6 +30,8 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  * @author     Oscar van Eijk
  */
 class VirtuemartControllerOrderstatus extends VmController {
-
+	function __construct( $config=array()) {
+		parent::__construct('virtuemart_orderstate_id', $config);
+	}
 }
 //No Closing tag

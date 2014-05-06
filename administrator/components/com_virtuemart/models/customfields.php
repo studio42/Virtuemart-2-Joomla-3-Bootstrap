@@ -211,15 +211,22 @@ class VirtueMartModelCustomfields extends VmModel {
 	 */
 	function getCustomsList ($publishedOnly = FALSE) {
 
-		$vendorId = 1;
+		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+		$vendorId = Permissions::getInstance()->isSupervendor();
+
 		// get custom parents
 		$q = 'SELECT virtuemart_custom_id as value ,custom_title as text FROM `#__virtuemart_customs` where custom_parent_id=0
-			AND field_type <> "R" AND field_type <> "Z" ';
+			AND field_type <> "R" AND field_type <> "Z"';
+
 		if ($publishedOnly) {
-			$q .= 'AND `published`=1';
+			$q .= ' AND `published`=1';
 		}
 		if ($ID = JRequest::getInt ('virtuemart_custom_id', 0)) {
-			$q .= ' and `virtuemart_custom_id`!=' . (int)$ID;
+			$q .= ' AND `virtuemart_custom_id`!=' . (int)$ID;
+		}
+		// TODO better vendor check STUDIO42
+		if( !Permissions::getInstance()->check('admin') ){
+			$q .= ' AND (`virtuemart_vendor_id` = "'. (int)$vendorId. '" OR `shared` = "1") ';
 		}
 		//if (isset($this->virtuemart_custom_id)) $q.=' and virtuemart_custom_id !='.$this->virtuemart_custom_id;
 		$this->_db->setQuery ($q);
@@ -544,13 +551,16 @@ class VirtueMartModelCustomfields extends VmModel {
 		$field->custom_value = empty($field->custom_value) ? $field->value : $field->custom_value;
 
 		if ($field->is_cart_attribute) {
+			// todo $vendor_currency as static, because this can be called XXX times
 			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
 			if(!class_exists('VirtueMartModelCurrency')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'currency.php');
 			$vendor_model = VmModel::getModel('vendor');
 			$vendor_model->setId(1);
 			$vendor = $vendor_model->getVendor();
-			$currency_model = VmModel::getModel('currency');
-			$vendor_currency = $currency_model->getCurrency($vendor->vendor_currency);
+
+			$currencyModel = VmModel::getModel('currency');
+			$currencyModel->setId($vendor->vendor_currency);
+			$vendor_currency = $currencyModel->getData();
 			$priceInput = '<div class="input-append"><input class="input-mini" type="text" size="4" style="text-align:right;" value="' . (isset($field->custom_price) ?  $field->custom_price : '0') . '" name="field[' . $row . '][custom_price]" /><span class="add-on">'.$vendor_currency->currency_symbol."</span></div>";
 		}
 		else {

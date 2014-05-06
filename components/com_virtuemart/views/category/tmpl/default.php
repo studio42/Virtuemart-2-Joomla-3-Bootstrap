@@ -49,6 +49,11 @@ if (Permissions::getInstance()->check("admin,storeadmin")) {
 	// $this->assignRef('edit_link', $edit_link);
 
 echo $this->editLink('category',$this->category->virtuemart_category_id,$this->category->created_by);
+// set the current parent category for simplier adding new
+$idLink = '&category_parent_id='.$this->category->virtuemart_category_id;
+echo $this->newLink('category',$idLink,$this->category->created_by);
+$idLink = '&virtuemart_category_id='.$this->category->virtuemart_category_id;
+echo $this->newLink('product',$idLink,$this->category->virtuemart_category_id);
 if (empty($this->keyword) and !empty($this->category)) {
 	?>
 <div class="category_description">

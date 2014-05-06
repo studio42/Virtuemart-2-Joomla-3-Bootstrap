@@ -5,7 +5,7 @@
 *
 * @package	VirtueMart
 * @subpackage Manufacturer Category
-* @author Patrick Kohl
+* @author Patrick Kohl/Studio 42
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -17,35 +17,9 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
+// Load the main HTML view 
 
-/**
- * HTML View class for maintaining the list of manufacturer categories
- *
- * @package	VirtueMart
- * @subpackage Manufacturer Categories
- * @author Patrick Kohl
- */
-class VirtuemartViewManufacturercategories extends VmView {
-
-	function display($tpl = null) {
-
-		// Load the helper(s)
-		$this->loadHelper('html');
-
-		// get necessary model
-		$model = VmModel::getModel();
-       	$this->addStandardDefaultViewCommands();
-       	$this->addStandardDefaultViewLists($model);
-
-		$this->manufacturerCategories = $model->getManufacturerCategories();
-		$this->pagination = $model->getPagination();
-		parent::display('results');
-		echo $this->AjaxScripts();
-	}
-
-}
-// pure php no closing tag
+$vmview = dirname(__FILE__);
+require($vmview.'/view.html.php');

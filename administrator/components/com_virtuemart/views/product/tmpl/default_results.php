@@ -20,36 +20,43 @@
 defined('_JEXEC') or die();
 
 if ($product_parent_id=JRequest::getInt('product_parent_id', false))   $col_product_name='COM_VIRTUEMART_PRODUCT_CHILDREN_LIST'; else $col_product_name='COM_VIRTUEMART_PRODUCT_NAME';
+
+
+$listDirn = strtolower($this->lists['filter_order_Dir']);
+$saveOrder = ($this->lists['filter_order'] == 'pc.ordering');
 ?>
 
 <div id="resultscounter"><?php echo $this->pagination->getResultsCounter(); ?></div>
-	<table class="table table-striped">
+	<table class="table table-striped"<?php if ($saveOrder) echo ' id="productList"' ?>>
 	<thead>
 	<tr>
+		<?php if( $this->virtuemart_category_id ) { ?>
+			<th width="1%" class="nowrap center hidden-phone">
+				<?php echo $this->sort( 'pc.ordering' , 'COM_VIRTUEMART_ORDERING') ?>
+			</th>
+		<?php } ?>
 		<th width="20px">
 			<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 		</th>
 		<th><?php echo $this->sort('product_name',$col_product_name) ?> </th>
 		<?php if (!$product_parent_id ) { ?>
-                <th><?php echo $this->sort('product_parent_id','COM_VIRTUEMART_PRODUCT_CHILDREN_OF'); ?></th>
+                <th><span class="hidden-phone"><?php echo $this->sort('product_parent_id','COM_VIRTUEMART_PRODUCT_CHILDREN_OF'); ?>
+					</span>
+					<span class="visible-phone icon-chevron-down hasTip" title="<?php echo JText::_( 'COM_VIRTUEMART_PRODUCT_CHILDREN_OF'); ?>"></span>
+				</th>
                 <?php } ?>
-		<th width="80px" ><?php echo JText::_('COM_VIRTUEMART_PRODUCT_PARENT_LIST_CHILDREN'); ?></th>
-		<th width="48px"  class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_PRODUCT_MEDIA'); ?></th>
+		<th width="80px"><span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_PRODUCT_PARENT_LIST_CHILDREN'); ?>"><?php echo JText::_('COM_VIRTUEMART_PRODUCT_PARENT_LIST_CHILDREN'); ?></span></th>
+		<th width="48px" ><?php echo JText::_('COM_VIRTUEMART_PRODUCT_MEDIA'); ?></th>
 		<!--<th class="hidden-phone"><?php echo $this->sort('product_sku') ?></th>-->
-		<th width="80px" ><?php echo $this->sort('product_price', 'COM_VIRTUEMART_PRODUCT_PRICE_TITLE') ; ?></th>
+		<th width="80px" class="hidden-phone"><?php echo $this->sort('product_price', 'COM_VIRTUEMART_PRODUCT_PRICE_TITLE') ; ?></th>
 <?php /*		<th><?php echo JHTML::_('grid.sort', 'COM_VIRTUEMART_CATEGORY', 'c.category_name', $this->lists['filter_order_Dir'], $this->lists['filter_order'] ); ?></th> */ ?>
-<th><?php echo JText::_( 'COM_VIRTUEMART_CATEGORY'); ?></th>
+<th><span class="hidden-phone"><?php echo JText::_( 'COM_VIRTUEMART_CATEGORY'); ?></span><span class="visible-phone icon-folder hasTip" title="<?php echo JText::_( 'COM_VIRTUEMART_CATEGORY'); ?>"></span></th>
 
-		<?php
-		$num_rows = 0;
-		if( $this->virtuemart_category_id ) { ?>
-			<th>
-				<?php echo $this->sort('pc.ordering', 'COM_VIRTUEMART_FIELDMANAGER_REORDER'); ?>
-				<?php echo JHTML::_('grid.order', $this->productlist); ?>
-			</th>
-		<?php } ?>
 		<th  class="hidden-phone"><?php echo $this->sort('mf_name', 'COM_VIRTUEMART_MANUFACTURER_S') ; ?></th>
-		<th width="40px" class="autosize"><?php echo JText::_('COM_VIRTUEMART_REVIEW_S'); ?></th>
+		<th width="40px" class="autosize">
+			<span class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_REVIEW_S'); ?></span>
+			<div class="visible-phone icon-comments hasTip" title="<?php echo JText::_( 'COM_VIRTUEMART_REVIEW_S'); ?>"> </div>
+		</th>
 		<th width="40px"  class="hidden-phone"><?php echo $this->sort('product_special', 'COM_VIRTUEMART_PRODUCT_FORM_SPECIAL'); ?>
 			 </th>
 		<th width="40px"  class="hidden-phone"><?php echo $this->sort('published') ; ?></th>
@@ -61,15 +68,36 @@ if ($product_parent_id=JRequest::getInt('product_parent_id', false))   $col_prod
 	if ($total = count($this->productlist) ) {
 		$i = 0;
 		
-		$keyword = JRequest::getWord('keyword');
+		$canPublish = ShopFunctions::can('publish');
 		foreach ($this->productlist as $key => $product) {
 			$checked = JHTML::_('grid.id', $i , $product->virtuemart_product_id,null,'virtuemart_product_id');
-			$canDo = $this->canChange($product->created_by);
-			$published = $this->toggle( $product->published, $i, 'published',$canDo);
+			$canDo = $this->canChange($product->created_by) ;
+			$published = $this->toggle( $product->published, $i, 'published',$canDo && $canPublish);
 			// featured bootstrap style , canDo is the permission 
 			$is_featured = vmHtml::featured($product->product_special, $i, $canDo);
 			?>
-			<tr >
+			<tr sortable-group-id="<?php echo $this->virtuemart_category_id; ?>">
+				<?php if( $this->virtuemart_category_id ) { ?>
+					<td class="order nowrap center hidden-phone">
+						<?php
+						$iconClass = 'sortable-handler';
+						if (!$canDo)
+						{
+							$iconClass = 'sortable-handler inactive';
+						}
+						elseif (!$saveOrder)
+						{
+							$iconClass = 'inactive tip-top hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
+						}
+						?>
+						<span class="<?php echo $iconClass ?>">
+							<i class="icon-menu"></i>
+						</span>
+						<?php if ($canDo && $saveOrder) : ?>
+							<input type="text" style="display:none" name="order[]" size="5" value="<?php echo $product->ordering; ?>" class="width-20 text-area-order " />
+						<?php endif; ?>
+					</td>
+				<?php } ?>
 				<td align="right" ><?php echo $checked; ?></td>
 				<?php
 				$link = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$product->virtuemart_product_id.'&product_parent_id='.$product->product_parent_id.$this->tmpl;
@@ -82,7 +110,7 @@ if ($product_parent_id=JRequest::getInt('product_parent_id', false))   $col_prod
 					</div>
 				</td>
 				<?php if (!$product_parent_id ) { ?>
-					<td><?php
+					<td class="autosize"><?php
 						if ($product->product_parent_id  ) {
 							VirtuemartViewProduct::displayLinkToParent($product->product_parent_id);
 						}
@@ -98,7 +126,7 @@ if ($product_parent_id=JRequest::getInt('product_parent_id', false))   $col_prod
 					/* Create URL */
 					$link = JRoute::_('index.php?view=media&virtuemart_product_id='.$product->virtuemart_product_id.'&option=com_virtuemart'.$this->tmpl);
 				?>
-				<td align="center"  class="hidden-phone">
+				<td align="center">
 					<?php // We show the images only when less than 31 products are displayeed -->
 					$mediaLimit = (int)VmConfig::get('mediaLimit',30);
 					if($this->pagination->limit<=$mediaLimit or $total<=$mediaLimit){
@@ -111,13 +139,13 @@ if ($product_parent_id=JRequest::getInt('product_parent_id', false))   $col_prod
 					echo JHTML::_('link', $link, $img,  array('class' => 'hasTooltip thumbnail' ,'title' => JText::_('COM_VIRTUEMART_MEDIA_MANAGER').' '.$product->product_name));
 				 ?></td>
 				<!--<td class="hidden-phone"><?php echo $product->product_sku; ?></td>-->
-				<td align="right" ><?php echo isset($product->product_price_display)? $product->product_price_display:JText::_('COM_VIRTUEMART_NO_PRICE_SET') ?></td>
+				<td align="right" class="hidden-phone"><?php echo isset($product->product_price_display)? $product->product_price_display:JText::_('COM_VIRTUEMART_NO_PRICE_SET') ?></td>
 				<td>
 					<?php //echo JHTML::_('link', JRoute::_('index.php?view=category&task=edit&virtuemart_category_id='.$product->virtuemart_category_id.'&option=com_virtuemart'), $product->category_name);
 					echo $product->categoriesList;
 					?>
 				</td>
-				<?php 
+				<?php /* 
 					// Reorder only when category ID is present 
 					if ($this->virtuemart_category_id ) {
 						$ordering = true;
@@ -130,7 +158,7 @@ if ($product_parent_id=JRequest::getInt('product_parent_id', false))   $col_prod
 							<?php // echo vmCommonHTML::getOrderingField( $product->ordering ); ?>
 						</td>
 						<?php
-					} ?>
+					}  */?>
 				<td class="hidden-phone">
 					<?php echo $this->editLink(	$product->virtuemart_manufacturer_id, $product->mf_name, 'virtuemart_manufacturer_id',
 					array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$product->mf_name,'product'), 'manufacturer') ?>
@@ -165,6 +193,20 @@ if ($product_parent_id=JRequest::getInt('product_parent_id', false))   $col_prod
 	</table>
 	<!-- Hidden Fields -->
 	<input type="hidden" name="product_parent_id" value="<?php echo JRequest::getInt('product_parent_id', 0); ?>" />
-	<?php echo $this->addStandardHiddenToForm(); ?>
-
+	<?php echo $this->addStandardHiddenToForm();
+// if ($saveOrder)
+// {
+	// TODO right ordering !!!
+	$saveOrderingUrl = 'index.php?option=com_virtuemart&view=product&task=saveorder&format=json';
+	// only recall if script is loaded
+	if (jRequest::getword('format') == 'raw') { ?>
+	<script>	
+		sortableList = new jQuery.JSortableList('#productList tbody','adminForm','<?php echo strtolower($listDirn) ?>', '<?php echo $saveOrderingUrl ?>','','');
+	</script>
+	<?php
+	}
+	else
+		JHtml::_('sortablelist.sortable', 'productList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+// }
+?>
 

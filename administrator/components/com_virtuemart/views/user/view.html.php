@@ -95,8 +95,7 @@ class VirtuemartViewUser extends VmView {
 
 			$_new = ($userDetails->JUser->get('id') < 1);
 
-			// $this->addStandardEditViewCommands($userDetails->virtuemart_user_id,false);
-			$this->addStandardEditViewCommands(0,false);
+			$this->addStandardEditViewCommands($userDetails->user_is_vendor,false);
 
 			// User details
 			$_contactDetails = $model->getContactDetails();
@@ -215,13 +214,18 @@ class VirtuemartViewUser extends VmView {
 			$this->assignRef('editor', $editor);
 
 		} else {
-
-			JToolBarHelper::divider();
-			JToolBarHelper::custom('toggle.user_is_vendor.1', 'publish','','COM_VIRTUEMART_USER_ISVENDOR');
-			JToolBarHelper::custom('toggle.user_is_vendor.0', 'unpublish','','COM_VIRTUEMART_USER_ISNOTVENDOR');
-			JToolBarHelper::divider();
-			JToolBarHelper::deleteList();
-			JToolBarHelper::editList();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				JToolBarHelper::divider();
+				JToolBarHelper::custom('toggle.user_is_vendor.1', 'publish','','COM_VIRTUEMART_USER_ISVENDOR');
+				JToolBarHelper::custom('toggle.user_is_vendor.0', 'unpublish','','COM_VIRTUEMART_USER_ISNOTVENDOR');
+				JToolBarHelper::divider();
+				JToolBarHelper::deleteList();
+				JToolBarHelper::editList();
+			}
 
 			//This is intentionally, creating new user via BE is buggy and can be done by joomla
 			//JToolBarHelper::addNewX();
@@ -241,6 +245,7 @@ class VirtuemartViewUser extends VmView {
 			VmConfig::loadJLang('com_virtuemart_orders',TRUE);
 		}
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 	/*

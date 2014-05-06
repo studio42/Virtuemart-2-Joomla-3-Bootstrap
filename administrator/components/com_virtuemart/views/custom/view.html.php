@@ -64,24 +64,31 @@ class VirtuemartViewCustom extends VmView {
 
         }
         else {
-			$this->SetViewTitle('PRODUCT_CUSTOM_FIELD');
-			JToolBarHelper::custom('createClone', 'copy', 'copy',  JText::_('COM_VIRTUEMART_CLONE'), true);
-			JToolBarHelper::custom('toggle.admin_only.1', 'publish','', JText::_('COM_VIRTUEMART_TOGGLE_ADMIN'), true);
-			JToolBarHelper::custom('toggle.admin_only.0', 'unpublish','', JText::_('COM_VIRTUEMART_TOGGLE_ADMIN'), true);
-			JToolBarHelper::custom('toggle.is_hidden.1', 'publish','', JText::_('COM_VIRTUEMART_TOGGLE_HIDDEN'), true);
-			JToolBarHelper::custom('toggle.is_hidden.0', 'unpublish','', JText::_('COM_VIRTUEMART_TOGGLE_HIDDEN'), true);
-
-			$this->addStandardDefaultViewCommands();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle('PRODUCT_CUSTOM_FIELD');
+				JToolBarHelper::custom('createClone', 'copy', 'copy',  JText::_('COM_VIRTUEMART_CLONE'), true);
+				JToolBarHelper::custom('toggle.admin_only.1', 'publish','', JText::_('COM_VIRTUEMART_TOGGLE_ADMIN'), true);
+				JToolBarHelper::custom('toggle.admin_only.0', 'unpublish','', JText::_('COM_VIRTUEMART_TOGGLE_ADMIN'), true);
+				JToolBarHelper::custom('toggle.is_hidden.1', 'publish','', JText::_('COM_VIRTUEMART_TOGGLE_HIDDEN'), true);
+				JToolBarHelper::custom('toggle.is_hidden.0', 'unpublish','', JText::_('COM_VIRTUEMART_TOGGLE_HIDDEN'), true);
+				$this->addStandardDefaultViewCommands();
+				$this->installedCustoms = $this->renderInstalledCustomPlugins(null, true);
+				$this->customfieldTypes = $this->customfields->getField_types();
+			}
 			$this->addStandardDefaultViewLists($model, 0, 'DESC', 'keyword');
-			$this->customfieldTypes = $this->customfields->getField_types();
-			$this->installedCustoms = $this->renderInstalledCustomPlugins(null, true);
+
+
 			
 			$this->customs = $model->getCustoms(JRequest::getInt('custom_parent_id'),JRequest::getWord('keyword'));
 			$this->pagination = $model->getPagination();
 
 		}
-
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 	function renderInstalledCustomPlugins($selected,$resultOnly= null )

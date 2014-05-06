@@ -126,6 +126,9 @@ class VirtuemartViewProduct extends JViewLegacy {
 					if ($field->layout_pos)  $field->layout_pos = '<div><small>'.$field->layout_pos.'</small></div>';
 					$tbName = $field->is_cart_attribute ? 'cart_attributes' : 'custom_fields' ;
 					$html[$tbName] .= '<tr class="removable">
+						<td class="hidden-phone"><span class="icon-menu"></span>
+							<input class="ordering" type="hidden" value="'.$this->row.'" name="field['.$this->row .'][ordering]" />
+						</td>
 						<td><div '.$tip.'>'.JText::_($field->custom_title).'<div>'.
 						($field->custom_field_desc ? '<small>'.$field->custom_field_desc.'</small>' :'' ). '
 						 <td>'.$display.'</td>
@@ -134,9 +137,8 @@ class VirtuemartViewProduct extends JViewLegacy {
 							'.$field->layout_pos.'
 							'.$this->model->setEditCustomHidden($field, $this->row).'
 						</td>
-						 <td><span class="icon-remove"></span><input class="ordering" type="hidden" value="'.$this->row.'" name="field['.$this->row .'][ordering]" /></td>
-						 <td><span class="icon-move"></span></td>
-						</tr>';
+						 <td><span class="icon-remove"></span></td>
+					</tr>';
 					$this->row++;
 				}
 			}

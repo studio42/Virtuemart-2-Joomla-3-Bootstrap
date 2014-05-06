@@ -31,6 +31,9 @@ $states = JText::_('COM_VIRTUEMART_STATE_S');
 			<th>
 				<?php echo $this->sort('country_name') ?>
 		    </th>
+			<th width="20">
+				<?php echo $states; ?>
+		    </th>
 				<?php /* TODO not implemented				    <th>
 				<?php echo JText::_('COM_VIRTUEMART_ZONE_ASSIGN_CURRENT_LBL'); ?>
 				</th> */ ?>
@@ -65,11 +68,15 @@ $states = JText::_('COM_VIRTUEMART_STATE_S');
 			<?php
 			$lang =JFactory::getLanguage();
 			if ($lang->hasKey($prefix.$row->country_3_code)) {
-				echo "(".$country_string.") ";
+				echo "<br/><small>".$country_string."</small> ";
 			}
 			?>
-
-		    <a class="hasTooltip" title="<?php echo JText::sprintf('COM_VIRTUEMART_STATES_VIEW_LINK', $country_string ); ?>" href="<?php echo $statelink; ?>">[<?php echo $states ?>]</a>
+		<td>
+			<a class="hasTooltip btn btn-mini <?php echo $row->states ? 'btn-info' : 'btn-primary'?>" title="<?php echo JText::sprintf('COM_VIRTUEMART_STATES_VIEW_LINK', $country_string ); ?>" href="<?php echo $statelink; ?>">
+				<div><?php echo $row->states ?></div>
+				<?php echo $states ?>
+			</a>
+		</td>
 		</td>
 		<?php /* TODO not implemented				<td align="left">
 			<?php echo $row->virtuemart_worldzone_id; ?>

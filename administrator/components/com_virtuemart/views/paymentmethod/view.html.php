@@ -29,8 +29,6 @@ if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php'
  * @package		VirtueMart
  * @author valérie isaksen
  */
-if (!class_exists('VirtueMartModelCurrency'))
-require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'currency.php');
 
 class VirtuemartViewPaymentMethod extends VmView {
 
@@ -51,14 +49,14 @@ class VirtuemartViewPaymentMethod extends VmView {
 		//@todo should be depended by loggedVendor
 		//		$vendorId=1;
 		//		$this->assignRef('vendorId', $vendorId);
-		// TODO logo
-		$this->SetViewTitle();
+
 
 		$vendorModel = VmModel::getModel('vendor');
 		$vendorModel->setId(1);
 		$vendor = $vendorModel->getVendor();
 		$currencyModel = VmModel::getModel('currency');
-		$currency = $currencyModel->getCurrency($vendor->vendor_currency);
+		$currencyModel->setId($vendor->vendor_currency);
+		$currency = $currencyModel->getData();
 		$this->vendor_currency = $currency->currency_symbol;
 
 		$layoutName = JRequest::getWord('layout', 'default');
@@ -66,7 +64,6 @@ class VirtuemartViewPaymentMethod extends VmView {
 
 			// Load the helper(s)
 			$this->loadHelper('image');
-			// $this->loadHelper('html');
 			// jimport('joomla.html.pane');
 
 			$this->payment = $model->getPayment();
@@ -80,20 +77,29 @@ class VirtuemartViewPaymentMethod extends VmView {
 			if(Vmconfig::get('multix','none')!=='none'){
 				$this->vendorList= ShopFunctions::renderVendorList($this->payment->virtuemart_vendor_id);
 			}
-
+			// TODO logo
+			$this->SetViewTitle('',$this->payment->payment_name);
 			$this->addStandardEditViewCommands( $this->payment->virtuemart_paymentmethod_id);
 		} else {
-			$this->addStandardDefaultViewCommands();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle();
+				$this->addStandardDefaultViewCommands();
+			// know payment list
+				$this->installedPayments = $this->PaymentPlgList();
+			}
 			$this->addStandardDefaultViewLists($model);
 
 			$this->payments = $model->getPayments();
 			$this->pagination = $model->getPagination();
-			// know payment list
-			$this->installedPayments = $this->PaymentPlgList();
 
 		}
 
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 

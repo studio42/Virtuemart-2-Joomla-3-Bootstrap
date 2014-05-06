@@ -40,11 +40,10 @@ class VirtueMartControllerVirtuemart extends JControllerLegacy
 
 	function virtuemart() {
 
-		$view = $this->getView(JRequest::getWord('view', 'virtuemart'), 'html');
-
 		// Display it all
 		$safeurlparams = array('virtuemart_category_id'=>'INT','virtuemart_currency_id'=>'INT','return'=>'BASE64','lang'=>'CMD');
-		parent::display(true, $safeurlparams);//$view->display();
+		parent::display(true, $safeurlparams);
+		return $this;
 	}
 }
  //pure php no closing tag

@@ -31,10 +31,10 @@ $search_type = JRequest::getVar('search_type', 'product');
 	<?php AdminUIHelper::startAdminArea(); ?>
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch ('COM_VIRTUEMART_PRODUCT_LIST_SEARCH_BY_DATE', 'filter_product') ?>
-
-		<span class="searchbydate"><div class="btn-group pull-right form-horizontal"><?php echo vmJsApi::jDate(JRequest::getVar('search_date', $nowstring), 'search_date'); ?></div>
+		<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
+		<span class="searchbydate" style="display: inline-block;"><div class="btn-group pull-right form-horizontal"><?php echo vmJsApi::jDate(JRequest::getVar('search_date', $nowstring), 'search_date'); ?></div>
 		<div class="btn-group pull-right"><?php echo $this->lists['search_order']; ?></div></span>
-
+		
 		<div class="clearfix clear"> </div>
 		<div class="btn-group pull-left">
 			<select id="virtuemart_category_id" name="virtuemart_category_id" onchange="Joomla.ajaxSearch(this); return false;">
@@ -112,8 +112,10 @@ $search_type = JRequest::getVar('search_type', 'product');
 				var t=setTimeout(function(){$alert.alert('close')},5000);
 				$el.data('task', task.replace(val,valNew) );
 				$btn.toggleClass('icon-star-empty icon-star');
-			}
-			, "json" );
+			}, "json" )
+			.fail(function() {
+			location.reload();
+		});
 		return false;
 	}
 	jQuery(function($){

@@ -56,14 +56,14 @@ defined('_JEXEC') or die();
 		$checked = JHTML::_('grid.id', $i, $row->virtuemart_manufacturer_id,null,'virtuemart_manufacturer_id');
 		$canDo = $this->canChange($row->created_by);
 		$published = $this->toggle( $row->published, $i, 'published' ,$canDo );
-		$categoryLink = $this->editLink($row->virtuemart_manufacturercategories_id, $row->mf_category_name, 'virtuemart_manufacturercategories_id','','manufacturercategories');
+		$categoryLink = $this->editLink($row->virtuemart_manufacturercategories_id, $row->mf_category_name, 'virtuemart_manufacturercategories_id',null,'manufacturercategories');
 		?>
 	    <tr >
 		<td width="10">
 			<?php echo $checked; ?>
 		</td>
 		<td align="left">
-		    <?php echo $this->editLink($row->virtuemart_manufacturer_id, $row->mf_name, 'virtuemart_manufacturer_id') ?>
+		    <?php echo $this->editLink($row->virtuemart_manufacturer_id, $row->mf_name) ?>
 			<div class="small visible-phone">
 				<?php echo $categoryLink ?>
 			</div>

@@ -142,21 +142,6 @@ if (empty($this->product)) {
     	<div class="clear"></div>
         </div>
     <?php } // PDF - Print - Email Icon END
-    ?>
-
-    <?php
-    // Product Short Description
-    if (!empty($this->product->product_s_desc)) {
-	?>
-        <div class="product-short-description">
-	    <?php
-	    /** @todo Test if content plugins modify the product description */
-	    echo nl2br($this->product->product_s_desc);
-	    ?>
-        </div>
-	<?php
-    } // Product Short Description END
-
 
     if (!empty($this->product->customfieldsSorted['ontop'])) {
 	$this->position = 'ontop';
@@ -173,6 +158,18 @@ echo $this->loadTemplate('images');
 	</div>
 
     <div class="span8">
+		<?php
+		// Product Short Description
+		if (!empty($this->product->product_s_desc)) {
+		?>
+			<div class="product-short-description">
+			<?php
+			/** @todo Test if content plugins modify the product description */
+			echo nl2br($this->product->product_s_desc);
+			?>
+			</div>
+		<?php
+		} ?>
 	    <div class="spacer-buy-area">
 
 		<?php
@@ -286,7 +283,7 @@ $active = ' class="active"';
 		<?php
 		$active = '';
 	} if ($this->allowRating || $this->showReview) { ?>
-		<li <?php echo $active ?>><a href="#product-tab-comment" data-toggle="tab"><?php echo JText::_('COM_VIRTUEMART_COMMENT') ?></a></li>
+		<li <?php echo $active ?>><a href="#product-tab-comment" data-toggle="tab"><?php echo JText::_('COM_VIRTUEMART_REVIEWS') ?></a></li>
 		<?php
 		$active = '';
 	} if (!empty($this->product->customfieldsRelatedProducts)) { ?>

@@ -57,7 +57,13 @@ class VirtuemartViewState extends VmView {
 			$this->worldZones = $zoneModel->getWorldZonesSelectList();
 			$this->addStandardEditViewCommands();
 		} else {
-			$this->addStandardDefaultViewCommands();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->addStandardDefaultViewCommands();
+			}
 			$this->addStandardDefaultViewLists($model);
 			$this->states = $model->getStates($countryId,false,$this->lists['search']);
 			$this->pagination = $model->getPagination();
@@ -69,6 +75,7 @@ class VirtuemartViewState extends VmView {
 		if ($layoutName !== 'edit') $this->SetViewTitle('',$this->country_name);
 
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 }

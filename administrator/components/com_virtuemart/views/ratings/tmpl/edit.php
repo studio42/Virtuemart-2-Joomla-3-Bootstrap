@@ -23,7 +23,6 @@
 defined('_JEXEC') or die('Restricted access');
 vmJsApi::cssSite();
 AdminUIHelper::startAdminArea();
-AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_REVIEW_DETAILS');
 ?>
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
@@ -63,9 +62,7 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_REVIEW_DETAILS');
 
 </form>
 
-<?php
-AdminUIHelper::imitateTabs('end');
-AdminUIHelper::endAdminArea(); ?>
+<?php AdminUIHelper::endAdminArea(); ?>
 <script type="text/javascript">
 Joomla.submitbutton = function(pressbutton) {
 	 if (pressbutton == 'cancel') {

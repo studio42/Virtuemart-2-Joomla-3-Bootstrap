@@ -124,6 +124,7 @@ class CurrencyDisplay {
 				self::$_instance->setCurrencyDisplayToStyleStr($style);
 			} else {
 				$uri = JFactory::getURI();
+				VmConfig::loadJLang('com_virtuemart');
 
 				if(empty(self::$_instance->_currency_id)){
 					$link = $uri->root().'administrator/index.php?option=com_virtuemart&view=user&task=editshop';
@@ -294,24 +295,27 @@ class CurrencyDisplay {
 	 */
 	public function priceDisplay($price, $currencyId=0,$quantity = 1.0,$inToShopCurrency = false,$nb= -1){
 
-		$currencyId = $this->getCurrencyForDisplay($currencyId);
+		$price = $this->roundForDisplay($price,$currencyId, $quantity ,$inToShopCurrency, $nb);
+		return $this->getFormattedCurrency($price,$nb);
+	}
 
+	public function roundForDisplay($price, $currencyId=0,$quantity = 1.0,$inToShopCurrency = false,$nb= -1){
+
+		$currencyId = $this->getCurrencyForDisplay($currencyId);
 		if($nb==-1){
 			$nb = $this->_nbDecimal;
 		}
 
-		//vmdebug('priceDisplay',$quantity);
-	/*	if($this->_vendorCurrency_numeric===756){ // and $this->_numeric_code!==$this->_vendorCurrency_numeric){
-			$price = round((float)$price * 2,1) * 0.5 * (float)$quantity;
-		} else {*/
-			$price = round((float)$price,$nb) * (float)$quantity;
-		//}
+		$price = (float)$price * (float)$quantity;
+
 		$price = $this->convertCurrencyTo($currencyId,$price,$inToShopCurrency);
 
 		if($this->_numeric_code===756 and VmConfig::get('rappenrundung',FALSE)=="1"){
 			$price = round((float)$price * 2,1) * 0.5;
-		}//*/
-		return $this->getFormattedCurrency($price,$nb);
+		} else {
+			$price = round($price,$nb);
+		}
+		return $price;
 	}
 
 	/**
@@ -319,7 +323,7 @@ class CurrencyDisplay {
 	 * @author Max Milbers
 	 * @param val number
 	 */
-	private function getFormattedCurrency( $nb, $nbDecimal=-1){
+	public function getFormattedCurrency( $nb, $nbDecimal=-1){
 
 		//TODO $this->_nbDecimal is the config of the currency and $nbDecimal is the config of the price type.
 		if($nbDecimal==-1) $nbDecimal = $this->_nbDecimal;
@@ -421,13 +425,15 @@ class CurrencyDisplay {
 			vmdebug('convertCurrencyTo OBJECT '.$exchangeRate);
 		}
 		else {
-			//				$this->_db = JFactory::getDBO();
+			static $currency_exchange_rate = array();
+			if(!isset($currency_exchange_rate[$currency])){
 			$q = 'SELECT `currency_exchange_rate` FROM `#__virtuemart_currencies` WHERE `virtuemart_currency_id` ="'.(int)$currency.'" ';
 			$this->_db->setQuery($q);
-			$exch = (float)$this->_db->loadResult();
-			// 				vmdebug('begin convertCurrencyTo '.$exch);
-			if(!empty($exch)){
-				$exchangeRate = $exch;
+				$currency_exchange_rate[$currency] = (float)$this->_db->loadResult();
+			}
+
+			if(!empty($currency_exchange_rate[$currency])){
+				$exchangeRate = $currency_exchange_rate[$currency];
 			} else {
 				$exchangeRate = 0;
 			}
@@ -469,14 +475,9 @@ class CurrencyDisplay {
 	function ensureUsingCurrencyCode($curr){
 
 		if(is_numeric($curr) and $curr!=0){
-			$this->_db = JFactory::getDBO();
-			$q = 'SELECT `currency_code_3` FROM `#__virtuemart_currencies` WHERE `virtuemart_currency_id`="'.(int)$curr.'"';
-			$this->_db->setQuery($q);
-			$currInt = $this->_db->loadResult();
-			if(empty($currInt)){
-				JError::raiseWarning(E_WARNING,'Attention, could not find currency code in the table for id = '.$curr);
-			}
-			return $currInt;
+			if (!class_exists('ShopFunctions'))
+				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+			return ShopFunctions::getCurrencyByID($curr,'currency_code_3');
 		}
 		return $curr;
 	}
@@ -489,16 +490,10 @@ class CurrencyDisplay {
 	 * @author Kohl Patrick
 	 */
 	function getCurrencyIdByField($value=0,$fieldName ='currency_code_3'){
-
 		if(is_string($value) ){
-			$this->_db = JFactory::getDBO();
-			$q = 'SELECT `virtuemart_currency_id` FROM `#__virtuemart_currencies` WHERE `'.$fieldName.'`="'.$value.'"';
-			$this->_db->setQuery($q);
-			$currency_id = $this->_db->loadResult();
-			if(empty($currency_id)){
-				JError::raiseWarning(E_WARNING,'Attention, couldnt find currency_id in the table for '.$fieldName.' = '.$value);
-			}
-			return $currency_id;
+			if (!class_exists('ShopFunctions'))
+				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+			return ShopFunctions::getCurrencyIDByName($value,$fieldName);			
 		}
 		return $value;
 	}

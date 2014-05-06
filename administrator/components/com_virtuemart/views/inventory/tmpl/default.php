@@ -24,8 +24,12 @@ defined('_JEXEC') or die('Restricted access');
 
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch('COM_VIRTUEMART_NAME','filter_product') ?>
-		<?php echo $this->lists['stockfilter'] ?>
-		<?php echo $this->DisplayFilterPublish() ?>
+		<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
+		<div class="btn-group pull-right">
+			<?php echo $this->lists['stockfilter'] ?>
+			<?php // echo $this->DisplayFilterPublish() ?>
+			
+		</div>
 	</div>
 	<div id="results">
 		<?php 
@@ -92,8 +96,11 @@ jQuery(function(){
 				// $img.toggleClass('icon-'+text.img[val]+' icon-'+text.img[valNew]); //attr('src', src.replace(text.img[val],text.img[valNew]) );
 				// f.task.value = oldTask;
 			}
-			, "json" );
-			return false;
+			, "json" )
+			.fail(function() {
+				location.reload();
+			});
+		return false;
 	});
 });
 </script>

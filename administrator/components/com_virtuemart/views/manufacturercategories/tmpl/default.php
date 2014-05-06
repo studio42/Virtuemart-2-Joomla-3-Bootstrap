@@ -22,7 +22,7 @@ defined('_JEXEC') or die();
 ?>
 <form action="index.php" method="post" name="adminForm" id="adminForm">
 	<?php AdminUIHelper::startAdminArea(); ?>
-
+	<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
 	<div id="results">
 		<?php 
 		// split to use ajax search

@@ -18,46 +18,17 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access'); ?>
-<?php echo $this->langList; ?>
 <div class="row-fluid">
 	<fieldset class="span6">
 		<legend>
 			<?php echo JText::_('COM_VIRTUEMART_VENDOR_FORM_INFO_LBL') ?>
+			<div class="pull-right"><?php echo $this->langList; ?></div>
 		</legend>
 		<table class="admintable">
-			<tr>
-				<td class="key">
-					<?php echo JText::_('COM_VIRTUEMART_STORE_FORM_STORE_NAME'); ?>:
-				</td>
-				<td>
-					<input class="inputbox" type="text" name="vendor_store_name" id="vendor_store_name" size="50" value="<?php echo $this->vendor->vendor_store_name; ?>" />
-				</td>
-			</tr>
-			<tr>
-				<td class="key">
-					<?php echo JText::_('COM_VIRTUEMART_STORE_FORM_COMPANY_NAME'); ?>:
-				</td>
-				<td>
-					<input class="inputbox" type="text" name="vendor_name" id="vendor_name" size="50" value="<?php echo $this->vendor->vendor_name; ?>" />
-				</td>
-			</tr>
-			<tr>
-				<td class="key">
-					<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_URL'); ?>:
-				</td>
-				<td>
-					<input class="inputbox" type="text" name="vendor_url" id="vendor_url" size="50" value="<?php echo $this->vendor->vendor_url; ?>" />
-				</td>
-			</tr>
-			<tr>
-				<td class="key">
-					<?php echo JText::_('COM_VIRTUEMART_STORE_FORM_MPOV'); ?>:
-				</td>
-				<td>
-					<input class="inputbox" type="text" name="vendor_min_pov" id="vendor_min_pov" size="10" value="<?php echo $this->vendor->vendor_min_pov; ?>" />
-				</td>
-			</tr>
-
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_STORE_FORM_STORE_NAME','vendor_store_name',$this->vendor->vendor_store_name); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_STORE_FORM_COMPANY_NAME','vendor_name',$this->vendor->vendor_name); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_URL','vendor_url',$this->vendor->vendor_url); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_STORE_FORM_MPOV','vendor_min_pov',$this->vendor->vendor_min_pov); ?>
 		</table>
 	</fieldset>
 	<fieldset  class="span6">
@@ -84,34 +55,28 @@ defined('_JEXEC') or die('Restricted access'); ?>
 		</table>
 	</fieldset>
 </div>
-	<fieldset>
-		<legend>
-			<?php echo JText::_('COM_VIRTUEMART_VENDOR_FORM_INFO_LBL') ?>
-		</legend>
-		<?php
-			echo $this->vendor->images[0]->displayFilesHandler($this->vendor->virtuemart_media_id,'vendor');
-		?>
-
-
-	</fieldset>
-
+<div class="row-fluid">
+	<?php
+		echo $this->vendor->images[0]->displayFilesHandler($this->vendor->virtuemart_media_id,'vendor');
+	?>
+</div>
 	<fieldset>
 		<legend>
 			<?php echo JText::_('COM_VIRTUEMART_STORE_FORM_DESCRIPTION');?>
 		</legend>
-		<?php echo $this->editor->display('vendor_store_desc', $this->vendor->vendor_store_desc, '100%', 450, 70, 15)?>
+		<?php echo $this->editor->display('vendor_store_desc', $this->vendor->vendor_store_desc, '100%', 450, 70, 15,false)?>
 	</fieldset>
 	<fieldset>
 		<legend>
 			<?php echo JText::_('COM_VIRTUEMART_STORE_FORM_TOS');?>
 		</legend>
-		<?php echo $this->editor->display('vendor_terms_of_service', $this->vendor->vendor_terms_of_service, '100%', 450, 70, 15)?>
+		<?php echo $this->editor->display('vendor_terms_of_service', $this->vendor->vendor_terms_of_service, '100%', 450, 70, 15,false)?>
 	</fieldset>
 	<fieldset>
 		<legend>
 			<?php echo JText::_('COM_VIRTUEMART_STORE_FORM_LEGAL');?>
 		</legend>
-		<?php echo $this->editor->display('vendor_legal_info', $this->vendor->vendor_legal_info, '100%', 400, 70, 15)?>
+		<?php echo $this->editor->display('vendor_legal_info', $this->vendor->vendor_legal_info, '100%', 400, 70, 15,false)?>
 	</fieldset>
 
 	<fieldset>

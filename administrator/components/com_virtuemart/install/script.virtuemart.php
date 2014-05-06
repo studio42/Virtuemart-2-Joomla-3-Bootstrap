@@ -49,12 +49,16 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			JModelLegacy ::addIncludePath($this->path.DS.'models');
 
 		}
-
+		/**
+		* Note Patrick Kohl STUDIO42
+		* added prefix from joomla in like to prevent getting false table load for multiple use of joomla in same database
+		*/
 		public function checkIfUpdate(){
 
 			$update = false;
 			$this->_db = JFactory::getDBO();
-			$q = 'SHOW TABLES LIKE "%virtuemart_adminmenuentries%"'; //=>jos_virtuemart_shipment_plg_weight_countries
+			$prefix = $this->_db->getPrefix();
+			$q = 'SHOW TABLES LIKE "'.$prefix.'virtuemart_adminmenuentries"'; //=>jos_virtuemart_shipment_plg_weight_countries
 			$this->_db->setQuery($q);
 			if($this->_db->loadResult()){
 
@@ -611,6 +615,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		 *
 		 * @param string Process type (i.e. install, uninstall, update)
 		 * @param object JInstallerComponent parent
+		 * Note Patrick Kohl STUDIO42
+		 * added prefix from joomla in like to prevent getting false config for multiple use of joomla in same database
 		 */
 		public function postflight ($type, $parent=null) {
 			if ($type != 'uninstall') {
@@ -619,7 +625,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				// 				VmConfig::loadConfig(true);
 
 				$this->_db = JFactory::getDBO();
-				$q = 'SHOW TABLES LIKE "%virtuemart_configs%"'; //=>jos_virtuemart_shipment_plg_weight_countries
+				$prefix = $this->_db->getPrefix();
+				$q = 'SHOW TABLES LIKE "'.$prefix.'virtuemart_configs"'; //=>jos_virtuemart_shipment_plg_weight_countries
 				$this->_db->setQuery($q);
 				$res = $this->_db->loadResult();
 				if(!empty($res)){

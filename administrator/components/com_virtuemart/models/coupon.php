@@ -74,14 +74,25 @@ class VirtueMartModelCoupon extends VmModel {
 	 */
 	function getCoupons($search='') {
 
+		$where = array();
 		$whereString = '';
 // 		if (count($where) > 0) $whereString = ' WHERE '.implode(' AND ', $where) ;
 		
 		if($search){
 			$search = '"%' . $this->_db->escape( $search, true ) . '%"' ;
 			//$keyword = $this->_db->Quote($filterCountry, false);
-			$whereString = ' WHERE `coupon_code` LIKE '.$search;
+			$where[] = ' WHERE `coupon_code` LIKE '.$search;
 		}
+		$published = JRequest::getVar('filter_published', false);
+		if ($published !== false) {
+			if ($published === '1') {
+				$where[] = " `published` = 1 ";
+			} else if ($published === '0') {
+				$where[] = " `published` = 0 ";
+			}
+		}
+		$whereString= '';
+		if (count($where) > 0) $whereString = ' WHERE '.implode(' AND ', $where) ;
 		return $this->_data = $this->exeSortSearchListQuery(0,'*',' FROM `#__virtuemart_coupons`',$whereString,'',$this->_getOrdering());
 
 	}

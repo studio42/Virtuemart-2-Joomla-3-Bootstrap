@@ -48,7 +48,7 @@ defined('_JEXEC') or die();
 			<th width="10"><?php echo JText::_('COM_VIRTUEMART_CALC_AMOUNT_DIMUNIT'); ?></th> */  ?>
 			<th class="autosize"><?php echo JText::_('COM_VIRTUEMART_COUNTRY_S'); ?></th>
 			<th><?php echo JText::_('COM_VIRTUEMART_STATE_IDS'); ?></th>
-			<th class="autosize"><?php echo JText::_('COM_VIRTUEMART_PUBLISHED'); ?></th>
+			<th class="autosize hidden-phone"><?php echo JText::_('COM_VIRTUEMART_PUBLISHED'); ?></th>
 			<?php if((Vmconfig::get('multix','none')!='none') && $this->perms->check( 'admin' )){ ?>
 			<th width="20">
 				<?php echo JText::_( 'COM_VIRTUEMART_SHARED')  ?>
@@ -78,7 +78,8 @@ defined('_JEXEC') or die();
 				</td>
 				<td align="left">
 					<?php echo $this->editLink($row->virtuemart_calc_id, $row->calc_name) ?>
-					<?php if($row->calc_descr) echo '<div class="small">'.$row->calc_descr.'</div>' ?>
+					<?php if($row->calc_descr) echo '<small class="small hidden-phone">'.$row->calc_descr.'</small>' ?>
+					<span class="visible-phone"><?php echo $published; ?></span>
 				</td>
 				<?php  if((Vmconfig::get('multix','none')!='none') && $this->perms->check( 'admin' )){ ?>
 				<td align="left">
@@ -139,7 +140,7 @@ defined('_JEXEC') or die();
 				<td>
 					<?php echo JText::_($row->calcStatesList); ?>
 				</td>
-				<td align="center">
+				<td align="center" class="hidden-phone">
 					<?php echo $published; ?>
 				</td>
 

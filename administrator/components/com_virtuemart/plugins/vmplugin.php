@@ -514,33 +514,43 @@ abstract class vmPlugin extends JPlugin {
 		if ($psType === NULL) {
 			$psType = $this->_psType;
 		}
-		$layout = vmPlugin::_getLayoutPath ($name, 'vm' . $psType, $layout);
-
+		if ( !$file = vmPlugin::_getLayoutPath ($name, 'vm' . $psType, $layout) ) {
+			JError::raiseNotice( 100, $layout.' not found ');
+			return;
+		}
 		ob_start ();
-		include ($layout);
+		include ($file);
 		return ob_get_clean ();
 
 	}
 
 	/**
 	 *  Note: We have 2 subfolders for versions > J15 for 3rd parties developers, to avoid 2 installers
-	 *
+	 * TODO Add a function for sub layout eg : default_image.php(if it's missing, you get an PHP error);
 	 * @author Patrick Kohl, Valérie Isaksen
 	 */
 	private function _getLayoutPath ($pluginName, $group, $layout = 'default') {
 		$app = JFactory::getApplication ();
+		if (empty($layout)) $layout = 'default';
 		// get the template and default paths for the layout
 		$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . $group . DS . $pluginName . DS . $layout . '.php';
-		$defaultPath = JPATH_SITE . DS . 'plugins' . DS . $group . DS . $pluginName . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
+		$pluginPath = JPATH_SITE . DS . 'plugins' . DS . $group . DS . $pluginName . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
+		$defaultPath = JPATH_SITE . DS . 'plugins' . DS . $group . DS . $pluginName . DS . $pluginName . DS . 'tmpl' . DS . 'default.php';
 
 		// if the site template has a layout override, use it
 		jimport ('joomla.filesystem.file');
 		if (JFile::exists ($templatePath)) {
 			return $templatePath;
 		}
-		else {
-			return $defaultPath;
+		elseif (JFile::exists ($pluginPath)) {
+			return $pluginPath;
 		}
+		elseif (JFile::exists ($defaultPath)) {
+			vmError($pluginPath.' not found ');
+			// JError::raiseNotice( 100, $pluginPath.' not found ');
+			return $defaultPath;
+		} else JError::raiseError( 404, 'Layout '.$group . DS . $pluginName. DS .$layout.'.php not found ');
+
 	}
 
 }

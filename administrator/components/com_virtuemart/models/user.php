@@ -319,15 +319,15 @@ class VirtueMartModelUser extends VmModel {
 			$var_4						=	true;
 		}
 
-		$query						=	'SELECT a.' . $_CB_database->NameQuote( 'id' ) . ' AS value'
-		.	', a.' . $_CB_database->NameQuote( 'title' ) . ' AS text'
-		.	', COUNT( DISTINCT b.' . $_CB_database->NameQuote( 'id' ) . ' ) AS level'
-		.	"\n FROM " . $_CB_database->NameQuote( '#__usergroups' ) . " AS a"
-		.	"\n LEFT JOIN " . $_CB_database->NameQuote( '#__usergroups' ) . " AS b"
-		.	' ON a.' . $_CB_database->NameQuote( 'lft' ) . ' > b.' . $_CB_database->NameQuote( 'lft' )
-		.	' AND a.' . $_CB_database->NameQuote( 'rgt' ) . ' < b.' . $_CB_database->NameQuote( 'rgt' )
-		.	"\n GROUP BY a." . $_CB_database->NameQuote( 'id' )
-		.	"\n ORDER BY a." . $_CB_database->NameQuote( 'lft' ) . " ASC";
+		$query						=	'SELECT a.' . $_CB_database->quoteName( 'id' ) . ' AS value'
+		.	', a.' . $_CB_database->quoteName( 'title' ) . ' AS text'
+		.	', COUNT( DISTINCT b.' . $_CB_database->quoteName( 'id' ) . ' ) AS level'
+		.	"\n FROM " . $_CB_database->quoteName( '#__usergroups' ) . " AS a"
+		.	"\n LEFT JOIN " . $_CB_database->quoteName( '#__usergroups' ) . " AS b"
+		.	' ON a.' . $_CB_database->quoteName( 'lft' ) . ' > b.' . $_CB_database->quoteName( 'lft' )
+		.	' AND a.' . $_CB_database->quoteName( 'rgt' ) . ' < b.' . $_CB_database->quoteName( 'rgt' )
+		.	"\n GROUP BY a." . $_CB_database->quoteName( 'id' )
+		.	"\n ORDER BY a." . $_CB_database->quoteName( 'lft' ) . " ASC";
 		$_CB_database->setQuery( $query );
 		$groups						=	$_CB_database->loadObjectList();
 

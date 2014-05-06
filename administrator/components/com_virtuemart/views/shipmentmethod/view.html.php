@@ -45,7 +45,7 @@ class VirtuemartViewShipmentmethod extends VmView {
 
 
 		$layoutName = JRequest::getWord('layout', 'default');
-		$this->SetViewTitle();
+
 
 
 		$layoutName = JRequest::getWord('layout', 'default');
@@ -68,19 +68,29 @@ class VirtuemartViewShipmentmethod extends VmView {
 			$this->shipment = $shipment;
 			$this->shopperGroupList = ShopFunctions::renderShopperGroupList($shipment->virtuemart_shoppergroup_ids,true);
 
+			$this->SetViewTitle('',$shipment->shipment_name);
 			$this->addStandardEditViewCommands($shipment->virtuemart_shipmentmethod_id);
 
 		} else {
-			JToolBarHelper::custom('cloneshipment', 'copy', 'copy', JText::_('COM_VIRTUEMART_SHIPMENT_CLONE'), true);
-			$this->addStandardDefaultViewCommands();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle();
+				JToolBarHelper::custom('cloneshipment', 'copy', 'copy', JText::_('COM_VIRTUEMART_SHIPMENT_CLONE'), true);
+				$this->addStandardDefaultViewCommands();
+				$this->installedShipments = $this->shipmentsPlgList();
+			}
 			$this->addStandardDefaultViewLists($model);
 
 			$this->shipments = $model->getShipments();
 			$this->pagination = $model->getPagination();
-			$this->installedShipments = $this->shipmentsPlgList();
+
 		}
 
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 	function renderInstalledShipmentPlugins($selected)

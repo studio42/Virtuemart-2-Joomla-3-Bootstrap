@@ -229,7 +229,7 @@ class VirtueMartModelProduct extends VmModel {
 		$joinChildren = FALSE;
 		$joinLang = TRUE;
 		$orderBy = ' ';
-
+		$view = JRequest::getWord ('view') ;
 		$where = array();
 		if ($vendor) $where[] = 'p.`virtuemart_vendor_id` = ' . (int)$vendor;
 		$useCore = TRUE;
@@ -246,17 +246,18 @@ class VirtueMartModelProduct extends VmModel {
 				}
 			}
 		}
-
+		// Note studio42,some filtering are incorrect
 		if ($useCore) {
-			$isSite = JFactory::getApplication ()->isSite() && JRequest::getVar ('view') !== 'product' ;
+			$isSite = JFactory::getApplication ()->isSite() && $view !== 'product' ;
 			// admin published filter
-			if ($isSite) {
+			if ($view == 'product' || $view == 'inventory') {
 				$this->filter_published = JRequest::getvar('filter_published');
 				if ($this->filter_published === '1') {
-					$where[] = "p.`published` = 1 ";
+					$where[] = 'p.`published` = 1 ';
 				} else if ($this->filter_published === '0') {
-					$where[] = "p.`published` = 0 ";
+					$where[] = 'p.`published` = 0 ';
 				}
+				
 			}
 
 // 		if ( $this->keyword !== "0" and $group ===false) {
@@ -285,6 +286,7 @@ class VirtueMartModelProduct extends VmModel {
 							}
 						}
 					}
+					//NOTE STUDIO42 plural ?? works only in some language without exceptions
 					if (strpos ($searchField, '`') !== FALSE){
 						$keywords_plural = preg_replace('/\s+/', '%" AND '.$searchField.' LIKE "%', $keyword);
 						$filter_search[] =  $searchField . ' LIKE ' . $keywords_plural;
@@ -389,7 +391,6 @@ class VirtueMartModelProduct extends VmModel {
 						break;
 				}
 			}
-
 			// special  orders case
 			//vmdebug('my filter ordering ',$this->filter_order);
 			switch ($this->filter_order) {
@@ -517,8 +518,8 @@ class VirtueMartModelProduct extends VmModel {
 			$joinedTables .= ' LEFT OUTER JOIN `#__virtuemart_products` children ON p.`virtuemart_product_id` = children.`product_parent_id` ';
 		}
 
-		if (count ($where) > 0) {
-			$whereString = ' WHERE (' . implode (' AND ', $where) . ') ';
+		if (!empty($where) > 0) {
+			$whereString = ' WHERE ' . implode (' AND ', $where) ;
 		}
 		else {
 			$whereString = '';
@@ -1276,7 +1277,8 @@ class VirtueMartModelProduct extends VmModel {
 				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
 			}
 			if (!Permissions::getInstance ()->check ('admin', 'storeadmin')) {
-				$onlyPublished = TRUE;
+				// list is filtered by vendor ID
+				// $onlyPublished = TRUE;
 				if ($show_prices = VmConfig::get ('show_prices', 1) == '0') {
 					$withCalc = FALSE;
 				}
@@ -1467,52 +1469,78 @@ class VirtueMartModelProduct extends VmModel {
 
 
 	/* reorder product in one category
-	 * TODO this not work perfect ! (Note by Patrick Kohl)
+	 * Note by Patrick Kohl
+	 * last method was simply not correct
+	 * NEW method Studio42 !!
+	 * this order all immediatly after first saveorder
+	 * only new orders are saved
 	*/
-	function saveorder ($cid = array(), $order, $filter = NULL) {
+	function saveorder ($cids = array(), $orders, $filter = NULL) {
 
-		JSession::checkToken () or jexit ('Invalid Token');
+		// JSession::checkToken () or jexit ('Invalid Token');
 
 		$virtuemart_category_id = JRequest::getInt ('virtuemart_category_id', 0);
-
-		$q = 'SELECT `id`,`ordering` FROM `#__virtuemart_product_categories`
-			WHERE virtuemart_category_id=' . (int)$virtuemart_category_id . '
-			ORDER BY `ordering` ASC';
-		$this->_db->setQuery ($q);
-		$pkey_orders = $this->_db->loadObjectList ();
-
-		$tableOrdering = array();
-		foreach ($pkey_orders as $orderTmp) {
-			$tableOrdering[$orderTmp->id] = $orderTmp->ordering;
-		}
-		// set and save new ordering
-		foreach ($order as $key => $ord) {
-			$tableOrdering[$key] = $ord;
-		}
-		asort ($tableOrdering);
-		$i = 1;
+		$orderDir = (jRequest::getWord('filter_order_Dir') == 'ASC' ) ? 'ASC' : 'DESC';
 		$ordered = 0;
-		foreach ($tableOrdering as $key => $ord) {
-// 			if ($order != $i) {
+		$msg = '';
+
+		// get old orders
+		$q = 'SELECT `id`,`virtuemart_product_id`,`ordering` FROM `#__virtuemart_product_categories`
+			WHERE virtuemart_category_id=' . (int)$virtuemart_category_id . '
+			ORDER BY `ordering` ASC'; //'.$orderDir;
+		$this->_db->setQuery ($q);
+		$products = $this->_db->loadObjectList ();
+
+		// set new order array();
+		$newOrders = array();
+		foreach ($cids as $key => $cid) {
+			$newOrders[$cid] = $key ;
+		}
+		$toUpdate = array();// list of product to update
+		$when ='';
+
+		// check ordered products from DB
+		foreach ($products as $oldOrder => $product) {
+
+			$ordering = $oldOrder; // set the theorical ordering from this level
+			
+			//test if we have a new ordering
+			if ( isset($newOrders[$product->virtuemart_product_id])) {
+				if (!isset($start) ) {
+					$start = $ordering ; // set the first found from request Index
+					if ($orderDir === 'DESC') $start += count($cids);// add counted from request to start for DESC order 
+				}
+				// set the new order from requested index key
+				$tmpOrder = $newOrders[$product->virtuemart_product_id];
+				if ($orderDir === 'ASC') $ordering = $start+$tmpOrder;
+				else $ordering = $start-$tmpOrder;
+			}
+			//only apply for new orderings
+			if ($product->ordering === $ordering) continue;
+			$when .= '  WHEN '.$product->id.' THEN "'.$ordering.'" ';
+			$toUpdate[] = $product->id ;
+			$msg .= $ordering.' '.$product->id.', ';
+			$ordered++;
+		
+		}
+
+		// this update all, in one sql connection
+		if ($ordered) {
+			$in = implode(",", $toUpdate);
+
 			$this->_db->setQuery ('UPDATE `#__virtuemart_product_categories`
-					SET `ordering` = ' . $i . '
-					WHERE `id` = ' . (int)$key . ' ');
+				SET ordering = CASE id
+				'.$when.'
+				END
+				WHERE id IN ('. $in .')' );
 			if (!$this->_db->execute ()) {
 				vmError ($this->_db->getErrorMsg ());
 				return FALSE;
 			}
-			$ordered++;
-// 			}
-			$i++;
 		}
-		if ($ordered) {
-			$msg = JText::sprintf ('COM_VIRTUEMART_ITEMS_MOVED', $ordered);
-		}
-		else {
-			$msg = JText::_ ('COM_VIRTUEMART_ITEMS_NOT_MOVED');
-		}
-		JFactory::getApplication ()->redirect ('index.php?option=com_virtuemart&view=product&virtuemart_category_id=' . $virtuemart_category_id, $msg);
-
+		
+// jexit();
+		return $ordered ;
 	}
 
 	/**

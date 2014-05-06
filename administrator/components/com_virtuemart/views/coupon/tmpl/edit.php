@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 AdminUIHelper::startAdminArea();
-AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_COUPON_DETAILS');
+// AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_COUPON_DETAILS');
 ?>
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
@@ -51,7 +51,7 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_COUPON_DETAILS');
 
 
     <?php
-    AdminUIHelper::imitateTabs('end');
+    // AdminUIHelper::imitateTabs('end');
     AdminUIHelper::endAdminArea();
     ?>
 

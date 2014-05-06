@@ -20,6 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 JHTML::_( 'behavior.modal' );
 echo $this->editLink('user',1,$this->vendor->virtuemart_vendor_id,'editshop');
+echo $this->newLink('category','',null,'add',null);
 ?>
 
 <?php # Vendor Store Description

@@ -671,12 +671,13 @@ abstract class vmPSPlugin extends vmPlugin {
 	 */
 	protected function sendEmailToVendorAndAdmins ($subject, $message) {
 
+		$mailer = JFactory::getMailer();
 		// recipient is vendor and admin
 		$vendorId = 1;
 		$vendorModel = VmModel::getModel ('vendor');
 		$vendorEmail = $vendorModel->getVendorEmail ($vendorId);
 		$vendorName = $vendorModel->getVendorName ($vendorId);
-		JUtility::sendMail ($vendorEmail, $vendorName, $vendorEmail, $subject, $message);
+		$mailer->sendMail($vendorEmail, $vendorName, $vendorEmail, $subject, $message);
 		$query = 'SELECT name, email, sendEmail' .
 				' FROM #__users' .
 				' WHERE sendEmail=1';
@@ -690,7 +691,7 @@ abstract class vmPSPlugin extends vmPlugin {
 		foreach ($rows as $row) {
 			if ($row->sendEmail) {
 				$message = html_entity_decode ($message, ENT_QUOTES);
-				JUtility::sendMail ($vendorEmail, $vendorName, $row->email, $subject, $message);
+				$mailer->sendMail($vendorEmail, $vendorName, $row->email, $subject, $message);
 			}
 		}
 	}

@@ -18,15 +18,16 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die(); ?>
-<?php echo $this->langList;
+defined('_JEXEC') or die();
 $i=0;
 ?>
 
 
 <fieldset>
 	<legend>
-	<?php echo JText::_('COM_VIRTUEMART_PRODUCT_INFORMATION').( $this->product->virtuemart_product_id ? ' id: '.$this->product->virtuemart_product_id : '') ?></legend>
+		<?php echo JText::_('COM_VIRTUEMART_PRODUCT_INFORMATION').( $this->product->virtuemart_product_id ? ' id: '.$this->product->virtuemart_product_id : '') ?>
+		<div class="pull-right"><?php echo $this->langList; ?></div>
+	</legend>
     <div class="row-fluid"> 
 		<table class="span6">
 			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_FORM_PUBLISH','published',$this->product->published); ?>
@@ -44,35 +45,30 @@ $i=0;
 			if (isset($this->lists['manufacturers'])) { ?>
 				<?php echo VmHTML::row('raw','COM_VIRTUEMART_MANUFACTURER', $this->lists['manufacturers'] ); ?>
 			<?php }?>
-			<tr>
-				<td  valign="top">
-					
-					<?php echo JText::_('COM_VIRTUEMART_CATEGORY_S') ?>
-				</td>
-				<td>
-					<select class="inputbox" style="width:100%" id="categories" name="categories[]" multiple="multiple" size="10">
-						<option value=""><?php echo JText::_('COM_VIRTUEMART_UNCATEGORIZED')  ?></option>
-						<?php echo $this->category_tree; ?>
-					</select>
-					<?php
-					// It is important to have all product information in the form, since we do not preload the parent
-					// I place the ordering here, maybe we make it editable later.
-						if(!isset($this->product->ordering)) $this->product->ordering = 0;
-					?>
-					<input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering">
-				</td>
-			</tr>
+			<?php echo VmHTML::row('raw', 'COM_VIRTUEMART_CATEGORY_S',
+				'<select class="inputbox span12" id="categories" name="categories[]" multiple="multiple" size="10">
+						<option value="">'. JText::_('COM_VIRTUEMART_UNCATEGORIZED') .'</option>
+						'.$this->category_tree.'
+					</select>' ); ?>
+
 			<?php echo VmHTML::row('raw','COM_VIRTUEMART_SHOPPER_FORM_GROUP', $this->shoppergroupList ); ?>
-			<?php echo VmHTML::row('raw','COM_VIRTUEMART_PRODUCT_DETAILS_PAGE', JHTML::_('Select.genericlist', $this->productLayouts, 'layout', 'size=1', 'value', 'text', $this->product->layout) ) ?>
+			<?php echo VmHTML::row('raw','COM_VIRTUEMART_PRODUCT_DETAILS_PAGE', $this->productLayouts) ?>
 
 		</table>
+		<?php
+		// It is important to have all product information in the form, since we do not preload the parent
+		// I place the ordering here, maybe we make it editable later.
+		// TODO : NOTE STUDIO42 must be fixed, ordering is by category and multiple, this trick can never work
+		if(!isset($this->product->ordering)) $this->product->ordering = 0; {
+		?>
+		<input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering">
+		<?php } ?>
 	</div>
 </fieldset>
-<table width="100%">
-	<tr>
-		<td valign="top">
-			<!-- Product pricing -->
-          <fieldset>
+
+<?php if (VmConfig::get('show_product_prices_tab',1) ) { ?>
+<!-- Product pricing -->
+  <fieldset>
     <legend><?php echo JText::_ ('COM_VIRTUEMART_PRODUCT_FORM_PRICES'); ?></legend>
 	<div id="pricesort" data-lastRowUnremovable="true">
 	<?php
@@ -166,11 +162,9 @@ $i=0;
         </div>
     </div>
 
-</fieldset>
-	</td>
-</tr>
-<tr>
-	<td colspan="2" >
+  </fieldset>
+<?php } 
+if (VmConfig::get('show_product_child_tab',1) ) { ?>
 	<fieldset>
 		<legend>
 		<?php echo JText::_('COM_VIRTUEMART_PRODUCT_FORM_CHILD_PARENT'); ?></legend>
@@ -279,23 +273,13 @@ $i=0;
 			</tr>
 		</table>
 	</fieldset>
-	</tr>
+<?php } ?>
+	<fieldset>
+		<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_PRINT_INTNOTES'); ?></legend>
+			<textarea style="width: 100%;" class="inputbox input-block-level" name="intnotes" id="intnotes" cols="35"><?php echo $this->product->intnotes; ?></textarea>
+	</fieldset>
 
-	<tr>
-		<td
-			width="100%"
-			valign="top"
-			colspan="2">
-			<fieldset>
-				<legend>
-				<?php echo JText::_('COM_VIRTUEMART_PRODUCT_PRINT_INTNOTES'); ?></legend>
-				<textarea style="width: 100%;" class="inputbox input-block-level" name="intnotes" id="intnotes" cols="35"><?php echo $this->product->intnotes; ?></textarea>
-			</fieldset>
-		</td>
-	</tr>
-
-</table>
-
+<?php if (VmConfig::get('show_product_prices_tab',1) ) { ?>
 <script type="text/javascript">
     jQuery( function ($) {
 		$('#add_new_price').click(function() {
@@ -320,9 +304,6 @@ $i=0;
 		});
     });
 
-</script>
-
-<script type="text/javascript">
 var tax_rates = new Array();
 <?php
 if( property_exists($this, 'taxrates') && is_array( $this->taxrates )) {
@@ -334,4 +315,4 @@ if( property_exists($this, 'taxrates') && is_array( $this->taxrates )) {
 
 </script>
 
-
+<?php } ?>

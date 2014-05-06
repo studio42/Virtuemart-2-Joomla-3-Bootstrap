@@ -119,3 +119,15 @@ defined('_JEXEC') or die('Restricted access');
 
     </table>
 </fieldset>
+<fieldset>
+	<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT_MOD') ?>(<?php echo JText::_('JADMINISTRATION') ?>)</legend>
+	
+	<table class="admintable">
+		<?php echo VmHTML::row('raw','','<strong>'. JText::_('JSHOW') .' :</strong>' ) ?>
+		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_FORM_PRODUCT_DIM_WEIGHT_LBL','show_product_dim_weight_tab',VmConfig::get('show_product_dim_weight_tab',1) ); ?>
+		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_FORM_PRODUCT_STATUS_LBL','show_product_statut_tab',VmConfig::get('show_product_statut_tab',1) ); ?>
+		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_FORM_PRICES','show_product_prices_tab',VmConfig::get('show_product_prices_tab',1) ); ?>
+		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_FORM_CHILD_PARENT','show_product_child_tab',VmConfig::get('show_product_child_tab',1) ); ?>
+
+    </table>
+</fieldset>

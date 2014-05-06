@@ -44,7 +44,7 @@ class VirtuemartControllerCategory extends VmController {
 
 		$data['category_name'] = JRequest::getVar('category_name','','post','STRING',JREQUEST_ALLOWHTML);
 		$data['category_description'] = JRequest::getVar('category_description','','post','STRING',JREQUEST_ALLOWHTML);
-
+		$this->cleanCache('com_virtuemart');
 		parent::save($data);
 	}
 
@@ -122,25 +122,22 @@ class VirtuemartControllerCategory extends VmController {
 	/**
 	* Save the categories order
 	*/
-	public function saveOrder()
+	public function saveorder()
 	{
-		// Check for request forgeries
-		JSession::checkToken() or jexit( 'Invalid Token' );
-
-		$cid	= JRequest::getVar( 'cid', array(), 'post', 'array' );	//is sanitized
-		JArrayHelper::toInteger($cid);
-
-		$model = VmModel::getModel('category');
-
-		$order	= JRequest::getVar('order', array(), 'post', 'array');
-		JArrayHelper::toInteger($order);
-
-		if ($model->setOrder($cid,$order)) {
-			$msg = JText::_('COM_VIRTUEMART_NEW_ORDERING_SAVED');
-		} else {
-			$msg = $model->getError();
+		if ($ordered = parent::saveorder()) {
+			$this->cleanCache('_virtuemart');
 		}
-		$this->setRedirect(null, $msg );
+	}
+	/**
+	 * Handle the toggle task
+	 *
+	 * @author Max Milbers , Patrick Kohl
+	 */
+
+	public function toggle($field,$val=null){
+		$this->cleanCache('_virtuemart');
+		parent::toggle($field,$val);
+		
 	}
 
 }

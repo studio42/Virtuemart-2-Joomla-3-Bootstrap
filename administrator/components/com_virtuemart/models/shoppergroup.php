@@ -76,9 +76,9 @@ class VirtueMartModelShopperGroup extends VmModel {
      * @return object List of shopper group objects
      */
     function getShopperGroups($onlyPublished=false, $noLimit = false) {
-    	$db = JFactory::getDBO();
 
-	    $query = 'SELECT * FROM `#__virtuemart_shoppergroups` '.$this->_getOrdering() ;
+		$db = JFactory::getDBO();
+		$query = 'SELECT * FROM `#__virtuemart_shoppergroups` '.$this->_getOrdering() ;
 		if ($noLimit) {
 			$this->_data = $this->_getList($query);
 		}
@@ -137,20 +137,24 @@ class VirtueMartModelShopperGroup extends VmModel {
 	 * @param unknown_type $kind
 	 */
 	function getDefault($kind = 1, $onlyPublished = FALSE, $vendorId = 1){
-
+		static $groups = array();
 		$kind = $kind + 1;
+		$key = $kind.'.'.$vendorId;
+		if (array_key_exists($key,$groups)) return $groups[$key];
 		$q = 'SELECT * FROM `#__virtuemart_shoppergroups` WHERE `default` = "'.$kind.'" AND (`virtuemart_vendor_id` = "'.$vendorId.'" OR `shared` = "1") ';
 		if($onlyPublished){
 			$q .= ' AND `published`="1" ';
 		}
 		$this->_db->setQuery($q);
 
-		if(!$res = $this->_db->loadObject()){
+		if(!$groups[$key] = $this->_db->loadObject()){
+			if ($kind ===1 ) $group = 'Anonymous';
+			else $group = 'default';
 			$app = JFactory::getApplication();
-			$app->enqueueMessage('Attention no standard shopper group set '.$this->_db->getErrorMsg());
+			$app->enqueueMessage('Attention no standard shopper group set for '.$group.' '.$this->_db->getErrorMsg());
 		} else {
 			//vmdebug('getDefault', $res);
-			return $res;
+			return $groups[$key];
 		}
 
 	}
@@ -161,8 +165,8 @@ class VirtueMartModelShopperGroup extends VmModel {
 
 		if(count($shopperGroups)<1){
 
-			$_defaultShopperGroup = $this->getDefault($user->guest,$onlyPublished,$vendorId);
-			$shopperGroups[] = $_defaultShopperGroup->virtuemart_shoppergroup_id;
+			if ( $_defaultShopperGroup = $this->getDefault($user->guest,$onlyPublished,$vendorId) )
+				$shopperGroups[] = $_defaultShopperGroup->virtuemart_shoppergroup_id;
 		/*	$this->_db->setQuery('SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shoppergroups
 								WHERE `default`="'.($user->guest+1).'" AND `virtuemart_vendor_id`="' . (int) $vendorId . '"');
 			$this->_shopperGroupId = $this->_db->loadColumn();*/

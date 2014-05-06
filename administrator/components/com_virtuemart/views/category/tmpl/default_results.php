@@ -23,29 +23,31 @@ if (!class_exists ('shopFunctionsF'))
 	require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 if (JRequest::getCmd('tmpl') =='component' ) $front = '&tmpl=component';
 else $front = '';
+
+$listDirn = strtolower($this->lists['filter_order_Dir']);
+$saveOrder = ($this->lists['filter_order'] == 'cx.ordering');
 ?>
 	<div id="resultscounter"><?php echo $this->pagination->getResultsCounter(); ?></div>
-	<table class="table table-striped">
+	<table class="table table-striped"<?php if ($saveOrder) echo ' id="categoryList"'?>>
 		<thead>
 		<tr>
-
+			<th width="1%" class="nowrap center hidden-phone">
+				<?php echo $this->sort( 'cx.ordering' , 'COM_VIRTUEMART_ORDERING') ?>
+			</th>
 			<th width="20">
 				<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 			</th>
-			<th align="left" width="25%">
+			<th align="left" width="40%">
 				<?php echo $this->sort('category_name') ?>
-			</th>
-			<th align="left" class="autosize">
-				<?php echo $this->sort('category_description', 'COM_VIRTUEMART_DESCRIPTION') ; ?>
 			</th>
 			<th align="left" class="autosize">
 				<?php echo JText::_('COM_VIRTUEMART_PRODUCT_S'); ?>
 			</th>
 
-			<th align="left" width="13%">
+<?php /* 			<th align="left" width="13%">
 				<?php echo $this->sort( 'c.ordering' , 'COM_VIRTUEMART_ORDERING') ?>
 				<?php echo JHTML::_('grid.order', $this->categories, 'filesave.png', 'saveOrder' ); ?>
-			</th>
+			</th> */ ?>
 			<th align="center" width="20" class="autosize">
 				<?php echo $this->sort('c.published' , 'COM_VIRTUEMART_PUBLISHED') ?>
 			</th>
@@ -53,10 +55,10 @@ else $front = '';
             <th width="20" class="autosize">
 
 				<?php echo $this->sort( 'cx.category_shared' , 'COM_VIRTUEMART_SHARED') ?>
-            </th width="20">
+            </th>
 			<?php } ?>
 
-			<th><?php echo $this->sort('virtuemart_category_id', 'COM_VIRTUEMART_ID')  ?></th>
+			<th width="20" class="hidden-phone"><?php echo $this->sort('virtuemart_category_id', 'COM_VIRTUEMART_ID')  ?></th>
 
 		</tr>
 		</thead>
@@ -74,21 +76,21 @@ else $front = '';
 		}
 
 // 		for ($i = $this->pagination->limitstart; $i < $nrows; $i++) {
-
+		$canPublish = ShopFunctions::can('publish');
 		foreach($this->categories as $i=>$cat){
 
 // 			if( !isset($this->rowList[$i])) $this->rowList[$i] = $i;
 // 			if( !isset($this->depthList[$i])) $this->depthList[$i] = 0;
 
-// 			$row = $this->categories[$this->rowList[$i]];
-			$canDo = $this->canChange($cat->created_by);
+// 			$row = $this->categories[$this->rowList[$i]]; 
+			$canDo = $this->canChange($cat->created_by) && $canPublish;
 			$checked = JHTML::_('grid.id', $i, $cat->virtuemart_category_id);
+			
 			$published = $this->toggle( $cat->published, $i, 'published',$canDo);
 
 			$showProductsLink = JRoute::_('index.php?option=com_virtuemart&view=product&virtuemart_category_id=' . $cat->virtuemart_category_id.$front);
-			$shared = $this->toggle($cat->shared, $i, 'toggle.shared',$canDo);
-
 			$px = 0;
+			
 			if(!isset($cat->level)){
 				if($cat->category_parent_id){
 					$cat->level = 1;
@@ -97,25 +99,48 @@ else $front = '';
 				}
 
 			}
+			if (!$cat->category_parent_id) {
+				$level0 = '';
+				$parentsStr = '';
+			} else {
+				$level0 = ' 0';
+				$parentsStr = ' '.$cat->category_parent_id;
+			}
 			$repeat = $cat->level;
 
 			if($repeat > 1){
 				$px = ($repeat - 2)*12;
 				$categoryLevel = "<sup>&#x221f;</sup>";
 			} else $categoryLevel ="";
+			
+			
 		?>
-			<tr >
-
+			<tr sortable-group-id="<?php echo $cat->category_parent_id; ?>" item-id="<?php echo $cat->virtuemart_category_id ?>" parents="<?php echo $parentsStr.$level0 ?>" level="<?php echo $cat->level?>">
+				<td class="order nowrap center hidden-phone">
+					<?php
+					$iconClass = '';
+					if (!$canDo)
+					{
+						$iconClass = ' inactive';
+					}
+					elseif (!$saveOrder)
+					{
+						$iconClass = ' inactive tip-top hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED');
+					}
+					?>
+					<span class="sortable-handler<?php echo $iconClass ?>">
+						<i class="icon-menu"></i>
+					</span>
+					<?php if ($canDo && $saveOrder) : ?>
+						<input type="text" style="display:none" name="order[]" size="5" value="<?php echo $cat->ordering; ?>" class="width-20 text-area-order " />
+					<?php endif; ?>
+				</td>
 				<td><?php echo $checked;?></td>
 				<td align="left">
-					<span class="categoryLevel" style="padding-left:<?php echo $px ?>px"><?php echo $categoryLevel;?></span>
-					<?php echo $this->editLink($cat->virtuemart_category_id, $this->escape($cat->category_name), 'virtuemart_category_id')?>
-				</td>
-				<td class="autosize">
-
-					<?php
-
-					echo shopFunctionsF::limitStringByWord(JFilterOutput::cleanText($cat->category_description),50); ?>
+					<span class="categoryLevel" style="padding-left:<?php echo $px ?>px"><?php echo $categoryLevel;?>
+					<?php echo $this->editLink($cat->virtuemart_category_id, $this->escape($cat->category_name))?>
+					<br/><small><?php echo shopFunctionsF::limitStringByWord(JFilterOutput::cleanText($cat->category_description),50); ?></small>
+					</span>
 				</td>
 				<td>
 					
@@ -124,7 +149,8 @@ else $front = '';
 					</div>
 						<?php echo JText::_('COM_VIRTUEMART_SHOW');?></a>
 				</td>
-				<td align="center" class="order">
+				<?php /* <td align="center" class="order">
+					
 					<span><?php 
 					
 					
@@ -133,19 +159,20 @@ else $front = '';
 					echo $this->pagination->orderUpIcon( $i, true, 'orderUp', JText::_('COM_VIRTUEMART_MOVE_UP'), $cond); ?></span>
 					<span><?php echo $this->pagination->orderDownIcon( $i, $nrows, true, 'orderDown', JText::_('COM_VIRTUEMART_MOVE_DOWN'), $cond2); ?></span>
 					<input class="ordering input-mini" type="text" name="order[<?php echo $i?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $cat->ordering; ?>" style="text-align: center" />
-				</td>
+				</td> */ ?>
 				<td align="center">
 					<?php echo $published;?>
 				</td>
 				<?php
 				if( Vmconfig::get('multix','none')!='none' && $this->perms->check('admin') ) {
+					$shared = $this->toggle($cat->shared, $i, 'toggle.shared',$canDo);
 					?><td align="center">
 						<?php echo $shared; ?>
                     </td>
 					<?php
 				}
 				?>
-				<td><?php echo $cat->virtuemart_category_id; // echo $product->vendor_name; ?></td>
+				<td class="hidden-phone"><?php echo $cat->virtuemart_category_id; // echo $product->vendor_name; ?></td>
 			</tr>
 		<?php
 			$k = 1 - $k;
@@ -161,4 +188,18 @@ else $front = '';
 		</tfoot>
 	</table>
 
-	<?php echo $this->addStandardHiddenToForm($this->_name,$this->task);  ?>
+	<?php echo $this->addStandardHiddenToForm($this->_name,$this->task);  
+
+	$saveOrderingUrl = 'index.php?option=com_virtuemart&view=category&task=saveorder&format=json';
+	// only recall if script is loaded
+	if (jRequest::getword('format') == 'raw') { 
+		if ($saveOrder)
+		{?>
+			<script>	
+				sortableList = new jQuery.JSortableList('#categoryList tbody','adminForm','<?php echo $listDirn ?>', '<?php echo $saveOrderingUrl ?>','',1);
+			</script>
+		<?php
+		}
+	}
+	else JHtml::_('sortablelist.sortable', 'categoryList', 'adminForm', $listDirn, $saveOrderingUrl,false,true);
+?>

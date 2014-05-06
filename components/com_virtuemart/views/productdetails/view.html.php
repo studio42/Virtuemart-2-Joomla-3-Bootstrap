@@ -91,7 +91,7 @@ class VirtueMartViewProductdetails extends VmView {
 	if($product && $canEdit) {
 		if (!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
 		$vendor = Permissions::getInstance()->isSuperVendor();
-		if ($vendor > 1 || $product->virtuemart_vendor_id !== $vendor ) $product = null;
+		if ($vendor > 1 && $product->virtuemart_vendor_id !== $vendor ) $product = null;
 		elseif ( !$product->published ) $app->enqueueMessage(JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_STATUS').' : '.JText::_('COM_VIRTUEMART_UNPUBLISHED'),'warning');
 	}
 

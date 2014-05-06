@@ -121,7 +121,7 @@ class VirtueMartModelManufacturer extends VmModel {
 		$this->_noLimit = $noLimit;
 		$mainframe = JFactory::getApplication();
 // 		$db = JFactory::getDBO();
-		$option	= 'com_virtuemart';
+		$option	= 'com_virtuemart.';
 
 		$virtuemart_manufacturercategories_id	= $mainframe->getUserStateFromRequest( $option.'virtuemart_manufacturercategories_id', 'virtuemart_manufacturercategories_id', 0, 'int' );
 		$search = $mainframe->getUserStateFromRequest( $option.'search', 'search', '', 'string' );

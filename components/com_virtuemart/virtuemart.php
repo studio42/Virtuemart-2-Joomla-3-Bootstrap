@@ -24,7 +24,7 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR .'/components/com_virtuemart/helpers/config.php');
 VmConfig::loadConfig();
 if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
-$isVendor = Permissions::getInstance()->isSuperVendor();//check("admin,storeadmin");
+
 $isAdmin = Permissions::getInstance()->check("admin,storeadmin");
 $offline = VmConfig::get('shop_is_offline',0);
 vmRam('Start');
@@ -32,13 +32,14 @@ vmSetStartTime('Start');
 
 VmConfig::loadJLang('com_virtuemart', true);
 $input = JFactory::getApplication()->input;
+$basePath = JPATH_VM_SITE;
 
 if($offline && !$isAdmin){
 	$_controller = 'virtuemart';
 	require (JPATH_VM_SITE.'/controllers/virtuemart.php');
 	JRequest::setVar('view', 'virtuemart');
 	$task='';
-	$basePath = JPATH_VM_SITE;
+
 } else {
 
 	/* Front-end helpers */
@@ -53,16 +54,32 @@ if($offline && !$isAdmin){
 	$_controller = $input->get( 'controller' , 'virtuemart' , 'word');
 	$_controller = $input->get( 'view' , $_controller , 'word');
 	$trigger = 'onVmSiteController';
-// 	$task = JRequest::getWord('task',JRequest::getWord('layout',$_controller) );		$this makes trouble!
-
-
-	$basePath = JPATH_VM_SITE;
-	if (jRequest::getVar('tmpl') == 'component' && $isVendor && $_controller !== 'invoice') {
+	// for now admin view is virtuemart view
+	// var_dump($_controller); jexit();
+	if ($_controller === 'admin') {
+		$_controller = 'virtuemart';
+		$input->set( 'view' , $_controller);
+		$input->set( 'tmpl' , 'component');
+	}
+	if ($input->get('tmpl') == 'component' && file_exists(JPATH_VM_ADMINISTRATOR.'/controllers/'.$_controller.'.php')) {
+		// trouble with manufacturer displayed in modal (perhaps changing controller name ?)
+		$manufacturer = ($input->get( 'virtuemart_manufacturer_id' , null , 'int') && $_controller == 'manufacturer' && !$input->get( 'task' , null , 'word'));
 		// vendor check is in vmcontroller Back-end to secure front and backen acces same way
-		$jlang =JFactory::getLanguage();
-		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, null, true);
-		$jlang->load('', JPATH_ADMINISTRATOR, null, true);
-		$basePath = JPATH_VM_ADMINISTRATOR;
+		//check("admin,storeadmin");
+
+		if ($isVendor = Permissions::getInstance()->isSuperVendor() && !$manufacturer){
+			$jlang =JFactory::getLanguage();
+			$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, null, true);
+			$jlang->load('', JPATH_ADMINISTRATOR, null, true);
+			$basePath = JPATH_VM_ADMINISTRATOR;
+		} else {
+			$input->set( 'view' , 'user');
+			$input->set( 'tmpl' , null);
+			$input->set( 'task' , null);
+			$_controller = 'user';
+			$input->set( 'layout' , 'login');
+		}
+
 	}
 
 }
@@ -91,7 +108,7 @@ if (class_exists($_class)) {
 	$dispatcher = JDispatcher::getInstance();
 	$dispatcher->trigger('plgVmOnMainController', array($_controller));
 	// set task here that plugin or controller can change task, if we have permission control for eg.
-	$task = $input->get( 'task' , null , 'word');
+	$task = $input->get( 'task' , 'display' , 'word');
     /* Perform the Request task */
     $controller->execute($task);
 
@@ -100,7 +117,7 @@ if (class_exists($_class)) {
     vmRam('End');
     vmRamPeak('Peak');
     /* Redirect if set by the controller */
-    $controller->redirect();
+    // $controller->redirect();
 } else {
     vmDebug('VirtueMart controller not found: '. $_class);
     $app = Jfactory::getApplication();

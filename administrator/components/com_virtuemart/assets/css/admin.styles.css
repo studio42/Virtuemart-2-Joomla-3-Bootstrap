@@ -1,5 +1,5 @@
 /* Bootstrap fix j3 TODO, better trick or add another class ?*/
-@media (min-width: 767px) {
+@media (min-width: 768px) {
 th.autosize,td.autosize {
 		max-width: 120px;
 		width: auto;
@@ -17,7 +17,10 @@ th.autosize,td.autosize {
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-
+	/*toolbar button size fix*/
+	#toolbar button.btn-success {
+	width: inherit;
+	}
 }
 
 /* .ui-autocomplete {position : absolute;} */
@@ -71,13 +74,13 @@ opacity: 0.2;
 }
 .ui-widget-header,
 .ui-widget-content {
-	padding: 0.5em 1em;
+	padding: 0.1em 0.1em;
 }
 .ui-widget-header h2 {
 	margin: 0;
 	padding: 0;
 }
-.ui-autocomplete{width: 90%;overflow: hidden;}
+.ui-autocomplete{width: 90% !important;overflow: hidden;}
 .ui-autocomplete li{
     display: inline-block;
 	float: left;
@@ -240,6 +243,7 @@ font-size: 12px;
     margin: 5px;
     padding: 5px 5px 5px 16px;
 }
+.vm_thumb {line-height:120px}
 .vm_thumb_image {
     text-align: center;
     background: url("../images/admin_ui/toolbar_background.png") repeat-x scroll center bottom;
@@ -430,10 +434,35 @@ input.upload-btn{display:none;}
 -o-box-shadow: 2px 2px 2px 0px #a3a3a3;
 box-shadow: 2px 2px 2px 0px #a3a3a3;
 filter:progid:DXImageTransform.Microsoft.Shadow(color=#a3a3a3, Direction=134, Strength=2);}
-/*toolbar button size fix*/
-#toolbar button.btn-success {
-width: inherit;
-}
+
 .input-block {
 width: 90%;
+}
+.width-33{width:32%;float:left;padding:0.5%}
+.width-50{width:49%;float:left;}
+fieldset .width-100{width:99%;clear:both;float:none}
+/*filter-bar fix*/
+#results{clear:both;}
+/*cursor for moving*/
+.icon-menu:hover{cursor: move}
+/*bad render related*/
+#custom_products .vm-img-desc,#custom_categories .vm-img-desc{display:none}
+
+/* temp style ??? */
+.sidebar-nav .nav-list > li > a >span {
+color: #459BC4;
+font-size: 16px;
+}
+
+#searchMedia-div .icon-remove,#searchMedia-div .icon-edit{display:none}
+#searchMedia-div .vm_thumb_image {
+height: 80px;
+width: 80px;
+}
+#searchMedia-div .vm_thumb {
+line-height: 80px;
+}
+#searchMedia-div .vm_thumb_image img {
+max-height: 80px;
+max-width: 80px;
 }

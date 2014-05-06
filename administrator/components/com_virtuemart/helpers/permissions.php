@@ -207,11 +207,32 @@ class Permissions extends JObject{
 	 * 			returns true when the user is admin or storeadmin
 	 */
 	public function check($perms,$acl=0) {
+		$user = JFactory::getUser();
+
+		if(strpos($perms,',')!==FALSE){
+			$perms = explode(',',$perms);
+		} else {
+			$perms = array($perms);
+		}
+
+		foreach($perms as $perm){
+			if($perm=='admin'){
+				if($user->authorise('core.admin')){
+					return true;
+				}
+			}
+			if($perm=='storeadmin'){
+				if($user->authorise('core.manage')){
+					return true;
+				}
+			}
+		}
+		return false;
 		/* Set the authorization for use */
 
 		// Parse all permissions in argument, comma separated
 		// It is assumed auth_user only has one group per user.
-			$p1 = explode(",", $this->_perms);
+/*			$p1 = explode(",", $this->_perms);
 			$p2 = explode(",", $perms);
 // 			vmdebug('check '.$perms,$p1,$p2);
 			while (list($key1, $value1) = each($p1)) {
@@ -221,7 +242,7 @@ class Permissions extends JObject{
 					}
 				}
 			}
-		return false;
+		return false;*/
 	}
 
 	/**
@@ -234,16 +255,13 @@ class Permissions extends JObject{
 
 	public function isSuperVendor(){
 
-
+		$user = JFactory::getUser();
 		if(!$this->_vendorId){
-			$user = JFactory::getUser();
 
 			if(!empty( $user->id)){
-				$q = 'SELECT `virtuemart_vendor_id`
-							FROM `#__virtuemart_vmusers` `au`
-							LEFT JOIN `#__virtuemart_userinfos` `u`
-							ON (au.virtuemart_user_id = u.virtuemart_user_id)
-							WHERE `u`.`virtuemart_user_id`="' .$user->id.'" AND `au`.`user_is_vendor` = "1" ';
+				$q='SELECT `virtuemart_vendor_id` FROM `#__virtuemart_vmusers` `au`
+				WHERE `au`.`virtuemart_user_id`="' .$user->id.'" AND `au`.`user_is_vendor` = "1" ';
+
 				$db= JFactory::getDbo();
 				$db->setQuery($q);
 				$virtuemart_vendor_id = $db->loadResult();
@@ -261,7 +279,7 @@ class Permissions extends JObject{
 		if($this->_vendorId!=0){
 			return $this->_vendorId;
 		} else {
-			if($this->check('admin,storeadmin') ){
+			if($user->authorise('core.admin', 'com_virtuemart') or $user->authorise('core.manage', 'com_virtuemart') ){
 				$this->_vendorId = 1;
 				return $this->_vendorId;
 			}
@@ -470,6 +488,34 @@ class Permissions extends JObject{
 		ksort($list);
 		return $list;
 	}
+	/**
+	 * Gets a list of the actions that can be performed.
+	 *
+	 * @param	int		The category ID.
+	 * @return	JObject
+	 * @since	1.6
+	 */
+	public static function getActions($categoryId = 0)
+	{
+		$user	= JFactory::getUser();
+		$result	= new JObject;
+
+		if (empty($categoryId)) {
+			$assetName = 'com_virtuemart';
+		} else {
+			$assetName = 'com_virtuemart.category.'.(int) $categoryId;
+		}
+
+		$actions = array(
+			'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete'
+		);
+
+		foreach ($actions as $action) {
+			$result->set($action,	$user->authorise($action, $assetName));
+		}
+
+		return $result;
+	} 
 }
 
 //pure php no closing tag

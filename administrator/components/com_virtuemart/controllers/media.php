@@ -19,12 +19,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
-
 if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
-
-
+		VmConfig::loadJLang('com_virtuemart_media');
 /**
  * Product Controller
  *
@@ -38,12 +34,12 @@ class VirtuemartControllerMedia extends VmController {
 	 */
 	function viewJson() {
 		
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views'); 
+		// $this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views'); 
 		/* Create the view object. */
-		$view = $this->getView('media', 'json');
+		// $view = $this->getView('media', 'json');
 
 		/* Now display the view. */
-		$view->display(null);
+		$this->display();
 	}
 
 	function save($data = 0){
@@ -52,7 +48,10 @@ class VirtuemartControllerMedia extends VmController {
 
 		//Now we try to determine to which this media should be long to
 		$data = JRequest::get('post');
-
+		// remove shared when not superVendor
+		if ($this->_vendor>1) {
+			if (isset($data['shared'])) $data['shared']= 0;
+		}
 		//$data['file_title'] = JRequest::getVar('file_title','','post','STRING',JREQUEST_ALLOWHTML);
 		$data['file_description'] = JRequest::getVar('file_description','','post','STRING',JREQUEST_ALLOWHTML);
 
@@ -91,6 +90,64 @@ class VirtuemartControllerMedia extends VmController {
 
 		$this->setRedirect(null, $result);
 	}
+	function removeUnused(){
+		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
+		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
+		if(!Permissions::getInstance()->check('admin')){
+		    $msg = jText::_('JERROR_CORE_DELETE_NOT_PERMITTED');
+			$type = 'error';
+		} else {
+		    $msg = jText::_('COM_VIRTUEMART_SYNC_MEDIA_FILES').' '.jText::_('COM_VIRTUEMART_ADMIN_UPDATES');
+			$type = null;
+		}
+		$ids = array();
+		jimport('joomla.filesystem.file');
+		jimport('joomla.filesystem.folder');
 
+		$db = JFactory::getDBO();
+
+		$q = 'SELECT m.`virtuemart_media_id`,`file_type`,`file_url`,`file_url_thumb`,`file_is_forSale` FROM `#__virtuemart_medias` as m
+			LEFT JOIN `#__virtuemart_product_medias` as pm
+			ON m.`virtuemart_media_id`=pm.`virtuemart_media_id`
+			WHERE m.file_type ="product" AND pm.`virtuemart_media_id` IS NULL';
+		$db->setQuery($q);
+		$unusedMedias = $db->loadObjectList();
+
+		//remove all unused files
+		foreach($unusedMedias as $file){
+
+			if($file->file_is_forSale!=1){
+				$media_path = JPATH_ROOT.DS.str_replace('/',DS,$file->file_url);
+			} else {
+				$media_path = $file->file_url;
+			}
+			if ($ret = JFile::delete($media_path)) {
+				$removed++;
+			} else vmInfo( $media_path. ' file unknow');
+			if ($ret = JFile::delete($file->file_url_thumb)) {
+				$removed++;
+			} else vmInfo( $file->file_url_thumb. ' file unknow');
+			$ids[] = $file->virtuemart_media_id;
+		}
+		if(count($ids) < 1) {
+			$msg = JText::_('COM_VIRTUEMART_SELECT_ITEM_TO_DELETE');
+			$type = 'notice';
+		} else {
+			$model = VmModel::getModel($this->_cname);
+			$ret = $model->remove($ids,$this->_vendor);
+			$errors = $model->getErrors();
+			$msg = JText::sprintf('COM_VIRTUEMART_STRING_DELETED',$this->mainLangKey);
+			if(!empty($errors) or $ret==false) {
+				$msg = JText::sprintf('COM_VIRTUEMART_STRING_COULD_NOT_BE_DELETED',$this->mainLangKey);
+						$type = 'error';
+			}
+			else $type = null;
+			foreach($errors as $error){
+				$msg .= '<br />'.($error);
+			}
+		}
+		if (removed) vmInfo( $removed .' files removed');
+		$this->setRedirect(null, $msg,$type);
+	}
 }
 // pure php no closing tag

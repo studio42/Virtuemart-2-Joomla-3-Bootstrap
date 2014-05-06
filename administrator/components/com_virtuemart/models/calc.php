@@ -39,7 +39,7 @@ class VirtueMartModelCalc extends VmModel {
 			$this->setMainTable('calcs');
 			$this->setToggleName('calc_shopper_published');
 			$this->setToggleName('calc_vendor_published');
-	  	$this->setToggleName('shared');
+			$this->setToggleName('shared');
 			$this->addvalidOrderingFieldName(array('virtuemart_category_id','virtuemart_country_id','virtuemart_state_id','virtuemart_shoppergroup_id'
 				,'virtuemart_manufacturer_id'
 			)); 
@@ -122,7 +122,16 @@ class VirtueMartModelCalc extends VmModel {
 
 		// add filters
 		if ($onlyPublished) $where[] = '`published` = 1';
-
+		else {
+			$published = JRequest::getVar('filter_published', false);
+			if ($published !== false) {
+				if ($published === '1') {
+					$where[] = " `published` = 1 ";
+				} else if ($published === '0') {
+					$where[] = " `published` = 0 ";
+				}
+			}
+		}
 		if($search){
 			$db = JFactory::getDBO();
 			$search = '"%' . $db->escape( $search, true ) . '%"' ;
@@ -246,9 +255,15 @@ class VirtueMartModelCalc extends VmModel {
 
 		return $table->virtuemart_calc_id;
 	}
-
+	/**
+	* Note Studio42 adding vendor filter.removed publish_up = $nullDate
+	*/
 	static function getRule($kind){
-
+		static $vendorId = null ;
+		if ($vendorId === null) {
+			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+			$vendorId = Permissions::getInstance()->isSupervendor();
+		}
 		if (!is_array($kind)) $kind = array($kind);
 		$db = JFactory::getDBO();
 
@@ -256,15 +271,13 @@ class VirtueMartModelCalc extends VmModel {
 		$now			= JFactory::getDate()->toSql();
 
 		$q = 'SELECT * FROM `#__virtuemart_calcs` WHERE ';
-		foreach ($kind as $field){
-			$q .= '`calc_kind`='.$db->Quote($field).' OR ';
-		}
-		$q=substr($q,0,-3);
+		if ($vendorId > 1) $q .= ' ( shared = 1 or virtuemart_vendor_id ='.(int)$vendorId.') AND ';
+		if ($kind) $q .= '`calc_kind` in ("'.implode('","', $kind).'")';
 
-		$q .= 'AND ( publish_up = ' . $db->quote($nullDate) . ' OR publish_up <= ' . $db->quote($now) . ' )
+		$q .= ' AND publish_up <= ' . $db->quote($now) . ' 
 				AND ( publish_down = ' . $db->quote($nullDate) . ' OR publish_down >= ' . $db->quote($now) . ' ) ';
 
-
+		// echo $q; jexit();
 		$db->setQuery($q);
 		$data = $db->loadObjectList();
 

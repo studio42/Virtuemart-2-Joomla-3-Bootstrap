@@ -20,15 +20,14 @@
 defined('_JEXEC') or die('Restricted access');
 
 AdminUIHelper::startAdminArea();
-AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_MANUFACTURER_CATEGORY_DETAILS');
 ?>
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-
-<?php echo $this->langList; ?>
-<div class="col50">
 	<fieldset>
-	<legend><?php echo JText::_('COM_VIRTUEMART_MANUFACTURER_CATEGORY_DETAILS'); ?></legend>
+	<legend>
+		<?php echo JText::_('COM_VIRTUEMART_MANUFACTURER_CATEGORY_DETAILS'); ?>
+		<div class="pull-right"><?php echo $this->langList; ?></div>
+	</legend>
 	<table class="admintable">
 		<?php echo VmHTML::row('input','COM_VIRTUEMART_MANUFACTURER_CATEGORY_NAME','mf_category_name',$this->manufacturerCategory->mf_category_name); ?>
 		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PUBLISHED','published',$this->manufacturerCategory->published); ?>
@@ -36,13 +35,7 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_MANUFACTURER_CATEGORY_DETAILS
 
 	</table>
 	</fieldset>
-</div>
-
-
 	<input type="hidden" name="virtuemart_manufacturercategories_id" value="<?php echo $this->manufacturerCategory->virtuemart_manufacturercategories_id; ?>" />
 	<?php echo $this->addStandardHiddenToForm(); ?>
 </form>
-
-<?php
-AdminUIHelper::imitateTabs('end');
-AdminUIHelper::endAdminArea(); ?>
+<?php AdminUIHelper::endAdminArea();

@@ -42,20 +42,29 @@ class VirtuemartViewShopperGroup extends VmView {
 		$this->task = JRequest::getWord('task',$layoutName);
 
 		if ($layoutName == 'edit') {
+			$this->perms = Permissions::getInstance();
 			VmConfig::loadJLang('com_virtuemart_config');
 			$shoppergroup = $model->getShopperGroup();
 
 			$this->SetViewTitle('SHOPPERGROUP',$shoppergroup->shopper_group_name);
-
-			$this->vendorList = ShopFunctions::renderVendorList($shoppergroup->virtuemart_vendor_id);
+			if(Vmconfig::get('multix','none')!=='none'){
+				$this->vendorList = ShopFunctions::renderVendorList($shoppergroup->virtuemart_vendor_id,false);
+			}
+			
 			$this->shoppergroup = $shoppergroup;
 			$this->addStandardEditViewCommands();
 
 
 		} else {
-			$this->SetViewTitle();
-			JToolBarHelper::makeDefault();
-			$this->addStandardDefaultViewCommands();
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle();
+				JToolBarHelper::makeDefault();
+				$this->addStandardDefaultViewCommands();
+			}
 			$this->addStandardDefaultViewLists($model);
 
 			$this->loadHelper('permissions');
@@ -63,9 +72,9 @@ class VirtuemartViewShopperGroup extends VmView {
 
 			$this->shoppergroups = $model->getShopperGroups(false, true);
 			$this->pagination = $model->getPagination();
-
 		}
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 } // pure php no closing tag

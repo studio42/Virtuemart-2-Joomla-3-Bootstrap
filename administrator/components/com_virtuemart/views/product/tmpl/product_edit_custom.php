@@ -18,6 +18,7 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
+
 if (isset($this->product->customfields_fromParent)) { ?>
 	<label><?php echo JText::_('COM_VIRTUEMART_CUSTOM_SAVE_FROM_CHILD');?><input type="checkbox" name="save_customfields" value="1" /></label>
 <?php } else {
@@ -57,16 +58,19 @@ if (isset($this->product->customfields_fromParent)) { ?>
 						// make 2 table. Cart options and datas
 						$tbName = $customfield->is_cart_attribute ? 'cart' : 'fields' ;
 						$tables[$tbName] .= '<tr class="removable">
+							<td class="hidden-phone"><span class="icon-menu"></span>
+								<input class="ordering" type="hidden" value="'.$customfield->ordering.'" name="field['.$i .'][ordering]" />
+							</td>
 							<td><div '.$tip.'>'.JText::_($customfield->custom_title).'<div>'.
 								($customfield->custom_field_desc ? '<small>'.$customfield->custom_field_desc.'</small>' : '').'
 							</td>
 							<td>'.$customfield->display.'</td>
-							<td>
+							<td class="hidden-phone">
 							'.JText::_($this->fieldTypes[$customfield->field_type]).'
 							'.VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i).'
 							</td>
-							<td><span class="icon-remove"></span><input class="ordering" type="hidden" value="'.$customfield->ordering.'" name="field['.$i .'][ordering]" /></td>
-							<td ><span class="icon-move"></span></td>
+							<td><span class="icon-remove hasTooltip" title="'. JText::_('JTOOLBAR_REMOVE', true) .'"></span></td>
+							
 						 </tr>';
 						}
 
@@ -97,50 +101,52 @@ if (isset($this->product->customfields_fromParent)) { ?>
 				</div>
 				<div id="custom_products"><?php echo  $tables['products']; ?></div>
 			</fieldset>
-
-			<fieldset >
-				<legend><?php echo JText::_('COM_VIRTUEMART_CUSTOM_FIELD_TYPE' );?></legend>
-				<div class="inline"><?php echo  $this->customsList; ?></div>
-				<h3><?php echo JText::_('COM_VIRTUEMART_CUSTOM' );?></h3>
-				<table id="custom_fields" class="adminlist table table-striped" cellspacing="0" cellpadding="0">
-					<thead>
-					<tr>
-						<th><?php echo JText::_('COM_VIRTUEMART_TITLE');?></th>
-						<th colspan="2"><?php echo JText::_('COM_VIRTUEMART_VALUE');?></th>
-						<th><?php echo JText::_('COM_VIRTUEMART_TYPE');?></th>
-						<th width="1%"><span class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_DELETE'); ?></span></th>
-						<th width="1%"><?php echo JText::_('COM_VIRTUEMART_MOVE'); ?></th>
-					</tr>
-					</thead>
-					<tbody id="custom_field">
-						<?php
-						if ($tables['fields']) echo $tables['fields'] ;
-						else echo $emptyTable;
-						?>
-					</tbody>
-				</table>
-				<!-- custom_fields cart-->
-				<h3><?php echo JText::_('COM_VIRTUEMART_CUSTOM_IS_CART_ATTRIBUTE');?></h3>
-				<table id="cart_attributes" class="adminlist table table-striped" cellspacing="0" cellpadding="0">
-					<thead>
-					<tr>
-						<th><?php echo JText::_('COM_VIRTUEMART_TITLE');?></th>
-						<th><?php echo JText::_('COM_VIRTUEMART_VALUE');?></th>
-						<th><?php echo JText::_('COM_VIRTUEMART_CART_PRICE');?></th>
-						<th><?php echo JText::_('COM_VIRTUEMART_TYPE');?></th>
-						<th width="1%"><span class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_DELETE'); ?></span></th>
-						<th width="1%"><?php echo JText::_('COM_VIRTUEMART_MOVE'); ?></th>
-					</tr>
-					</thead>
-					<tbody id="cart_attribute">
-						<?php
-						if ($tables['cart']) echo $tables['cart'] ;
-						else echo $emptyTable;
-						?>
-					</tbody>
-				</table><!-- custom_fields -->
-			</fieldset>
-
+			<?php if ($this->customsList) { ?>
+				<fieldset >
+					<legend><?php echo JText::_('COM_VIRTUEMART_CUSTOM_FIELD_TYPE' );?></legend>
+					<div class="inline"><?php echo  $this->customsList; ?></div>
+					<h3><?php echo JText::_('COM_VIRTUEMART_CUSTOM' );?></h3>
+					<table id="custom_fields" class="adminlist table table-striped" cellspacing="0" cellpadding="0">
+						<thead>
+						<tr>
+							<th class="hidden-phone" width="1%"><i class="icon-menu-2 hasTooltip" title="<?php echo JText::_('JGRID_HEADING_ORDERING',true); ?>"></i></th>
+							<th><?php echo JText::_('COM_VIRTUEMART_TITLE');?></th>
+							<th colspan="2"><?php echo JText::_('COM_VIRTUEMART_VALUE');?></th>
+							<th class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_TYPE');?></th>
+							<th width="1%"></th>
+						</tr>
+						</thead>
+						<tbody id="custom_field">
+							<?php
+							if ($tables['fields']) echo $tables['fields'] ;
+							else echo $emptyTable;
+							?>
+						</tbody>
+					</table>
+					<!-- custom_fields cart-->
+					<h3><?php echo JText::_('COM_VIRTUEMART_CUSTOM_IS_CART_ATTRIBUTE');?></h3>
+					<table id="cart_attributes" class="adminlist table table-striped" cellspacing="0" cellpadding="0">
+						<thead>
+						<tr>
+							<th class="hidden-phone" width="1%"><i class="icon-menu-2 hasTooltip" title="<?php echo JText::_('JGRID_HEADING_ORDERING',true); ?>"></i></th>
+							<th><?php echo JText::_('COM_VIRTUEMART_TITLE');?></th>
+							<th><?php echo JText::_('COM_VIRTUEMART_VALUE');?></th>
+							<th><?php echo JText::_('COM_VIRTUEMART_CART_PRICE');?></th>
+							<th class="hidden-phone"><?php echo JText::_('COM_VIRTUEMART_TYPE');?></th>
+							<th width="1%"></th>
+						</tr>
+						</thead>
+						<tbody id="cart_attribute">
+							<?php
+							if ($tables['cart']) echo $tables['cart'] ;
+							else echo $emptyTable;
+							?>
+						</tbody>
+					</table><!-- custom_fields -->
+				</fieldset>
+			<?php } else { ?>
+				
+			<?php } ?>
 <div style="clear:both;"></div>
 </div>
 
@@ -148,7 +154,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 	nextCustom = <?php echo $i ?>;
 
 	jQuery(document).ready(function(){
-		jQuery('#custom_field,#cart_attribute').sortable({handle: ".icon-move"});
+		jQuery('#custom_field,#cart_attribute').sortable({handle: ".icon-menu", axis: "y",cursor: "move" });
 		// Need to declare the update routine outside the sortable() function so
 		// that it can be called when adding new customfields
 		jQuery('#custom_field,#cart_attribute').bind('sortupdate', function(event, ui) {
@@ -160,7 +166,8 @@ if (isset($this->product->customfields_fromParent)) { ?>
 		});
 	});
 	jQuery('select#customlist').chosen().change(function() {
-		selected = jQuery(this).find( 'option:selected').val() ;
+		selected = jQuery(this).val();
+		if (!selected) return;
 		jQuery.getJSON('<?php echo $this->jsonPath ?>index.php?option=com_virtuemart&tmpl=component&view=product&task=getData&format=json&type=fields&id='+selected+'&row='+nextCustom+'&virtuemart_product_id=<?php echo $this->product->virtuemart_product_id; ?>',
 		function(data) {
 			
@@ -172,10 +179,15 @@ if (isset($this->product->customfields_fromParent)) { ?>
 		});
 		nextCustom++;
 	});
-
-		jQuery('input#relatedproductsSearch').autocomplete({
-
-		source: 'index.php?option=com_virtuemart&view=product&task=getData&tmpl=component&format=json&type=relatedproducts&row='+nextCustom,
+	jQuery('input#relatedproductsSearch').autocomplete({
+		// source: 'index.php?option=com_virtuemart&view=product&task=getData&tmpl=component&format=json&type=relatedproducts&row='+nextCustom,
+		source: function( request, response ) {
+			jQuery.getJSON( 'index.php?option=com_virtuemart&view=product&task=getData&tmpl=component&format=json&type=relatedproducts&row='+nextCustom,
+				request, function( data, status, xhr ) {
+				// relatedproducts[ term ] = data;
+				response( data );
+			});
+		},
 		select: function(event, ui){
 			jQuery("#custom_products").append(ui.item.label);
 			nextCustom++;
@@ -187,7 +199,13 @@ if (isset($this->product->customfields_fromParent)) { ?>
 	});
 	jQuery('input#relatedcategoriesSearch').autocomplete({
 
-		source: 'index.php?option=com_virtuemart&view=product&task=getData&tmpl=component&format=json&type=relatedcategories&row='+nextCustom,
+		// source: 'index.php?option=com_virtuemart&view=product&task=getData&tmpl=component&format=json&type=relatedcategories&row='+nextCustom,
+		source: function( request, response ) {
+			jQuery.getJSON( 'index.php?option=com_virtuemart&view=product&task=getData&tmpl=component&format=json&type=relatedcategories&row='+nextCustom,
+				request, function( data, status, xhr ) {
+				response( data );
+			});
+		},
 		select: function(event, ui){
 			jQuery("#custom_categories").append(ui.item.label);
 			nextCustom++;
@@ -198,15 +216,6 @@ if (isset($this->product->customfields_fromParent)) { ?>
 		html: true
 	});
 	jQuery('#relatedproducts-div,#relatedcategories-div').delegate('a','click',function() { return false });
-	// jQuery('#customfieldsTable').delegate('td','click', function() {
-		// jQuery('#customfieldsParent').remove();
-		// jQuery(this).undelegate('td','click');
-	// });
-	// jQuery.each(jQuery('#customfieldsTable').filter(":input").data('events'), function(i, event) {
-		// jQuery.each(event, function(i, handler){
-		// console.log(handler);
-	  // });
-	// });
 	jQuery('#adminForm').on('click','.removable .icon-remove',function() {
 		var toRemove = jQuery(this).closest('.removable'); main = toRemove.parent();
 		if (main.attr('id') == 'pricesort' && main.children('.removable').length == 1 ) return;
@@ -217,38 +226,15 @@ if (isset($this->product->customfields_fromParent)) { ?>
 		});
 	});
 
-eventNames = "click.remove keydown.remove change.remove focus.remove"; // all events you wish to bind to
-
-function removeParent() {jQuery('#customfieldsParent').remove();console.log($(this));//jQuery('#customfieldsTable input').unbind(eventNames, removeParent)
+function removeParent() {jQuery('#customfieldsParent').remove();
  }
 
-// jQuery('#customfieldsTable input').bind(eventNames, removeParent);
+	jQuery('#customfieldsTable').find('input').each(function(i){
+		current = jQuery(this);
+	current.click(function(){
+			jQuery('#customfieldsParent').remove();
+		});
+});
 
-  // jQuery('#customfieldsTable').delegate('*',eventNames,function(event) {
-    // var $thisCell, $tgt = jQuery(event.target);
-	// console.log (event);
-	// });
-		jQuery('#customfieldsTable').find('input').each(function(i){
-			current = jQuery(this);
-        // var dEvents = curent.data('events');
-        // if (!dEvents) {return;}
-
-		current.click(function(){
-				jQuery('#customfieldsParent').remove();
-			});
-		//console.log (curent);
-        // jQuery.each(dEvents, function(name, handler){
-            // if((new RegExp('^(' + (events === '*' ? '.+' : events.replace(',','|').replace(/^on/i,'')) + ')$' ,'i')).test(name)) {
-               // jQuery.each(handler, function(i,handler){
-                   // outputFunction(elem, '\n' + i + ': [' + name + '] : ' + handler );
-
-
-               // });
-           // }
-        // });
-    });
-
-
-	//onsole.log(jQuery('#customfieldsTable').data('events'));
 
 </script>

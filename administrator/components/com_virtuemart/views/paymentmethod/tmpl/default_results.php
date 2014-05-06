@@ -102,7 +102,8 @@ $cols = $multiX ? 10 : 9 ;
 				</td>
 				<?php if ($multiX ){ ?>
 				<td align="center">
-					<?php echo $row->shared; ?>
+					<?php echo $row->shared ? 
+						'<i class="icon-featured"></i>' : '<i class="icon-star-empty"></i>'; ?>
 				</td>
 				<?php } ?>
 				<td align="center">

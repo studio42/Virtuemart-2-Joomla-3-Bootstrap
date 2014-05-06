@@ -23,6 +23,8 @@ defined('_JEXEC') or die('Restricted access'); ?>
 
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch('COM_VIRTUEMART_COUPON_CODE') ?>
+		<?php echo $this->DisplayFilterPublish() ?>
+		<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">

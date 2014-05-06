@@ -60,7 +60,8 @@ class VirtuemartViewCoupon extends VmView {
 		$vendor = $vendorModel->getVendor();
 
 		$currencyModel = VmModel::getModel('Currency');
-		$currency = $currencyModel->getCurrency($vendor->vendor_currency);
+		$currencyModel->setId($vendor->vendor_currency);
+		$currency = $currencyModel->getData();
 		$this->vendor_currency = $currency->currency_symbol;
 
 		if ($layoutName == 'edit') {
@@ -98,16 +99,23 @@ class VirtuemartViewCoupon extends VmView {
 			$this->addStandardEditViewCommands();
         } else {
 			$this->loadHelper('currencydisplay');
-			$this->SetViewTitle('');
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle();
+				$this->addStandardDefaultViewCommands();
+			}
 			//First the view lists, it sets the state of the model
-			$this->addStandardDefaultViewCommands();
 			$this->addStandardDefaultViewLists($model,0,'ASC');
 			$code = JRequest::getWord('search', false);
 			$this->coupons = $model->getCoupons($code);
 			$this->pagination = $model->getPagination();
 		}
-
+		
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 }

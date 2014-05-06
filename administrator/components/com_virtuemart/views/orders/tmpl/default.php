@@ -23,6 +23,7 @@ defined ('_JEXEC') or die();
 	<div id="filter-bar" class="btn-toolbar">
 		<?php echo $this->displayDefaultViewSearch ('COM_VIRTUEMART_ORDER_PRINT_NAME'); ?>
 		<?php echo JText::_ ('COM_VIRTUEMART_ORDERSTATUS') . ':' . $this->lists['state_list']; ?>
+		<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
 	</div>
 	<div class="clearfix clear"> </div>
 	<div id="results">

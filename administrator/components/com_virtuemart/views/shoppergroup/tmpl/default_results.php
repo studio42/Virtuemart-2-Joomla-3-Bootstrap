@@ -60,7 +60,7 @@ defined('_JEXEC') or die();
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-				  <?php echo $this->editLink($row->virtuemart_shoppergroup_id, $row->shopper_group_name, 'virtuemart_shoppergroup_id[]') ?>
+				  <?php echo $this->editLink($row->virtuemart_shoppergroup_id, $row->shopper_group_name) ?>
 				</td>
 				<td align="left">
 					<?php echo $row->shopper_group_desc; ?>
@@ -68,7 +68,8 @@ defined('_JEXEC') or die();
 				<td>
 					<?php
 					if ($row->default == 1) {
-						echo JHtml::_('image','menu/icon-16-default.png', JText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT'), NULL, true);
+						echo '<i class="icon-featured btn btn-micro hasTooltip disabled" title="'.JText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT').'"></i>';
+						// echo JHtml::_('image','menu/icon-16-default.png', JText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT'), NULL, true);
 					} else { ?>
 						<a href="#" 
 							onclick="return listItemTask('cb<?php echo $i ?>','default')" class="btn btn-micro hasTooltip" title="<?php echo JText::_('COM_VIRTUEMART_ENABLE_ITEM') ?>">

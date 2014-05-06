@@ -206,7 +206,7 @@ class TableCategories extends VmTable {
 	 * @param $parent_id category parent id
 	 * @param string Additional where query to limit ordering to a particular subset of records
 	 */
-	function reorder( $parent_id = 0, $where='' )
+	function reorder( $parent_id = 0, $where='',$direction="ASC" )
 	{
 		$k = $this->_tbl_key;
 
@@ -222,7 +222,7 @@ class TableCategories extends VmTable {
 		. ' ON c.virtuemart_category_id = cx.category_child_id'
 		. ' WHERE c.ordering >= 0' . ( $where ? ' AND '. $where : '' )
 		. ' AND cx.category_parent_id = '. $parent_id
-		. ' ORDER BY c.ordering'.$order2;
+		. ' ORDER BY c.ordering '.$direction;
 
 		$this->_db->setQuery( $query );
 		if (!($orders = $this->_db->loadObjectList()))

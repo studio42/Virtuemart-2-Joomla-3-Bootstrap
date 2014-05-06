@@ -1,6 +1,8 @@
 <?php
-defined ('_JEXEC') or die('Direct Access to ' . basename (__FILE__) . ' is not allowed.');
+defined ('_JEXEC') or die('');
 
+//Note STUDIO42, Patrick Kohl. Most of ShopFunctions function cannot be used without config, then load this file
+if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
 /**
  * General helper class
  *
@@ -16,27 +18,6 @@ defined ('_JEXEC') or die('Direct Access to ' . basename (__FILE__) . ' is not a
  */
 class ShopFunctions {
 
-	/**
-	 * Contructor
-	 */
-	public function __construct () {
-
-	}
-
-	/*
-	 * Add simple search to form
-	* @param $searchLabel text to display before searchbox
-	* @param $name 		 lists and id name
-	* ??JText::_('COM_VIRTUEMART_NAME')
-	*/
-
-	static public function displayDefaultViewSearch ($searchLabel, $value, $name = 'search') {
-
-		return JText::_ ('COM_VIRTUEMART_FILTER') . ' ' . JText::_ ($searchLabel) . ':
-		<input type="text" name="' . $name . '" id="' . $name . '" value="' . $value . '" class="text_area" />
-		<button onclick="this.form.submit();">' . JText::_ ('COM_VIRTUEMART_GO') . '</button>
-		<button onclick="document.getElementById(\'' . $name . '\').value=\'\';this.form.submit();">' . JText::_ ('COM_VIRTUEMART_RESET') . '</button>';
-	}
 
 	/**
 	 * Builds an enlist for information (not chooseable)
@@ -57,7 +38,6 @@ class ShopFunctions {
 	 */
 	static public function renderGuiList ($fieldnameXref, $tableXref, $fieldIdXref, $idXref, $fieldname, $table, $fieldId, $view, $quantity = 4, $translate = 1) {
 
-		if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
 		VmConfig::loadConfig();
 		VmConfig::loadJLang('com_virtuemart_countries');
 		if(Vmconfig::get('multix','none')!=='none'){
@@ -218,18 +198,26 @@ class ShopFunctions {
 	 */
 	static public function renderShopperGroupList ($shopperGroupId = 0, $multiple = TRUE,$name='virtuemart_shoppergroup_id',$id=null) {
 		if ($id ===null) $id = $name ;
-		$shopperModel = VmModel::getModel ('shoppergroup');
-		$shoppergrps = $shopperModel->getShopperGroups (FALSE, TRUE);
+		// this can be called multiple time, but with same result in product
+		static $shoppergrps = null ;
+		if ($shoppergrps === null) {
+			$shopperModel = VmModel::getModel ('shoppergroup');
+			$shoppergrps = $shopperModel->getShopperGroups (FALSE, TRUE);
+		}
 		$attrs = '';
 		//$name = 'shopper_group_name';
 		//$idA = $id = 'virtuemart_shoppergroup_id';
-
+		 // no shopper groups
+		if (!$shoppergrps) {
+			return '<input type="hidden" name="'.$name.($multiple ? '" multiple="multiple' :'') .'"/>'.JText::_ ('JDEFAULT');
+		}
 		if ($multiple) {
 			$attrs = 'multiple="multiple"';
 			if($name=='virtuemart_shoppergroup_id'){
 				$name.= '[]';
 			}
 		} else {
+
 			$emptyOption = JHTML::_ ('select.option', '', JText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION'), 'virtuemart_shoppergroup_id', 'shopper_group_name');
 			array_unshift ($shoppergrps, $emptyOption);
 		}
@@ -284,7 +272,7 @@ class ShopFunctions {
 		$idA = $_prefix . 'virtuemart_country_id';
 		$attrs['class'] = 'virtuemart_country_id';
 		// Load helpers and  languages files
-		if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
+
 		VmConfig::loadConfig();
 		VmConfig::loadJLang('com_virtuemart_countries');
 		// This is set by default in joomla 3.0 !!! vmJsApi::chosenDropDowns();
@@ -406,7 +394,8 @@ class ShopFunctions {
 	 * @author Max Milbers, impleri
 	 *
 	 * @param string defaultText Text for the empty option
-	 * @param boolean defaultOption you can supress the empty otion setting this to false
+	 * @param boolean defaultOption you
+ supress the empty otion setting this to false
 	 * return array of Template objects
 	 */
 	static public function renderTemplateList ($defaultText = 0, $defaultOption = TRUE) {
@@ -760,20 +749,24 @@ class ShopFunctions {
 
 
 	public static $counter = 0;
-	public static $categoryTree = 0;
+	public static $categoryTree = array();
 
 	static public function categoryListTree ($selectedCategories = array(), $cid = 0, $level = 0, $disabledFields = array()) {
-
-		if (empty(self::$categoryTree)) {
-// 			vmTime('Start with categoryListTree');
+		static $vendorId = null ;
+		if ($vendorId === null) {
+			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+			$vendorId = Permissions::getInstance()->isSupervendor();
+		}
+		if (empty(self::$categoryTree[$vendorId])) {
+			// vmTime('Start with categoryListTree');
 			$cache = JFactory::getCache ('_virtuemart');
 			$cache->setCaching (1);
-			self::$categoryTree = $cache->call (array('ShopFunctions', 'categoryListTreeLoop'), $selectedCategories, $cid, $level, $disabledFields);
+			self::$categoryTree[$vendorId] = $cache->call (array('ShopFunctions', 'categoryListTreeLoop'), $selectedCategories, $cid, $level, $disabledFields);
 			// self::$categoryTree = self::categoryListTreeLoop($selectedCategories, $cid, $level, $disabledFields);
-// 			vmTime('end loop categoryListTree '.self::$counter);
+			// vmTime('end loop categoryListTree '.self::$counter);
 		}
 
-		return self::$categoryTree;
+		return self::$categoryTree[$vendorId];
 	}
 
 	/**
@@ -794,7 +787,11 @@ class ShopFunctions {
 		static $isSite = null;
 		if  ($isSite ===null) $isSite = JFactory::getApplication()->isSite () && (jRequest::getWord('tmpl') !== 'component');
 		// $virtuemart_vendor_id = 1;
-
+		static $vendorId = null ;
+		if ($vendorId === null) {
+			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+			$vendorId = Permissions::getInstance()->isSupervendor();
+		}
 // 		vmSetStartTime('getCategories');
 		$categoryModel = VmModel::getModel ('category');
 		$level++;
@@ -808,10 +805,12 @@ class ShopFunctions {
 			foreach ($records as $key => $category) {
 
 				$childId = $category->category_child_id;
+				// block all childrens to prevent infinit loop
+				if (in_array ($childId, $disabledFields))  continue;
 
 				if ($childId != $cid) {
 					if (in_array ($childId, $selectedCategories)) {
-						$selected = 'selected=\"selected\"';
+						$selected = 'selected="selected"';
 					} else {
 						$selected = '';
 					}
@@ -820,7 +819,11 @@ class ShopFunctions {
 					if (in_array ($childId, $disabledFields)) {
 						$disabled = 'disabled="disabled"';
 					}
-
+					elseif ($category->shared == '0' && $vendorId != $category->virtuemart_vendor_id)
+					{
+						$disabled = 'disabled="disabled"';
+					}
+					
 					if ($disabled != '' && stristr ($_SERVER['HTTP_USER_AGENT'], 'msie')) {
 						//IE7 suffers from a bug, which makes disabled option fields selectable
 					} else {
@@ -1201,12 +1204,12 @@ class ShopFunctions {
 		return $html;
 	}
 
-	function checkboxList ($arr, $tag_name, $tag_attribs, $key = 'value', $text = 'text', $selected = NULL, $required = 0) {
+	static function checkboxList ($arr, $tag_name, $tag_attribs, $key = 'value', $text = 'text', $selected = NULL, $required = 0) {
 
 		return "\n\t" . implode ("\n\t", vmCommonHTML::checkboxListArr ($arr, $tag_name, $tag_attribs, $key, $text, $selected, $required)) . "\n";
 	}
 
-	function checkboxListTable ($arr, $tag_name, $tag_attribs, $key = 'value', $text = 'text', $selected = NULL, $cols = 0, $rows = 0, $size = 0, $required = 0) {
+	static function checkboxListTable ($arr, $tag_name, $tag_attribs, $key = 'value', $text = 'text', $selected = NULL, $cols = 0, $rows = 0, $size = 0, $required = 0) {
 
 		$cellsHtml = self::checkboxListArr ($arr, $tag_name, $tag_attribs, $key, $text, $selected, $required);
 		return self::list2Table ($cellsHtml, $cols, $rows, $size);
@@ -1300,7 +1303,7 @@ class ShopFunctions {
 	 * @return	string	Either the icon to move an item up or a space
 	 * @since	1.0
 	 */
-	function orderUpIcon ($i, $condition = TRUE, $task = 'orderup', $alt = 'COM_VIRTUEMART_MOVE_UP', $enabled = TRUE) {
+	static function orderUpIcon ($i, $condition = TRUE, $task = 'orderup', $alt = 'COM_VIRTUEMART_MOVE_UP', $enabled = TRUE) {
 
 		$alt = JText::_ ($alt);
 
@@ -1330,7 +1333,7 @@ class ShopFunctions {
 	 * @return	string	Either the icon to move an item down or a space
 	 * @since	1.0
 	 */
-	function orderDownIcon ($i, $n, $condition = TRUE, $task = 'orderdown', $alt = 'Move Down', $enabled = TRUE) {
+	static function orderDownIcon ($i, $n, $condition = TRUE, $task = 'orderdown', $alt = 'Move Down', $enabled = TRUE) {
 
 		$alt = JText::_ ($alt);
 
@@ -1447,7 +1450,7 @@ class ShopFunctions {
 		}
 
 		if($warn){
-			$suggestedPath=shopFunctions::getSuggestedSafePath();
+			$suggestedPath=self::getSuggestedSafePath();
 
 			VmWarn($warn,JText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$suggestedPath,$configlink);
 			return FALSE;
@@ -1570,15 +1573,18 @@ class ShopFunctions {
 	}
 	/* verify if vendor can do this task
 	 * @param   string   $task  task to verify.
-	 * @param   string   $className  the name of the view (eg. 'product')
+	 * @param   string   $className  the name of the view or controller (eg. 'product')
+	 * @return  param (in your case the rights)
 	 */
-	static public function can($task,$className){
+	static public function can($task,$className =null){
 		static $vendor = null;
 		if ($vendor === null) $vendor = Permissions::getInstance()->isSuperVendor();
 		if ($vendor < 2 ) return $vendor; //vendor 1 can do all and 0 nothing;
 		static $params = null;
 		if ($params === null) $params = JComponentHelper::getParams('com_virtuemart', true);
-		return $params->get($className.'_'.$task,null);
+		if ($className) $param = $className.'_'.$task;
+		else $param = $task;
+		return $params->get($param,null);
 	}
 }
 

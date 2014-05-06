@@ -47,6 +47,9 @@ class VirtuemartViewCategory extends VmView {
 		$this->task = $task ;
 
 		$this->perms = Permissions::getInstance();
+		// to add in vmview ?
+		$multivendor = Vmconfig::get('multix','none');
+		$this->multiX = $multivendor !=='none' && $multivendor !='' ? true : false ;
 
 		if ($layoutName == 'edit') {
 
@@ -65,10 +68,12 @@ class VirtuemartViewCategory extends VmView {
 			$this->jTemplateList = ShopFunctions::renderTemplateList(JText::_('COM_VIRTUEMART_CATEGORY_TEMPLATE_DEFAULT'));
 
 			if(!class_exists('VirtueMartModelConfig'))require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'config.php');
-			$this->categoryLayouts = VirtueMartModelConfig::getLayoutList('category');
-			$this->productLayouts = VirtueMartModelConfig::getLayoutList('productdetails');
-
+			$this->productLayouts = VirtueMartModelConfig::getLayoutList('productdetails',$category->category_product_layout,'category_product_layout');
+			$this->categoryLayouts = VirtueMartModelConfig::getLayoutList('category',$category->category_layout,'categorylayout');
+			// front autoset parent category
+			if (!$category->virtuemart_category_id) $this->parent->virtuemart_category_id = jRequest::getInt('category_parent_id',0);
 			//Nice fix by Joe, the 4. param prevents setting an category itself as child
+			// Note Studio42, the fix is not suffisant, you can set the category in a children and get infinit loop in router for eg.
 			$this->categorylist = ShopFunctions::categoryListTree(array($this->parent->virtuemart_category_id), 0, 0, (array) $category->virtuemart_category_id);
 
 			if(Vmconfig::get('multix','none')!=='none'){
@@ -79,12 +84,18 @@ class VirtuemartViewCategory extends VmView {
 		}
 		else {
 			$this->SetViewTitle('CATEGORY_S');
+			$category_id = JRequest::getInt('filter_category_id');
+			$this->categorylist = ShopFunctions::categoryListTreeLoop( (array)$category_id, 0, 0);
 
 			$this->catmodel = $model;
+			if ($this->multiX) {
+				JToolBarHelper::custom('toggle.shared.1', 'publish', 'yes', JText::_('COM_VIRTUEMART_SHARED'), true);
+				JToolBarHelper::custom('toggle.shared.0', 'unpublish', 'no', JText::_('COM_VIRTUEMART_SHARED'), true);
+			}
 			$this->addStandardDefaultViewCommands();
 			$this->addStandardDefaultViewLists($model,'category_name');
 
-			$this->categories = $model->getCategoryTree(0,0,false,$this->lists['search']);
+			$this->categories = $model->getCategoryTree($category_id,0,false,$this->lists['search']);
 			$this->pagination = $model->getPagination();
 
 			//we need a function of the FE shopfunctions helper to cut the category descriptions

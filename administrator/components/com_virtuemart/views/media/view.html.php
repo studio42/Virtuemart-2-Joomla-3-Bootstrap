@@ -40,7 +40,9 @@ class VirtuemartViewMedia extends VmView {
 		$titleMsg ='';
 		$model = VmModel::getModel();
 		$this->perms = Permissions::getInstance();
-
+		// to add in vmview ?
+		$multivendor = Vmconfig::get('multix','none');
+		$this->multiX = $multivendor !=='none' && $multivendor !='' ? true : false ;
 		$layoutName = JRequest::getWord('layout', 'default');
 		if ($layoutName == 'edit') {
 
@@ -63,9 +65,20 @@ class VirtuemartViewMedia extends VmView {
 					array('class'=> 'hasTooltip btn btn-inverse', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '. $category->category_name), 'category') ;
 				$titleMsg = $category->category_name ;
 			}
+			// RAW render
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
 
-			JToolBarHelper::custom('synchronizeMedia', 'new', 'new', JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'),false);
-			$this->addStandardDefaultViewCommands();
+				JToolBarHelper::custom('synchronizeMedia', 'new', 'new', JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'),false);
+				if ($this->multiX) {
+					JToolBarHelper::custom('toggle.shared.1', 'ok', 'yes', JText::_('COM_VIRTUEMART_SHARED'), true);
+					JToolBarHelper::custom('toggle.shared.0', 'cancel', 'no', JText::_('COM_VIRTUEMART_SHARED'), true);
+				}
+				$this->addStandardDefaultViewCommands();
+			}
 			$this->addStandardDefaultViewLists($model,null,null,'searchMedia');
 			$options = array( '' => '- '.JText::_('COM_VIRTUEMART_TYPE').' -',
 				'product' => JText::_('COM_VIRTUEMART_PRODUCT'),
@@ -91,6 +104,15 @@ class VirtuemartViewMedia extends VmView {
 		$this->SetViewTitle('',$titleMsg);
 		parent::display($tpl);
 	}
+	// count if media is used
+	function displayUsedIn($id,$type){
+		if(empty($this->_db)) $this->_db = JFactory::getDBO();
+		$this->_db->setQuery('SELECT count(*) FROM `#__virtuemart_'.$type.'_medias`  WHERE `virtuemart_media_id`='.$id);
+		$total = $this->_db->loadResult();
+		if ($total) $label = 'label-info';
+		else $label = 'label-default';
+		return '<span class="label '.$label.' hasTooltip" title="'.$total.' '.JText::_('COM_VIRTUEMART_'.$type  ).'">'.$total.'</span>';
 
+	}
 }
 // pure php no closing tag

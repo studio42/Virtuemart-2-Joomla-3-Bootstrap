@@ -26,6 +26,7 @@ jimport('joomla.filesystem.file');
 		<?php echo $this->displayDefaultViewSearch('COM_VIRTUEMART_TITLE','keyword') ;
 		echo $this->customs->customsSelect ; ?>
 		<?php echo $this->DisplayFilterPublish() ?>
+		<div class="btn-group pull-right"><?php echo $this->pagination->getLimitBox(); ?></div>
 	</div>
 	<div class="clearfix"> </div>
 	<div id="results">
@@ -33,6 +34,7 @@ jimport('joomla.filesystem.file');
 		// split to use ajax search
 		echo $this->loadTemplate('results'); ?>
 	</div>
+	<?php //var_dump($this->installedCustoms); ?>
 	<?php //var_dump($this->lang); ?>
 	<!-- new custom  preselect in modal -->
 	<div id="customsModal" class="modal hide fade" tabindex="-1" aria-hidden="true">
@@ -51,6 +53,7 @@ jimport('joomla.filesystem.file');
 				<?php
 			}
 			// plugins
+			
 			foreach ($this->installedCustoms as $key => $custom) {
 				if ($custom['enabled'] == 1 ) {
 					$link = JROUTE::_('index.php?option=com_virtuemart&view=custom&task=add&field_type=E&custom_jplugin_id=' . $key.$this->tmpl);
@@ -60,7 +63,9 @@ jimport('joomla.filesystem.file');
 					if ( $this->lang->hasKey($langKey.'_desc') ) $title = 'class="hasTooltip" title="'.jText::_($langKey.'_desc').'" ';
 					else $title = "";
 					?>
-					<li><a <?php echo $title ?> href="<?php echo $link ?>"> <?php echo jText::_($name) ?></a></li>
+					<li><a <?php echo $title ?> href="<?php echo $link ?>"> <?php echo jText::_($name) ?></a>
+						<?php //if ( $this->lang->hasKey($langKey) ) echo jText::_($langKey) ?>
+					</li>
 					<?php
 				}
 				else
@@ -72,7 +77,7 @@ jimport('joomla.filesystem.file');
 			} ?>
 		</ul>
 		</div>
-		<div class="modal-footer"><div class="close btn"><?php echo JText::_('JCANCEL') ?></div></div>
+		<div class="modal-footer"><div class="close btn"  data-dismiss="modal" ><?php echo JText::_('JCANCEL') ?></div></div>
 	</div>
 	<script type="text/javascript">
 

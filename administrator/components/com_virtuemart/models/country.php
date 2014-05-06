@@ -83,14 +83,23 @@ class VirtueMartModelCountry extends VmModel {
      * @param string $noLimit True if no record count limit is used, false otherwise
      * @return object List of country objects
      */
-    function getCountries($onlyPublished=true, $noLimit=false, $searchCountry = false) {
+    function getCountries($onlyPublished=true, $noLimit=false, $searchCountry = false,$countState = false) {
 
 		$where = array();
 		$this->_noLimit = $noLimit;
+		$select = 'c.*';
+		$from = ' FROM `#__virtuemart_countries` as c';
 // 		$query = 'SELECT * FROM `#__virtuemart_countries` ';
 		/* add filters */
 		if ($onlyPublished) $where[] = '`published` = 1';
-
+		else {
+			$published = JRequest::getvar('filter_published');
+			if ($published === '1') {
+				$where[] = " `published` = 1 ";
+			} else if ($published === '0') {
+				$where[] = " `published` = 0 ";
+			}
+		}
 		if($searchCountry){
 			$filterCountry = '"%' . $this->_db->escape( $searchCountry, true ) . '%"' ;
 			//$keyword = $this->_db->Quote($filterCountry, false);
@@ -98,10 +107,15 @@ class VirtueMartModelCountry extends VmModel {
 		}
 		$whereString = '';
 		if (count($where) > 0) $whereString = ' WHERE '.implode(' AND ', $where) ;
-
+		if ($countState) {
+			$select .= ',COUNT(`virtuemart_state_id`) as states';
+			$from .=' left join `j3_virtuemart_states` as s on 
+			s.`virtuemart_country_id` = c.`virtuemart_country_id`';
+			$whereString = ' GROUP BY `virtuemart_country_id`';
+		}
 		$ordering = $this->_getOrdering();
 
-		return $this->_data = $this->exeSortSearchListQuery(0,'*',' FROM `#__virtuemart_countries`',$whereString,'',$ordering);
+		return $this->exeSortSearchListQuery(0,$select,$from,$whereString,'',$ordering);
 
 
     }
