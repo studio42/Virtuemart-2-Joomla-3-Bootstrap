@@ -8,13 +8,20 @@ Virtuemart 2 is a online shop solution for Joomla 2.5.
 Last updates
 ------------
 **Multi file** uploads in product,category
+
 **Simplfied** editing for all the shop
+
 **Full front vendor shop** with bootstrap design
+
 **save as new/copy** in most views
+
 **Bootstrap** Style in front-end views as default
+
 **Better rights** cheking for vendors
+
 **customisable** product edit
-Code changes and bug fixes for j3+ compatibility
+
+Code changes and bug fixes for j3+ compatibility ...
 
 New features
 ------------
