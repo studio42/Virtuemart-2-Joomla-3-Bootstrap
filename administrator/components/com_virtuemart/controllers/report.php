@@ -1,5 +1,5 @@
 <?php
-if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not allowed.' );
+defined('_JEXEC') or die();
 
 /**
 *
@@ -17,7 +17,7 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 * http://virtuemart.org
 */
 
-if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
+if(!class_exists('VmController')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmcontroller.php');
 
 
 /**

@@ -1,13 +1,11 @@
 <?php
 /**
- * abstract controller class containing get,store,delete,publish and pagination
  *
- *
- * This class provides the functions for the calculations
+ * This class provides the functions for the View
  *
  * @package	VirtueMart
  * @subpackage Helpers
- * @author Max Milbers
+ * @author Max Milbers, Patrick Kohl
  * @copyright Copyright (c) 2011 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
@@ -19,13 +17,11 @@
  *
  * http://virtuemart.net
  */
-// Load the view framework
-jimport( 'joomla.application.component.viewlegacy');
 
+// Register default helpers
 
-// Load default helpers
-if (!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
-if (!class_exists('AdminUIHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'adminui.php');
+JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+JLoader::register('AdminUIHelper', JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'adminui.php');
 
 class VmView extends JViewLegacy{
 	
@@ -50,8 +46,8 @@ class VmView extends JViewLegacy{
 		$this->_cidName = 'virtuemart_'.$vName.'_id'; 
 	// var_dump($this);
 		//Template path and helper fix for Front-end editing
-		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views/'.$this->_name.'/tmpl');
-		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
+		$this->addTemplatePath(JPATH_VM_ADMINISTRATOR.'/views/'.$vName.'/tmpl');
+		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.'/helpers');
 		$this->frontEdit = jRequest::getvar('tmpl') ==='component' ? true : false ;
 		if ($this->frontEdit) {
 			if (!class_exists('JToolBarHelper')) {
@@ -62,6 +58,7 @@ class VmView extends JViewLegacy{
 			}
 			$this->tmpl = '&tmpl=component';
 		}
+		// this is to check, in most cases
 		$this->adminVendor = Permissions::getInstance()->isSuperVendor();
 	}
 	/*
@@ -98,7 +95,7 @@ class VmView extends JViewLegacy{
 
 		/* set list filters */
 		$option = JRequest::getCmd('option');
-		$view = JRequest::getCmd('view', JRequest::getCmd('controller','virtuemart'));
+		$view = $this->getName();
 
 		$app = JFactory::getApplication();
 		$this->lists[$name] = $app->getUserStateFromRequest($option . '.' . $view . '.'.$name, $name, '', 'string');
@@ -163,14 +160,14 @@ class VmView extends JViewLegacy{
 		// }
 		// javascript for cookies setting in case of press "APPLY"
 		$document = JFactory::getDocument();
-		$name = $this->_name;
-		if ($name == 'product') $name='productdetails';
+
+		if ($view == 'product') $view='productdetails';
 		$j = "
 			Joomla.submitbutton=function(a){
 				var options = { path: '/', expires: 2},
 					link = '';
 				if (a == 'preview') {
-					link='".juri::root()."index.php?option=com_virtuemart&view=".$name."&".$this->_cidName."=".$id."';
+					link='".juri::root()."index.php?option=com_virtuemart&view=".$view."&".$this->_cidName."=".$id."';
 					window.location = link;
 					// console.log(link);
 					return false;
@@ -201,23 +198,19 @@ class VmView extends JViewLegacy{
 
 		$lang = strtolower(strtr($selectedLangue,'-','_'));
 		// only add if ID and view not null
-		if ($editView && $id && (count(vmconfig::get('active_languages'))>1) ) {
+		if ($id && (count(vmconfig::get('active_languages'))>1) ) {
 
-			if ($editView =='user') $editView ='vendor';
+			if ($view =='user') $view ='vendor';
 			//$params = JComponentHelper::getParams('com_languages');
 			jimport('joomla.language.helper');
-			$lang = JRequest::getVar('vmlang', $lang);
+			$this->lang = JRequest::getVar('vmlang', $lang);
 			$languages = JLanguageHelper::createLanguageList($selectedLangue, constant('JPATH_SITE'), true);
 			$activeVmLangs = (vmconfig::get('active_languages') );
 
 			foreach ($languages as $k => &$joomlaLang) {
 				if (!in_array($joomlaLang['value'], $activeVmLangs) )  unset($languages[$k] );
 			}
-			$langList = JHTML::_('select.genericlist',  $languages, 'vmlang', 'class="inputbox"', 'value', 'text', $selectedLangue , 'vmlang');
-			$this->assignRef('langList',$langList);
-			$this->assignRef('lang',$lang);
-
-
+			$this->langList = JHTML::_('select.genericlist',  $languages, 'vmlang', 'class="inputbox"', 'value', 'text', $selectedLangue , 'vmlang');
 
 			$token = JSession::getFormToken();
 			
@@ -256,9 +249,8 @@ class VmView extends JViewLegacy{
 			$langs = $jlang->getKnownLanguages();
 			$defautName = $langs[$selectedLangue]['name'];
 			$flagImg =JURI::root( true ).'/administrator/components/com_virtuemart/assets/images/flag/'.substr($lang,0,2).'.png';
-			$langList = '<input name ="vmlang" type="hidden" value="'.$selectedLangue.'" ><img style="vertical-align: middle;" alt="'.$defautName.'" src="'.$flagImg.'"> <b> '.$defautName.'</b>';
-			$this->assignRef('langList',$langList);
-			$this->assignRef('lang',$lang);
+			$this->langList = '<input name ="vmlang" type="hidden" value="'.$selectedLangue.'" ><img style="vertical-align: middle;" alt="'.$defautName.'" src="'.$flagImg.'"> <b> '.$defautName.'</b>';
+			$this->lang = $lang ;
 		}
 
 		//I absolutly do not understand for that should be for, note by Max
@@ -281,16 +273,15 @@ class VmView extends JViewLegacy{
 	}
 
 
-	function SetViewTitle($name ='', $msg ='') {
-		$view = JRequest::getWord('view', JRequest::getWord('controller'));
-		if ($name == '')
-		$name = $view;
+	function SetViewTitle($view ='', $msg ='') {
+		if ($view == '')
+			$view = $this->getName();
 		if ($msg) {
 			$msg = ' <span style="font-size:90%">' . $msg . '</span>';
 		}
 		
 		//$text = strtoupper('COM_VIRTUEMART_'.$name );
-		$viewText = JText::_('COM_VIRTUEMART').' : '.ShopFunctions::altText($name);
+		$viewText = JText::_('COM_VIRTUEMART').' : '.ShopFunctions::altText($view);
 		if (!$task = JRequest::getWord('task')) $task = 'list';
 		
 		$taskName = ShopFunctions::altText($task);
@@ -301,7 +292,7 @@ class VmView extends JViewLegacy{
 		$document = JFactory::getDocument();
 		$title = $document->getTitle();
 		$document->setTitle( trim(strip_tags($title)) );
-		$this->assignRef('viewName',$viewText); //was $viewName?
+		$this->viewName = $viewText; //was $viewName?
 	}
 
 	function sort($orderby ,$name=null ){
@@ -310,20 +301,19 @@ class VmView extends JViewLegacy{
 	}
 
 	public function addStandardHiddenToForm($controller=null, $task=''){
-		if (!$controller)	$controller = $this->_name;
+		if (!$view)	$view = $this->getName();
 		$option = JRequest::getCmd('option','com_virtuemart' );
 		$hidden ='';
 		if (array_key_exists('filter_order',$this->lists)) $hidden ='
 			<input type="hidden" name="filter_order" value="'.$this->lists['filter_order'].'" />
 			<input type="hidden" name="filter_order_Dir" value="'.$this->lists['filter_order_Dir'].'" />';
 		// fix for front-end editing.
-		if (JRequest::getCmd('tmpl') =='component' ) 
+		if ( $this->frontEdit ) 
 			 $hidden.='<input type="hidden" name="tmpl" value="component" />';
 		return  $hidden.'
 		<input type="hidden" name="task" value="'.$task.'" />
 		<input type="hidden" name="option" value="'.$option.'" />
 		<input type="hidden" name="boxchecked" value="0" />
-		<input type="hidden" name="controller" value="'.$controller.'" />
 		<input type="hidden" name="view" value="'.$controller.'" />
 		'. JHTML::_( 'form.token' );
 	}
@@ -393,14 +383,14 @@ class VmView extends JViewLegacy{
 		/* http://docs.joomla.org/Help_system/Adding_a_help_button_to_the_toolbar */
 
 			$task=JRequest::getWord('task', '');
-			$view=JRequest::getWord('view', '');
+			$view= $this->getName();
 			if ($task) {
 				if ($task=="add") {
 					$task="edit";
 				}
 				$task ="_".$task;
 			}
-			if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
+			if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/config.php');
 			VmConfig::loadConfig();
 			VmConfig::loadJLang('com_virtuemart_help');
  		    $lang = JFactory::getLanguage();
@@ -425,7 +415,7 @@ class VmView extends JViewLegacy{
 
 	function editLink($id, $text, $name= null,$attrib= null,$view = null,$task ='edit') {
 		if ( !$this->canChange) return $text ;
-		if ($view === null) $view = $this->_name;
+		if ($view === null) $view = $this->getName();
 		if ($name === null) $name = $this->_cidName;
 		if ($attrib === null) $attrib = array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$text);
 		

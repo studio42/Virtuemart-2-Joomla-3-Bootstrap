@@ -18,14 +18,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 if ($admin = JFactory::getUser()->authorise('core.admin') ) {
 	//This is for akeeba release system, it must be executed before any other task
-	require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'liveupdate'.DS.'liveupdate.php';
+	require_once JPATH_COMPONENT_ADMINISTRATOR.'/liveupdate/liveupdate.php';
 	if(JRequest::getCmd('view','') == 'liveupdate') {
 		LiveUpdate::handleRequest();
 		return;
 	}
 }
-
-if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
+if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/config.php');
 VmConfig::loadConfig();
 if(VmConfig::get('enableEnglish', 1)){
     $jlang =JFactory::getLanguage();
@@ -38,7 +37,8 @@ vmJsApi::jSite();
 
 // check for permission Only vendor and Admin can use VM2 BE
 // this makes trouble somehow, we need to check if the perm object works not too strict maybe
-if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+
 if(!Permissions::getInstance()->isSuperVendor()){
 // if(!Permissions::getInstance()->check('admin','storeowner')){
 	$app = JFactory::getApplication();
@@ -48,9 +48,9 @@ if(!Permissions::getInstance()->isSuperVendor()){
 
 // Require specific controller if requested
 if($_controller = JRequest::getWord('view', JRequest::getWord('controller', 'virtuemart'))) {
-	if (file_exists(JPATH_VM_ADMINISTRATOR.DS.'controllers'.DS.$_controller.'.php')) {
+	if (file_exists(JPATH_VM_ADMINISTRATOR.'/controllers/'.$_controller.'.php')) {
 		// Only if the file exists, since it might be a Joomla view we're requesting...
-		require (JPATH_VM_ADMINISTRATOR.DS.'controllers'.DS.$_controller.'.php');
+		require (JPATH_VM_ADMINISTRATOR.'/controllers/'.$_controller.'.php');
 	} else {
 		// try plugins
 		JPluginHelper::importPlugin('vmextended');

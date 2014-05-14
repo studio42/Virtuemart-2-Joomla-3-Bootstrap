@@ -1,8 +1,8 @@
 <?php 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 /**
-*
+* 
 * Base controller
 *
 * @package	VirtueMart
@@ -17,8 +17,6 @@ defined('_JEXEC') or die('Restricted access');
 * other free or open source software licenses.
 * @version $Id$
 */
-
-jimport('joomla.application.component.controller');
 
 /**
  * VirtueMart default administrator controller

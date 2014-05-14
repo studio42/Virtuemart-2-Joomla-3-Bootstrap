@@ -17,9 +17,9 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
+if(!class_exists('VmController')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmcontroller.php');
 
 /**
  * Orders Controller
@@ -143,7 +143,6 @@ class VirtuemartControllerOrders extends VmController {
 		}
 	}
 
-
 	/**
 	 * Save changes to the order item status
 	 *
@@ -163,7 +162,6 @@ class VirtuemartControllerOrders extends VmController {
 		$this->setRedirect($this->redirectPath.'&task=edit&virtuemart_order_id='.$data['virtuemart_order_id']);
 	}
 
-
 	/**
 	 * Display the order item details for editing
 	 */
@@ -174,7 +172,6 @@ class VirtuemartControllerOrders extends VmController {
 
 		parent::display();
 	}
-
 
 	/**
 	 * correct position, working with json? actually? WHat ist that?
@@ -191,7 +188,6 @@ class VirtuemartControllerOrders extends VmController {
 		/* Now display the view. */
 		$view->display();
 	}
-
 
 	/**
 	 * Update status for the selected order items
@@ -260,7 +256,6 @@ class VirtuemartControllerOrders extends VmController {
 		$this->setRedirect($editLink, $msg);
 	}
 
-
 	/**
 	 * Removes the given order item
 	 */
@@ -322,7 +317,6 @@ class VirtuemartControllerOrders extends VmController {
 		parent::display();
 // 		jExit();
 	}
-
 
 }
 // pure php no closing tag

@@ -17,10 +17,9 @@
  * @version $Id: updatesmigration.php 6044 2012-05-22 20:33:45Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 // Load the controller framework
-jimport('joomla.application.component.controller');
 
 if(!class_exists('VmController'))
 require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmcontroller.php');
@@ -243,7 +242,6 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 			$msg = $this->_getMsgDangerousTools();
 		}
 
-
 		$this->setRedirect(null, $msg);
 	}
 
@@ -251,7 +249,6 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 		$this->refreshCompleteInstall(true);
 	}
-
 
 	function refreshCompleteInstall($sample=false){
 
@@ -489,15 +486,12 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 	function storeMigrationOptionsInSession(){
 
-
 		$session = JFactory::getSession();
 
 		$session->set('migration_task', JRequest::getString('task',''), 'vm');
 		$session->set('migration_default_category_browse', JRequest::getString('migration_default_category_browse',''), 'vm');
 		$session->set('migration_default_category_fly', JRequest::getString('migration_default_category_fly',''), 'vm');
 	}
-
-
 
 	/**
 	 * This is executing the update table commands to adjust tables to the latest layout
@@ -534,7 +528,6 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 			$db->execute();
 		}*/
 	}
-
 
 }
 

@@ -17,12 +17,12 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
+if(!class_exists('VmController')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmcontroller.php');
 		VmConfig::loadJLang('com_virtuemart_media');
 /**
- * Product Controller
+ * Media Controller
  *
  * @package    VirtueMart
  * @author Max Milbers
@@ -90,6 +90,9 @@ class VirtuemartControllerMedia extends VmController {
 
 		$this->setRedirect(null, $result);
 	}
+	
+	// clean real files when not in database
+	
 	function removeUnused(){
 		JSession::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
@@ -146,7 +149,7 @@ class VirtuemartControllerMedia extends VmController {
 				$msg .= '<br />'.($error);
 			}
 		}
-		if (removed) vmInfo( $removed .' files removed');
+		if ($removed) vmInfo( $removed .' files removed');
 		$this->setRedirect(null, $msg,$type);
 	}
 }

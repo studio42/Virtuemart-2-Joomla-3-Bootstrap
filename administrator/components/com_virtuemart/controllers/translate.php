@@ -17,9 +17,9 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
+if(!class_exists('VmController')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmcontroller.php');
 
 /**
  * Translate Controller
@@ -79,7 +79,6 @@ class VirtuemartControllerTranslate extends VmController {
 		}
 		$tableName = '#__virtuemart_'.$tables[$viewKey].'_'.$dblang;
 
-
 		$db =JFactory::getDBO();
 
 		$q='select * FROM `'.$tableName.'` where `virtuemart_'.$viewKey.'_id` ='.$id;
@@ -102,7 +101,6 @@ class VirtuemartControllerTranslate extends VmController {
 		jExit();
 
 	}
-
 
 }
 

@@ -16,16 +16,15 @@ defined('_JEXEC') or die();
 * other free or open source software licenses.
 * @version $Id: plugin.php 2641 2010-11-09 19:25:13Z milbo $
 */
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-jimport('joomla.application.component.controller');
 
 /**
  * VirtueMart default administrator controller
  *
  * @package		VirtueMart
  */
-class VirtuemartControllerPlugin extends JController
+class VirtuemartControllerPlugin extends JControllerLegacy {
 {
 	/**
 	 * Method to render the plugin datas
