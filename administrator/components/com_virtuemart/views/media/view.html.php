@@ -71,11 +71,12 @@ class VirtuemartViewMedia extends VmView {
 			}
 			else 
 			{
-
-				JToolBarHelper::custom('synchronizeMedia', 'new', 'new', JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'),false);
-				if ($this->multiX) {
-					JToolBarHelper::custom('toggle.shared.1', 'ok', 'yes', JText::_('COM_VIRTUEMART_SHARED'), true);
-					JToolBarHelper::custom('toggle.shared.0', 'cancel', 'no', JText::_('COM_VIRTUEMART_SHARED'), true);
+				if ($this->adminVendor == 1) {
+					JToolBarHelper::custom('synchronizeMedia', 'new', 'new', JText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'),false);
+					if ($this->multiX) {
+						JToolBarHelper::custom('toggle.shared.1', 'ok', 'yes', JText::_('COM_VIRTUEMART_SHARED'), true);
+						JToolBarHelper::custom('toggle.shared.0', 'cancel', 'no', JText::_('COM_VIRTUEMART_SHARED'), true);
+					}
 				}
 				$this->addStandardDefaultViewCommands();
 			}

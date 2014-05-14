@@ -19,29 +19,28 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-$colspan=8;
-
-if ($this->doctype != 'invoice') {
-    $colspan -= 4;
-} elseif ( ! VmConfig::get('show_tax')) {
-    $colspan -= 1;
-}
+$colspan=5;
+$showtax = VmConfig::get('show_tax');
+if ( !$showtax) {
+    $colspan --;
+	$productWidth = "47%";
+} else $productWidth = "37%";
  ?>
-<table class="html-email" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="html-email product-items" width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr align="left" class="sectiontableheader">
-		<td align="left" width="5%"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SKU') ?></strong></td>
-		<td align="left" colspan="2" width="38%" ><strong><?php echo JText::_('COM_VIRTUEMART_PRODUCT_NAME_TITLE') ?></strong></td>
-		<td align="center" width="10%"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_STATUS') ?></strong></td>
+		<th align="left" width="8%"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SKU') ?></th>
+		<th align="left" width="<?php echo $productWidth ?>"><?php echo JText::_('COM_VIRTUEMART_PRODUCT_NAME_TITLE') ?></th>
+		<th align="center" width="10%"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_STATUS') ?></th>
 		<?php if ($this->doctype == 'invoice') { ?>
-		<td align="right" width="10%" ><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PRICE') ?></strong></td>
+		<th align="right" width="10%" ><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PRICE') ?></th>
 		<?php } ?>
-		<td align="right" width="6%"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_QTY') ?></strong></td>
+		<th align="right" width="5%"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_QTY') ?></th>
 		<?php if ($this->doctype == 'invoice') { ?>
-		<?php if ( VmConfig::get('show_tax')) { ?>
-		<td align="right" width="10%" ><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_TAX') ?></strong></td>
+		<?php if ( $showtax ) { ?>
+		<th align="right" width="10%" ><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_TAX') ?></th>
 		  <?php } ?>
-		<td align="right" width="11%"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SUBTOTAL_DISCOUNT_AMOUNT') ?></strong></td>
-		<td align="right" width="11%"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_TOTAL') ?></strong></td>
+		<th align="right" width="10%"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SUBTOTAL_DISCOUNT_AMOUNT') ?></th>
+		<th align="right" width="10%"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_TOTAL') ?></th>
 		<?php } ?>
 	</tr>
 
@@ -53,10 +52,10 @@ if ($this->doctype != 'invoice') {
 
 		?>
 		<tr valign="top">
-			<td align="left">
+			<td align="left" class="product-sku">
 				<?php echo $item->order_item_sku; ?>
 			</td>
-			<td align="left" colspan="2" >
+			<td align="left" class="product-name">
 				<a href="<?php echo $product_link; ?>"><?php echo $item->order_item_name; ?></a>
 				<?php
 // 				vmdebug('$item',$item);
@@ -87,8 +86,8 @@ if ($this->doctype != 'invoice') {
 				<?php echo $qtt; ?>
 			</td>
 		<?php if ($this->doctype == 'invoice') { ?>
-			<?php if ( VmConfig::get('show_tax')) { ?>
-				<td align="right" class="priceCol"><?php echo "<span  class='priceColor2'>".$this->currency->priceDisplay($item->product_tax ,$this->currency, $qtt)."</span>" ?></td>
+			<?php if ( $showtax) { ?>
+				<td align="right" class="priceCol"><span  class="priceColor2"><?php echo $this->currency->priceDisplay($item->product_tax ,$this->currency, $qtt) ?></span></td>
                                 <?php } ?>
 			<td align="right" class="priceCol" >
 				<?php echo  $this->currency->priceDisplay( $item->product_subtotal_discount, $this->currency );  //No quantity is already stored with it ?>
@@ -113,23 +112,22 @@ if ($this->doctype != 'invoice') {
 	}
 ?>
 <?php if ($this->doctype == 'invoice') { ?>
-<tr><td colspan="<?php echo $colspan ?>"></td></tr>
- <tr class="sectiontableentry1">
-			<td colspan="6" align="right"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_PRICES_TOTAL'); ?></td>
 
-                        <?php if ( VmConfig::get('show_tax')) { ?>
-			<td align="right"><?php echo "<span  class='priceColor2'>".$this->currency->priceDisplay($this->orderDetails['details']['BT']->order_tax, $this->currency)."</span>" ?></td>
-                        <?php } ?>
-			<td align="right"><?php echo "<span  class='priceColor2'>".$this->currency->priceDisplay($this->orderDetails['details']['BT']->order_discountAmount, $this->currency)."</span>" ?></td>
-			<td align="right"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_salesPrice, $this->currency) ?></td>
-		  </tr>
+	<tr class="sectiontableentry1">
+		<td colspan="<?php echo $colspan ?>" align="right"><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_PRICES_TOTAL'); ?></td>
+		<?php if ( $showtax) { ?>
+			<td align="right"><span  class="priceColor2"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_tax, $this->currency) ?></span></td>
+		<?php } ?>
+		<td align="right"><span  class="priceColor2"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_discountAmount, $this->currency) ?></span></td>
+		<td align="right"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_salesPrice, $this->currency) ?></td>
+	</tr>
 <?php
 if ($this->orderDetails['details']['BT']->coupon_discount <> 0.00) {
     $coupon_code=$this->orderDetails['details']['BT']->coupon_code?' ('.$this->orderDetails['details']['BT']->coupon_code.')':'';
 	?>
 	<tr>
-		<td align="right" class="pricePad" colspan="6"><?php echo JText::_('COM_VIRTUEMART_COUPON_DISCOUNT').$coupon_code ?></td>
-		<?php if ( VmConfig::get('show_tax')) { ?>
+		<td align="right" class="pricePad" colspan="<?php echo $colspan ?>"><?php echo JText::_('COM_VIRTUEMART_COUPON_DISCOUNT').$coupon_code ?></td>
+		<?php if ( $showtax) { ?>
 			<td align="right"> </td>
 		<?php } ?>
 		<td align="right"></td>
@@ -142,9 +140,9 @@ if ($this->orderDetails['details']['BT']->coupon_discount <> 0.00) {
 		foreach($this->orderDetails['calc_rules'] as $rule){
 			if ($rule->calc_kind== 'DBTaxRulesBill') { ?>
 			<tr >
-				<td colspan="6"  align="right" class="pricePad"><?php echo $rule->calc_rule_name ?> </td>
+				<td colspan="<?php echo $colspan ?>"  align="right" class="pricePad"><?php echo $rule->calc_rule_name ?> </td>
 
-                                   <?php if ( VmConfig::get('show_tax')) { ?>
+                                   <?php if ( $showtax) { ?>
 				<td align="right"> </td>
                                 <?php } ?>
 				<td align="right"> <?php echo  $this->currency->priceDisplay($rule->calc_amount, $this->currency);  ?></td>
@@ -153,8 +151,8 @@ if ($this->orderDetails['details']['BT']->coupon_discount <> 0.00) {
 			<?php
 			} elseif ($rule->calc_kind == 'taxRulesBill') { ?>
 			<tr >
-				<td colspan="6"  align="right" class="pricePad"><?php echo $rule->calc_rule_name ?> </td>
-				<?php if ( VmConfig::get('show_tax')) { ?>
+				<td colspan="<?php echo $colspan ?>"  align="right" class="pricePad"><?php echo $rule->calc_rule_name ?> </td>
+				<?php if ($showtax) { ?>
 				<td align="right"><?php echo $this->currency->priceDisplay($rule->calc_amount, $this->currency); ?> </td>
 				 <?php } ?>
 				<td align="right"><?php    ?> </td>
@@ -163,8 +161,8 @@ if ($this->orderDetails['details']['BT']->coupon_discount <> 0.00) {
 			<?php
 			 } elseif ($rule->calc_kind == 'DATaxRulesBill') { ?>
 			<tr >
-				<td colspan="6"   align="right" class="pricePad"><?php echo $rule->calc_rule_name ?> </td>
-				<?php if ( VmConfig::get('show_tax')) { ?>
+				<td colspan="<?php echo $colspan ?>"   align="right" class="pricePad"><?php echo $rule->calc_rule_name ?> </td>
+				<?php if ( $showtax) { ?>
 				<td align="right"> </td>
 				 <?php } ?>
 				<td align="right"><?php  echo   $this->currency->priceDisplay($rule->calc_amount, $this->currency);  ?> </td>
@@ -179,33 +177,33 @@ if ($this->orderDetails['details']['BT']->coupon_discount <> 0.00) {
 
 
 	<tr>
-		<td align="right" class="pricePad" colspan="6"><?php echo $this->orderDetails['shipmentName'] ?></td>
+		<td align="right" class="pricePad" colspan="<?php echo $colspan ?>"><?php echo $this->orderDetails['shipmentName'] ?></td>
 
-		<?php if ( VmConfig::get('show_tax')) { ?>
-		<td align="right"><span class='priceColor2'><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_shipment_tax, $this->currency) ?></span> </td>
+		<?php if ( $showtax) { ?>
+		<td align="right"><span class="priceColor2"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_shipment_tax, $this->currency) ?></span> </td>
 		<?php } ?>
 		<td align="right"></td>
 		<td align="right"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_shipment + $this->orderDetails['details']['BT']->order_shipment_tax, $this->currency); ?></td>
 	</tr>
 
 	<tr>
-		<td align="right" class="pricePad" colspan="6"><?php echo $this->orderDetails['paymentName'] ?></td>
+		<td align="right" class="pricePad" colspan="<?php echo $colspan ?>"><?php echo $this->orderDetails['paymentName'] ?></td>
 
-		<?php if ( VmConfig::get('show_tax')) { ?>
-		<td align="right"><span class='priceColor2'><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_payment_tax, $this->currency) ?></span> </td>
+		<?php if ( $showtax) { ?>
+		<td align="right"><span class="priceColor2"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_payment_tax, $this->currency) ?></span> </td>
 		<?php } ?>
 		<td align="right"></td>
 		<td align="right"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_payment + $this->orderDetails['details']['BT']->order_payment_tax, $this->currency); ?></td>
 	</tr>
 
 	<tr>
-		<td align="right" class="pricePad" colspan="6"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_TOTAL') ?></strong></td>
+		<td align="right" class="pricePad bill_total" colspan="<?php echo $colspan ?>"><strong><?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_TOTAL') ?></strong></td>
 
-		<?php if ( VmConfig::get('show_tax')) { ?>
-		<td align="right"><span class='priceColor2'><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_billTaxAmount, $this->currency); ?></span></td>
+		<?php if ( $showtax) { ?>
+		<td align="right"><span class="priceColor2"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_billTaxAmount, $this->currency); ?></span></td>
 		<?php } ?>
-		<td align="right"><span class='priceColor2'><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_billDiscountAmount, $this->currency); ?></span></td>
-		<td align="right"><strong><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_total, $this->currency); ?></strong></td>
+		<td align="right"><span class="priceColor2"><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_billDiscountAmount, $this->currency); ?></span></td>
+		<td align="right" class="bill_total" ><?php echo $this->currency->priceDisplay($this->orderDetails['details']['BT']->order_total, $this->currency); ?></td>
 	</tr>
 
 <?php } ?>

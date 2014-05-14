@@ -29,95 +29,23 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  *
  * @package    VirtueMart
  * @subpackage Category
- * @author jseros, Max Milbers
+ * @author jseros, Max Milbers, Patrick Kohl
  */
 class VirtuemartControllerCategory extends VmController {
 
 	/**
 	 * We want to allow html so we need to overwrite some request data
 	 *
-	 * @author Max Milbers
+	 * @author Max Milbers, Patrick Kohl
 	 */
 	function save($data = 0){
 
 		$data = JRequest::get('post');
-
-		$data['category_name'] = JRequest::getVar('category_name','','post','STRING',JREQUEST_ALLOWHTML);
-		$data['category_description'] = JRequest::getVar('category_description','','post','STRING',JREQUEST_ALLOWHTML);
+		$data['category_name'] = $this->filterText('category_name');
+		$data['category_description'] = $this->filterText('category_description');
 		$this->cleanCache('com_virtuemart');
 		parent::save($data);
 	}
-
-
-	/**
-	* Save the category order
-	*
-	* @author jseros
-	*/
-	public function orderUp()
-	{
-		// Check token
-		JSession::checkToken() or jexit( 'Invalid Token' );
-
-		//capturing virtuemart_category_id
-		$id = 0;
-		$cid	= JRequest::getVar( 'cid', array(), 'post', 'array' );
-		JArrayHelper::toInteger($cid);
-
-		if (isset($cid[0]) && $cid[0]) {
-			$id = $cid[0];
-		} else {
-			$this->setRedirect( null, JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
-			return false;
-		}
-
-		//getting the model
-		$model = VmModel::getModel('category');
-
-		if ($model->orderCategory($id, -1)) {
-			$msg = JText::_('COM_VIRTUEMART_ITEM_MOVED_UP');
-		} else {
-			$msg = $model->getError();
-		}
-
-		$this->setRedirect( null, $msg );
-	}
-
-
-	/**
-	* Save the category order
-	*
-	* @author jseros
-	*/
-	public function orderDown()
-	{
-		// Check token
-		JSession::checkToken() or jexit( 'Invalid Token' );
-
-		//capturing virtuemart_category_id
-		$id = 0;
-		$cid	= JRequest::getVar( 'cid', array(), 'post', 'array' );
-		JArrayHelper::toInteger($cid);
-
-		if (isset($cid[0]) && $cid[0]) {
-			$id = $cid[0];
-		} else {
-			$this->setRedirect( null, JText::_('COM_VIRTUEMART_NO_ITEMS_SELECTED') );
-			return false;
-		}
-
-		//getting the model
-		$model = VmModel::getModel('category');
-
-		if ($model->orderCategory($id, 1)) {
-			$msg = JText::_('COM_VIRTUEMART_ITEM_MOVED_DOWN');
-		} else {
-			$msg = $model->getError();
-		}
-
-		$this->setRedirect( null, $msg );
-	}
-
 
 	/**
 	* Save the categories order

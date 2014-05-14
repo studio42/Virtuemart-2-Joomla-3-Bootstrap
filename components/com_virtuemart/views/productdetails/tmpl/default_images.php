@@ -51,7 +51,7 @@ if (!empty($this->product->images)) {
 </div>
 <?php
 	$count_images = count ($this->product->images);
-	if ($count_images > 1) {
+	if ($count_images > 1 ){//&& $this->document->_mime !== 'application/pdf') {
 		?>
 
     <div class="additional-images thumbnails">

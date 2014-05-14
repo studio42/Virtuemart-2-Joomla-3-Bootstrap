@@ -266,15 +266,19 @@ class VmTable extends JTable{
 			if($admin){
 				if(empty($this->$pkey) and empty($this->created_on)){
 					$this->created_on = $today;
-				}
+				} else unset ($this->created_on);
 
 				if(empty($this->$pkey) and empty($this->created_by)){
 					$this->created_by = $user->id;
-				}
+				} else unset ($this->created_by);
 			} else {
 				if(empty($this->$pkey)){
 					$this->created_on = $today;
 					$this->created_by = $user->id;
+				} else {
+					unset ($this->created_on);
+					unset ($this->created_by);
+					
 				}
 			}
 
@@ -293,7 +297,20 @@ class VmTable extends JTable{
 			$this->locked_on = 0;
 		}
 	}
-
+	/*
+	* check if it's own record by user ID
+	*/
+	public function checkOwn($id){
+		if ($this->_loggable === false ) return 0;
+		$mainTable = $this->_tbl ;
+		$select = 'SELECT `'.$mainTable.'`.created_by ';
+		$from = ' FROM `'.$mainTable .'` ';
+		$query = $select.$from.' WHERE '. $mainTable .'.`'.$this->_pkey.'` = "'.$id.'"';
+		$db = $this->getDBO();
+		$db->setQuery( $query );
+		$result = $db->loadResult( );
+		return $result;
+	}
 	/**
 	 * Technic to inject params as table attributes
 	 * @author Max Milbers

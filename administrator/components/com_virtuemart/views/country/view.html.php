@@ -63,20 +63,24 @@ class VirtuemartViewCountry extends VmView {
 			$this->SetViewTitle('',$country_string);
 		}
 		else {
-			$this->SetViewTitle();
-			$this->addStandardDefaultViewCommands(true,false);
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				$this->SetViewTitle();
+				$this->addStandardDefaultViewCommands(true,false);
+			}
 
 			//First the view lists, it sets the state of the model
 			$this->addStandardDefaultViewLists($model,0,'ASC','filter_country');
-
-			$filter_country = JRequest::getWord('filter_country', false);
 			$this->countries = $model->getCountries(false, false, $this->lists['filter_country'],true);
-
 			$this->pagination = $model->getPagination();
 
 		}
 
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
     }
 
 }

@@ -241,15 +241,31 @@ class AdminUIHelper {
 	static function _getAdminMenu($moduleId = 0) {
 		$db = JFactory::getDBO ();
 		$menuArr = array ();
+		$filter = array ();
 		$admin = JFactory::getUser()->authorise('core.admin');
 		$manage = JFactory::getUser()->authorise('core.manage');
+
 		$filter [] = "jmmod.published='1'";
 		$filter [] = "item.published='1'";
 		$filter [] = "jmmod.is_admin='1'";
-		if (!$admin) {
+		// simple vendor menu to display
+		$isVendor = (Permissions::getInstance()->isSuperVendor() > 1);
+		if ($isVendor ) {
+			$or = array();
+			$vendorViews = array ("product","category","manufacturer","media","custom","orders","shoppers","coupons","report");
+			foreach ($vendorViews as $view) {
+				if ( ShopFunctions::can('edit',$view) ) 
+					$or [] = "item.view='".$view."'";
+			}
+			$or [] = "item.view='virtuemart'";
+			$or [] = "item.view='about'";
+			$filter [] = '(' . implode ( ' OR ', $or ) . ')';
+		} elseif (!$admin) { // manager
 			$filter [] = "item.view!='config'";
 			$filter [] = "item.view!='updatesmigration'";
 		}
+
+
 		// var_dump($admin,$filter);
 		// if (!$manage) {
 			// $filter [] = "item.view!='config'";
@@ -269,6 +285,13 @@ class AdminUIHelper {
 		//		echo '<pre>'.print_r($query,1).'</pre>';
 		for($i = 0, $n = count ( $result ); $i < $n; $i ++) {
 			$row = $result [$i];
+			if ($linkComponent = strpos($row['link'], '?')) {
+				$linkToSplit = explode ('=',$row['link']);
+				if ($linkToSplit[0] == 'index.php?option'){
+					$component = $linkToSplit[1];
+					VmConfig::loadJLang($component.'.sys');
+				}
+			}
 			$menuArr [$row['module_id']] ['title'] = 'COM_VIRTUEMART_' . strtoupper ( $row['module_name'] ) . '_MOD';
 			$menuArr [$row['module_id']] ['items'] [] = $row ;
 		}

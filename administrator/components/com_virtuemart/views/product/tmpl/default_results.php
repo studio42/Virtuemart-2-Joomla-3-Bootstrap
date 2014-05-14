@@ -70,7 +70,7 @@ $saveOrder = ($this->lists['filter_order'] == 'pc.ordering');
 		
 		$canPublish = ShopFunctions::can('publish');
 		foreach ($this->productlist as $key => $product) {
-			$checked = JHTML::_('grid.id', $i , $product->virtuemart_product_id,null,'virtuemart_product_id');
+			$checked = JHTML::_('grid.id', $i , $product->virtuemart_product_id);
 			$canDo = $this->canChange($product->created_by) ;
 			$published = $this->toggle( $product->published, $i, 'published',$canDo && $canPublish);
 			// featured bootstrap style , canDo is the permission 

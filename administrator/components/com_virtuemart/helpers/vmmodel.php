@@ -44,20 +44,26 @@ class VmModel extends JModelLegacy  {
 	public function __construct($cidName=null, $config=array()){
 
 		$this->_cname = strtolower(substr(get_class( $this ), 15));
-		if ( $cidName === null) {
-			$cidName = 'virtuemart_'.$this->_cname.'_id';
-			$this->_cidName = $cidName;
-		} elseif ( $cidName ) $this->_cidName = $cidName;
+		if ($cidName === null) $cidName = 'virtuemart_'.$this->_cname.'_id';
+		$cidName = 'virtuemart_'.$this->_cname.'_id';
+		$jinput = JFactory::getApplication()->input;
+		$cid = $jinput->get('cid', null, 'array');
+		if (isset($cid)) {
+			$cidName = 'cid';
+			$id = (int)$cid[0];
+			$jinput->set($cidName, $id);
+		} else {
+			
+			$id = $jinput->get($cidName, null, 'INT');
+		}
+		$this->_cidName = $cidName;
 
 		parent::__construct($config);
 
 		// Get the task
 		$task = JRequest::getWord('task','');
 		if($task!=='add'){
-			// Get the id or array of ids.
-			$idArray = JRequest::getVar($this->_cidName,  0, '', 'array');
-			if(empty($idArray[0])) $idArray[0] = 0;
-			$this->setId((int)$idArray[0]);
+			$this->setId($id);
 		}
 
 		$this->setToggleName('published');
@@ -471,10 +477,10 @@ class VmModel extends JModelLegacy  {
 		$user		= JFactory::getUser();
 		$userId		= $user->get('id');
 		$table 		= $this->getTable($this->_maintablename);
-		$table->load($id);
-		if (isset($table->created_by) )
-			return ($table->created_by == $userId);
-		else return null; // or false ???
+		$created_by = $table->checkOwn($id);
+		if (isset($created_by) )
+			return ($created_by == $userId);
+		else return false;
 	}
 	/*
 	 * check if it's own item from a table
@@ -511,29 +517,28 @@ class VmModel extends JModelLegacy  {
 	}
 
 	/**
-	 * Delete all record ids selected
+	 * Delete all record cids selected
 	 *
-	 * @author Max Milbers
-	 * @return boolean True is the delete was successful, false otherwise.
+	 * @author Patrick Kohl
+	 * @return successfully removed cids or false otherwise.
 	 */
-	public function remove($ids,$vendor_id = 1) {
+	public function remove($cids,$vendor_id = 1) {
+		JSession::checkToken() or jexit( 'Invalid Token, in remove '.$this->_cname);
 		$ret = true ;
 		$table = $this->getTable($this->_maintablename);
-		foreach($ids as $id) {
-			if ($vendor_id!=1) {
-				if (!$this->checkOwn($id)) {
-					vmError('no right to remove '.$id,'no right to remove '.$this->_cname.' '.$id);
-					$ret = false;
-					continue;
+		foreach($cids as $key => $cid) {
+				if (!$this->checkOwn($cid)) {
+						vmError('no right to remove '.$cid,'no right to remove '.$this->_cname.' '.$cid);
+						$ret = false;
+						unset($cids[$key]);
+				} else if (!$table->delete($cid)) {
+				    vmError($table->getError());
+				    unset($cids[$key]);
 				}
-			}
-			if (!$table->delete((int)$id)) {
-				vmError(get_class( $this ).'::remove '.$id.' '.$table->getError());
-				return false;
-			}
 		}
+		if (empty($cids)) return false;
 
-		return $ret;
+		return $cids;
 	}
 
 	public function setToggleName($togglesName){

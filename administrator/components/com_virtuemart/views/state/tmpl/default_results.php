@@ -49,7 +49,7 @@ defined('_JEXEC') or die();
 	    for ($i=0, $n=count( $this->states ); $i < $n; $i++) {
 		$row = $this->states[$i];
 
-		$checked = JHTML::_('grid.id', $i, $row->virtuemart_state_id,null,'virtuemart_state_id');
+		$checked = JHTML::_('grid.id', $i, $row->virtuemart_state_id);
 		$published = $this->toggle( $row->published, $i, 'published');
 
 		?>

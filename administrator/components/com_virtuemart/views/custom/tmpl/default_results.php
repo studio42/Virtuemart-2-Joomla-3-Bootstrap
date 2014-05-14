@@ -67,7 +67,7 @@ $saveOrder = ($this->lists['filter_order'] == 'ordering' && $listDirn =="asc");
 
 		foreach ($customs as $key => $custom) {
 
-			$checked = JHTML::_('grid.id', $i , $custom->virtuemart_custom_id,false,'virtuemart_custom_id');
+			$checked = JHTML::_('grid.id', $i , $custom->virtuemart_custom_id,false);
 			$canDo = $this->canChange($custom->created_by) && ShopFunctions::can('publish');
 			$published = $this->toggle( $custom->published, $i, 'published',$canDo);
 			?>

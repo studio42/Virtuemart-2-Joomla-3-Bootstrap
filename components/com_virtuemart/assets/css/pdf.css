@@ -1,0 +1,92 @@
+
+body,div.pdf-body {
+  font-family: sans-serif;
+
+  font-size: 10pt;
+  /* margin-top:20px; */
+	margin-left: 0.5cm;
+	margin-right: 0.5cm;
+	margin-header: 1.5cm;
+	margin-footer: 1.5cm;
+	/* margin: 0.5cm 0; */
+	/* border-top: 0.1pt solid #aaa; */
+}
+div.pdf-body {
+	margin-top:1cm;
+	margin-bottom:1cm;
+}
+hr.page-break {
+  page-break-after: always;
+  border: 0;
+  visibility:hidden;
+  opacity: 0.0;
+}
+.pdf-header,
+.pdf-footer {
+  bottom : 0 ;
+  position: fixed;
+  left: 0;
+	right: 0;
+	color: #0D7ABF;
+	/* font-size: 0.9em; */
+}
+.pdf-footer .left, .pdf-header .left, .pdf-header .left h3{
+  margin-top:0;
+  position: fixed;
+  left: 0;
+
+  
+}
+.pdf-footer .right, .pdf-header .right, .pdf-header .right h3 {
+	margin-top:0;
+	padding-top:0;
+	position: fixed;
+	text-align:right;
+	right: 0;
+	color:#0D7ABF;
+}
+
+.pdf-header,.pdf-header .left,.pdf-header .right{
+	
+	top: -20px;
+	/* border-bottom: 0.1pt solid #aaa; */
+	font-size:14px;
+	text-transform:uppercase;
+}
+.pdf-header h3{
+	top: -20px;
+	/* border-bottom: 0.1pt solid #aaa; */
+	  font-size:20px;
+	  font-weight:bold;
+	  text-transform:uppercase;
+}
+.pdf-footer{
+  border-top: 0.1pt solid #aaa;
+  bottom: 0px; height: 40px;
+  /* font-size:7pt; */
+}
+
+table {
+	border-collapse: collapse;
+	border: none;
+	border-width: 0px;
+}
+
+table.main-table{ margin-bottom:48px;}
+
+th {white-space:nowrap;padding:8px;}
+a { color: #0D7ABF; }
+td.name,td.key,.store_name,th{font-weight:bold}
+.store_name,.bill_total{color:#0D7ABF;font-weight:bold}
+.country,.city,.store_name{text-transform: uppercase;}
+table.product-items{font: 9pt;border: 1px solid #aaa;}
+.product-items th{padding:8px 4px; background-color:#0D7ABF;font: 8pt;color:#fff;}
+.product-items td{border-top:1px solid #aaa;padding:8px 4px;}
+#pageCounter{  position: fixed; padding-right:5px; bottom: 0px; height: 40px;  text-align: right; }
+#pageCounter span:after { content: counter(page); }
+.priceCol{white-space:nowrap;}
+.line-through{ text-decoration:line-through;}
+.pdf-vendor-head{font-size:8px; font-family:sans-serif;line-height:12px}
+.pdf-vendor-head .store_name{font-size:12pt;font-weight:bold}
+.tos{font-size:10px; font-family:sans-serif;line-height:10px;padding:5px;}
+.billto-adress{font-size:10px;}

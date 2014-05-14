@@ -53,6 +53,7 @@ if($offline && !$isAdmin){
 	vmJsApi::cssSite();
 	$_controller = $input->get( 'controller' , 'virtuemart' , 'word');
 	$_controller = $input->get( 'view' , $_controller , 'word');
+	$_format = $input->get( 'format' , null);
 	$trigger = 'onVmSiteController';
 	// for now admin view is virtuemart view
 	// var_dump($_controller); jexit();
@@ -61,7 +62,9 @@ if($offline && !$isAdmin){
 		$input->set( 'view' , $_controller);
 		$input->set( 'tmpl' , 'component');
 	}
-	if ($input->get('tmpl') == 'component' && file_exists(JPATH_VM_ADMINISTRATOR.'/controllers/'.$_controller.'.php')) {
+	if ($_format === 'pdf') {
+		$input->set( 'tmpl' , 'component');
+	} elseif ($input->get('tmpl') == 'component' && file_exists(JPATH_VM_ADMINISTRATOR.'/controllers/'.$_controller.'.php')) {
 		// trouble with manufacturer displayed in modal (perhaps changing controller name ?)
 		$manufacturer = ($input->get( 'virtuemart_manufacturer_id' , null , 'int') && $_controller == 'manufacturer' && !$input->get( 'task' , null , 'word'));
 		// vendor check is in vmcontroller Back-end to secure front and backen acces same way
@@ -117,7 +120,7 @@ if (class_exists($_class)) {
     vmRam('End');
     vmRamPeak('Peak');
     /* Redirect if set by the controller */
-    // $controller->redirect();
+    $controller->redirect();
 } else {
     vmDebug('VirtueMart controller not found: '. $_class);
     $app = Jfactory::getApplication();

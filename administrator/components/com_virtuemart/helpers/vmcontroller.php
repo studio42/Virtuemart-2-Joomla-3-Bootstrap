@@ -28,6 +28,7 @@ class VmController extends JControllerLegacy{
 	protected $_cname = null;
 	protected $_canEdit = 0;
 	protected $_vendor = null;
+	protected $id = null;
 	/**
 	 * Sets automatically the shortcut for the language and the redirect path
 	 *
@@ -36,9 +37,21 @@ class VmController extends JControllerLegacy{
 	public function __construct($cidName=null, $config=array()) {
 
 		$this->_cname = strtolower(substr(get_class( $this ), 20));
-		if ( !$cidName) {
-			$cidName = 'virtuemart_'.$this->_cname.'_id';
+		if ($cidName === null) $cidName = 'virtuemart_'.$this->_cname.'_id';
+
+		$jinput = JFactory::getApplication()->input;
+		$cid = $jinput->get('cid', null, 'array');
+		if (isset($cid)) {
+			$cidName = 'cid';
+			$this->id = (int)$cid[0];
+			$jinput->set($cidName, $this->id);
+		} else {
+			
+			$this->id = $jinput->get($cidName, null, 'INT');
 		}
+
+			
+
 		$this->_cidName = $cidName;
 		parent::__construct($config);
 
@@ -60,15 +73,16 @@ class VmController extends JControllerLegacy{
 				$val = (isset($task[2])) ? $task[2] : NULL;
 				$this->toggle($task[1],$val);
 			}
-		}
+		} else jRequest::setVar('task','');
 	}
 	/*
 	 * control the vendor access
 	 * restrict acces to vendor only
-	 * edit own and new is not checked here.
+	 * edit own and new is not full checked here.
 	 */
 	protected function checkVendor(){
 		$input = JFactory::getApplication()->input;
+		$msg ='';
 		$this->_vendor = Permissions::getInstance()->isSuperVendor();
 		if ($this->_vendor == 1 ) return true; // can do all
 		if (!$this->_vendor) { //non vendor have no access !
@@ -78,6 +92,7 @@ class VmController extends JControllerLegacy{
 			$this->setRedirect('index.php', $msg,'error');
 			return false;
 		}
+
 		if ($this->_cname === 'user') $this->_canEdit = ShopFunctions::can('editshop',$this->_cname);
 		else $this->_canEdit = ShopFunctions::can('edit',$this->_cname);
 		$this->_canAdd =  ShopFunctions::can('add',$this->_cname);
@@ -86,7 +101,7 @@ class VmController extends JControllerLegacy{
 		$tasks = explode ('.',JRequest::getCmd( 'task','default'));
 		$task = $tasks[0];
 
-		$addTasks =array('add','edit','apply','save','save2new','save2copy');
+		$addTasks =array('add' => true,'edit' => true,'apply' => true,'save' => true,'save2new' => true,'save2copy' => true);
 		$canDo = true;
 		if (!$this->_canEdit) {
 			// toggle is checked in controller
@@ -96,23 +111,21 @@ class VmController extends JControllerLegacy{
 				$msg = JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
 				jRequest::setVar('task','');
 				$input->set('task','');
-				$this->setRedirect(null, $msg,'error');
 				$canDo = false;
 			}
 		} elseif (!$this->_canPublish && ($task=='publish' || $task=='unpublish' || $task=='toggle') ) {
-			$msg = JText::_('JLIB_APPLICATION_ERROR_PUBLISH_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
+			$msg = JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
 			jRequest::setVar('task','');
 			$input->set('task','');
-			$this->setRedirect(null, $msg,'error');
 			$canDo = false;
 		} elseif (!$this->_canAdd && $task=='add') {
 			$msg = JText::_('JLIB_APPLICATION_ERROR_CREATE_RECORD_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;
 			jRequest::setVar('task','');
 			$input->set('task','');
-			$this->setRedirect(null, $msg,'error');
 			$canDo = false;
 		} elseif ($this->_canAdd && isset($addTasks[$task])) {
-			$canDo = true;
+			$canDo = $this->checkOwn() ;
+			$msg = JText::_('JERROR_AN_ERROR_HAS_OCCURRED').' : '.JText::_('JACTION_EDITOWN').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).' '.$tasks[0].' vendor '.$this->_vendor.')' ;
 		} else {
 			//$taskBlacklist =array('add','edit','apply','save');
 			// verify if it's own item
@@ -120,10 +133,11 @@ class VmController extends JControllerLegacy{
 				$msg = JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).' '.$tasks[0].' vendor '.$this->_vendor.')' ;
 				jRequest::setVar('task','');
 				$input->set('task','');
-				$this->setRedirect(null, $msg,'error');
 				$canDo = false;
 			}
+
 		}
+		if (!$canDo) $this->setRedirect(null, $msg,'error');
 		return $canDo;
 	}
 	
@@ -133,13 +147,17 @@ class VmController extends JControllerLegacy{
 	 * edit own and new is not checked here.
 	 */
 	protected function checkOwn($id = null){
-		if ($id === null) $id = jRequest::getint($this->_cidName);
-		if ($this->_vendor != 1) {
-			//check if this is my own
-			$model = VmModel::getModel($this->_cname);
-			$own = $model->checkOwn($id);
-			return $own;
+		static $own = array();
+		if ($id === null) $id = $this->id;
+		if ($this->_vendor != 1 && $id) {
+			if (!isset($own[$id])) {
+				//check if this is my own
+				$model = VmModel::getModel($this->_cname);
+				$own[$id] = $model->checkOwn($id);
+			}
+			return $own[$id];
 		}
+
 		return true;
 	}
 
@@ -214,7 +232,7 @@ class VmController extends JControllerLegacy{
 	 * @author Max Milbers
 	 */
 	function edit($layout='edit'){
-
+		if (!$this->checkOwn()) return;
 		JRequest::setVar('layout', $layout);
 		$this->display();
 		JFactory::getApplication()->input->set('hidemainmenu', true);
@@ -305,7 +323,7 @@ class VmController extends JControllerLegacy{
 				$msg = JText::sprintf('COM_VIRTUEMART_STRING_COULD_NOT_BE_DELETED',$this->mainLangKey);
 						$type = 'error';
 			}
-			else $type = 'remove';
+			else $type = 'message';
 			foreach($errors as $error){
 				$msg .= '<br />'.($error);
 			}
@@ -509,5 +527,9 @@ class VmController extends JControllerLegacy{
 
 		// Trigger the onContentCleanCache event.
 		// $dispatcher->trigger($this->event_clean_cache, $options);
+	}
+	protected function filterText($var){
+			$text = JRequest::getVar($var,'','post','STRING',2);
+			return JComponentHelper::filterText($text);
 	}
 }

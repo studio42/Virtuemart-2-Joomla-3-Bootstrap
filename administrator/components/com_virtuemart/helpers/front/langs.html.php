@@ -8,7 +8,7 @@
  */
 
 defined('JPATH_PLATFORM') or die;
-$view = jRequest::getWord('view','virtuemart');
+$view = jRequest::getWord('view','admin');
 $langCurrent = jRequest::getWord('lang',null);
 $langs = VmConfig::get('active_languages',false);
 $flagPath = JURI::root( true ).'/administrator/components/com_virtuemart/assets/images/flag/' ; ?>
@@ -16,7 +16,7 @@ $flagPath = JURI::root( true ).'/administrator/components/com_virtuemart/assets/
   <div class="container"><span style="padding: 0px 32px"><?php echo jText::_('JFIELD_LANGUAGE_LABEL').' ['.$langCurrent.'] </span> &nbsp; ';
 	foreach ($langs as $lang) { 
 		$tag = (substr($lang,0,2) );
-		$url = JRoute::_('index.php?option=com_virtuemart&view='.$view.'&lang='.$tag.'&tmpl=component');
+		$url = JRoute::_('index.php?option=com_virtuemart&view='.$view.'&lang='.$tag.'&langswitch='.$lang.'&tmpl=component',true);
 		if ($langCurrent == $tag) $btn = 'primary' ;
 		else $btn = 'default' ;
 		$flagImage = '<img style="vertical-align: middle;" alt="'.$lang.'" src="'.$flagPath.$tag.'.png"> ';

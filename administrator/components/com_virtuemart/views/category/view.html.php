@@ -83,16 +83,21 @@ class VirtuemartViewCategory extends VmView {
 			$this->addStandardEditViewCommands($category->virtuemart_category_id,$category);
 		}
 		else {
-			$this->SetViewTitle('CATEGORY_S');
 			$category_id = JRequest::getInt('filter_category_id');
-			$this->categorylist = ShopFunctions::categoryListTreeLoop( (array)$category_id, 0, 0);
-
-			$this->catmodel = $model;
-			if ($this->multiX) {
-				JToolBarHelper::custom('toggle.shared.1', 'publish', 'yes', JText::_('COM_VIRTUEMART_SHARED'), true);
-				JToolBarHelper::custom('toggle.shared.0', 'unpublish', 'no', JText::_('COM_VIRTUEMART_SHARED'), true);
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
 			}
-			$this->addStandardDefaultViewCommands();
+			else 
+			{
+				$this->SetViewTitle('CATEGORY_S');
+				$this->addStandardDefaultViewCommands();
+				$this->categorylist = ShopFunctions::categoryListTreeLoop( (array)$category_id, 0, 0);
+				if ($this->multiX && $this->adminVendor == 1) {
+					JToolBarHelper::custom('toggle.shared.1', 'publish', 'yes', JText::_('COM_VIRTUEMART_SHARED'), true);
+					JToolBarHelper::custom('toggle.shared.0', 'unpublish', 'no', JText::_('COM_VIRTUEMART_SHARED'), true);
+				}
+			}
+			$this->catmodel = $model;
 			$this->addStandardDefaultViewLists($model,'category_name');
 
 			$this->categories = $model->getCategoryTree($category_id,0,false,$this->lists['search']);
@@ -101,8 +106,8 @@ class VirtuemartViewCategory extends VmView {
 			//we need a function of the FE shopfunctions helper to cut the category descriptions
 			jimport('joomla.filter.output');
 		}
-
 		parent::display($tpl);
+		if ($tpl === 'results') echo $this->AjaxScripts();
 	}
 
 }

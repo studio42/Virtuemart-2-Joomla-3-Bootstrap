@@ -82,27 +82,39 @@ if ($this->doctype == 'invoice') {
 	<td colspan="2"></td>
     </tr>
     <tr>
-	<td valign="top"><strong>
-	    <?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_BILL_TO_LBL') ?></strong> <br/>
-	    <table border="0"><?php
-	    foreach ($this->userfields['fields'] as $field) {
-		if (!empty($field['value'])) {
-		    echo '<tr><td class="key">' . $field['title'] . '</td>'
-		    . '<td>' . $field['value'] . '</td></tr>';
-		}
-	    }
-	    ?></table>
+	<td valign="top">
+		<table border="0">
+			<tr>
+			<th colspan="2">
+				<?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_BILL_TO_LBL') ?>
+			</th>
+			</tr>
+			<?php
+			foreach ($this->userfields['fields'] as $field) {
+			if (!empty($field['value'])) {
+				echo '<tr><td class="key">' . $field['title'] . '</td>'
+				. '<td>' . $field['value'] . '</td></tr>';
+			}
+			}
+			?>
+		</table>
 	</td>
-	<td valign="top" ><strong>
-	    <?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SHIP_TO_LBL') ?></strong><br/>
-	    <table border="0"><?php
-	    foreach ($this->shipmentfields['fields'] as $field) {
-		if (!empty($field['value'])) {
-		    echo '<tr><td class="key">' . $field['title'] . '</td>'
-		    . '<td>' . $field['value'] . '</td></tr>';
-		}
-	    }
-	    ?></table>
+	<td valign="top" >
+		<table border="0">
+			<tr>
+			<th colspan="2">
+				<?php echo JText::_('COM_VIRTUEMART_ORDER_PRINT_SHIP_TO_LBL') ?>
+			</th>
+			</tr>
+			<?php
+			foreach ($this->shipmentfields['fields'] as $field) {
+			if (!empty($field['value'])) {
+				echo '<tr><td class="key">' . $field['title'] . '</td>'
+				. '<td>' . $field['value'] . '</td></tr>';
+			}
+			}
+			?>
+		</table>
 	</td>
     </tr>
 </table>

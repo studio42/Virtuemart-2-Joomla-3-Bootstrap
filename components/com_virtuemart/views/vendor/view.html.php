@@ -121,7 +121,7 @@ class VirtuemartViewVendor extends VmView {
 
 			} else {
 				$document->setTitle( JText::_('COM_VIRTUEMART_VENDOR_DETAILS').' '.$this->vendor->vendor_store_name );
-				$pathway->addItem(JText::_('COM_VIRTUEMART_VENDOR_DETAILS'));
+				$pathway->addItem($this->vendor->vendor_store_name);//JText::_('COM_VIRTUEMART_VENDOR_DETAILS'));
 				$this->setLayout('details');
 				$productModel = VmModel::getModel('product');
 				$this->products = $productModel->getProductsInCategory(0,$virtuemart_vendor_id);

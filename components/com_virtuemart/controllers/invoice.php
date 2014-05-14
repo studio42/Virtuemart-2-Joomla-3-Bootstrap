@@ -79,8 +79,10 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 	}
 
 	public function display($cachable = false, $urlparams = false)  {
-		$format = JRequest::getWord('format','html');
-		$layout = JRequest::getWord('layout', 'invoice');
+	
+		$jinput = JFactory::getApplication()->input;
+		$format = $jinput->get('format','html','WORD');
+		$layout = $jinput->get('layout','invoice','WORD');
 
 		if ($format != 'pdf') {
 			$document = JFactory::getDocument();
@@ -91,22 +93,74 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 			$view->display();
 		} else {
 			$viewName='invoice';
-			$format="html";
+			$format="pdf";
 			/* Create the invoice PDF file on disk and send that back */
 			$orderModel = VmModel::getModel('orders');
 			$orderDetails = $this->getOrderDetails();
-			$fileName = $this->getInvoicePDF($orderDetails, $viewName, $layout, $format);
-			if (file_exists ($fileName)) {
+			$fileLocation = $this->getInvoicePDF($orderDetails, $viewName, $layout, $format);
+			$fileName = basename ($fileLocation);
+
+			if (file_exists ($fileLocation)) {
+			// if (file_exists ($fileName)) {
+				$maxSpeed = 200;
+				$range = 0;
+				$size = filesize ($fileLocation);
+				$contentType = 'application/pdf';
 				header ("Cache-Control: public");
 				header ("Content-Transfer-Encoding: binary\n");
 				header ('Content-Type: application/pdf');
+
 				$contentDisposition = 'attachment';
-				header ("Content-Disposition: $contentDisposition; filename=\"".basename($fileName)."\"");
-				$contents = file_get_contents ($fileName);
-				echo $contents;
+
+				$agent = strtolower ($_SERVER['HTTP_USER_AGENT']);
+
+				if (strpos ($agent, 'msie') !== FALSE) {
+					$fileName = preg_replace ('/\./', '%2e', $fileName, substr_count ($fileName, '.') - 1);
+				}
+
+				header ("Content-Disposition: $contentDisposition; filename=\"$fileName\"");
+
+				header ("Accept-Ranges: bytes");
+
+				if (isset($_SERVER['HTTP_RANGE'])) {
+					list($a, $range) = explode ("=", $_SERVER['HTTP_RANGE']);
+					str_replace ($range, "-", $range);
+					$size2 = $size - 1;
+					$new_length = $size - $range;
+					header ("HTTP/1.1 206 Partial Content");
+					header ("Content-Length: $new_length");
+					header ("Content-Range: bytes $range$size2/$size");
+				}
+				else {
+					$size2 = $size - 1;
+					header ("Content-Range: bytes 0-$size2/$size");
+					header ("Content-Length: " . $size);
+				}
+
+				if ($size == 0) {
+					die('Zero byte file! Aborting download');
+				}
+
+				//$contents = file_get_contents ($fileName);
+				//echo $contents;
+
+				//	set_magic_quotes_runtime(0);
+				$fp = fopen ("$fileLocation", "rb");
+				fseek ($fp, $range);
+
+				while (!feof ($fp) and (connection_status () == 0)) {
+					set_time_limit (0);
+					print(fread ($fp, 1024 * $maxSpeed));
+					flush ();
+					ob_flush ();
+					sleep (1);
+				}
+				fclose ($fp);
+
 				JFactory::getApplication()->close();
+
 			} else {
-				// TODO: Error message 
+				// TODO: Error message
 				// vmError("File $fileName not found!");
 			}
 		}
@@ -141,7 +195,7 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 			vmError('No path set to store invoices');
 			return false;
 		} else {
-			$path .= 'invoices'.DS;
+			$path .= 'invoices/';
 			if(!file_exists($path)){
 				vmError('Path wrong to store invoices, folder invoices does not exist '.$path);
 				return false;
@@ -186,18 +240,20 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 		$jlang->load('com_virtuemart', JPATH_SITE, null, true);
 
 		$app = JApplication::getInstance('site', array(), 'J');
+		// $viewLayout = JRequest::getCmd('layout', 'default');
+		$viewName='invoice';
+		$view = $this->getView($viewName, 'html', '', array('base_path' => $this->basePath, 'layout' => 'invoice' ));
+
+		// attach the document to the view
 		$attributes = array('charset' => 'utf-8', 'lineend' => 'unix', 'tab' => '  ', 'language' => $jlang->getTag(),
 			'direction' => $jlang->isRTL() ? 'rtl' : 'ltr');
-
 		$document = JDocument::getInstance('pdf', $attributes);
-		$document->setDestination('F'); // render to file
-		$document->setPath($path);
-		$viewType = $document->getType();
-		$viewName='invoice';
-		$viewLayout = JRequest::getCmd('layout', 'default');
-
-		$view = $this->getView($viewName, 'html', '', array('base_path' => $this->basePath, 'layout' => $viewLayout ));
 		$view->document = $document ;
+		$view->document->setDestination('F'); // render to file
+		$view->document->setPath($path);
+		$viewType = $view->document->getType();
+
+
 		$vmtemplate = VmConfig::get('vmtemplate',0);
 		if($vmtemplate===0 or $vmtemplate == 'default'){
 			$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
@@ -222,10 +278,12 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 		$view->showHeaderFooter = false;
 		ob_start();
 		$view->display();
-		$document->setBuffer( ob_get_contents());
+		// test mode is print2
+		$html = ob_get_clean();
+		$view->document->setBuffer( $html );
 		// $html must contain the path here
-		$document->render();
-		ob_end_clean();
+		$view->document->render();
+
 		
 		//var_dump( $this->basePath,$template,$format,$app,$view,$document,$this,$html); jexit();
 

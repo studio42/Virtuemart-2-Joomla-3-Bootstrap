@@ -295,7 +295,7 @@ class shopFunctionsF {
 	/**
 	 * With this function you can use a view to sent it by email.
 	 * Just use a task in a controller
-	 *
+	 * // TODO permit multiple recipient
 	 * @param string $view for example user, cart
 	 * @param string $recipient shopper@whatever.com
 	 * @param bool $vendor true for notifying vendor of user action (e.g. registration)

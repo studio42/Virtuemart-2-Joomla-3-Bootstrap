@@ -20,12 +20,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 JHTML::stylesheet('vmpanels.css', JURI::root() . 'components/com_virtuemart/assets/css/');
-if ($this->_layout == "invoice") {
-    $document = JFactory::getDocument();
-    $document->setTitle(JText::_('COM_VIRTUEMART_ORDER_PRINT_PO_NUMBER') . ' ' . $this->orderDetails['details']['BT']->order_number . ' ' . $this->vendor->vendor_store_name);
-//$document->setName( JText::_('COM_VIRTUEMART_ACC_ORDER_INFO').' '.$this->orderDetails['details']['BT']->order_number);
-//$document->setDescription( JText::_('COM_VIRTUEMART_ORDER_PRINT_PO_NUMBER').' '.$this->orderDetails['details']['BT']->order_number);
-}
+
 
 if ($this->headFooter) {
     ?>
@@ -58,7 +53,7 @@ if ($this->headFooter) {
 }
 
 
-if ($this->print) {
+if ($this->print == 1) {
     ?>
 
 <body onload="javascript:print();">

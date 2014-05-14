@@ -143,6 +143,16 @@ class VirtuemartViewOrders extends VmView {
 
 		}
 		else {
+			if ( JRequest::getWord('format', '') === 'raw') {
+				$tpl = 'results';
+			}
+			else 
+			{
+				 /* Toolbar */
+				JToolBarHelper::save('updatestatus', JText::_('COM_VIRTUEMART_UPDATE_STATUS'));
+
+				JToolBarHelper::deleteList();
+			}
 			$this->addStandardDefaultViewLists($model,'created_on');
 			$orderStatusModel =VmModel::getModel('orderstatus');
 			$orderstates = JRequest::getWord('order_status_code','');
@@ -189,11 +199,6 @@ class VirtuemartViewOrders extends VmView {
 			 * the order ID's aren't properly passed. Might be readded later; the controller needs to handle
 			 * the arguments.
 			 */
-
-			 /* Toolbar */
-			JToolBarHelper::save('updatestatus', JText::_('COM_VIRTUEMART_UPDATE_STATUS'));
-
-			JToolBarHelper::deleteList();
 
 			/* Assign the data */
 			$this->orderslist = $orderslist ;

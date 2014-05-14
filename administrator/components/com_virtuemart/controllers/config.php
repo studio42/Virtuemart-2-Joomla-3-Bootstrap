@@ -44,7 +44,9 @@ class VirtuemartControllerConfig extends VmController {
 		VmConfig::loadJLang('com_virtuemart_config');
 		if (!JFactory::getUser()->authorise('core.admin'))
 		{
-			JFactory::getApplication()->redirect('index.php', JText::_('JERROR_ALERTNOAUTHOR'));
+			$app  = JFactory::getApplication();
+			JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR')); 
+			$app->redirect('index.php');
 			return;
 		}
 		parent::__construct();

@@ -51,7 +51,7 @@ $saveOrder = ($this->lists['filter_order'] == 'cx.ordering');
 			<th align="center" width="20" class="autosize">
 				<?php echo $this->sort('c.published' , 'COM_VIRTUEMART_PUBLISHED') ?>
 			</th>
-			<?php if(Vmconfig::get('multix','none')!=='none' and $this->perms->check('admin') ){ ?>
+			<?php if(Vmconfig::get('multix','none')!=='none'){ ?>
             <th width="20" class="autosize">
 
 				<?php echo $this->sort( 'cx.category_shared' , 'COM_VIRTUEMART_SHARED') ?>
@@ -164,7 +164,7 @@ $saveOrder = ($this->lists['filter_order'] == 'cx.ordering');
 					<?php echo $published;?>
 				</td>
 				<?php
-				if( Vmconfig::get('multix','none')!='none' && $this->perms->check('admin') ) {
+				if( Vmconfig::get('multix','none')!='none' ) {
 					$shared = $this->toggle($cat->shared, $i, 'toggle.shared',$canDo);
 					?><td align="center">
 						<?php echo $shared; ?>

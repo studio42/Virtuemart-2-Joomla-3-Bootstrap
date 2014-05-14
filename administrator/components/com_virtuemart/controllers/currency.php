@@ -27,7 +27,7 @@ if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.
  *
  * @package    VirtueMart
  * @subpackage Currency
- * @author RickG, Max Milbers, Patrick Kohl
+ * @author Max Milbers, Patrick Kohl
  */
 class VirtuemartControllerCurrency extends VmController {
 

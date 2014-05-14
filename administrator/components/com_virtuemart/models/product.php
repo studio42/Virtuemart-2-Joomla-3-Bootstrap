@@ -1346,6 +1346,7 @@ class VirtueMartModelProduct extends VmModel {
 		}
 
 		$maxNumber = VmConfig::get ('absMaxProducts', 700);
+		$customFields = VmConfig::get ('customFieldsList', 1);
 		$products = array();
 		if ($single) {
 
@@ -1364,7 +1365,7 @@ class VirtueMartModelProduct extends VmModel {
 		else {
 			$i = 0;
 			foreach ($productIds as $id) {
-				if ($product = $this->getProduct ((int)$id, $front, $withCalc, $onlyPublished)) {
+				if ($product = $this->getProduct ((int)$id, $front, $withCalc, $onlyPublished,1,$customFields)) {
 					$products[] = $product;
 					$i++;
 				}

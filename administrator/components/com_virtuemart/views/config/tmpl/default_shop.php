@@ -34,6 +34,7 @@ defined('_JEXEC') or die('Restricted access');
 			JHTML::_('Select.genericlist', $this->currConverterList, 'currency_converter_module', 'size=1', 'value', 'text', VmConfig::get('currency_converter_module','convertECB.php'))
 			); ?>
 		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_ADMIN_CFG_ENABLE_CONTENT_PLUGIN','enable_content_plugin',VmConfig::get('enable_content_plugin',0) ); ?>
+		<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_ADMIN_CFG_ENABLE_CUSTOMFIELDS_IN_LIST','customfields_in_list',VmConfig::get('customfields_in_list',1) ); ?>
 
 	    <?php	/* <tr>
 	<td class="key">

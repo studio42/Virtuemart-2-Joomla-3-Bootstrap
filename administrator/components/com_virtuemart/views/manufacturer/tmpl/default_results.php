@@ -53,7 +53,7 @@ defined('_JEXEC') or die();
 	    for ($i=0, $n=count( $this->manufacturers ); $i < $n; $i++) {
 		$row = $this->manufacturers[$i];
 
-		$checked = JHTML::_('grid.id', $i, $row->virtuemart_manufacturer_id,null,'virtuemart_manufacturer_id');
+		$checked = JHTML::_('grid.id', $i, $row->virtuemart_manufacturer_id,null);
 		$canDo = $this->canChange($row->created_by);
 		$published = $this->toggle( $row->published, $i, 'published' ,$canDo );
 		$categoryLink = $this->editLink($row->virtuemart_manufacturercategories_id, $row->mf_category_name, 'virtuemart_manufacturercategories_id',null,'manufacturercategories');

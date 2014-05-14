@@ -25,6 +25,20 @@ else
 if($step==0)
 	$step=1;
 $alert=JText::sprintf ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED', $step);
+$document = JFactory::getDocument();
+$document->addScriptDeclaration('
+	function check(obj) {
+	// use the modulus operator % to see if there is a remainder
+	remainder=obj.value % '.$step.';
+	quantity=obj.value;
+	if (remainder  != 0) {
+		alert("'. $alert .'!");
+		obj.value = quantity-remainder;
+		return false;
+		}
+	return true;
+	}
+');
 ?>
 
 <div class="addtocart-area">
@@ -74,19 +88,7 @@ $alert=JText::sprintf ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED', $step);
 
 		<div class="addtocart-bar">
 
-<script type="text/javascript">
-		function check(obj) {
- 		// use the modulus operator '%' to see if there is a remainder
-		remainder=obj.value % <?php echo $step?>;
-		quantity=obj.value;
- 		if (remainder  != 0) {
- 			alert('<?php echo $alert?>!');
- 			obj.value = quantity-remainder;
- 			return false;
- 			}
- 		return true;
- 		}
-</script> 
+
 
 			<?php // Display the quantity box
 
@@ -95,18 +97,20 @@ $alert=JText::sprintf ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED', $step);
 				?>
 				<a href="<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=productdetails&layout=notify&virtuemart_product_id=' . $this->product->virtuemart_product_id); ?>" class="notify"><?php echo JText::_ ('COM_VIRTUEMART_CART_NOTIFY') ?></a>
 
-				<?php } else { ?>
+				<?php 
+			} elseif ($this->document->_mime !== 'application/pdf') {
+				$minQty = 1;
+				if (isset($this->product->step_order_level) && (int)$this->product->step_order_level > 0) {
+					$minQty = $this->product->step_order_level;
+				} else if(!empty($this->product->min_order_level)){
+					$minQty = $this->product->min_order_level;
+				}
+				?>
 				<!-- <label for="quantity<?php echo $this->product->virtuemart_product_id; ?>" class="quantity_box"><?php echo JText::_ ('COM_VIRTUEMART_CART_QUANTITY'); ?>: </label> -->
 		<div class="quantity-controls js-recalculate input-prepend input-append">
-			<button type="button" class="quantity-controls quantity-minus btn"/><i class="icon icon-minus"></i></button>
-			<input type="text" class="quantity-input js-recalculate" name="quantity[]" onblur="check(this);" value="<?php if (isset($this->product->step_order_level) && (int)$this->product->step_order_level > 0) {
-				echo $this->product->step_order_level;
-			} else if(!empty($this->product->min_order_level)){
-				echo $this->product->min_order_level;
-			}else {
-				echo '1';
-			} ?>"/>
-			<button type="button" class="quantity-controls quantity-plus btn"/><i class="icon icon-plus"></i></button>
+			<button type="button" class="quantity-controls quantity-minus btn"><i class="icon icon-minus"></i></button>
+			<input type="text" class="quantity-input js-recalculate" name="quantity[]" onblur="check(this);" value="<?php echo $minQty ?>"/>
+			<button type="button" class="quantity-controls quantity-plus btn"><i class="icon icon-plus"></i></button>
 
 	    </div>
 				<?php // Display the quantity box END ?>

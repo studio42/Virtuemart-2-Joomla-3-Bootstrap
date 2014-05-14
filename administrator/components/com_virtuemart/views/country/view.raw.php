@@ -17,45 +17,9 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
+// Load the main HTML view 
 
-/**
- * HTML View class for maintaining the list of countries
- *
- * @package	VirtueMart
- * @subpackage Country
- * @author RickG
- */
-class VirtuemartViewCountry extends VmView {
-
-    function display($tpl = null) {
-
-		// Load the helper(s)
-		if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'config.php');
-		VmConfig::loadConfig();
-		if(VmConfig::get('enableEnglish', 1)){
-		    $jlang =JFactory::getLanguage();
-		    $jlang->load('com_virtuemart_countries', JPATH_ADMINISTRATOR, 'en-GB', true);
-		    $jlang->load('com_virtuemart_countries', JPATH_ADMINISTRATOR, $jlang->getDefault(), true);
-		    $jlang->load('com_virtuemart_countries', JPATH_ADMINISTRATOR, null, true);
-		}
-		$this->loadHelper('html');
-
-
-		$model = VmModel::getModel();
-		$this->addStandardDefaultViewCommands(true,false);
-		//First the view lists, it sets the state of the model
-		$this->addStandardDefaultViewLists($model,0,'ASC','filter_country');
-		$filter_country = JRequest::getWord('filter_country', false);
-		$this->countries = $model->getCountries(false, false, $filter_country,true);
-		$this->pagination = $model->getPagination();
-
-		parent::display('results');
-		echo $this->AjaxScripts();
-    }
-
-}
-// pure php no closing tag
+$vmview = dirname(__FILE__);
+require($vmview.'/view.html.php');

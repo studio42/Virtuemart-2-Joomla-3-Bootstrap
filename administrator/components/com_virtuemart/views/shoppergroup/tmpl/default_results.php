@@ -52,7 +52,7 @@ defined('_JEXEC') or die();
 	    for ($i = 0, $n = count( $this->shoppergroups ); $i < $n; $i++) {
 		    $row = $this->shoppergroups[$i];
 			$published = $this->toggle( $row->published, $i, 'published');
-		    $checked = JHTML::_('grid.id', $i, $row->virtuemart_shoppergroup_id,null,'virtuemart_shoppergroup_id');
+		    $checked = JHTML::_('grid.id', $i, $row->virtuemart_shoppergroup_id);
 			?>
 
 		  <tr>

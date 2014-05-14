@@ -77,40 +77,43 @@ if (empty($this->product)) {
 <div class="productdetails-view productdetails">
 
     <?php
-    // Product Navigation
-    if (VmConfig::get('product_navigation', 1)) {
-	?>
-        <div class="product-neighbours">
-	    <?php
-	    if (!empty($this->product->neighbours ['previous'][0])) {
-		$prev_link = JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->neighbours ['previous'][0] ['virtuemart_product_id'] . '&virtuemart_category_id=' . $this->product->virtuemart_category_id, FALSE);
-		echo JHTML::_('link', $prev_link, $this->product->neighbours ['previous'][0]
-			['product_name'], array('class' => 'previous-page'));
-	    }
-	    if (!empty($this->product->neighbours ['next'][0])) {
-		$next_link = JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->neighbours ['next'][0] ['virtuemart_product_id'] . '&virtuemart_category_id=' . $this->product->virtuemart_category_id, FALSE);
-		echo JHTML::_('link', $next_link, $this->product->neighbours ['next'][0] ['product_name'], array('class' => 'next-page'));
-	    }
-	    ?>
-    	<div class="clear"></div>
-        </div>
-    <?php } // Product Navigation END
-    ?>
+	if ($this->document->_mime !== 'application/pdf') {
+		// Product Navigation
+		if (VmConfig::get('product_navigation', 1)) {
+		?>
+			<div class="product-neighbours">
+			<?php
+			if (!empty($this->product->neighbours ['previous'][0])) {
+			$prev_link = JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->neighbours ['previous'][0] ['virtuemart_product_id'] . '&virtuemart_category_id=' . $this->product->virtuemart_category_id, FALSE);
+			echo JHTML::_('link', $prev_link, $this->product->neighbours ['previous'][0]
+				['product_name'], array('class' => 'previous-page'));
+			}
+			if (!empty($this->product->neighbours ['next'][0])) {
+			$next_link = JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->neighbours ['next'][0] ['virtuemart_product_id'] . '&virtuemart_category_id=' . $this->product->virtuemart_category_id, FALSE);
+			echo JHTML::_('link', $next_link, $this->product->neighbours ['next'][0] ['product_name'], array('class' => 'next-page'));
+			}
+			?>
+			<div class="clear"></div>
+			</div>
+		<?php } // Product Navigation END
+		?>
 
-	<?php // Back To Category Button
-	if ($this->product->virtuemart_category_id) {
-		$catURL =  JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id='.$this->product->virtuemart_category_id, FALSE);
-		$categoryName = $this->product->category_name ;
-	} else {
-		$catURL =  JRoute::_('index.php?option=com_virtuemart');
-		$categoryName = jText::_('COM_VIRTUEMART_SHOP_HOME') ;
+		<?php // Back To Category Button
+		if ($this->product->virtuemart_category_id) {
+			$catURL =  JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id='.$this->product->virtuemart_category_id, FALSE);
+			$categoryName = $this->product->category_name ;
+		} else {
+			$catURL =  JRoute::_('index.php?option=com_virtuemart');
+			$categoryName = jText::_('COM_VIRTUEMART_SHOP_HOME') ;
+		}
+		?>
+		<div class="back-to-category">
+			<a href="<?php echo $catURL ?>" class="product-details" title="<?php echo $categoryName ?>"><?php echo JText::sprintf('COM_VIRTUEMART_CATEGORY_BACK_TO',$categoryName) ?></a>
+		</div>
+
+		<?php 
 	}
-	?>
-	<div class="back-to-category">
-    	<a href="<?php echo $catURL ?>" class="product-details" title="<?php echo $categoryName ?>"><?php echo JText::sprintf('COM_VIRTUEMART_CATEGORY_BACK_TO',$categoryName) ?></a>
-	</div>
-
-    <?php // Product Title   ?>
+	// Product Title   ?>
     <h1><?php echo $this->product->product_name ?></h1>
     <?php // Product Title END   ?>
 
@@ -118,31 +121,32 @@ if (empty($this->product)) {
     echo $this->product->event->afterDisplayTitle ?>
 
     <?php
-    // Product Edit Link
-    echo $this->edit_link;
-    // Product Edit Link END
-    ?>
+	if ($this->document->_mime !== 'application/pdf') {
+		// Product Edit Link
+		echo $this->edit_link;
+		// Product Edit Link END
+		?>
 
-    <?php
-    // PDF - Print - Email Icon
-    if (VmConfig::get('show_emailfriend') || VmConfig::get('show_printicon') || VmConfig::get('pdf_button_enable')) {
-	?>
-        <div class="icons">
-	    <?php
-	    //$link = (JVM_VERSION===1) ? 'index2.php' : 'index.php';
-	    $link = 'index.php?tmpl=component&option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->virtuemart_product_id;
-	    $MailLink = 'index.php?option=com_virtuemart&view=productdetails&task=recommend&virtuemart_product_id=' . $this->product->virtuemart_product_id . '&virtuemart_category_id=' . $this->product->virtuemart_category_id . '&tmpl=component';
+		<?php
+		// PDF - Print - Email Icon
+		if (VmConfig::get('show_emailfriend') || VmConfig::get('show_printicon') || VmConfig::get('pdf_button_enable')) {
+		?>
+			<div class="icons">
+			<?php
+			//$link = (JVM_VERSION===1) ? 'index2.php' : 'index.php';
+			$link = 'index.php?tmpl=component&option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->virtuemart_product_id;
+			$MailLink = 'index.php?option=com_virtuemart&view=productdetails&task=recommend&virtuemart_product_id=' . $this->product->virtuemart_product_id . '&virtuemart_category_id=' . $this->product->virtuemart_category_id . '&tmpl=component';
 
-	    if (VmConfig::get('pdf_icon', 1) == '1') {
-		echo $this->linkIcon($link . '&format=pdf', 'COM_VIRTUEMART_PDF', 'pdf_button', 'pdf_button_enable', false);
-	    }
-	    echo $this->linkIcon($link . '&print=1', 'COM_VIRTUEMART_PRINT', 'printButton', 'show_printicon');
-	    echo $this->linkIcon($MailLink, 'COM_VIRTUEMART_EMAIL', 'emailButton', 'show_emailfriend');
-	    ?>
-    	<div class="clear"></div>
-        </div>
-    <?php } // PDF - Print - Email Icon END
-
+			if (VmConfig::get('pdf_icon', 1) == '1') {
+			echo $this->linkIcon($link . '&format=pdf', 'COM_VIRTUEMART_PDF', 'pdf_button', 'pdf_button_enable', false);
+			}
+			echo $this->linkIcon($link . '&print=1', 'COM_VIRTUEMART_PRINT', 'printButton', 'show_printicon');
+			echo $this->linkIcon($MailLink, 'COM_VIRTUEMART_EMAIL', 'emailButton', 'show_emailfriend');
+			?>
+			<div class="clear"></div>
+			</div>
+		<?php } // PDF - Print - Email Icon END
+	}
     if (!empty($this->product->customfieldsSorted['ontop'])) {
 	$this->position = 'ontop';
 	echo $this->loadTemplate('customfields');
@@ -206,7 +210,9 @@ echo $this->loadTemplate('images');
 		// Product Price
 		    // the test is done in show_prices
 		//if ($this->show_prices and (empty($this->product->images[0]) or $this->product->images[0]->file_is_downloadable == 0)) {
+		if (!empty($this->product->prices['costPrice']) && !empty($this->product->prices['salesPrice']) ){
 		    echo $this->loadTemplate('showprices');
+		}
 		//}
 		?>
 

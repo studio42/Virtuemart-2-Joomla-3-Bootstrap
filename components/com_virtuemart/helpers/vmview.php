@@ -25,6 +25,7 @@ jimport( 'joomla.application.component.view');
 
 class VmView extends JViewLegacy{
 	function linkIcon($link,$altText ='',$boutonName,$verifyConfigValue=false, $modal = true, $use_icon=true,$use_text=false){
+		if ($this->document->_type == 'pdf') return;
 		if ($verifyConfigValue) {
 			if ( !VmConfig::get($verifyConfigValue, 0) ) return '';
 		}

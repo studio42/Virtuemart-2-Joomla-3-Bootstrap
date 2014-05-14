@@ -45,7 +45,7 @@ class VirtuemartViewCalc extends VmView {
 		//@todo should be depended by loggedVendor
 		$this->vendorId=1;
 
-		$this->SetViewTitle();
+
 		$layoutName = JRequest::getWord('layout', 'default');
 		if ($layoutName == 'edit') {
 
@@ -97,7 +97,7 @@ class VirtuemartViewCalc extends VmView {
 			if(Vmconfig::get('multix','none')!=='none'){
 				$this->vendorList= ShopFunctions::renderVendorList($calc->virtuemart_vendor_id,false);
 			}
-
+			$this->SetViewTitle('',$calc->calc_name);
 			$this->addStandardEditViewCommands();
 
         } else {
@@ -106,6 +106,7 @@ class VirtuemartViewCalc extends VmView {
 			}
 			else 
 			{
+				$this->SetViewTitle();
 				JToolBarHelper::custom('toggle.calc_shopper_published.0', 'unpublish', 'no', JText::_('COM_VIRTUEMART_CALC_SHOPPER_PUBLISH_TOGGLE_OFF'), true);
 				JToolBarHelper::custom('toggle.calc_shopper_published.1', 'publish', 'yes', JText::_('COM_VIRTUEMART_CALC_SHOPPER_PUBLISH_TOGGLE_ON'), true);
 				JToolBarHelper::custom('toggle.calc_vendor_published.0', 'unpublish', 'no', JText::_('COM_VIRTUEMART_CALC_VENDOR_PUBLISH_TOGGLE_OFF'), true);

@@ -41,25 +41,6 @@ class VirtuemartControllerUser extends VmController {
 		VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
 		parent::__construct();
 	}
-	/*
-	 * control the vendor access
-	 * restrict acces to vendor only
-	 * edit own and new is not checked here.
-	 */
-	protected function checkOwn($id = null){
-		if ($this->_vendor > 1) {
-			//check if this is my own
-			$vendor = Permissions::getInstance()->isSuperVendor();
-			$model = VmModel::getModel('vendor');
-			$vendor_userid = $model::getUserIdByVendorId($vendor);
-			$user_id = JFactory::getUser()->get('id');
-			// $model = VmModel::getModel($this->_cname);
-			// $own = $model->checkOwn($id);
-			return $vendor_userid == $user_id;
-		}
-		return true;
-	}
-
 	/**
 	 * Handle the edit task
 	 */
@@ -116,20 +97,20 @@ class VirtuemartControllerUser extends VmController {
 			    $data['vendor_accepted_currencies'] = implode(',', $data['vendor_accepted_currencies']);
 			}
 			// TODO disallow vendor_store_name as HTML ?
-			$data['vendor_store_name'] = JRequest::getVar('vendor_store_name','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_store_desc'] = JRequest::getVar('vendor_store_desc','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_terms_of_service'] = JRequest::getVar('vendor_terms_of_service','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_legal_info'] = JRequest::getVar('vendor_legal_info','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_legal_info'] = JRequest::getVar('vendor_legal_info');
-			$data['vendor_letter_css'] = JRequest::getVar('vendor_letter_css','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_letter_header_html'] = JRequest::getVar('vendor_letter_header_html','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_letter_footer_html'] = JRequest::getVar('vendor_letter_footer_html','','post','STRING',JREQUEST_ALLOWHTML);
-
-			$data['vendor_invoice_free1'] = JRequest::getVar('vendor_invoice_free1','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_invoice_free2'] = JRequest::getVar('vendor_invoice_free2','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_mail_free1'] = JRequest::getVar('vendor_mail_free1','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_mail_free2'] = JRequest::getVar('vendor_mail_free2','','post','STRING',JREQUEST_ALLOWHTML);
-			$data['vendor_mail_css'] =  JRequest::getVar('vendor_mail_css','','post','STRING',JREQUEST_ALLOWHTML);
+			$data['vendor_store_name'] = $this->filterText('vendor_store_name');
+			$data['vendor_store_desc'] = $this->filterText('vendor_store_desc');
+			$data['vendor_terms_of_service'] = $this->filterText('vendor_terms_of_service');
+			$data['vendor_legal_info'] = $this->filterText('vendor_legal_info');
+			$data['vendor_letter_css'] = $this->filterText('vendor_letter_css');
+			$data['vendor_letter_header_html'] = $this->filterText('vendor_letter_header_html');
+			$data['vendor_letter_footer_html'] = $this->filterText('vendor_letter_footer_html');
+			
+			$data['vendor_invoice_free1'] = $this->filterText('vendor_invoice_free1');
+			$data['vendor_invoice_free2'] = $this->filterText('vendor_invoice_free2');
+			$data['vendor_mail_free1'] = $this->filterText('vendor_mail_free1');
+			$data['vendor_mail_free2'] = $this->filterText('vendor_mail_free2');
+			$data['vendor_mail_css'] = $this->filterText('vendor_mail_css');
+			
 			parent::save($data);
 
 		}

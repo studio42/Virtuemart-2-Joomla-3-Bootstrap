@@ -616,25 +616,15 @@ class VirtueMartModelCategory extends VmModel {
 
 	/**
      * Delete all categories selected
-     *
-     * @author jseros
+     * note : added checkOwn() and return before xref tables to prevent bugs.
+     * @author jseros, Patrick Kohl
      * @param  array $cids categories to remove
      * @return boolean if the item remove was successful
      */
     public function remove($cids) {
 
-    	JSession::checkToken() or jexit( 'Invalid Token, in remove category');
-
-		$table = $this->getTable('categories');
-
-		foreach($cids as &$cid) {
-
-				if (!$table->delete($cid)) {
-				    vmError($table->getError());
-				    return false;
-				}
-		}
-
+		$cids = parent::remove($cids);
+		if (empty($cids)) return false;
 		$cidInString = implode(',',$cids);
 
 		//Delete media xref

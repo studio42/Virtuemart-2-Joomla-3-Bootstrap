@@ -36,20 +36,20 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		$this->registerTask ('recommend', 'MailForm');
 		$this->registerTask ('askquestion', 'MailForm');
 	}
+	// here we use standard 
+	// function display($cachable = false, $urlparams = false)  {
 
-	function display($cachable = false, $urlparams = false)  {
+		// $format = JRequest::getWord ('format', 'html');
+		// if ($format == 'pdf') {
+			// $viewName = 'Pdf';
+		// } else {
+			// $viewName = 'Productdetails';
+		// }
 
-		$format = JRequest::getWord ('format', 'html');
-		if ($format == 'pdf') {
-			$viewName = 'Pdf';
-		} else {
-			$viewName = 'Productdetails';
-		}
+		// $view = $this->getView ($viewName, $format);
 
-		$view = $this->getView ($viewName, $format);
-
-		$view->display ();
-	}
+		// $view->display ();
+	// }
 
 	/**
 	 * Send the ask question email.

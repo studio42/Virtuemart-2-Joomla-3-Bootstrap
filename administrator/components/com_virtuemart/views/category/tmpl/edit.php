@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 AdminUIHelper::startAdminArea();
-$editor = JFactory::getEditor();
+// $editor = JFactory::getEditor();
 // autocomplet missing in Front-end edit
 JHtml::_('jquery.ui');
 vmJsApi::js ('jquery.ui.autocomplete.html');

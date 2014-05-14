@@ -40,7 +40,8 @@ class VirtuemartViewInvoice extends VmView {
 	public function display($tpl = null)
 	{
 
-		$document = JFactory::getDocument();
+		$jinput = JFactory::getApplication()->input;
+		$pdfTest = $jinput->get('print',0,'INT');
 
 		if(empty($this->uselayout)){
 			$layout = JRequest::getWord('layout','mail');
@@ -70,21 +71,19 @@ class VirtuemartViewInvoice extends VmView {
 				}
 		}
 		$this->setLayout($layout);
-
-		$tmpl = JRequest::getWord('tmpl');
-		$print = false;
+		$tmpl = $jinput->get('tmpl','','WORD');
+		$this->print = false;
 		if($tmpl){
-			$print = true;
+			$this->print = true;
 		}
-		$this->assignRef('print', $print);
 
-		$this->format = JRequest::getWord('format','html');
+		$this->format = $jinput->get('format','html','WORD');
 		if($layout == 'invoice'){
-			$document->setTitle( JText::_('COM_VIRTUEMART_INVOICE') );
+			$this->document->setTitle( JText::_('COM_VIRTUEMART_INVOICE') );
 		}
 		$order_print=false;
 
-		if ($print and $this->format=='html') {
+		if ($this->print and $this->format=='html') {
 			$order_print=true;
 		}
 
@@ -109,14 +108,14 @@ class VirtuemartViewInvoice extends VmView {
 			echo JText::_('COM_VIRTUEMART_ORDER_NOTFOUND');
 			return 0;
 		}
-		$this->assignRef('orderDetails', $orderDetails);
+
         // if it is order print, invoice number should not be created, either it is there, either it has not been created
 		if(empty($this->invoiceNumber) and !$order_print){
 		    $invoiceNumberDate=array();
 			if (  $orderModel->createInvoiceNumber($orderDetails['details']['BT'], $invoiceNumberDate)) {
                 if (ShopFunctions::InvoiceNumberReserved( $invoiceNumberDate[0])) {
 	                if  ($this->uselayout!='mail') {
-		                $document->setTitle( JText::_('COM_VIRTUEMART_PAYMENT_INVOICE') );
+		                $this->document->setTitle( JText::_('COM_VIRTUEMART_PAYMENT_INVOICE') );
                         return ;
 	                }
                 }
@@ -137,7 +136,7 @@ class VirtuemartViewInvoice extends VmView {
 		}
 		$company= empty($orderDetails['details']['BT']->company) ?"":$orderDetails['details']['BT']->company.", ";
 		$shopperName =  $company. $orderDetails['details']['BT']->title.' '.$orderDetails['details']['BT']->first_name.' '.$orderDetails['details']['BT']->last_name;
-		$this->assignRef('shopperName', $shopperName);
+		$this->shopperName = $shopperName;
 
 		//Todo multix
 		$vendorId=1;
@@ -152,7 +151,7 @@ class VirtuemartViewInvoice extends VmView {
 			if ($emailCurrencyId) {
 				$currency->exchangeRateShopper=$orderDetails['details']['BT']->user_currency_rate;
 			}
-		$this->assignRef('currency', $currency);
+		$this->currency = $currency;
 
 		//Create BT address fields
 		$userFieldsModel = VmModel::getModel('userfields');
@@ -163,7 +162,7 @@ class VirtuemartViewInvoice extends VmView {
 		);
 
 		$userfields = $userFieldsModel->getUserFieldsFilled( $_userFields ,$orderDetails['details']['BT']);
-		$this->assignRef('userfields', $userfields);
+		$this->userfields = $userfields;
 
 
 		//Create ST address fields
@@ -175,9 +174,7 @@ class VirtuemartViewInvoice extends VmView {
 				, array('delimiter_userinfo', 'username', 'email', 'password', 'password2', 'agreed', 'address_type') // Skips
 		);
 
-		$shipmentfields = $userFieldsModel->getUserFieldsFilled( $shipmentFieldset ,$orderst );
-		$this->assignRef('shipmentfields', $shipmentfields);
-
+		$this->shipmentfields = $userFieldsModel->getUserFieldsFilled( $shipmentFieldset ,$orderst );
 
 		// Create an array to allow orderlinestatuses to be translated
 		// We'll probably want to put this somewhere in ShopFunctions..
@@ -187,8 +184,8 @@ class VirtuemartViewInvoice extends VmView {
 		foreach ($_orderstatuses as $_ordstat) {
 			$orderstatuses[$_ordstat->order_status_code] = JText::_($_ordstat->order_status_name);
 		}
-		$this->assignRef('orderstatuslist', $orderstatuses);
-		$this->assignRef('orderstatuses', $orderstatuses);
+		$this->orderstatuslist = $orderstatuses;
+		$this->orderstatuses = $orderstatuses;
 
 		$_itemStatusUpdateFields = array();
 		$_itemAttributesUpdateFields = array();
@@ -215,18 +212,25 @@ class VirtuemartViewInvoice extends VmView {
 
 		$virtuemart_vendor_id=1;
 		$vendorModel = VmModel::getModel('vendor');
-		$vendor = $vendorModel->getVendor($virtuemart_vendor_id);
-		$vendorModel->addImages($vendor);
-		$vendor->vendorFields = $vendorModel->getVendorAddressFields();
-		$this->assignRef('vendor', $vendor);
+		$this->vendor = $vendorModel->getVendor($virtuemart_vendor_id);
+		$vendorModel->addImages($this->vendor);
+		$this->vendor->vendorFields = $vendorModel->getVendorAddressFields();
 
-		if ($document->getType() ==="pdf") {
-			$document->Set('Creator','Invoice by VirtueMart 2, used library tcpdf');
-			$document->Set('Author', $this->vendor->vendor_name);
+		$tpl = null;
+		if ($this->document->getType() ==="pdf") {
+			$tpl = 'pdf';
+			$this->document->Set('Creator','Invoice by VirtueMart 2 Bootstrap');
+			$this->document->Set('Author', $this->vendor->vendor_name);
 
-			$document->Set('Title',JText::_('COM_VIRTUEMART_INVOICE_TITLE'));
-			$document->Set('Subject',JText::sprintf('COM_VIRTUEMART_INVOICE_SUBJ',$this->vendor->vendor_store_name));
-			$document->Set('Keywords','Invoice by VirtueMart 2');
+			$this->document->Set('Title',JText::_('COM_VIRTUEMART_INVOICE_TITLE').' '.$orderDetails['details']['BT']->order_number);
+			$this->document->Set('Subject',JText::sprintf('COM_VIRTUEMART_INVOICE_SUBJ',$this->vendor->vendor_store_name,'',''));
+			$this->document->Set('Keywords','Invoice by VirtueMart 2');
+			$this->document->setGenerator('Virtuemart 2 Bootstrap');
+			$this->document->setTitle(JText::_('COM_VIRTUEMART_ORDER_PRINT_PO_NUMBER') . ' ' . $this->orderDetails['details']['BT']->order_number . ' ' . $this->vendor->vendor_store_name);
+			$this->document->setName( JText::_('COM_VIRTUEMART_ACC_ORDER_INFO').' '.$this->orderDetails['details']['BT']->order_number);
+			$this->document->setDescription( JText::_('COM_VIRTUEMART_ORDER_PRINT_PO_NUMBER').' '.$this->orderDetails['details']['BT']->order_number);
+
+
 			if(empty($this->vendor->images[0])){
 				vmError('Vendor image given path empty ');
 			} else if(empty($this->vendor->images[0]->file_url_folder) or empty($this->vendor->images[0]->file_name) or empty($this->vendor->images[0]->file_extension) ){
@@ -239,25 +243,25 @@ class VirtuemartViewInvoice extends VmView {
 				if(!file_exists(JPATH_ROOT.$imagePath)){
 					vmError('Vendor image missing '.$imagePath);
 				} else {
-					$document->Set('HeaderData', $imagePath, 60, $this->vendor->vendor_store_name, $this->vendorAddress);
+					$this->document->Set('HeaderData', $imagePath, 60, $this->vendor->vendor_store_name, $this->vendorAddress);
 				}
 			}
 			// set header and footer fonts
-			$document->Set('HeaderFont',Array('helvetica', '', 8));
-			$document->Set('FooterFont',Array('helvetica', '', 10));
+			$this->document->Set('HeaderFont',Array('helvetica', '', 8));
+			$this->document->Set('FooterFont',Array('helvetica', '', 10));
 
 			//TODO include the right file (in libraries/tcpdf/config/lang set some language-dependent strings
 			$l='';
-			$document->Set('LanguageArray',$l);
+			$this->document->Set('LanguageArray',$l);
 
 			// set default font subsetting mode
-			$document->Set('FontSubsetting',true);
+			$this->document->Set('FontSubsetting',true);
 
 			// Set font
 			// dejavusans is a UTF-8 Unicode font, if you only need to
 			// print standard ASCII chars, you can use core fonts like
 			// helvetica or times to reduce file size.
-			$document->Set('Font','helvetica', '', 8, '', true);
+			$this->document->Set('Font','helvetica', '', 8, '', true);
 		}
 // 		vmdebug('vendor', $vendor);
 		if (strpos($layout,'mail') !== false) {
@@ -265,13 +269,11 @@ class VirtuemartViewInvoice extends VmView {
 		} else {
 			$lineSeparator="\n";
 		}
-		$this->assignRef('headFooter', $this->showHeaderFooter);
+		$this->headFooter = $this->showHeaderFooter;
 
 		//Attention, this function will be removed, it wont be deleted, but it is obsoloete in any view.html.php
 		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
-	    $vendorAddress= shopFunctions::renderVendorAddress($virtuemart_vendor_id, $lineSeparator);
-		$this->assignRef('vendorAddress', $vendorAddress);
-
+		$this->vendorAddress= shopFunctions::renderVendorAddress($virtuemart_vendor_id, $lineSeparator);
 		$vendorEmail = $vendorModel->getVendorEmail($virtuemart_vendor_id);
 		$vars['vendorEmail'] = $vendorEmail;
 
@@ -288,19 +290,10 @@ class VirtuemartViewInvoice extends VmView {
 			    $this->subject = JText::sprintf('COM_VIRTUEMART_MAIL_SUBJ_SHOPPER_'.$orderDetails['details']['BT']->order_status, $vendor->vendor_store_name, strip_tags($currency->priceDisplay($orderDetails['details']['BT']->order_total, $currency)), $orderDetails['details']['BT']->order_number );
 			    $recipient = 'shopper';
 		    }
-		    $this->assignRef('recipient', $recipient);
+		    $this->recipient = $recipient;
 		}
+		$this->orderDetails = $orderDetails;
 
-		$tpl = null;
-
-// 		vmdebug('my view data',$this->getLayout(),$layout);
-// 		ob_start();
-// 		echo '<pre>';
-// 		echo debug_print_backtrace();
-// 		echo '</pre>';
-// 		$dumptrace = ob_get_contents();
-// 		ob_end_clean();
-// 		return false;
 
 
 		parent::display($tpl);

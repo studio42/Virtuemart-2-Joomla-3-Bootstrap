@@ -139,6 +139,10 @@ class VirtueMartModelCustom extends VmModel {
 		} else if ($published === '0') {
 			$query .= " AND `published` = 0 ";
 		}
+		$vendorId = Permissions::getInstance()->isSuperVendor();
+		if( $vendorId != 1 ){
+			$query .= ' AND (`virtuemart_vendor_id` = "'. (int)$vendorId. '" OR `shared` = "1") ';
+		}
 	    $datas = new stdClass();
 		$datas->items = $this->exeSortSearchListQuery(0, $query, '', $this->_getOrdering());
 

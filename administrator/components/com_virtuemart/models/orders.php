@@ -23,7 +23,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.'/helpers/vmmodel.php');
 
 /**
  * Model for VirtueMart Orders
@@ -148,7 +148,7 @@ class VirtueMartModelOrders extends VmModel {
             }
             $orderDetails = $this->getOrder($virtuemart_order_id);
 
-            if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+            if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
             if(!Permissions::getInstance()->check("admin")) {
                 if(!isset($orderDetails['details']['BT']->virtuemart_user_id)){
                     $orderDetails['details']['BT']->virtuemart_user_id = 0;
@@ -240,7 +240,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		$_filter[] = ('u.virtuemart_user_id = ' . (int)$uid);
 		}*/
 
-		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 		$vendor = Permissions::getInstance()->isSuperVendor();
 		if ($vendor > 1 ) {
 			$from .= ' LEFT JOIN #__virtuemart_order_items as oi
@@ -556,7 +556,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 
 		//First we must call the payment, the payment manipulates the result of the order_status
 		if($useTriggers){
-				if(!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.DS.'vmpsplugin.php');
+				if(!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.'/vmpsplugin.php');
 				// Payment decides what to do when order status is updated
 				JPluginHelper::importPlugin('vmpayment');
 				JPluginHelper::importPlugin('vmcalculation');
@@ -851,9 +851,9 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 	{
 		$_userInfoData = array();
 
-		if(!class_exists('VirtueMartModelUserfields')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'userfields.php');
+		if(!class_exists('VirtueMartModelUserfields')) require(JPATH_VM_ADMINISTRATOR.'/models/userfields.php');
 
-		//if(!class_exists('shopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		//if(!class_exists('shopFunctions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 
 		$_userFieldsModel = VmModel::getModel('userfields');
 		$_userFieldsBT = $_userFieldsModel->getUserFields('account'
@@ -968,7 +968,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		$productModel = VmModel::getModel('product');
 
 		if (!empty($tableOrderItems->product_attribute)) {
-			if(!class_exists('VirtueMartModelCustomfields'))require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'customfields.php');
+			if(!class_exists('VirtueMartModelCustomfields'))require(JPATH_VM_ADMINISTRATOR.'/models/customfields.php');
 			$virtuemart_product_id = $tableOrderItems->virtuemart_product_id;
 			$product_attributes = json_decode($tableOrderItems->product_attribute,true);
 			foreach ($product_attributes as $virtuemart_customfield_id=>$param){
@@ -976,7 +976,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 					if ($productCustom = VirtueMartModelCustomfields::getProductCustomField ($virtuemart_customfield_id ) ) {
 						if ($productCustom->field_type == "E") {
 								//$product = self::addParam($product);
-								if(!class_exists('vmCustomPlugin')) require(JPATH_VM_PLUGINS.DS.'vmcustomplugin.php');
+								if(!class_exists('vmCustomPlugin')) require(JPATH_VM_PLUGINS.'/vmcustomplugin.php');
 								JPluginHelper::importPlugin('vmcustom');
 								$dispatcher = JDispatcher::getInstance();
 							//vmdebug('handleStockAfterStatusChangedPerProduct ',$param);
@@ -1015,7 +1015,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 
 			if (!is_int($priceKey)) {
 
-				if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'calculationh.php');
+				if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
 				$calculator = calculationHelper::getInstance();
 				$variantmods = $calculator->parseModifier($priceKey);
 
@@ -1027,12 +1027,12 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 				//foreach($variantmods as $variant=>$selected){
 				foreach($variantmods as $selected=>$variant){
 					if ($selected) {
-						if(!class_exists('VirtueMartModelCustomfields')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'customfields.php');
+						if(!class_exists('VirtueMartModelCustomfields')) require(JPATH_VM_ADMINISTRATOR.'/models/customfields.php');
 						$productCustom = VirtueMartModelCustomfields::getProductCustomField ($selected );
 						//vmdebug('$_prod,$productCustom',$productCustom );
 						if ($productCustom->field_type == "E") {
 
-							if(!class_exists('vmCustomPlugin')) require(JPATH_VM_PLUGINS.DS.'vmcustomplugin.php');
+							if(!class_exists('vmCustomPlugin')) require(JPATH_VM_PLUGINS.'/vmcustomplugin.php');
 
 							//We need something like this
 							$product_attribute[$selected] = $productCustom->virtuemart_custom_id;
@@ -1176,7 +1176,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		foreach($Bill_calculation_kinds as $calculation_kind) {
 // 			if(empty($_cart->cartData)){
 // 				vmError('Cart data was empty, why?');
-// 				if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'calculationh.php');
+// 				if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
 // 				$calculator = calculationHelper::getInstance();
 // 				$_cart->cartData = $calculator->getCartData();
 // 			}
@@ -1350,6 +1350,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			vmWarn('createInvoiceNumber $orderDetails has no virtuemart_order_id ',$orderDetails);
 			vmdebug('createInvoiceNumber $orderDetails has no virtuemart_order_id ',$orderDetails);
 		}
+
 		$q = 'SELECT * FROM `#__virtuemart_invoices` WHERE `virtuemart_order_id`= "'.$orderDetails['virtuemart_order_id'].'" '; // AND `order_status` = "'.$orderDetails->order_status.'" ';
 
 		$db->setQuery($q);
@@ -1434,7 +1435,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		if (isset($newOrderData['customer_notified']) && $newOrderData['customer_notified']==0) {
 		    return true;
 		}
-		if(!class_exists('shopFunctionsF')) require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		if(!class_exists('shopFunctionsF')) require(JPATH_VM_SITE.'/helpers/shopfunctionsf.php');
 
 		//Important, the data of the order update mails, payments and invoice should
 		//always be in the database, so using getOrder is the right method
@@ -1486,10 +1487,10 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			//TODO we need an array of orderstatus
 			if ( (in_array($order['details']['BT']->order_status,$orderstatusForInvoice))  or $pdfInvoice==1  or $force_create_invoice==1 ){
 				if (!shopFunctions::InvoiceNumberReserved($invoiceNumberDate[0])) {
-					if(!class_exists('VirtueMartControllerInvoice')) require_once( JPATH_VM_SITE.DS.'controllers'.DS.'invoice.php' );
+					if(!class_exists('VirtueMartControllerInvoice')) require_once( JPATH_VM_SITE.'/controllers/invoice.php' );
 					$controller = new VirtueMartControllerInvoice( array(
-						'model_path' => JPATH_VM_SITE.DS.'models',
-						'view_path' => JPATH_VM_SITE.DS.'views'
+						'model_path' => JPATH_VM_SITE.'/models',
+						'view_path' => JPATH_VM_SITE.'/views'
 					));
 
 					$vars['mediaToSend'][] = $controller->getInvoicePDF($order);
@@ -1673,7 +1674,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 
 		$_userInfoData = array();
 
-		if(!class_exists('VirtueMartModelUserfields')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'userfields.php');
+		if(!class_exists('VirtueMartModelUserfields')) require(JPATH_VM_ADMINISTRATOR.'/models/userfields.php');
 
 		$_userFieldsModel = VmModel::getModel('userfields');
 
@@ -1900,7 +1901,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		$date = date("Ymd");
 		$data['invoice_number'] = $data['invoice_number'].'_'.$date;
 		$invoice_name_dst = $path.$data['invoice_number'].'.pdf';
-		if(!class_exists('JFile')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+		if(!class_exists('JFile')) require(JPATH_VM_LIBRARIES.'/joomla/filesystem/file.php');
 		if (!JFile::move($invoice_name_src, $invoice_name_dst)) {
 			vmError ('Could not rename Invoice '.$invoice_name_src.'to '. $invoice_name_dst );
 		}

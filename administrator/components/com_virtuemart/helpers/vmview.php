@@ -32,6 +32,7 @@ class VmView extends JViewLegacy{
 	var $_cidName	= null;
 	var $tmpl ='';
 	protected $vendor = 0;
+	var $canChange = false;
 	/**
 	 * Sets automatically the shortcut for the language and the redirect path
 	 *
@@ -423,11 +424,12 @@ class VmView extends JViewLegacy{
 	 */
 
 	function editLink($id, $text, $name= null,$attrib= null,$view = null,$task ='edit') {
+		if ( !$this->canChange) return $text ;
 		if ($view === null) $view = $this->_name;
 		if ($name === null) $name = $this->_cidName;
 		if ($attrib === null) $attrib = array('class'=> 'hasTooltip', 'title' => JText::_('COM_VIRTUEMART_EDIT').' '.$text);
 		
-		$editlink = $name. '=' . $id;	
+		$editlink = $name. '=' . $id;
 		$editlink .= $this->tmpl;
 		$link = JROUTE::_('index.php?option=com_virtuemart&view='.$view.'&task='.$task.'&'.$editlink) ;
 		// echo 'index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$editlink ;
@@ -445,13 +447,15 @@ class VmView extends JViewLegacy{
 	 * compare creator with current logged vendor
 	 * usefull for shared items
 	 */
-	public function canChange($created_by){
+	public function canChange($created_by = null){
+		if ($created_by === null) return $this->canChange;
 		static $user_id = null;
 		static $vendor = null;
 		if ($vendor === null) $vendor = Permissions::getInstance()->isSuperVendor();
 		if ($vendor == 1) return true; // can change all
 		if ($user_id === null) $user_id = JFactory::getUser()->get('id');
-		return ($created_by === $user_id);
+		$this->canChange = ($created_by === $user_id);
+		return $this->canChange;
 
 	}
 	function DisplayFilterPublish() {

@@ -49,7 +49,7 @@ jimport('joomla.filesystem.file');
 
 		foreach ($this->files as $key => $media) {
 
-			$checked = JHTML::_('grid.id', $i , $media->virtuemart_media_id,null,'virtuemart_media_id');
+			$checked = JHTML::_('grid.id', $i , $media->virtuemart_media_id);
 			$canDo = $this->canChange($media->created_by);
 			$published = $this->toggle( $media->published, $i, 'published',$canDo);
 			$shared = $this->toggle($media->shared, $i, 'toggle.shared',$canDo);

@@ -161,7 +161,7 @@ class VirtuemartViewProduct extends VmView {
 					$emptyOption = JHTML::_ ('select.option', '', '- '.JText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION').' :', 'value', 'text');
 					array_unshift ($customsList, $emptyOption);
 					$customlist = JHTML::_('select.genericlist', $customsList,'customlist');
-					if ($task="add") {
+					if ($task=="add") {
 						if ($customfieldsDefault = $this->getBLankCustomfields()) {
 						$product->customfields = $customfieldsDefault ;
 						// var_dump( $customfieldsDefault);jexit();
