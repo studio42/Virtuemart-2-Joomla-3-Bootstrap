@@ -35,7 +35,7 @@ In shop **direct** edit link for products,categories and manufacturers.(more to 
 
 All is converted to **Bootstrap**
 
-THe code is **joomla 3.0** compatible(tested on joomla 3.1 and joomla 2.5)
+**joomla 3.x** compatible(tested on joomla 3.2 and joomla 2.5)
 
 **New dashboard**
 
