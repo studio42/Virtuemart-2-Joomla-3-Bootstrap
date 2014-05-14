@@ -1,10 +1,19 @@
 <?php
 defined ('_JEXEC') or die();
+
+if (!class_exists ('VmConfig')) {
+	require(JPATH_ADMINISTRATOR.'/components/com_virtuemart/helpers/config.php');
+}
+if (!class_exists ('VmModel')) {
+	require(JPATH_VM_ADMINISTRATOR.'/helpers/vmmodel.php');
+}
+
+jimport('joomla.form.formfield');
 /**
  *
  * @package    VirtueMart
- * @subpackage Plugins  - Elements
- * @author Valérie Isaksen
+ * @subpackage model fields Order Status  
+ * @author Valérie Isaksen, Patrick Kohl
  * @link http://www.virtuemart.net
  * @copyright Copyright (c) 2004 - 2011 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -17,14 +26,8 @@ defined ('_JEXEC') or die();
 
 class JFormFieldOrderstatus extends JFormField {
 	var $type = 'orderstatus';
-	function getInput () {
 
-		if (!class_exists ('VmConfig')) {
-			require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart' . DS . 'helpers' . DS . 'config.php');
-		}
-		if (!class_exists ('VmModel')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
-		}
+	function getInput () {
 		VmConfig::loadConfig ();
 		if (VmConfig::get ('enableEnglish', 1)) {
 			$jlang = JFactory::getLanguage ();

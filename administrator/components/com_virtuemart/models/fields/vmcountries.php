@@ -4,7 +4,7 @@ defined('JPATH_PLATFORM') or die;
 /**
  *
  * @package	VirtueMart
- * @subpackage Plugins  - Elements
+ * @subpackage Models - fields
  * @author Valérie Isaksen
  * @link http://www.virtuemart.net
  * @copyright Copyright (c) 2004 - 2011 VirtueMart Team. All rights reserved.
@@ -15,13 +15,13 @@ defined('JPATH_PLATFORM') or die;
  * other free or open source software licenses.
  * @version $Id: $
  */
-/*
- * This class is used by VirtueMart Payment or Shipment Plugins
- * which uses JParameter
- * So It should be an extension of JElement
- * Those plugins cannot be configured througth the Plugin Manager anyway.
+
+JFormHelper::loadFieldClass('list');
+/**
+ * Return the countries list.
+ *
+ *
  */
-  JFormHelper::loadFieldClass('list');
  
 class JFormFieldVmCountries extends JFormFieldList {
 
@@ -47,7 +47,6 @@ class JFormFieldVmCountries extends JFormFieldList {
 			$options[] = JHtml::_('select.option', $v->value, $v->text);
 		}
 
-        //BAD $class = 'multiple="true" size="10"';
 		// Merge any additional options in the XML definition.
 		$options = array_merge(parent::getOptions(), $options);
 

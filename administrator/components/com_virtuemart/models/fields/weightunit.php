@@ -14,13 +14,12 @@ JFormHelper::loadFieldClass('list');
 if (!class_exists('VmConfig'))
     require(JPATH_ADMINISTRATOR . '/components/com_virtuemart/helpers/config.php');
 if (!class_exists('ShopFunctions'))
-    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+    require(JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
+
 /**
- * Supports an HTML select list of files
+ * Return the Weight Units list.
  *
- * @package     Joomla.Platform
- * @subpackage  Form
- * @since       11.1
+ *
  */
 class JFormFieldWeightUnit extends JFormFieldList
 {
@@ -34,10 +33,7 @@ class JFormFieldWeightUnit extends JFormFieldList
 	public $type = 'WeightUnit';
 
 	/**
-	 * Method to get the list of files for the field options.
-	 * Specify the target directory with a directory attribute
-	 * Attributes allow an exclude mask and stripping of extensions from file name.
-	 * Default attribute may optionally be set to null (no file) or -1 (use a default).
+	 * Method to get the list of Weight Unit for the field options.
 	 *
 	 * @return  array  The field option objects.
 	 *

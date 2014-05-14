@@ -4,7 +4,7 @@ defined('JPATH_PLATFORM') or die;
 /**
  *
  * @package	VirtueMart
- * @subpackage Plugins  - Elements
+ * @subpackage Models - fields
  * @author Valérie Isaksen
  * @link http://www.virtuemart.net
  * @copyright Copyright (c) 2004 - 2011 VirtueMart Team. All rights reserved.
@@ -17,10 +17,10 @@ defined('JPATH_PLATFORM') or die;
  */
 if (!class_exists('VmConfig'))
     require(JPATH_ADMINISTRATOR . '/components/com_virtuemart/helpers/config.php');
-/*
- * This class is used by VirtueMart Payment or Shipment Plugins
- * So It should be an extension of JFormField
- * Those plugins cannot be configured througth the Plugin Manager anyway.
+/**
+ * Return the Currencies list.
+ *
+ *
  */
 
  JFormHelper::loadFieldClass('list');

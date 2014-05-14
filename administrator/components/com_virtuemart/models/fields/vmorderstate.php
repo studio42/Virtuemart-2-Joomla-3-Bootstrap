@@ -3,7 +3,7 @@ defined ('_JEXEC') or die();
 /**
  *
  * @package    VirtueMart
- * @subpackage Plugins  - Elements
+ * @subpackage Models - fields
  * @author Valérie Isaksen
  * @link http://www.virtuemart.net
  * @copyright Copyright (c) 2004 - 2011 VirtueMart Team. All rights reserved.
@@ -14,11 +14,12 @@ defined ('_JEXEC') or die();
  * other free or open source software licenses.
  * @version $Id:$
  */
-/*
- * This class is used by VirtueMart Payment or Shipment Plugins
- * which uses JParameter
- * So It should be an extension of JFormField
- * Those plugins cannot be configured througth the Plugin Manager anyway.
+ 
+jimport('joomla.form.formfield');
+/**
+ * Return the Order States list.
+ *
+ *
  */
 class JFormFieldVmOrderState extends JFormFieldList {
 

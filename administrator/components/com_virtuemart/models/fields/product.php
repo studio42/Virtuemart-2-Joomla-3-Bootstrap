@@ -1,19 +1,15 @@
 <?php
-
-
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.formfield');
 if (!class_exists('VmConfig'))
-require(JPATH_ROOT . DS . 'administrator' . DS . 'components' . DS . 'com_virtuemart' . DS . 'helpers' . DS . 'config.php');
+require(JPATH_ROOT.'/administrator/components/com_virtuemart/helpers/config.php');
 if (!class_exists('ShopFunctions'))
-require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+require(JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 
 if (!class_exists('TableCategories'))
-require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'categories.php');
+require(JPATH_VM_ADMINISTRATOR.'/tables/categories.php');
 
-if (!class_exists('VmElements'))
-require(JPATH_VM_ADMINISTRATOR . DS . 'elements' . DS . 'vmelements.php');
+jimport('joomla.form.formfield');
 /**
  * Supports a modal product picker.
  *
@@ -24,7 +20,7 @@ class JFormFieldProduct extends JFormField
 	/**
 	 * The form field type.
 	 *
-	 * @author      Valerie Cartan Isaksen
+	 * @author      Valerie Cartan Isaksen, Patrick Kohl
 	 * @var		string
 	 *
 	 */
@@ -47,7 +43,7 @@ class JFormFieldProduct extends JFormField
 	}
 	private function _getProducts() {
 		if (!class_exists('VmModel'))
-		require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
+		require(JPATH_VM_ADMINISTRATOR.'/helpers/vmmodel.php');
 		$productModel = VmModel::getModel('Product');
 		$productModel->_noLimit = true;
 		$products = $productModel->getProductListing(false, false, false, false, true,false);

@@ -1,25 +1,18 @@
 <?php
-
-
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.formfield');
 if (!class_exists('VmConfig'))
-require(JPATH_ROOT . DS . 'administrator' . DS . 'components' . DS . 'com_virtuemart' . DS . 'helpers' . DS . 'config.php');
+require(JPATH_ROOT.'/administrator/components/com_virtuemart/helpers/config.php');
 
 if (!class_exists('ShopFunctions'))
-require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
-if (!class_exists('VirtueMartModelManufacturer'))
-JLoader::import('manufacturer', JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart' . DS . 'models');
-
-if (!class_exists('VmElements'))
-require(JPATH_VM_ADMINISTRATOR . DS . 'elements' . DS . 'vmelements.php');
-if(!class_exists('TableManufacturers')) require(JPATH_VM_ADMINISTRATOR.DS.'tables'.DS.'manufacturers.php');
+require(JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
+if(!class_exists('TableManufacturers')) require(JPATH_VM_ADMINISTRATOR.'/tables/manufacturers.php');
 if (!class_exists( 'VirtueMartModelManufacturer' ))
-JLoader::import( 'manufacturer', JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart' . DS . 'models' );
+JLoader::import( 'manufacturer', JPATH_ADMINISTRATOR.'/components/com_virtuemart/models' );
 
+jimport('joomla.form.formfield');
 /**
- * Supports a modal product picker.
+ * Return the manufacturers list.
  *
  *
  */
