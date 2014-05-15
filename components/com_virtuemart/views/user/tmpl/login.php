@@ -18,15 +18,15 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 //set variables, usually set by shopfunctionsf::getLoginForm in case this layout is differently used
 if (!isset( $this->show )) $this->show = TRUE;
 if (!isset( $this->from_cart )) $this->from_cart = FALSE;
 if (!isset( $this->order )) $this->order = FALSE ;
 
+JLoader::register('shopFunctionsF', JPATH_VM_SITE.'/helpers/shopfunctionsf.php');
 
-if(!class_exists('shopFunctionsF')) require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 $comUserOption=shopfunctionsF::getComUserOption();
 if (empty($this->url)){
 	$uri = JFactory::getURI();

@@ -17,10 +17,9 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 /**
  * HTML View class for maintaining the list of manufacturers
@@ -37,8 +36,7 @@ class VirtuemartViewManufacturer extends VmView {
 		$mainframe = JFactory::getApplication();
 		$pathway = $mainframe->getPathway();
 
-		if (!class_exists('VmImage'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+		JLoader::register('VmImage', JPATH_VM_ADMINISTRATOR.'/helpers/image.php');
 
 		$virtuemart_manufacturer_id = JRequest::getInt('virtuemart_manufacturer_id', 0);
 		$mf_category_id = JRequest::getInt('mf_category_id', 0);

@@ -17,10 +17,9 @@
  * @version $Id: view.html.php 5133 2011-12-19 12:02:41Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 // Set to '0' to use tabs i.s.o. sliders
 // Might be a config option later on, now just here for testing.

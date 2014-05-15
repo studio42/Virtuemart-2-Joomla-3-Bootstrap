@@ -1,4 +1,4 @@
-<?php defined ('_JEXEC') or die('Restricted access');
+<?php defined('_JEXEC') or die();
 /**
  *
  * Layout for the shopping cart
@@ -60,9 +60,7 @@
 			if (empty($this->cart->STaddress['fields'])) {
 				echo JText::sprintf ('COM_VIRTUEMART_USER_FORM_EDIT_BILLTO_EXPLAIN', JText::_ ('COM_VIRTUEMART_USER_FORM_ADD_SHIPTO_LBL'));
 			} else {
-				if (!class_exists ('VmHtml')) {
-					require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
-				}
+				JLoader::register('VmHtml', JPATH_VM_ADMINISTRATOR.'/helpers/html.php');
 				echo JText::_ ('COM_VIRTUEMART_USER_FORM_ST_SAME_AS_BT');
 				echo VmHtml::checkbox ('STsameAsBTjs', $this->cart->STsameAsBT) . '<br />';
 				?>

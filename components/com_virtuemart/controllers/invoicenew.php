@@ -17,11 +17,9 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access for invoices');
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+defined('_JEXEC') or die();
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
+JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.'/helpers/vmmodel.php');
 
 /**
  * VirtueMart Component Controller
@@ -55,7 +53,8 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 			}
 			$orderDetails = $orderModel->getOrder($virtuemart_order_id);
 
-			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+			JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+
 			if(!Permissions::getInstance()->check("admin")) {
 				if(!empty($orderDetails['details']['BT']->virtuemart_user_id)){
 					if ($orderDetails['details']['BT']->virtuemart_user_id != $cuid) {
@@ -70,7 +69,6 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 
 	public function display($cachable = false, $urlparams = false)  {
 		$format = JRequest::getWord('format','html');
-
 
 		if ($format != 'pdf') {
 			$viewName='invoice';
@@ -221,7 +219,6 @@ var_dump($format,$app,$view); jexit();
 		$html = ob_get_contents();
 		ob_end_clean();
 
-
 		// create new PDF document
 		$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -291,7 +288,6 @@ var_dump($format,$app,$view); jexit();
 		// Print text using writeHTMLCell()
 		$pdf->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
 
-
 		// Close and output PDF document
 		// This method has several options, check the source code documentation for more information.
 		$pdf->Output($path, 'F');
@@ -299,8 +295,6 @@ var_dump($format,$app,$view); jexit();
 
 	}
 }
-
-
 
 
 if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
@@ -313,7 +307,6 @@ if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
 		public function __construct() {
 
 			parent::__construct();
-
 
 		}
 
@@ -348,8 +341,6 @@ if(!file_exists(JPATH_VM_LIBRARIES.DS.'tcpdf'.DS.'tcpdf.php')){
 		}
 	}
 }
-
-
 
 
 // No closing tag

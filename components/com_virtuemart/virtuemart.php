@@ -23,7 +23,7 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 
 if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR .'/components/com_virtuemart/helpers/config.php');
 VmConfig::loadConfig();
-if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 
 $isAdmin = Permissions::getInstance()->check("admin,storeadmin");
 $offline = VmConfig::get('shop_is_offline',0);
@@ -43,8 +43,8 @@ if($offline && !$isAdmin){
 } else {
 
 	/* Front-end helpers */
-	if(!class_exists('VmImage')) require(JPATH_VM_ADMINISTRATOR.'/helpers/image.php'); //dont remove that file it is actually in every view except the state view
-	if(!class_exists('shopFunctionsF'))require(JPATH_VM_SITE.'/helpers/shopfunctionsf.php'); //dont remove that file it is actually in every view
+	JLoader::register('VmImage', JPATH_VM_ADMINISTRATOR.'/helpers/image.php'); //dont remove that file it is actually in every view except the state view
+	JLoader::register('shopFunctionsF', JPATH_VM_SITE.'/helpers/shopfunctionsf.php'); //dont remove that file it is actually in every view
 
 	/* Loading jQuery and VM scripts. */
 	//vmJsApi::jPrice();    //in create button

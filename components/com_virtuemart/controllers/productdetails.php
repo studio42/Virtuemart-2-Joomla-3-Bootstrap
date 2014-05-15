@@ -17,10 +17,7 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined ('_JEXEC') or die('Restricted access');
-
-// Load the controller framework
-jimport ('joomla.application.component.controller');
+defined('_JEXEC') or die();
 
 /**
  * VirtueMart Component Controller
@@ -129,7 +126,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		}
 		$app->enqueueMessage (JText::_ ($string));
 
-
 		$view->setLayout ('mail_confirmed');
 		$view->display ();
 	}
@@ -151,7 +147,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		if (!class_exists ('shopFunctionsF')) {
 			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		}
-		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 
 		$app = JFactory::getApplication ();
 		$vars = array();
@@ -180,7 +176,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		$vars['vendorEmail']=  $user->email;
 		$vars['vendor']->vendor_name =$user->name;
 
-
 		$toMail = JRequest::getVar ('email'); //is sanitized then
 		$toMail = str_replace (array('\'', '"', ',', '%', '*', '/', '\\', '?', '^', '`', '{', '}', '|', '~'), array(''), $toMail);
 
@@ -192,7 +187,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		$app->enqueueMessage (JText::_ ($string));
 
 // 		vmdebug('my email vars ',$vars,$TOMail);
-
 
 		$view->setLayout ('mail_confirmed');
 		$view->display ();

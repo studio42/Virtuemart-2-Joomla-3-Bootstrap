@@ -17,10 +17,8 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
 
 /**
  * VirtueMart Component Controller
@@ -37,7 +35,6 @@ class VirtueMartControllerUser extends JControllerLegacy
 		$this->useXHTML = true;
 
 	}
-
 
 	function edit(){
 
@@ -133,7 +130,6 @@ class VirtueMartControllerUser extends JControllerLegacy
 		$msg = $this->saveData(true, true);
 		$this->setRedirect(JRoute::_('index.php?option=com_virtuemart&view=cart') , $msg);
 	}
-
 
 	/**
 	 * This is the save function for the normal user edit.php layout.
@@ -257,7 +253,6 @@ class VirtueMartControllerUser extends JControllerLegacy
 		$return = JURI::base();
 		$this->setRedirect( $return );
 	}
-
 
 	function removeAddressST(){
 		$db = JFactory::getDBO();

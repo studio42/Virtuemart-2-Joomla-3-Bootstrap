@@ -67,8 +67,7 @@ abstract class CouponHelper
 			return JText::_('COM_VIRTUEMART_COUPON_CODE_EXPIRED');
 		}
 		if ($_billTotal < $couponData->coupon_value_valid) {
-			if (!class_exists('CurrencyDisplay'))
-			    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			JLoader::register('CurrencyDisplay', JPATH_VM_ADMINISTRATOR.'/helpers/currencydisplay.php');
 			$currency = CurrencyDisplay::getInstance();
 
 			$coupon_value_valid = $currency->priceDisplay($couponData->coupon_value_valid);

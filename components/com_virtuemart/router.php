@@ -28,7 +28,7 @@ function virtuemartBuildRoute(&$query) {
 				if (!class_exists( 'VmConfig' )) {
 					require(JPATH_ADMINISTRATOR .'/components/com_virtuemart/helpers/config.php');
 				}
-				if(!class_exists('Permissions')) require(JPATH_ADMINISTRATOR.'/components/com_virtuemart/helpers/permissions.php');
+				JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 				$vendor = Permissions::getInstance()->isSuperVendor();
 			} else $vendor = false;
 	}

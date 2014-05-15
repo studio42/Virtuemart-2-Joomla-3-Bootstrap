@@ -300,7 +300,7 @@ class VmView extends JViewLegacy{
 		return JHTML::_('grid.sort' , JText::_($name) , $orderby , $this->lists['filter_order_Dir'] , $this->lists['filter_order']);
 	}
 
-	public function addStandardHiddenToForm($controller=null, $task=''){
+	public function addStandardHiddenToForm($view=null, $task=''){
 		if (!$view)	$view = $this->getName();
 		$option = JRequest::getCmd('option','com_virtuemart' );
 		$hidden ='';
@@ -314,7 +314,7 @@ class VmView extends JViewLegacy{
 		<input type="hidden" name="task" value="'.$task.'" />
 		<input type="hidden" name="option" value="'.$option.'" />
 		<input type="hidden" name="boxchecked" value="0" />
-		<input type="hidden" name="view" value="'.$controller.'" />
+		<input type="hidden" name="view" value="'.$view.'" />
 		'. JHTML::_( 'form.token' );
 	}
 

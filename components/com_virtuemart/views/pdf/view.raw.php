@@ -17,7 +17,7 @@
  */
 defined('_JEXEC') or die;
 
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 class VirtueMartViewRaw extends VmView
 {

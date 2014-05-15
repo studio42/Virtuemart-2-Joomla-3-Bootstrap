@@ -21,9 +21,7 @@ if (!defined ('_JEXEC')) {
  * http://virtuemart.org
  */
 
-if (!class_exists ('VmModel')) {
-	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
-}
+JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Report Model

@@ -17,10 +17,8 @@
  * @version $Id: cart.php 3388 2011-05-27 13:50:18Z alatak $
  */
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
 
 /**
  * Controller for the payment response view

@@ -19,7 +19,7 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 // Hardcoded groupID of the Super Admin 
 // Note removed in joomla 2.5
@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
 // Load the model framework
 jimport('joomla.version');
 
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
 
 
 /**

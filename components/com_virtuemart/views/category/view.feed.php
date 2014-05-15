@@ -17,12 +17,9 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined ('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if (!class_exists ('VmView')) {
-	require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');
-}
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 class VirtuemartViewCategory extends VmView {
 
@@ -30,15 +27,12 @@ class VirtuemartViewCategory extends VmView {
 
 		$show_prices = VmConfig::get ('show_prices', 1);
 		if ($show_prices == '1') {
-			if (!class_exists ('calculationHelper')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
-			}
+			JLoader::register('calculationHelper', JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
 		}
 
 		$doc = JFactory::getDocument ();
+		JLoader::register('VmImage', JPATH_VM_ADMINISTRATOR.'/helpers/image.php');
 
-		if (!class_exists('VmImage'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
 		$productModel = VmModel::getModel ('product');
 		$categoryId = JRequest::getInt ('virtuemart_category_id', false);
 		$feed_show_prices = VmConfig::get ('feed_cat_show_prices', 0);

@@ -16,7 +16,7 @@
  * @version $Id: edit_address.php 6406 2012-09-08 09:46:55Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
-defined ('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 // vmdebug('user edit address',$this->userFields['fields']);
 // Implement Joomla's form validation
 JHTML::_ ('behavior.formvalidation');
@@ -134,9 +134,7 @@ echo shopFunctionsF::getLoginForm (TRUE, FALSE, $url);
 
 
 		<?php
-		if (!class_exists ('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
-		}
+		JLoader::register('VirtueMartCart', JPATH_VM_SITE.'/helpers/cart.php');
 
 		if (count ($this->userFields['functions']) > 0) {
 			echo '<script language="javascript">' . "\n";

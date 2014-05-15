@@ -18,7 +18,7 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined ('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 if(VmConfig::get('usefancy',0)){
 	vmJsApi::js( 'fancybox/jquery.fancybox-1.3.4.pack');
 	vmJsApi::css('jquery.fancybox-1.3.4');
@@ -150,32 +150,30 @@ $document->addStyleDeclaration ('#facebox .content {display: block !important; h
 			}
 			$userFieldsModel = VmModel::getModel ('userfields');
 			if ($userFieldsModel->getIfRequired ('agreed')) {
-					if (!class_exists ('VmHtml')) {
-						require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
-					}
-					echo VmHtml::checkbox ('tosAccepted', $this->cart->tosAccepted, 1, 0, 'class="terms-of-service"');
+				JLoader::register('VmHtml', JPATH_VM_ADMINISTRATOR.'/helpers/html.php');
+				echo VmHtml::checkbox ('tosAccepted', $this->cart->tosAccepted, 1, 0, 'class="terms-of-service"');
 
-					if (VmConfig::get ('oncheckout_show_legal_info', 1)) {
-						?>
-						<div class="terms-of-service">
+				if (VmConfig::get ('oncheckout_show_legal_info', 1)) {
+					?>
+					<div class="terms-of-service">
 
-							<label for="tosAccepted">
-								<a href="<?php JRoute::_ ('index.php?option=com_virtuemart&view=vendor&layout=tos&virtuemart_vendor_id=1', FALSE) ?>" class="terms-of-service" id="terms-of-service" rel="facebox"
-							  	 target="_blank">
-									<span class="vmicon vm2-termsofservice-icon"></span>
-									<?php echo JText::_ ('COM_VIRTUEMART_CART_TOS_READ_AND_ACCEPTED'); ?>
-								</a>
-							</label>
+						<label for="tosAccepted">
+							<a href="<?php JRoute::_ ('index.php?option=com_virtuemart&view=vendor&layout=tos&virtuemart_vendor_id=1', FALSE) ?>" class="terms-of-service" id="terms-of-service" rel="facebox"
+							 target="_blank">
+								<span class="vmicon vm2-termsofservice-icon"></span>
+								<?php echo JText::_ ('COM_VIRTUEMART_CART_TOS_READ_AND_ACCEPTED'); ?>
+							</a>
+						</label>
 
-							<div id="full-tos">
-								<h2><?php echo JText::_ ('COM_VIRTUEMART_CART_TOS'); ?></h2>
-								<?php echo $this->cart->vendor->vendor_terms_of_service; ?>
-							</div>
-
+						<div id="full-tos">
+							<h2><?php echo JText::_ ('COM_VIRTUEMART_CART_TOS'); ?></h2>
+							<?php echo $this->cart->vendor->vendor_terms_of_service; ?>
 						</div>
-						<?php
-					} // VmConfig::get('oncheckout_show_legal_info',1)
-					//echo '<span class="tos">'. JText::_('COM_VIRTUEMART_CART_TOS_READ_AND_ACCEPTED').'</span>';
+
+					</div>
+					<?php
+				} // VmConfig::get('oncheckout_show_legal_info',1)
+				//echo '<span class="tos">'. JText::_('COM_VIRTUEMART_CART_TOS_READ_AND_ACCEPTED').'</span>';
 			}
 			echo $this->checkout_link_html;
 			?>

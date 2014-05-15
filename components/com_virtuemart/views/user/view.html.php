@@ -18,11 +18,9 @@
  * @version $Id: view.html.php 6472 2012-09-19 08:46:21Z alatak $
  */
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if (!class_exists('VmView'))
-    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 // Set to '0' to use tabs i.s.o. sliders
 // Might be a config option later on, now just here for testing.
@@ -83,9 +81,7 @@ class VirtuemartViewUser extends VmView {
 	    $this->assignRef('fTask', $ftask);
 	}
 
-
-	if (!class_exists('ShopFunctions'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+	JLoader::register('shopFunctionsF', JPATH_VM_SITE.'/helpers/shopfunctionsf.php');
 
 	// 	vmdebug('my layoutname',$layoutName);
 	if ($layoutName == 'login') {
@@ -94,8 +90,8 @@ class VirtuemartViewUser extends VmView {
 	    return;
 	}
 
-	if (!class_exists('VirtuemartModelUser'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'user.php');
+	JLoader::register('VirtuemartModelUser', JPATH_VM_ADMINISTRATOR.'/helpers/user.php');
+
 	$this->_model = new VirtuemartModelUser();
 
 	//		$this->_model->setCurrent(); //without this, the administrator can edit users in the FE, permission is handled in the usermodel, but maybe unsecure?
@@ -130,8 +126,8 @@ class VirtuemartViewUser extends VmView {
 	if ((strpos($this->fTask, 'cart') || strpos($this->fTask, 'checkout')) && empty($virtuemart_userinfo_id)) {
 
 	    //New Address is filled here with the data of the cart (we are in the cart)
-	    if (!class_exists('VirtueMartCart'))
-		require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		JLoader::register('VirtueMartCart', JPATH_VM_SITE.'/helpers/cart.php');
+
 	    $cart = VirtueMartCart::getCart();
 
 	    $fieldtype = $address_type . 'address';
@@ -241,7 +237,7 @@ class VirtuemartViewUser extends VmView {
 	    }
 	}
 	  $add_product_link="";
-	 if(!class_exists('Permissions')) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart' . DS . 'helpers' . DS . 'permissions.php');
+	JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 	if(!Permissions::getInstance()->isSuperVendor() or Vmconfig::get('multix','none')!=='none' ){
 	    $add_product_link = JRoute::_( 'index.php?option=com_virtuemart&tmpl=component&view=product&view=product&task=edit&virtuemart_product_id=0' );
 	    $add_product_link = $this->linkIcon($add_product_link, 'COM_VIRTUEMART_PRODUCT_ADD_PRODUCT', 'new', false, false, true, true);
@@ -276,8 +272,8 @@ class VirtuemartViewUser extends VmView {
 	    $this->_orderList = $orders->getOrdersList($this->_model->getId(), true);
 
 	    if (empty($this->currency)) {
-		if (!class_exists('CurrencyDisplay'))
-		    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			
+		JLoader::register('CurrencyDisplay', JPATH_VM_ADMINISTRATOR.'/helpers/currencydisplay.php');
 
 		$currency = CurrencyDisplay::getInstance();
 		$this->assignRef('currency', $currency);
@@ -297,8 +293,7 @@ class VirtuemartViewUser extends VmView {
 
 	$_shoppergroup = VirtueMartModelShopperGroup::getShoppergroupById($this->_model->getId());
 
-	if (!class_exists('Permissions'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
+	JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 
 	if (Permissions::getInstance()->check('admin,storeadmin')) {
 
@@ -360,8 +355,8 @@ class VirtuemartViewUser extends VmView {
 	    $this->_lists['gid'] = JHTML::_('select.genericlist', $_groupList, 'gid', 'size="10"', 'value', 'text', $this->_userDetails->JUser->get('gid'));
 	}
 
-	if (!class_exists('shopFunctionsF'))
-	    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+	JLoader::register('shopFunctionsF', JPATH_VM_SITE.'/helpers/shopfunctionsf.php'); 
+
 	$comUserOption = shopfunctionsF::getComUserOption();
 	if (method_exists($comUserOption,'authorize')) $authorize = 'authorize'; else $authorize = 'authorise';
 	$this->_lists['canBlock'] = ($this->_currentUser->$authorize($comUserOption, 'block user')

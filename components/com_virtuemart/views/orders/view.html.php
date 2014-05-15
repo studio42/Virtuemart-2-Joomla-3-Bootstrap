@@ -17,10 +17,9 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 
 /**
@@ -158,9 +157,8 @@ class VirtuemartViewOrders extends VmView {
 			JPluginHelper::importPlugin ('vmpayment');
 			$dispatcher = JDispatcher::getInstance ();
 			$dispatcher->trigger ('plgVmgetEmailCurrency', array($orderDetails['details']['BT']->virtuemart_paymentmethod_id, $orderDetails['details']['BT']->virtuemart_order_id, &$emailCurrencyId));
-			if (!class_exists ('CurrencyDisplay')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
-			}
+
+			JLoader::register('CurrencyDisplay', JPATH_VM_ADMINISTRATOR.'/helpers/currencydisplay.php');
 			$currency = CurrencyDisplay::getInstance ($emailCurrencyId, $vendorId);
 			if ($emailCurrencyId) {
 				vmdebug ('exchangerate', $orderDetails['details']['BT']->user_currency_rate);
@@ -193,9 +191,7 @@ class VirtuemartViewOrders extends VmView {
 					JPluginHelper::importPlugin ('vmpayment');
 					$dispatcher = JDispatcher::getInstance ();
 					$dispatcher->trigger ('plgVmgetEmailCurrency', array($order->virtuemart_paymentmethod_id, $order->virtuemart_order_id, &$emailCurrencyId));
-					if (!class_exists ('CurrencyDisplay')) {
-						require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
-					}
+					JLoader::register('CurrencyDisplay', JPATH_VM_ADMINISTRATOR.'/helpers/currencydisplay.php');
 					$currency = CurrencyDisplay::getInstance ($emailCurrencyId, $vendorId);
 					$this->assignRef ('currency', $currency);
 					if ($emailCurrencyId) {
@@ -224,8 +220,7 @@ class VirtuemartViewOrders extends VmView {
 
 		$this->assignRef('orderstatuses', $orderstatuses);
 
-		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
-
+		JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 		$document = JFactory::getDocument();
 		$document->setMetaData('robots','NOINDEX, NOFOLLOW, NOARCHIVE, NOSNIPPET');
 

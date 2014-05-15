@@ -19,9 +19,6 @@ defined('_JEXEC') or die('');
  *
  * http://virtuemart.net
  */
-// Load the view framework
-jimport( 'joomla.application.component.view');
-// Load default helpers
 
 class VmView extends JViewLegacy{
 	function linkIcon($link,$altText ='',$boutonName,$verifyConfigValue=false, $modal = true, $use_icon=true,$use_text=false){
@@ -42,11 +39,11 @@ class VmView extends JViewLegacy{
 		static $isAdmin = null;
 		static $vendor = null;
 		if ($vendor === null) {
-			if (!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
+			JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 			$vendor = Permissions::getInstance()->isSuperVendor();
 			if ( $user_id = JFactory::getUser()->get('id') ) {
 				$isAdmin = Permissions::getInstance()->check("admin,storeadmin");
-				if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php'); 
+				JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 			}
 		}
 		if (!$vendor) return '';

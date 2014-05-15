@@ -17,11 +17,8 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access for invoices');
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
-
-// Load the controller framework
-jimport('joomla.application.component.controller');
+defined('_JEXEC') or die();
+JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.'/helpers/vmmodel.php');
 
 /**
  * VirtueMart Component Controller
@@ -65,7 +62,7 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 			}
 			$orderDetails = $orderModel->getOrder($virtuemart_order_id);
 
-			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+			JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 			if(!Permissions::getInstance()->check("admin")) {
 				if(!empty($orderDetails['details']['BT']->virtuemart_user_id)){
 					if ($orderDetails['details']['BT']->virtuemart_user_id != $cuid) {
@@ -252,7 +249,6 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 		$view->document->setDestination('F'); // render to file
 		$view->document->setPath($path);
 		$viewType = $view->document->getType();
-
 
 		$vmtemplate = VmConfig::get('vmtemplate',0);
 		if($vmtemplate===0 or $vmtemplate == 'default'){

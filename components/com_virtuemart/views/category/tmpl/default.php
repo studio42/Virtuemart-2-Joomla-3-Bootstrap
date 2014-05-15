@@ -21,7 +21,7 @@
 //vmdebug('$this->category',$this->category);
 //vmdebug ('$this->category ' . $this->category->category_name);
 // Check to ensure this file is included in Joomla!
-defined ('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 JHTML::_ ('behavior.modal');
 /* javascript for list Slide
   Only here for the order list
@@ -38,15 +38,6 @@ jQuery(document).ready(function () {
 
 $document = JFactory::getDocument ();
 $document->addScriptDeclaration ($js);
-
-/*$edit_link = '';
-if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
-if (Permissions::getInstance()->check("admin,storeadmin")) {
-	$edit_link = '<a href="'.JURI::root().'index.php?option=com_virtuemart&tmpl=component&view=category&task=edit&virtuemart_category_id='.$this->category->virtuemart_category_id.'">
-		'.JHTML::_('image', 'images/M_images/edit.png', JText::_('COM_VIRTUEMART_PRODUCT_FORM_EDIT_PRODUCT'), array('width' => 16, 'height' => 16, 'border' => 0)).'</a>';
-} */
-	// Check for editing access
-	// $this->assignRef('edit_link', $edit_link);
 
 echo $this->editLink('category',$this->category->virtuemart_category_id,$this->category->created_by);
 // set the current parent category for simplier adding new

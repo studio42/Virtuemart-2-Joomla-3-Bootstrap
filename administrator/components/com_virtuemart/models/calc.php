@@ -1,6 +1,6 @@
 <?php
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 /**
 *
 * Data module for shop calculation rules
@@ -19,8 +19,7 @@ defined('_JEXEC') or die('Restricted access');
 * @version $Id: calc.php 6396 2012-09-05 17:35:36Z Milbo $
 */
 
-
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
 
 class VirtueMartModelCalc extends VmModel {
 

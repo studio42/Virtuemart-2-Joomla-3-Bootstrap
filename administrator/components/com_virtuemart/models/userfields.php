@@ -18,12 +18,12 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 // Load the helpers
 if(!class_exists('ParamHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'paramhelper.php');
 
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
 
 
 /**

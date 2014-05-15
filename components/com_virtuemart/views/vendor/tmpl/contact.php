@@ -17,7 +17,7 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 ?>
 
@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
 
 <?php
 
-	if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+	JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 	echo shopFunctions::renderVendorAddress($this->vendor->virtuemart_vendor_id);
 
 /*	foreach($this->userFields as $userfields){

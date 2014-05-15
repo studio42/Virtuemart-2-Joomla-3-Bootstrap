@@ -17,10 +17,9 @@
  */
 
 # Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-# Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 /**
  * Default HTML View class for the VirtueMart Component
@@ -82,7 +81,7 @@ class VirtueMartViewVirtueMart extends VmView {
 
 			$this->assignRef('categories',	$categoryChildren);
 
-			if(!class_exists('CurrencyDisplay'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
+			JLoader::register('CurrencyDisplay', JPATH_VM_ADMINISTRATOR.'/helpers/currencydisplay.php');
 			$currency = CurrencyDisplay::getInstance( );
 			$this->assignRef('currency', $currency);
 			
@@ -123,7 +122,7 @@ class VirtueMartViewVirtueMart extends VmView {
 			
 			$this->assignRef('products', $products);
 
-			if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+			JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 			$showBasePrice = Permissions::getInstance()->check('admin'); //todo add config settings
 			$this->assignRef('showBasePrice', $showBasePrice);
 

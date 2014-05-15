@@ -18,10 +18,7 @@
  * @version $Id: cart.php 6502 2012-10-04 13:19:26Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
-
-// Load the controller framework
-jimport('joomla.application.component.controller');
+defined('_JEXEC') or die();
 
 /**
  * Controller for the cart view
@@ -230,7 +227,6 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	 * @author Max Milbers
 	 */
 	public function edit_shipment() {
-
 
 		$view = $this->getView('cart', 'html');
 		$view->setLayout('select_shipment');

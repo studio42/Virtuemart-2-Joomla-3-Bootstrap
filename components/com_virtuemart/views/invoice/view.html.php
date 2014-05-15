@@ -17,11 +17,10 @@
  */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
-if (!class_exists('VmImage')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'image.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
+JLoader::register('VmImage', JPATH_VM_ADMINISTRATOR.'/helpers/image.php');
 
 
 /**
@@ -142,11 +141,12 @@ class VirtuemartViewInvoice extends VmView {
 		$vendorId=1;
 		$emailCurrencyId=0;
 		$exchangeRate=FALSE;
-		if(!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.DS.'vmpsplugin.php');
+		JLoader::register('vmPSPlugin', JPATH_VM_PLUGINS.'/vmpsplugin.php');
 		  JPluginHelper::importPlugin('vmpayment');
 	    $dispatcher = JDispatcher::getInstance();
 	    $dispatcher->trigger('plgVmgetEmailCurrency',array( $orderDetails['details']['BT']->virtuemart_paymentmethod_id, $orderDetails['details']['BT']->virtuemart_order_id, &$emailCurrencyId));
-		if(!class_exists('CurrencyDisplay')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
+		JLoader::register('CurrencyDisplay', JPATH_VM_ADMINISTRATOR.'/helpers/currencydisplay.php');
+
 		$currency = CurrencyDisplay::getInstance($emailCurrencyId,$vendorId);
 			if ($emailCurrencyId) {
 				$currency->exchangeRateShopper=$orderDetails['details']['BT']->user_currency_rate;
@@ -272,7 +272,8 @@ class VirtuemartViewInvoice extends VmView {
 		$this->headFooter = $this->showHeaderFooter;
 
 		//Attention, this function will be removed, it wont be deleted, but it is obsoloete in any view.html.php
-		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
+
 		$this->vendorAddress= shopFunctions::renderVendorAddress($virtuemart_vendor_id, $lineSeparator);
 		$vendorEmail = $vendorModel->getVendorEmail($virtuemart_vendor_id);
 		$vars['vendorEmail'] = $vendorEmail;

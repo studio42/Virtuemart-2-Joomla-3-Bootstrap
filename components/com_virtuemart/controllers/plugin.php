@@ -1,4 +1,5 @@
-<?php defined ('_JEXEC') or die('Restricted access');
+<?php
+defined('_JEXEC') or die();
 /**
  *
  * plugin controller
@@ -15,8 +16,6 @@
  * other free or open source software licenses.
  * @version $Id: plugin.php 2641 2010-11-09 19:25:13Z milbo $
  */
-
-jimport ('joomla.application.component.controller');
 
 /**
  * VirtueMart default administrator controller

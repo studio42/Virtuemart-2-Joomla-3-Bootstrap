@@ -17,10 +17,9 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 /**
 * Handle the category view
@@ -39,8 +38,8 @@ class VirtuemartViewCategories extends VmView {
 		$pathway = $mainframe->getPathway();
 
 		//Load helpers
-		if (!class_exists('VmImage'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+		JLoader::register('VmImage', JPATH_VM_ADMINISTRATOR.'/helpers/image.php');
+
 		$vendorId = JRequest::getInt('vendorid', 1);
 
 		$vendorModel = VmModel::getModel('vendor');
@@ -71,25 +70,18 @@ class VirtuemartViewCategories extends VmView {
 			$dispatcher = JDispatcher::getInstance();
 			JPluginHelper::importPlugin('content');
 			$category->text = $category->category_description;
-			if(!class_exists('JParameter')) require(JPATH_LIBRARIES.DS.'joomla'.DS.'html'.DS.'parameter.php');
 
-			$params = new JParameter('');
+			$results = $dispatcher->trigger('onContentPrepare', array('com_virtuemart.category', &$category, &$params, 0));
+			// More events for 3rd party content plugins
+			// This do not disturb actual plugins, because we don't modify $product->text
+			$res = $dispatcher->trigger('onContentAfterTitle', array('com_virtuemart.category', &$category, &$params, 0));
+			$category->event->afterDisplayTitle = trim(implode("\n", $res));
 
-			if(JVM_VERSION === 2 ) {
-				$results = $dispatcher->trigger('onContentPrepare', array('com_virtuemart.category', &$category, &$params, 0));
-				// More events for 3rd party content plugins
-				// This do not disturb actual plugins, because we don't modify $product->text
-				$res = $dispatcher->trigger('onContentAfterTitle', array('com_virtuemart.category', &$category, &$params, 0));
-				$category->event->afterDisplayTitle = trim(implode("\n", $res));
+			$res = $dispatcher->trigger('onContentBeforeDisplay', array('com_virtuemart.category', &$category, &$params, 0));
+			$category->event->beforeDisplayContent = trim(implode("\n", $res));
 
-				$res = $dispatcher->trigger('onContentBeforeDisplay', array('com_virtuemart.category', &$category, &$params, 0));
-				$category->event->beforeDisplayContent = trim(implode("\n", $res));
-
-				$res = $dispatcher->trigger('onContentAfterDisplay', array('com_virtuemart.category', &$category, &$params, 0));
-				$category->event->afterDisplayContent = trim(implode("\n", $res));
-			} else {
-				$results = $dispatcher->trigger('onPrepareContent', array(& $category, & $params, 0));
-			}
+			$res = $dispatcher->trigger('onContentAfterDisplay', array('com_virtuemart.category', &$category, &$params, 0));
+			$category->event->afterDisplayContent = trim(implode("\n", $res));
 			$category->category_description = $category->text;
 		}
 
@@ -115,6 +107,7 @@ class VirtuemartViewCategories extends VmView {
 
 		if ($category->category_name) $document->setTitle($category->category_name); //Todo same here, what should be shown up?
 		else {
+			// TODO obselete !!! studio42
 			$menus = JFactory::getApplication()->getMenu();
 			$menu  = $menus->getActive();
 			if(!empty($menu)){

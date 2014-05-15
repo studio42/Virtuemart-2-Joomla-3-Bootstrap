@@ -17,10 +17,9 @@
 */
 
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 /**
 * Handle the category view
@@ -49,8 +48,7 @@ class VirtuemartViewCategory extends VmView {
 		$app = JFactory::getApplication();
 		$pathway = $app->getPathway();
 
-		if (!class_exists('VmImage'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+		JLoader::register('VmImage', JPATH_VM_ADMINISTRATOR.'/helpers/image.php');
 		$categoryModel = VmModel::getModel('category');
 		$productModel = VmModel::getModel('product');
 
@@ -98,7 +96,7 @@ class VirtuemartViewCategory extends VmView {
 			$document->addHeadLink(JRoute::_($link . '&type=atom', FALSE), 'alternate', 'rel', $attribs);
 		}
 
-		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+		JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 		$showBasePrice = Permissions::getInstance()->check('admin'); //todo add config settings
 		$this->assignRef('showBasePrice', $showBasePrice);
 

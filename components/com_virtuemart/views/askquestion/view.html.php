@@ -17,12 +17,9 @@
  * @version $Id: view.html.php 2796 2011-03-01 11:29:16Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
-defined ('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if (!class_exists ('VmView')) {
-	require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');
-}
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 /**
  * Product details
@@ -40,13 +37,11 @@ class VirtueMartViewAskquestion extends VmView {
 	 */
 	function display ($tpl = NULL) {
 
-		$show_prices = VmConfig::get ('show_prices', 1);
-		if ($show_prices == '1') {
-			if (!class_exists ('calculationHelper')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
-			}
+		$this->show_prices = VmConfig::get ('show_prices', 1);
+		if ($this-show_prices == '1') {
+			JLoader::register('calculationHelper', JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
 		}
-		$this->assignRef ('show_prices', $show_prices);
+
 		$document = JFactory::getDocument ();
 
 		/* add javascript for price and cart */
@@ -58,7 +53,7 @@ class VirtueMartViewAskquestion extends VmView {
 
 		// Set the helper path
 		$this->addHelperPath (JPATH_VM_ADMINISTRATOR . DS . 'helpers');
-
+	
 		$this->loadHelper ('image');
 		$this->loadHelper ('addtocart');
 

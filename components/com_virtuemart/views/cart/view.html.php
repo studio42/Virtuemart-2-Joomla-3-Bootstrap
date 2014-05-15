@@ -19,10 +19,9 @@
  * @version $Id: view.html.php 6292 2012-07-20 12:27:44Z alatak $
  */
 // Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
-// Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
 
 /**
  * View for the shopping cart
@@ -46,8 +45,8 @@ class VirtueMartViewCart extends VmView {
 		$this->assignRef('layoutName', $layoutName);
 		$format = JRequest::getWord('format');
 
-		if (!class_exists('VirtueMartCart'))
-		require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		JLoader::register('VirtueMartCart', JPATH_VM_SITE.'/helpers/cart.php');
+
 		$cart = VirtueMartCart::getCart();
 		//$cart->getCartPrices();
 		$this->assignRef('cart', $cart);
@@ -310,8 +309,8 @@ class VirtueMartViewCart extends VmView {
 		if (empty($payments)) {
 
 			$text = '';
-			if (!class_exists('Permissions'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
+			JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
+
 			if (Permissions::getInstance()->check("admin,storeadmin")) {
 				$uri = JFactory::getURI();
 				$link = $uri->root() . 'administrator/index.php?option=com_virtuemart&view=paymentmethod';
@@ -336,8 +335,7 @@ class VirtueMartViewCart extends VmView {
 		if (empty($shipments)) {
 
 			$text = '';
-			if (!class_exists('Permissions'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
+			JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 			if (Permissions::getInstance()->check("admin,storeadmin")) {
 				$uri = JFactory::getURI();
 				$link = $uri->root() . 'administrator/index.php?option=com_virtuemart&view=shipmentmethod';

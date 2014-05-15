@@ -19,11 +19,9 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the view framework
-if (!class_exists('VmView'))
-    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');// Load the view framework
-if (!class_exists('ShopFunctions'))
-    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
+JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
+
 
 /**
  * Product details
@@ -47,8 +45,7 @@ class VirtueMartViewProductdetails extends VmView {
 
 	$show_prices = VmConfig::get('show_prices', 1);
 	if ($show_prices == '1') {
-	    if (!class_exists('calculationHelper'))
-		require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
+		JLoader::register('calculationHelper', JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
 	}
 	$this->assignRef('show_prices', $show_prices);
 
@@ -61,8 +58,8 @@ class VirtueMartViewProductdetails extends VmView {
 	$pathway = $app->getPathway();
 	$task = JRequest::getCmd('task');
 
-	if (!class_exists('VmImage'))
-		require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+	JLoader::register('VmImage', JPATH_VM_ADMINISTRATOR.'/helpers/image.php');
+
 
 	// Load the product
 	//$product = $this->get('product');	//Why it is sensefull to use this construction? Imho it makes it just harder
@@ -89,7 +86,7 @@ class VirtueMartViewProductdetails extends VmView {
 	}
     $product = $product_model->getProduct($virtuemart_product_id,TRUE,TRUE,$onlyPublished,$quantity);
 	if($product && $canEdit) {
-		if (!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
+		JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 		$vendor = Permissions::getInstance()->isSuperVendor();
 		if ($vendor > 1 && $product->virtuemart_vendor_id !== $vendor ) $product = null;
 		elseif ( !$product->published ) $app->enqueueMessage(JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_STATUS').' : '.JText::_('COM_VIRTUEMART_UNPUBLISHED'),'warning');
