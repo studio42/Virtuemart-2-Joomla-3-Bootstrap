@@ -48,8 +48,8 @@ $productTitle = JText::_('JGLOBAL_ARTICLES');
 	</ul>
 </div>
 
-<div class="vm-pagination pagination"><?php echo $this->vmPagination->getPagesLinks (); ?><span style="float:right"><?php echo $this->vmPagination->getPagesCounter (); ?></span></div>
-<?php echo $this->vmPagination->getLimitBox (); ?>
+<div class="vm-pagination pagination"><?php echo $this->pagination->getPagesLinks (); ?><span style="float:right"><?php echo $this->pagination->getPagesCounter (); ?></span></div>
+<?php echo $this->pagination->getLimitBox (); ?>
 <?php 
 }
 ?>

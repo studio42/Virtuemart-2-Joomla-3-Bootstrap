@@ -133,30 +133,34 @@ class VirtueMartModelProduct extends VmModel {
 			$this->keyword = vmRequest::uword ('filter_product', "0", ' ,-,+,.,_,#,/');
 		}
 		$app = JFactory::getApplication ();
-		$isSite = JFactory::getApplication ()->isSite() && JRequest::getVar ('view') !== 'product' ;
+		$view = JRequest::getVar ('view','virtuemart');
+		$isSite = JFactory::getApplication ()->isSite() && $view !== 'product' ;
 		$option = 'com_virtuemart';
-		$view = 'product';
+		
 
 		if ($isSite) {
-			$filter_order = JRequest::getString ('orderby', "0");
+			// This is bugged, orderby must be from session userfromrequest, because you cannot reset to default filter
+/* 			$filter_order = JRequest::getString ('orderby', null);
 
-			if($filter_order == "0"){
+			if( !$filter_order){
 				$filter_order_raw = $this->getLastProductOrdering($this->_selectedOrdering);
 				$filter_order = $this->checkFilterOrder ($filter_order_raw);
 			} else {
 			$filter_order = $this->checkFilterOrder ($filter_order);
 				$this->setLastProductOrdering($filter_order);
 
-			}
-			// fix for Front-end admin
+			} */
+			// fix patrick Kohl, Studio42
 			$filter_order_Dir = strtoupper (JRequest::getWord ('order', JRequest::getWord ('filter_order_Dir' , 'ASC') ) );
+			$filter_order = strtolower ($app->getUserStateFromRequest ('com_virtuemart.' . $view . '.order', 'order', $this->_selectedOrdering, 'cmd'));
+			$filter_order = $this->checkFilterOrder ($filter_order);
 			$valid_search_fields = VmConfig::get ('browse_search_fields');
 		}
 		else {
 			$filter_order = strtolower ($app->getUserStateFromRequest ('com_virtuemart.' . $view . '.filter_order', 'filter_order', $this->_selectedOrdering, 'cmd'));
 
 			$filter_order = $this->checkFilterOrder ($filter_order);
-			$filter_order_Dir = strtoupper ($app->getUserStateFromRequest ($option . '.' . $view . '.filter_order_Dir', 'filter_order_Dir', '', 'word'));
+			$filter_order_Dir = $app->getUserStateFromRequest ($option . '.' . $view . '.filter_order_Dir', 'filter_order_Dir', '', 'word');
 			$valid_search_fields = $this->valid_BE_search_fields;
 		}
 		$filter_order_Dir = $this->checkFilterDir ($filter_order_Dir);
@@ -520,7 +524,7 @@ class VirtueMartModelProduct extends VmModel {
 		else {
 			$whereString = '';
 		}
-		//vmdebug ( $joinedTables.' joined ? ',$select, $joinedTables, $whereString, $groupBy, $orderBy, $this->filter_order_Dir );		/* jexit();  */
+		// var_dump( $joinedTables.' joined ? ',$select, $joinedTables, $whereString, $groupBy, $orderBy, $this->filter_order_Dir );		/* jexit();  */
 		$this->orderByString = $orderBy;
 		$product_ids = $this->exeSortSearchListQuery (2, $select, $joinedTables, $whereString, $groupBy, $orderBy, $this->filter_order_Dir, $nbrReturnProducts);
 
@@ -2070,7 +2074,7 @@ class VirtueMartModelProduct extends VmModel {
 		// $fieldLink = 'index.php' . $fieldLink;
 		$orderTxt = '';
 
-		$order = JRequest::getWord ('order', 'ASC');
+		$order = JRequest::getWord ('order');
 		if ($order == 'DESC') {
 			$orderTxt .= '&order=' . $order;
 		}
@@ -2078,9 +2082,9 @@ class VirtueMartModelProduct extends VmModel {
 		$orderbyTxt = '';
 		$orderby = JRequest::getVar ('orderby', VmConfig::get ('browse_orderby_field'));
 		$orderbyCfg = VmConfig::get ('browse_orderby_field');
-		if ($orderby != '' && $orderby != $orderbyCfg) {
+		if ( $orderby != $orderbyCfg) {
 			$orderbyTxt = '&orderby=' . $orderby;
-		}
+		} else $orderbyTxt = '&orderby=' ;
 		$manufacturerTxt = '';
 		$manuList = array();
 		if (VmConfig::get ('show_manufacturers')) {
@@ -2176,16 +2180,15 @@ class VirtueMartModelProduct extends VmModel {
 		}
 
 		/* invert order value set*/
-		if ($order == 'ASC') {
+		if ($order !== 'DESC') {
 			$orderlink = '&order=DESC';
 		}
 		else {
-			$orderlink = '';
+			$orderlink = '&order=ASC';
 		}
-
 		// $orderby = strtoupper ($orderby);
 		$link = JRoute::_ ($fieldLink . $orderlink . $orderbyTxt . $manufacturerTxt);
-
+// var_dump($fieldLink . $orderlink . $orderbyTxt . $manufacturerTxt);
 		$dotps = strrpos ($orderby, '.');
 		if ($dotps !== FALSE) {
 			$prefix = substr ($orderby, 0, $dotps + 1);
@@ -2200,6 +2203,7 @@ class VirtueMartModelProduct extends VmModel {
 		// fiil default ordering
 		$orderingList[$default]['text'] = $orderby;
 		$orderingList[$default]['link'] = $link;
+
 
 		return array('orderby'=> $orderingList, 'manufacturer'=> $manuList);
 	}

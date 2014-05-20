@@ -1016,7 +1016,6 @@ class vmrouterHelper {
 	}
 	/* Set $this-lang (Translator for language from virtuemart string) to load only once*/
 	private function setLang(){
-// var_dump($instanceKey,$this->langTag);
 		if ( $this->seo_translate ) {
 			/* use translator */
 			$this->Jlang =JLanguage::getInstance($this->langTag);
@@ -1041,7 +1040,7 @@ class vmrouterHelper {
 
 			// Search  Virtuemart itemID in joomla menu
 			foreach ($menuItems as $item)	{
-			// var_dump($item);
+
 				$linkToSplit= explode ('&',$item->link);
 
 				$link =array();
