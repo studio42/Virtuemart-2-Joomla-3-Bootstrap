@@ -58,8 +58,8 @@ class VmTable extends JTable{
 		// $this->_tbl_key	= $key;
 		// $this->_db		=& $db;
 		$this->_pkey = $key;
-		$this->_cache = null;
-		$this->_query_cache = null;
+		self::$_cache = null;
+		self::$_query_cache = null;
 		parent::__construct($table, $key, $db);
 	}
 
@@ -197,7 +197,7 @@ class VmTable extends JTable{
 
 	public function getFields()
 	{
-		if ($this->_cache === null)
+		if (self::$_cache === null)
 		{
 			// Lookup the fields for this table only once.
 			$name = $this->_tbl;
@@ -209,10 +209,10 @@ class VmTable extends JTable{
 				$this->setError($e);
 				return false;
 			}
-			$this->_cache = $fields;
+			self::$_cache = $fields;
 		}
 
-		return $this->_cache;
+		return self::$_cache;
 	}
 
 
