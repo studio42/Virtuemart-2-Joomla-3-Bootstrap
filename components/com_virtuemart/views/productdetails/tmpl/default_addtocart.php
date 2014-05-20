@@ -84,6 +84,11 @@ $document->addScriptDeclaration('
 		<?php }
 
 		if (!VmConfig::get('use_as_catalog', 0)  ) {
+		
+			if (!empty($this->product->customfieldsProductKit)) {
+				echo $this->loadTemplate('productkit');
+			}
+			// var_dump($this->product->customfieldsProductKit);
 		?>
 
 		<div class="addtocart-bar">

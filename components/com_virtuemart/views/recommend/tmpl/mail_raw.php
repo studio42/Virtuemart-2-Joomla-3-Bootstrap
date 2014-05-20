@@ -51,4 +51,4 @@ echo JText::sprintf('COM_VIRTUEMART_RECOMMEND_MAIL_MSG', $this->product->product
 $link = JURI::root().'index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id='.$this->product->virtuemart_product_id ;
 
 echo '<br /><b>'.JHTML::_('link',$link, $this->product->product_name).'</b>';
-include(JPATH_VM_SITE.DS.'views'.DS.'cart'.DS.'tmpl'.DS.'mail_html_footer.php');
+include(JPATH_VM_SITE.'/views/cart/tmpl/mail_html_footer.php');

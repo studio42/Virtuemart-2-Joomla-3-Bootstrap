@@ -29,20 +29,17 @@ class VirtueMartControllerVirtuemart extends JControllerLegacy
 
 	function __construct() {
 		parent::__construct();
-		if (VmConfig::get('shop_is_offline') == '1') {
-		    JRequest::setVar( 'layout', 'off_line' );
-	    }
-	    else {
-		    JRequest::setVar( 'layout', 'default' );
-	    }
+
 	}
 
-	function virtuemart() {
+	function display() {
 
+		if (VmConfig::get('shop_is_offline') == '1') {
+			$this->input->set('layout', 'off_line');
+		}
 		// Display it all
 		$safeurlparams = array('virtuemart_category_id'=>'INT','virtuemart_currency_id'=>'INT','return'=>'BASE64','lang'=>'CMD');
-		parent::display(true, $safeurlparams);
-		return $this;
+		return parent::display(true, $safeurlparams);
 	}
 }
  //pure php no closing tag

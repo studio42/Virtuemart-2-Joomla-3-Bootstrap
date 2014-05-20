@@ -19,6 +19,8 @@
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
+
+$isPdf = ($this->document->_mime === 'application/pdf');
 if (!isset($this->newlayout)){
 	$this->newlayout = JRequest::getCmd( 'layout', 'default');
 	if ($layout !='default') {
@@ -28,7 +30,7 @@ if (!isset($this->newlayout)){
 	// var_dump($this);
 }
 // addon for joomla modal Box
-JHTML::_('behavior.modal');
+// JHTML::_('behavior.modal');
 // JHTML::_('behavior.tooltip');
 if(VmConfig::get('usefancy',0)){
 	vmJsApi::js( 'fancybox/jquery.fancybox-1.3.4.pack');
@@ -46,25 +48,19 @@ if(VmConfig::get('usefancy',0)){
 				rev: 'iframe|550|550'
 			});";
 }
-$document = JFactory::getDocument();
-$document->addScriptDeclaration("
-//<![CDATA[
-	jQuery(document).ready(function($) {
-		$('a.ask-a-question').click( function(){
-			".$box."
-			return false ;
+if (VmConfig::get('ask_question', 1) == 1) {
+	$document = JFactory::getDocument();
+	$document->addScriptDeclaration("
+	//<![CDATA[
+		jQuery(function($) {
+			$('a.ask-a-question').click( function(){
+				".$box."
+				return false ;
+			});
 		});
-	/*	$('.additional-images a').mouseover(function() {
-			var himg = this.href ;
-			var extension=himg.substring(himg.lastIndexOf('.')+1);
-			if (extension =='png' || extension =='jpg' || extension =='gif') {
-				$('.main-image img').attr('src',himg );
-			}
-			console.log(extension)
-		});*/
-	});
-//]]>
-");
+	//]]>
+	");
+}
 /* Let's see if we found the product */
 if (empty($this->product)) {
     echo JText::_('COM_VIRTUEMART_PRODUCT_NOT_FOUND');
@@ -77,7 +73,7 @@ if (empty($this->product)) {
 <div class="productdetails-view productdetails">
 
     <?php
-	if ($this->document->_mime !== 'application/pdf') {
+	if (!$isPdf) {
 		// Product Navigation
 		if (VmConfig::get('product_navigation', 1)) {
 		?>
@@ -121,29 +117,21 @@ if (empty($this->product)) {
     echo $this->product->event->afterDisplayTitle ?>
 
     <?php
-	if ($this->document->_mime !== 'application/pdf') {
-		// Product Edit Link
-		echo $this->edit_link;
-		// Product Edit Link END
-		?>
+	if (!$isPdf) {
+		// Check for editing access
+		$edit_link = $this->editLink('product',$this->product->virtuemart_product_id,$this->product->created_by,'edit',$this->product->virtuemart_vendor_id);
 
-		<?php
-		// PDF - Print - Email Icon
-		if (VmConfig::get('show_emailfriend') || VmConfig::get('show_printicon') || VmConfig::get('pdf_button_enable')) {
-		?>
-			<div class="icons">
-			<?php
-			//$link = (JVM_VERSION===1) ? 'index2.php' : 'index.php';
-			$link = 'index.php?tmpl=component&option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->virtuemart_product_id;
-			$MailLink = 'index.php?option=com_virtuemart&view=productdetails&task=recommend&virtuemart_product_id=' . $this->product->virtuemart_product_id . '&virtuemart_category_id=' . $this->product->virtuemart_category_id . '&tmpl=component';
-
-			if (VmConfig::get('pdf_icon', 1) == '1') {
-			echo $this->linkIcon($link . '&format=pdf', 'COM_VIRTUEMART_PDF', 'pdf_button', 'pdf_button_enable', false);
-			}
-			echo $this->linkIcon($link . '&print=1', 'COM_VIRTUEMART_PRINT', 'printButton', 'show_printicon');
-			echo $this->linkIcon($MailLink, 'COM_VIRTUEMART_EMAIL', 'emailButton', 'show_emailfriend');
-			?>
-			<div class="clear"></div>
+		if (VmConfig::get('show_emailfriend') || VmConfig::get('show_printicon') || VmConfig::get('pdf_button_enable' || $edit_link)) { ?>
+			<div class="btn-group pull-right">
+				<?php
+				// Product Edit Link
+				echo $edit_link;
+				// PDF - Print - Email Icon
+				$link = 'index.php?tmpl=component&option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->virtuemart_product_id. '&virtuemart_category_id=' . $this->product->virtuemart_category_id;
+				echo $this->linkIcon($link . '&format=pdf', 'COM_VIRTUEMART_PDF', 'pdf_button', 'pdf_icon', false);
+				echo $this->linkIcon($link . '&print=1', 'COM_VIRTUEMART_PRINT', 'printButton', 'show_printicon');
+				echo $this->linkIcon($link . '&task=recommend', 'COM_VIRTUEMART_EMAIL', 'icon icon-mail', 'show_emailfriend');
+				?>
 			</div>
 		<?php } // PDF - Print - Email Icon END
 	}
@@ -230,13 +218,13 @@ echo $this->loadTemplate('images');
 		if (($this->product->product_in_stock - $this->product->product_ordered) < 1) {
 			if ($stockhandle == 'risetime' and VmConfig::get('rised_availability') and empty($this->product->product_availability)) {
 			?>	<div class="availability">
-			    <?php echo (file_exists(JPATH_BASE . DS . VmConfig::get('assets_general_path') . 'images/availability/' . VmConfig::get('rised_availability'))) ? JHTML::image(JURI::root() . VmConfig::get('assets_general_path') . 'images/availability/' . VmConfig::get('rised_availability', '7d.gif'), VmConfig::get('rised_availability', '7d.gif'), array('class' => 'availability')) : JText::_(VmConfig::get('rised_availability')); ?>
+			    <?php echo (file_exists(JPATH_BASE . '/' . VmConfig::get('assets_general_path') . 'images/availability/' . VmConfig::get('rised_availability'))) ? JHTML::image(JURI::root() . VmConfig::get('assets_general_path') . 'images/availability/' . VmConfig::get('rised_availability', '7d.gif'), VmConfig::get('rised_availability', '7d.gif'), array('class' => 'availability')) : JText::_(VmConfig::get('rised_availability')); ?>
 			</div>
 		    <?php
 			} else if (!empty($this->product->product_availability)) {
 			?>
 			<div class="availability">
-			<?php echo (file_exists(JPATH_BASE . DS . VmConfig::get('assets_general_path') . 'images/availability/' . $this->product->product_availability)) ? JHTML::image(JURI::root() . VmConfig::get('assets_general_path') . 'images/availability/' . $this->product->product_availability, $this->product->product_availability, array('class' => 'availability')) : JText::_($this->product->product_availability); ?>
+			<?php echo (file_exists(JPATH_BASE . '/' . VmConfig::get('assets_general_path') . 'images/availability/' . $this->product->product_availability)) ? JHTML::image(JURI::root() . VmConfig::get('assets_general_path') . 'images/availability/' . $this->product->product_availability, $this->product->product_availability, array('class' => 'availability')) : JText::_($this->product->product_availability); ?>
 			</div>
 			<?php
 			}
@@ -277,6 +265,7 @@ echo $this->loadTemplate('images');
 <?php // event onContentBeforeDisplay
 echo $this->product->event->beforeDisplayContent; 
 $active = ' class="active"';
+$showratings = ($this->allowRating || $this->showReview) && !$isPdf ;
 ?>
 
 <ul class="nav nav-tabs" id="product-tabs">
@@ -288,7 +277,7 @@ $active = ' class="active"';
 		<li <?php echo $active ?>><a href="#product-tab-customfield" data-toggle="tab"><?php echo JText::_('JDETAILS') ?></a></li>
 		<?php
 		$active = '';
-	} if ($this->allowRating || $this->showReview) { ?>
+	} if ($showratings) { ?>
 		<li <?php echo $active ?>><a href="#product-tab-comment" data-toggle="tab"><?php echo JText::_('COM_VIRTUEMART_REVIEWS') ?></a></li>
 		<?php
 		$active = '';
@@ -314,7 +303,7 @@ $active = ' class="active"';
 		$this->position = 'normal';
 		echo $this->loadTemplate('customfields'); ?>
 		</div>
-	<?php } if ($this->allowRating || $this->showReview) { ?>
+	<?php } if ($showratings) { ?>
 		<div class="tab-pane<?php echo $active ?>" id="product-tab-comment">
 			<?php echo $this->loadTemplate('reviews'); ?>
 		</div>
@@ -342,9 +331,7 @@ $active = ' class="active"';
 	    ?>
         </div>
     <?php } // Product Packaging END
-    ?>
 
-    <?php
     // Product Files
     // foreach ($this->product->images as $fkey => $file) {
     // Todo add downloadable files again
@@ -356,14 +343,7 @@ $active = ' class="active"';
     // $link = JRoute::_('index.php?view=productdetails&task=getfile&virtuemart_media_id='.$file->virtuemart_media_id.'&virtuemart_product_id='.$this->product->virtuemart_product_id);
     // echo JHTMl::_('link', $link, $file->file_title.$filesize_display, array('target' => $target));
     // }
-/*     if (!empty($this->product->customfieldsRelatedProducts)) {
-	echo $this->loadTemplate('relatedproducts');
-    } // Product customfieldsRelatedProducts END
-
-    if (!empty($this->product->customfieldsRelatedCategories)) {
-	echo $this->loadTemplate('relatedcategories');
-    } // Product customfieldsRelatedCategories END
- */    // Show child categories
+   // Show child categories
     if (VmConfig::get('showCategory', 1)) {
 	echo $this->loadTemplate('showcategory');
     }

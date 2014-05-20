@@ -172,7 +172,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 
 		$data['address_type'] = JRequest::getWord('addrtype','BT');
 		if($currentUser->guest!=1 || $register){
-			$this->addModelPath( JPATH_VM_ADMINISTRATOR.DS.'models' );
+			$this->addModelPath( JPATH_VM_ADMINISTRATOR.'/models' );
 			$userModel = VmModel::getModel('user');
 
 			if(!$cart){
@@ -218,7 +218,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 	 */
 	private function saveToCart($data){
 
-		if(!class_exists('VirtueMartCart')) require(JPATH_VM_SITE.DS.'helpers'.DS.'cart.php');
+		JLoader::register('VirtueMartCart', JPATH_VM_SITE.'/helpers/cart.php');
 		$cart = VirtueMartCart::getCart();
 		$cart->saveAddressInCart($data, $data['address_type']);
 

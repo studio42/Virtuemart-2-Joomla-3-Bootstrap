@@ -52,7 +52,7 @@ class VirtueMartViewAskquestion extends VmView {
 		$task = JRequest::getCmd ('task');
 
 		// Set the helper path
-		$this->addHelperPath (JPATH_VM_ADMINISTRATOR . DS . 'helpers');
+		$this->addHelperPath (JPATH_VM_ADMINISTRATOR .'/helpers');
 	
 		$this->loadHelper ('image');
 		$this->loadHelper ('addtocart');
@@ -73,9 +73,8 @@ class VirtueMartViewAskquestion extends VmView {
 			return;
 		}
 
-		if (!class_exists ('VirtueMartModelVendor')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'vendor.php');
-		}
+		JLoader::register('VirtueMartModelVendor', JPATH_VM_ADMINISTRATOR.'/models/vendor.php');
+
 		$product = $product_model->getProduct ($virtuemart_product_id);
 		// Set Canonic link
 		$format = JRequest::getWord('format', 'html');

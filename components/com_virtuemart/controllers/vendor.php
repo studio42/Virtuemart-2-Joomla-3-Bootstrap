@@ -36,7 +36,7 @@ class VirtueMartControllerVendor extends JControllerLegacy
 
 		JSession::checkToken() or jexit( 'Invalid Token' );
 
-		if(!class_exists('shopFunctionsF')) require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		JLoader::register('shopFunctionsF', JPATH_VM_SITE.'/helpers/shopfunctionsf.php');
 
 		$model = VmModel::getModel('vendor');
 		$mainframe = JFactory::getApplication();
@@ -48,7 +48,7 @@ class VirtueMartControllerVendor extends JControllerLegacy
 
 		$virtuemart_vendor_id = JRequest::getInt('virtuemart_vendor_id',1);
 
-		if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+		JLoader::register('VirtueMartModelVendor', JPATH_VM_ADMINISTRATOR.'/models/vendor.php');
 		$userId = VirtueMartModelVendor::getUserIdByVendorId($virtuemart_vendor_id);
 
 		//$vendorUser = JFactory::getUser($userId);

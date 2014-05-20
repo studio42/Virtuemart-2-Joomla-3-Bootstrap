@@ -105,7 +105,7 @@ else {
 
 if (class_exists($_class)) {
     $controller = new $_class();
-	if ($basePath === JPATH_VM_ADMINISTRATOR) $controller->addViewPath(JPATH_VM_ADMINISTRATOR . DS . 'views'); 
+	if ($basePath === JPATH_VM_ADMINISTRATOR) $controller->addViewPath(JPATH_VM_ADMINISTRATOR . '/views'); 
 	// try plugins
 	JPluginHelper::importPlugin('vmuserfield');
 	$dispatcher = JDispatcher::getInstance();

@@ -145,9 +145,7 @@ $document->addStyleDeclaration ('#facebox .content {display: block !important; h
 		<div class="checkout-button-top">
 
 			<?php // Terms Of Service Checkbox
-			if (!class_exists ('VirtueMartModelUserfields')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'userfields.php');
-			}
+			JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.'/helpers/vmmodel.php');
 			$userFieldsModel = VmModel::getModel ('userfields');
 			if ($userFieldsModel->getIfRequired ('agreed')) {
 				JLoader::register('VmHtml', JPATH_VM_ADMINISTRATOR.'/helpers/html.php');

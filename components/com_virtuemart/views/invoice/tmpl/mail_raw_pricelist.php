@@ -43,23 +43,22 @@ echo strip_tags(JText::sprintf('COM_VIRTUEMART_ORDER_PRINT_TOTAL', $this->curren
 echo sprintf("%'-64.64s", '') . "\n";
 echo JText::_('COM_VIRTUEMART_ORDER_ITEM') . "\n";
 foreach ($this->orderDetails['items'] as $item) {
-    echo "\n";
-    echo $item->product_quantity . ' X ' . $item->order_item_name . ' (' . strtoupper(JText::_('COM_VIRTUEMART_SKU')) . $item->order_item_sku . ')' . "\n";
-    if (!empty($item->product_attribute)) {
-	if (!class_exists('VirtueMartModelCustomfields'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'customfields.php');
-	$product_attribute = VirtueMartModelCustomfields::CustomsFieldOrderDisplay($item, 'FE');
-	echo "\n" . $product_attribute . "\n";
-    }
-    if (!empty($item->product_basePriceWithTax) && $item->product_basePriceWithTax != $item->product_final_price) {
-	echo $item->product_basePriceWithTax . "\n";
-    }
+	echo "\n";
+	echo $item->product_quantity . ' X ' . $item->order_item_name . ' (' . strtoupper(JText::_('COM_VIRTUEMART_SKU')) . $item->order_item_sku . ')' . "\n";
+	if (!empty($item->product_attribute)) {
+		JLoader::register('VirtueMartModelCustomfields', JPATH_VM_ADMINISTRATOR.'/models/customfields.php');
+		$product_attribute = VirtueMartModelCustomfields::CustomsFieldOrderDisplay($item, 'FE');
+		echo "\n" . $product_attribute . "\n";
+	}
+	if (!empty($item->product_basePriceWithTax) && $item->product_basePriceWithTax != $item->product_final_price) {
+		echo $item->product_basePriceWithTax . "\n";
+	}
 
-    echo JText::_('COM_VIRTUEMART_ORDER_PRINT_TOTAL') . $item->product_final_price;
-    if (VmConfig::get('show_tax')) {
-	echo ' (' . JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_TAX') . ':' . $this->currency->priceDisplay($item->product_tax,$this->currency) . ')' . "\n";
-    }
-    echo "\n";
+	echo JText::_('COM_VIRTUEMART_ORDER_PRINT_TOTAL') . $item->product_final_price;
+	if (VmConfig::get('show_tax')) {
+		echo ' (' . JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_TAX') . ':' . $this->currency->priceDisplay($item->product_tax,$this->currency) . ')' . "\n";
+	}
+	echo "\n";
 }
 echo sprintf("%'-64.64s", '');
 echo "\n";

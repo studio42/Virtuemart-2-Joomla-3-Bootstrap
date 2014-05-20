@@ -124,7 +124,7 @@ class VirtueMartModelCustom extends VmModel {
     function getCustoms($custom_parent_id,$search = false){
 
     	// vmdebug('for model');
-		$query='* FROM `#__virtuemart_customs` WHERE field_type <> "R" AND field_type <> "Z" AND field_type <> "G"';
+		$query='* FROM `#__virtuemart_customs` WHERE field_type <> "R" AND field_type <> "Z" AND field_type <> "G" AND field_type <> "K"';
 		if($custom_parent_id){
 			$query .= ' AND `custom_parent_id` ='.(int)$custom_parent_id;
 		}

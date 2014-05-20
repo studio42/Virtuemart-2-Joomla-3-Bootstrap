@@ -19,7 +19,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-
+// needed in all functions
+JLoader::register('vmPSPlugin', JPATH_VM_PLUGINS.'/vmpsplugin.php');
 /**
  * Controller for the payment response view
  *
@@ -61,8 +62,7 @@ class VirtueMartControllerPluginresponse extends JControllerLegacy {
      */
     function PaymentResponseReceived() {
 
-	if (!class_exists('vmPSPlugin'))
-	    require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php'); JPluginHelper::importPlugin('vmpayment');
+		JPluginHelper::importPlugin('vmpayment');
 
 	$return_context = "";
 	$dispatcher = JDispatcher::getInstance();
@@ -86,8 +86,6 @@ class VirtueMartControllerPluginresponse extends JControllerLegacy {
     function ShipmentResponseReceived() {
 		// TODO: not ready yet
 
-	    if (!class_exists('vmPSPlugin'))
-		    require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
 	    JPluginHelper::importPlugin('vmshipment');
 
 	    $return_context = "";
@@ -122,23 +120,19 @@ class VirtueMartControllerPluginresponse extends JControllerLegacy {
      */
     function pluginUserPaymentCancel() {
 
-	if (!class_exists('vmPSPlugin'))
-	    require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+		JLoader::register('VirtueMartCart', JPATH_VM_SITE.'/helpers/cart.php');
 
-	if (!class_exists('VirtueMartCart'))
-	    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		JPluginHelper::importPlugin('vmpayment');
+		$dispatcher = JDispatcher::getInstance();
+		$dispatcher->trigger('plgVmOnUserPaymentCancel', array());
 
-	JPluginHelper::importPlugin('vmpayment');
-	$dispatcher = JDispatcher::getInstance();
-	$dispatcher->trigger('plgVmOnUserPaymentCancel', array());
+		// return to cart view
+		$view = $this->getView('cart', 'html');
+		$layoutName = JRequest::getWord('layout', 'default');
+		$view->setLayout($layoutName);
 
-	// return to cart view
-	$view = $this->getView('cart', 'html');
-	$layoutName = JRequest::getWord('layout', 'default');
-	$view->setLayout($layoutName);
-
-	// Display it all
-	$view->display();
+		// Display it all
+		$view->display();
     }
 
     /**
@@ -149,19 +143,12 @@ class VirtueMartControllerPluginresponse extends JControllerLegacy {
      */
     function pluginNotification() {
 
-	if (!class_exists('vmPSPlugin'))
-	    require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+		JLoader::register('VirtueMartCart', JPATH_VM_SITE.'/helpers/cart.php');
+		JLoader::register('VirtueMartModelOrders', JPATH_VM_ADMINISTRATOR.'/helpers/orders.php');
 
-	if (!class_exists('VirtueMartCart'))
-	    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
-
-	if (!class_exists('VirtueMartModelOrders'))
-	    require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
-
-	JPluginHelper::importPlugin('vmpayment');
-
-	$dispatcher = JDispatcher::getInstance();
-	$returnValues = $dispatcher->trigger('plgVmOnPaymentNotification', array());
+		JPluginHelper::importPlugin('vmpayment');
+		$dispatcher = JDispatcher::getInstance();
+		$returnValues = $dispatcher->trigger('plgVmOnPaymentNotification', array());
 
     }
 

@@ -21,19 +21,16 @@ function virtuemartBuildRoute(&$query) {
 
 	$segments = array();
 	static $vendor = null;
+	$helper = vmrouterHelper::getInstance($query);
 	// do not sef admin links !
 	if ($vendor === null) {
 			// get logged vendors and return unSEF link for front admin
 			if ($usr_id = JFactory::getUser()->get('id')) {
-				if (!class_exists( 'VmConfig' )) {
-					require(JPATH_ADMINISTRATOR .'/components/com_virtuemart/helpers/config.php');
-				}
 				JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 				$vendor = Permissions::getInstance()->isSuperVendor();
 			} else $vendor = false;
 	}
-// var_dump($query);
-	$helper = vmrouterHelper::getInstance($query);
+
 	if ($vendor) {
 
 		if (isset($query['view']) && $query['view'] === 'admin'){
@@ -278,8 +275,9 @@ function virtuemartBuildRoute(&$query) {
 				$segments[] =  $helper->getVendorName($query['virtuemart_vendor_id']) ;
 				unset ($query['virtuemart_vendor_id'] );
 			}
-
-
+			if (isset($query['layout'])) {
+				if ($query['layout'] == 'details') unset($query['layout']);
+			}
 			break;
 		case 'cart';
 			if ( isset($jmenu['cart']) ) $query['Itemid'] = $jmenu['cart'];
@@ -313,7 +311,6 @@ function virtuemartBuildRoute(&$query) {
 
 	}
 
-	//	if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'helpers'.DS.'config.php');
 	//	vmdebug("case 'productdetails'",$query);
 
 	if (isset($query['task'])) {
@@ -750,17 +747,15 @@ class vmrouterHelper {
 
 	public static function getInstance(&$query = null) {
 
-		if (!class_exists( 'VmConfig' )) {
-			require(JPATH_ADMINISTRATOR .'/components/com_virtuemart/helpers/config.php');
+		if (empty(self::$_instances)) {
+			JLoader::register('VmConfig', JPATH_ADMINISTRATOR.'/components/com_virtuemart/helpers/config.php');
+			VmConfig::loadConfig();
 		}
-		VmConfig::loadConfig();
-
 		if (isset($query['langswitch']) ) {
 			if ($query['langswitch'] != VMLANG ) $instanceKey = $query['langswitch'] ;
 			unset ($query['langswitch']);
-
 		} else $instanceKey = VMLANG ;
-		if (! array_key_exists ($instanceKey, self::$_instances)){
+		if (!isset(self::$_instances[$instanceKey])){
 			self::$_instances[$instanceKey] = new vmrouterHelper ($instanceKey,$query);
 
 			if (self::$limit===null){
@@ -786,7 +781,7 @@ class vmrouterHelper {
 				$this->langTag= $instanceKey;
 			}
 		} else $this->vmlang = $this->langTag = VMLANG ;
-		$this->setLang($instanceKey);
+		$this->setLang();
 		// $this->Jlang = JFactory::getLanguage();
 	}
 
@@ -1020,11 +1015,11 @@ class vmrouterHelper {
 
 	}
 	/* Set $this-lang (Translator for language from virtuemart string) to load only once*/
-	private function setLang($instanceKey){
-
+	private function setLang(){
+// var_dump($instanceKey,$this->langTag);
 		if ( $this->seo_translate ) {
 			/* use translator */
-			$this->Jlang =JLanguage::getInstance($instanceKey);
+			$this->Jlang =JLanguage::getInstance($this->langTag);
 			$extension = 'com_virtuemart.sef';
 			$base_dir = JPATH_SITE;
 			$this->Jlang->load($extension, $base_dir);
@@ -1041,7 +1036,7 @@ class vmrouterHelper {
 		$menuItems = $menu->getItems( 'component_id', $component->id );
 		$homeid =0;
 		if(empty($menuItems)){
-			vmWarn(JText::_('COM_VIRTUEMART_ASSIGN_VM_TO_MENU'));
+			vmWarn($this->Jlang->_('COM_VIRTUEMART_ASSIGN_VM_TO_MENU'));
 		} else {
 
 			// Search  Virtuemart itemID in joomla menu
@@ -1157,33 +1152,33 @@ class vmrouterHelper {
 		if ($this->seo_translate ) {
 			if ($this->orderings == null) {
 				$this->orderings = array(
-					'p.virtuemart_product_id'=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_ID'),
-					'product_sku'		=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_SKU'),
-					'product_price'		=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_PRICE'),
-					'category_name'		=> JText::_('COM_VIRTUEMART_SEF_CATEGORY_NAME'),
-					'category_description'=> JText::_('COM_VIRTUEMART_SEF_CATEGORY_DESCRIPTION'),
-					'mf_name' 			=> JText::_('COM_VIRTUEMART_SEF_MF_NAME'),
-					'product_s_desc'	=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_S_DESC'),
-					'product_desc'		=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_DESC'),
-					'product_weight'	=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_WEIGHT'),
-					'product_weight_uom'=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_WEIGHT_UOM'),
-					'product_length'	=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_LENGTH'),
-					'product_width'		=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_WIDTH'),
-					'product_height'	=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_HEIGHT'),
-					'product_lwh_uom'	=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_LWH_UOM'),
-					'product_in_stock'	=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_IN_STOCK'),
-					'low_stock_notification'=> JText::_('COM_VIRTUEMART_SEF_LOW_STOCK_NOTIFICATION'),
-					'product_available_date'=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_AVAILABLE_DATE'),
-					'product_availability'  => JText::_('COM_VIRTUEMART_SEF_PRODUCT_AVAILABILITY'),
-					'product_special'	=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_SPECIAL'),
-					'created_on' 		=> JText::_('COM_VIRTUEMART_SEF_CREATED_ON'),
-					// 'p.modified_on' 		=> JText::_('COM_VIRTUEMART_SEF_MDATE'),
-					'product_name'		=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_NAME'),
-					'product_sales'		=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_SALES'),
-					'product_unit'		=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_UNIT'),
-					'product_packaging'	=> JText::_('COM_VIRTUEMART_SEF_PRODUCT_PACKAGING'),
-					'p.intnotes'			=> JText::_('COM_VIRTUEMART_SEF_INTNOTES'),
-					'ordering' => JText::_('COM_VIRTUEMART_SEF_ORDERING')
+					'p.virtuemart_product_id'=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_ID'),
+					'product_sku'		=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_SKU'),
+					'product_price'		=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_PRICE'),
+					'category_name'		=> $this->Jlang->_('COM_VIRTUEMART_SEF_CATEGORY_NAME'),
+					'category_description'=> $this->Jlang->_('COM_VIRTUEMART_SEF_CATEGORY_DESCRIPTION'),
+					'mf_name' 			=> $this->Jlang->_('COM_VIRTUEMART_SEF_MF_NAME'),
+					'product_s_desc'	=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_S_DESC'),
+					'product_desc'		=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_DESC'),
+					'product_weight'	=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_WEIGHT'),
+					'product_weight_uom'=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_WEIGHT_UOM'),
+					'product_length'	=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_LENGTH'),
+					'product_width'		=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_WIDTH'),
+					'product_height'	=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_HEIGHT'),
+					'product_lwh_uom'	=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_LWH_UOM'),
+					'product_in_stock'	=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_IN_STOCK'),
+					'low_stock_notification'=> $this->Jlang->_('COM_VIRTUEMART_SEF_LOW_STOCK_NOTIFICATION'),
+					'product_available_date'=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_AVAILABLE_DATE'),
+					'product_availability'  => $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_AVAILABILITY'),
+					'product_special'	=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_SPECIAL'),
+					'created_on' 		=> $this->Jlang->_('COM_VIRTUEMART_SEF_CREATED_ON'),
+					// 'p.modified_on' 		=> $this->Jlang->_('COM_VIRTUEMART_SEF_MDATE'),
+					'product_name'		=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_NAME'),
+					'product_sales'		=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_SALES'),
+					'product_unit'		=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_UNIT'),
+					'product_packaging'	=> $this->Jlang->_('COM_VIRTUEMART_SEF_PRODUCT_PACKAGING'),
+					'p.intnotes'			=> $this->Jlang->_('COM_VIRTUEMART_SEF_INTNOTES'),
+					'ordering' => $this->Jlang->_('COM_VIRTUEMART_SEF_ORDERING')
 				);
 			}
 			if ($result = array_search($key,$this->orderings )) {
@@ -1197,7 +1192,7 @@ class vmrouterHelper {
 	 */
 	public function compareKey($string, $key) {
 		if ($this->seo_translate ) {
-			if (JText::_('COM_VIRTUEMART_SEF_'.$key) == $string )
+			if ($this->Jlang->_('COM_VIRTUEMART_SEF_'.$key) == $string )
 			{
 				return true;
 			}

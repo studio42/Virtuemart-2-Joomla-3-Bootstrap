@@ -36,7 +36,7 @@ class VirtuemartViewCategory extends VmView {
 
 		$show_prices  = VmConfig::get('show_prices',1);
 		if($show_prices == '1'){
-			if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'calculationh.php');
+			JLoader::register('calculationHelper', JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
 		}
 		$this->assignRef('show_prices', $show_prices);
 
@@ -227,19 +227,17 @@ class VirtuemartViewCategory extends VmView {
 		}
 
 		$this->assignRef('category', $category);
-		// Check for editing access
-		$edit_link = $this->editLink('category',$category->virtuemart_category_id,$category->created_by);
-		$this->assignRef('edit_link', $edit_link);
-	    // Set the titles
+
+		// Set the titles
 		if (!empty($category->customtitle)) {
-        	$title = strip_tags($category->customtitle);
-     	} elseif (!empty($category->category_name)) {
-     		$title = strip_tags($category->category_name);
+			$title = strip_tags($category->customtitle);
+		} elseif (!empty($category->category_name)) {
+			$title = strip_tags($category->category_name);
 		} else {
 			$title = $this->setTitleByJMenu($app);
 		}
 
-	  	if(JRequest::getInt('error')){
+		if(JRequest::getInt('error')){
 			$title .=' '.JText::_('COM_VIRTUEMART_PRODUCT_NOT_FOUND');
 		}
 		if(!empty($keyword)){

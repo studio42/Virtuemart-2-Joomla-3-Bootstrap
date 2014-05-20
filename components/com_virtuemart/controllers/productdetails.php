@@ -61,9 +61,8 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 			$view->display ();
 		}
 		JSession::checkToken() or jexit ('Invalid Token');
-		if (!class_exists ('shopFunctionsF')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
-		}
+		JLoader::register('shopFunctionsF', JPATH_VM_SITE.'/helpers/shopfunctionsf.php');
+
 		$app = JFactory::getApplication ();
 		$vars = array();
 		$min = VmConfig::get ('asks_minimum_comment_length', 50) + 1;
@@ -143,9 +142,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 
 		if(!VmConfig::get('show_emailfriend',false)){
 			$view->display ();
-		}
-		if (!class_exists ('shopFunctionsF')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		}
 		JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 
@@ -292,9 +288,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		$prices = $product_model->getPrice ($virtuemart_product_id, $customPrices, $quantity);
 
 		$priceFormated = array();
-		if (!class_exists ('CurrencyDisplay')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
-		}
+		JLoader::register('CurrencyDisplay', JPATH_VM_ADMINISTRATOR.'/helpers/currencydisplay.php');
 		$currency = CurrencyDisplay::getInstance ();
 		foreach ($prices as $name => $product_price) {
 // 		echo 'Price is '.print_r($name,1).'<br />';

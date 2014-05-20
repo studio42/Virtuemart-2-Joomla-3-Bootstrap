@@ -70,7 +70,7 @@ class VirtueMartViewCart extends VmView {
 		} else */
 		if ($layoutName == 'select_shipment') {
 			$cart->prepareCartViewData();
-			if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+			JLoader::register('vmCustomPlugin', JPATH_VM_PLUGINS.'vmcustomplugin.php');
 			JPluginHelper::importPlugin('vmshipment');
 			$this->lSelectShipment();
 
@@ -213,7 +213,7 @@ class VirtueMartViewCart extends VmView {
 		$selectedShipment = (empty($this->cart->virtuemart_shipmentmethod_id) ? 0 : $this->cart->virtuemart_shipmentmethod_id);
 
 		$shipments_shipment_rates = array();
-		if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+		JLoader::register('vmCustomPlugin', JPATH_VM_PLUGINS.'vmcustomplugin.php');
 		JPluginHelper::importPlugin('vmshipment');
 		$dispatcher = JDispatcher::getInstance();
 		$returnValues = $dispatcher->trigger('plgVmDisplayListFEShipment', array( $this->cart, $selectedShipment, &$shipments_shipment_rates));
@@ -245,7 +245,7 @@ class VirtueMartViewCart extends VmView {
 		$selectedPayment = empty($this->cart->virtuemart_paymentmethod_id) ? 0 : $this->cart->virtuemart_paymentmethod_id;
 
 		$paymentplugins_payments = array();
-		if(!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.DS.'vmpsplugin.php');
+		JLoader::register('vmCustomPlugin', JPATH_VM_PLUGINS.'vmcustomplugin.php');
 		JPluginHelper::importPlugin('vmpayment');
 		$dispatcher = JDispatcher::getInstance();
 		$returnValues = $dispatcher->trigger('plgVmDisplayListFEPayment', array($this->cart, $selectedPayment, &$paymentplugins_payments));

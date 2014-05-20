@@ -1,8 +1,4 @@
-<?php defined('_JEXEC') or die('Restricted access');
-
-
-// Separator
-$verticalseparator = " vertical-separator";
+<?php defined('_JEXEC') or die();
 
 foreach ($this->products as $type => $productList ) {
 

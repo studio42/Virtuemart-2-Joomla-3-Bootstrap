@@ -28,10 +28,8 @@ class VirtueMartViewRaw extends VmView
 		$this->assignRef('type', $type);
 		$viewName = jRequest::getWord('view','productdetails');
 		$class= 'VirtueMartView'.ucfirst($viewName);
-		if(!class_exists($class)) require(JPATH_VM_SITE.DS.'views'.DS.$viewName.DS.'view.html.php');
+		JLoader::register($class, JPATH_VM_SITE.'/views/'.$viewName.'/view.html.php');
 		$view = new $class ;
-	
 		$view->display($tpl);
 	}
-
 }

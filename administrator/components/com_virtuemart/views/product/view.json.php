@@ -19,10 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the view framework
-jimport( 'joomla.application.component.view');
-		// Load some common models
-if(!class_exists('VirtueMartModelCustomfields')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'customfields.php');
 
 /**
  * HTML View class for the VirtueMart Component
@@ -63,7 +59,9 @@ class VirtuemartViewProduct extends JViewLegacy {
 				 JOIN `#__virtuemart_products` AS p using (`virtuemart_product_id`)";
 			if ($filter) $query .= " WHERE product_name LIKE '%". $filter ."%' or product_sku LIKE '%". $filter ."%'";
 			$query .= " limit 0,10";
-			self::setRelatedHtml($query,'R');
+			if ( JRequest::getInt('kit', 0)) $fieldType = "K" ;
+			else $fieldType = "R";
+			self::setRelatedHtml($query,$fieldType);
 		}
 		else if ($this->type=='relatedcategories')
 		{
@@ -155,7 +153,7 @@ class VirtuemartViewProduct extends JViewLegacy {
 				$productModel = VmModel::getModel('product');
 				$productShoppers = $productModel->getProductShoppersByStatus($product_id ,$status);
 			}
-			if(!class_exists('ShopFunctions'))require(JPATH_VM_ADMINISTRATOR.'/helpers'.DS.'shopfunctions.php');
+			JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'helpers/shopfunctions.php');
 			$html = ShopFunctions::renderProductShopperList($productShoppers);
 			$this->json['value'] = $html;
 
@@ -172,6 +170,8 @@ class VirtuemartViewProduct extends JViewLegacy {
 
 	function setRelatedHtml($query,$fieldType) {
 
+		if ($fieldType == 'Z') $classright =  ' pull-right';
+		else $classright = '';
 		$this->db->setQuery($query);
 		$this->json = $this->db->loadObjectList();
 
@@ -185,7 +185,7 @@ class VirtuemartViewProduct extends JViewLegacy {
 			$html = '<div class="vm_thumb_image">
 				<span>'.$display.'</span>
 				'.$this->model->setEditCustomHidden($customs, $this->row).'
-				<div class="icon-remove"></div></div>';
+				<div class="icon-remove'.$classright.'"></div></div>';
 
 			$related->label = $html;
 

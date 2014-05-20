@@ -12,7 +12,7 @@ span.custom-variant-inputbox input.custom-attribute:hover,span.quantity-box inpu
 span.title{font-weight:700;display:block;border-bottom:solid #CAC9C9 1px;font-size:14px;margin:0 0 6px;}
 .product-packaging{margin:15px 0 0;}
 .icons{text-align:right;float:right;margin:4px 0 10px 30px;}
-.additional-images img{margin-right:8px;width:50px;height:auto;}
+.additional-images img{margin-right:8px;/* width:50px; */height:auto;}
 .product-price{margin:0 0 15px;}
 .price-crossed div.PricebasePriceWithTax .PricebasePriceWithTax{text-decoration: line-through;}
 /* .productdetails-view .addtocart-bar{margin:15px 0 0;padding:0 0 0 38px;} */
@@ -245,15 +245,22 @@ div.spaceStyle{padding: 0px; margin: 5px; spacing: 0px;}
 .stars-purple{background-position:0 -216px !important;}
 
 .additional-images .row-fluid .span4,.product-related-products.row-fluid .span4,.product-related-categories.row-fluid .span4 {
-width: 31.914893614%;float:left;
+width: 31.914893614%;float:left;margin-left:0;
 /* margin-left: 2.127659574%; */
 }
+.additional-images .row-fluid [class*="span"]{margin-left:0 ;outline: 1px solid #eee;
+outline-offset: -1px;}
+.additional-images .row-fluid .active {
+outline: 1px solid #ccc;
+outline-offset: -1px;
+}
 @media (max-width: 767px) {
-	#product-tabs,.additional-images{display:none;}
+	/* #product-tabs,.additional-images{display:none;} */
+	#product-tabs{display:none;}
 	.productdetails-view .tab-content .tab-pane{display:block;}
 }
 
-.browse-view .thumbnail{border:0px;}
+.browse-view .thumbnail,.category-view .thumbnail{border:0px;}
 .browse-view .thumbnail i{font-weight:normal;width: 20px;
 height: 26px;
 line-height: 26px;

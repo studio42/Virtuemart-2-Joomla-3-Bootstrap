@@ -43,11 +43,10 @@ class VirtueMartViewProductdetails extends VmView {
 //		$dispatcher	= JDispatcher::getInstance();
 //		$limitstart	= JRequest::getVar('limitstart', 0, '', 'int');
 
-	$show_prices = VmConfig::get('show_prices', 1);
-	if ($show_prices == '1') {
+	$this->show_prices = VmConfig::get('show_prices', 1);
+	if ($this->show_prices == 1) {
 		JLoader::register('calculationHelper', JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
 	}
-	$this->assignRef('show_prices', $show_prices);
 
 	$document = JFactory::getDocument();
 
@@ -63,8 +62,8 @@ class VirtueMartViewProductdetails extends VmView {
 
 	// Load the product
 	//$product = $this->get('product');	//Why it is sensefull to use this construction? Imho it makes it just harder
-	$product_model = VmModel::getModel('product');
-	$this->assignRef('product_model', $product_model);
+	$this->product_model = VmModel::getModel('product');
+
 	$virtuemart_product_idArray = JRequest::getVar('virtuemart_product_id', 0);
 	if (is_array($virtuemart_product_idArray) and count($virtuemart_product_idArray) > 0) {
 	    $virtuemart_product_id = (int)$virtuemart_product_idArray[0];
@@ -84,7 +83,7 @@ class VirtueMartViewProductdetails extends VmView {
 	if ($canEdit = ShopFunctions::can('edit','product')) {
 		$onlyPublished = false;
 	}
-    $product = $product_model->getProduct($virtuemart_product_id,TRUE,TRUE,$onlyPublished,$quantity);
+    $product = $this->product_model->getProduct($virtuemart_product_id,TRUE,TRUE,$onlyPublished,$quantity);
 	if($product && $canEdit) {
 		JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 		$vendor = Permissions::getInstance()->isSuperVendor();
@@ -92,13 +91,6 @@ class VirtueMartViewProductdetails extends VmView {
 		elseif ( !$product->published ) $app->enqueueMessage(JText::_('COM_VIRTUEMART_ORDER_PRINT_PRODUCT_STATUS').' : '.JText::_('COM_VIRTUEMART_UNPUBLISHED'),'warning');
 	}
 
-// 		vmSetStartTime('customs');
-// 		for($k=0;$k<count($product->customfields);$k++){
-// 			$custom = $product->customfields[$k];
-
-
-// 		vmTime('Customs','customs');
-// 		vmdebug('my second $product->customfields',$product->customfields);
 	$last_category_id = shopFunctionsF::getLastVisitedCategoryId();
 	if (empty($product->slug)) {
 
@@ -113,7 +105,11 @@ class VirtueMartViewProductdetails extends VmView {
 		$categoryLink = '&virtuemart_category_id=' . $last_category_id;
 	    }
 
-	    $app->redirect(JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink . '&error=404', FALSE));
+	    if (VmConfig::get('handle_404',1)) {
+		    $app->redirect(JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink . '&error=404', FALSE));
+		} else {
+			JError::raise(E_ERROR,'404','Not found');
+		}
 
 	    return;
 	}
@@ -157,21 +153,19 @@ class VirtueMartViewProductdetails extends VmView {
 		$product->product_desc = $product->text;
 	}
 
-	$product_model->addImages($product);
-	$this->assignRef('product', $product);
+	$this->product_model->addImages($product);
 
 	if (isset($product->min_order_level) && (int) $product->min_order_level > 0) {
-	    $min_order_level = $product->min_order_level;
+	    $this->min_order_level = $product->min_order_level;
 	} else {
-	    $min_order_level = 1;
+	    $this->min_order_level = 1;
 	}
-	$this->assignRef('min_order_level', $min_order_level);
+
 	if (isset($product->step_order_level) && (int) $product->step_order_level > 0) {
-	    $step_order_level = $product->step_order_level;
+	    $this->step_order_level = $product->step_order_level;
 	} else {
-	    $step_order_level = 1;
+	    $this->step_order_level = 1;
 	}
-	$this->assignRef('step_order_level', $step_order_level);
 
 	// Load the neighbours
     if (VmConfig::get('product_navigation', 1)) {
@@ -180,14 +174,14 @@ class VirtueMartViewProductdetails extends VmView {
 	// Product vendor multiX
 	if ($multix = Vmconfig::get('multix','none') === 'admin') {
 		$vendor_model = VmModel::getModel('vendor');
-		$this->vendor = $vendor_model->getVendor($this->product->virtuemart_vendor_id);
+		$this->vendor = $vendor_model->getVendor($product->virtuemart_vendor_id);
 	} else $this->vendor = null;
 	// echo 'multi'.$multix;
 	// Load the category
 	$category_model = VmModel::getModel('category');
 
 	shopFunctionsF::setLastVisitedCategoryId($product->virtuemart_category_id);
-
+	$catTitle = array();
 	if ($category_model) {
 
 		$category = $category_model->getCategory($product->virtuemart_category_id);
@@ -200,6 +194,7 @@ class VirtueMartViewProductdetails extends VmView {
 			foreach ($category->parents as $c) {
 				if(is_object($c) and isset($c->category_name)){
 					$pathway->addItem(strip_tags($c->category_name), JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $c->virtuemart_category_id, FALSE));
+					$catTitle[] = $c->category_name ;
 				} else {
 					vmdebug('Error, parent category has no name, breadcrumb maybe broken, category',$c);
 				}
@@ -229,55 +224,39 @@ class VirtueMartViewProductdetails extends VmView {
 	if ($product->customtitle) {
 	    $document->setTitle(strip_tags($product->customtitle));
 	} else {
-	    $document->setTitle(strip_tags(($category->category_name ? ($category->category_name . ' : ') : '') . $product->product_name));
+
+	    $document->setTitle( ($catTitle ? implode(" / ", $catTitle) . ' / ' : '') . $product->product_name);
 	}
 	$ratingModel = VmModel::getModel('ratings');
-	$allowReview = $ratingModel->allowReview($product->virtuemart_product_id);
-	$this->assignRef('allowReview', $allowReview);
+	$this->allowReview = $ratingModel->allowReview($product->virtuemart_product_id);
 
-	$showReview = $ratingModel->showReview($product->virtuemart_product_id);
-	$this->assignRef('showReview', $showReview);
+	$this->showReview = $ratingModel->showReview($product->virtuemart_product_id);
 
-	if ($showReview) {
-
-	    $review = $ratingModel->getReviewByProduct($product->virtuemart_product_id);
-	    $this->assignRef('review', $review);
-
-	    $rating_reviews = $ratingModel->getReviews($product->virtuemart_product_id);
-	    $this->assignRef('rating_reviews', $rating_reviews);
+	if ($this->showReview) {
+	    $this->review = $ratingModel->getReviewByProduct($product->virtuemart_product_id);
+	    $this->rating_reviews = $ratingModel->getReviews($product->virtuemart_product_id);
 	}
 
-	$showRating = $ratingModel->showRating($product->virtuemart_product_id);
-	$this->assignRef('showRating', $showRating);
+	$this->showRating = $ratingModel->showRating($product->virtuemart_product_id);
 
-	if ($showRating) {
-	    $vote = $ratingModel->getVoteByProduct($product->virtuemart_product_id);
-	    $this->assignRef('vote', $vote);
-
-	    $rating = $ratingModel->getRatingByProduct($product->virtuemart_product_id);
-	    $this->assignRef('rating', $rating);
+	if ($this->showRating) {
+	    $this->vote = $ratingModel->getVoteByProduct($product->virtuemart_product_id);
+	    $this->rating = $ratingModel->getRatingByProduct($product->virtuemart_product_id);
 	}
 
-	$allowRating = $ratingModel->allowRating($product->virtuemart_product_id);
-	$this->assignRef('allowRating', $allowRating);
-
-	// Check for editing access
-    $edit_link = $this->editLink('product',$product->virtuemart_product_id,$product->created_by,'edit',$product->virtuemart_vendor_id);
-	$this->assignRef('edit_link', $edit_link);
+	$this->allowRating = $ratingModel->allowRating($product->virtuemart_product_id);
 
 	// todo: atm same form for "call for price" and "ask a question". Title of the form should be different
-	$askquestion_url = JRoute::_('index.php?option=com_virtuemart&view=productdetails&task=askquestion&virtuemart_product_id=' . $product->virtuemart_product_id . '&virtuemart_category_id=' . $product->virtuemart_category_id . '&tmpl=component', FALSE);
-	$this->assignRef('askquestion_url', $askquestion_url);
+	$this->askquestion_url = JRoute::_('index.php?option=com_virtuemart&view=productdetails&task=askquestion&virtuemart_product_id=' . $product->virtuemart_product_id . '&virtuemart_category_id=' . $product->virtuemart_category_id . '&tmpl=component', FALSE);
 
 	// Load the user details
-	$user = JFactory::getUser();
-	$this->assignRef('user',$user);
+	$this->user = JFactory::getUser();
 
 	// More reviews link
 	$uri = JURI::getInstance();
 	$uri->setVar('showall', 1);
 	$uristring = $uri->toString();
-	$this->assignRef('more_reviews', $uristring);
+	$this->more_reviews = $uristring;
 
 	if ($product->metadesc) {
 	    $document->setDescription($product->metadesc);
@@ -298,33 +277,29 @@ class VirtueMartViewProductdetails extends VmView {
 	}
 
 
-	$showBasePrice = Permissions::getInstance()->check('admin'); //todo add config settings
-	$this->assignRef('showBasePrice', $showBasePrice);
-
+	$this->showBasePrice = Permissions::getInstance()->check('admin'); //todo add config settings
 	$productDisplayShipments = array();
 	$productDisplayPayments = array();
 
-	if (!class_exists('vmPSPlugin'))
-	    require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	JLoader::register('vmPSPlugin', JPATH_VM_PLUGINS.'vmpsplugin.php');
 	JPluginHelper::importPlugin('vmshipment');
 	JPluginHelper::importPlugin('vmpayment');
 	$dispatcher = JDispatcher::getInstance();
 	$returnValues = $dispatcher->trigger('plgVmOnProductDisplayShipment', array($product, &$productDisplayShipments));
 	$returnValues = $dispatcher->trigger('plgVmOnProductDisplayPayment', array($product, &$productDisplayPayments));
 
-	$this->assignRef('productDisplayPayments', $productDisplayPayments);
-	$this->assignRef('productDisplayShipments', $productDisplayShipments);
+	$this->productDisplayPayments = $productDisplayPayments;
+	$this->productDisplayShipments = $productDisplayShipments;
 
 	if (empty($category->category_template)) {
 	    $category->category_template = VmConfig::get('categorytemplate');
 	}
-
+	$this->product = $product;
 	shopFunctionsF::setVmTemplate($this, $category->category_template, $product->product_template, $category->category_product_layout, $product->layout);
 
 	shopFunctionsF::addProductToRecent($virtuemart_product_id);
 
-	$currency = CurrencyDisplay::getInstance();
-	$this->assignRef('currency', $currency);
+	$this->currency = CurrencyDisplay::getInstance();
 
 	if(JRequest::getCmd( 'layout', 'default' )=='notify') $this->setLayout('notify'); //Added by Seyi Awofadeju to catch notify layout
 
@@ -352,8 +327,8 @@ class VirtueMartViewProductdetails extends VmView {
 		}
 		$continue_link = JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink, FALSE);
 
-		$continue_link_html = '<a href="' . $continue_link . '" />' . JText::_('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
-		$this->assignRef('continue_link_html', $continue_link_html);
+		$this->continue_link_html = '<a href="' . $continue_link . '" />' . JText::_('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
+
 		// Display it all
 		parent::display($tpl);
     }

@@ -18,6 +18,7 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
 JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.'/helpers/vmmodel.php');
 
 /**
@@ -261,7 +262,7 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 			$templateName = $vmtemplate;
 		}
 
-		$TemplateOverrideFolder = JPATH_SITE.DS."templates".DS.$templateName.DS."html".DS."com_virtuemart".DS."invoice";
+		$TemplateOverrideFolder = JPATH_SITE.'/templates'.$templateName.'/html/com_virtuemart/invoice';
 		// if(file_exists($TemplateOverrideFolder)){
 			$view->addTemplatePath( $TemplateOverrideFolder);
 		// }

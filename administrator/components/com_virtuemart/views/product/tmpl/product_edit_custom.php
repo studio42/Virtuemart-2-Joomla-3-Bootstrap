@@ -27,7 +27,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 <div id="customfieldsTable" width="100%">
 	<?php
 			$i=0;
-			$tables= array('categories'=>'','products'=>'','fields'=>'','cart'=>'');
+			$tables= array('categories'=>'','products'=>'','kit'=>'','fields'=>'','cart'=>'');
 			if (isset($this->product->customfields)) {
 				foreach ($this->product->customfields as $customfield) {
 					// if ($customfield->is_cart_attribute) $cartIcone=  'default';
@@ -48,6 +48,15 @@ if (isset($this->product->customfields_fromParent)) { ?>
 								<span>'.$customfield->display.'</span>'.
 								VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
 							  .'<div class="icon-remove"></div>
+							</div>';
+
+					} elseif ($customfield->field_type == 'K') {
+					// K: product kit
+						$tables['kit'] .=  '
+							<div class="vm_thumb_image">
+								<span>'.$customfield->display.'</span>'.
+								VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
+							  .'<div class="icon-remove  pull-right"></div>
 							</div>';
 
 					} elseif ($customfield->field_type == 'G') {
@@ -100,6 +109,15 @@ if (isset($this->product->customfields_fromParent)) { ?>
 					<button class="reset-value btn"><?php echo JText::_('COM_VIRTUEMART_RESET') ?></button>
 				</div>
 				<div id="custom_products"><?php echo  $tables['products']; ?></div>
+			</fieldset>
+			<fieldset>
+				<legend><?php echo JText::_('COM_VIRTUEMART_PRODUCT'); ?> KIT(Bundle)</legend>
+				<?php echo JText::sprintf('JSEARCH_TITLE',JText::_('com_virtuemart_PRODUCT') ); ?>
+				<div class="jsonSuggestResults input-append" style="width: 100%" id="productkit-div">
+					<input type="text" size="40" name="search" id="productkitSearch" value="" />
+					<button class="reset-value btn"><?php echo JText::_('COM_VIRTUEMART_RESET') ?></button>
+				</div>
+				<div id="custom_productkit"><?php echo  $tables['kit']; ?></div>
 			</fieldset>
 			<?php if ($this->customsList) { ?>
 				<fieldset >
@@ -197,6 +215,24 @@ if (isset($this->product->customfields_fromParent)) { ?>
 		minLength:1,
 		html: true
 	});
+	jQuery('#productkitSearch').autocomplete({
+		// source: 'index.php?option=com_virtuemart&view=product&task=getData&tmpl=component&format=json&type=relatedproducts&row='+nextCustom,
+		source: function( request, response ) {
+			jQuery.getJSON( 'index.php?option=com_virtuemart&view=product&task=getData&tmpl=component&format=json&type=relatedproducts&kit=1&row='+nextCustom,
+				request, function( data, status, xhr ) {
+				// relatedproducts[ term ] = data;
+				response( data );
+			});
+		},
+		select: function(event, ui){
+			jQuery("#custom_productkit").append(ui.item.label);
+			nextCustom++;
+			return false;
+		},
+		appendTo: "#productkit-div",
+		minLength:1,
+		html: true
+	});
 	jQuery('input#relatedcategoriesSearch').autocomplete({
 
 		// source: 'index.php?option=com_virtuemart&view=product&task=getData&tmpl=component&format=json&type=relatedcategories&row='+nextCustom,
@@ -215,7 +251,7 @@ if (isset($this->product->customfields_fromParent)) { ?>
 		minLength:1,
 		html: true
 	});
-	jQuery('#relatedproducts-div,#relatedcategories-div').delegate('a','click',function() { return false });
+	jQuery('#relatedproducts-div,#relatedcategories-div','#productkit-div').delegate('a','click',function() { return false });
 	jQuery('#adminForm').on('click','.removable .icon-remove',function() {
 		var toRemove = jQuery(this).closest('.removable'); main = toRemove.parent();
 		if (main.attr('id') == 'pricesort' && main.children('.removable').length == 1 ) return;

@@ -51,12 +51,12 @@ class TableUserfields extends VmTable {
 
 	/**
 	 * Validates the userfields record fields.
-	 *
+	 * @ Modfied Studio42 Joomla 3.3 error
 	 * @return boolean True if the table buffer is contains valid data, false otherwise.
 	 */
-	function check($nrOfValues)
+	function check()
 	{
-
+		$nrOfValues = $this->countFieldValues;
 		if (preg_match('/[^a-z0-9\._\-]/i', $this->name) > 0) {
 			vmError(JText::_('COM_VIRTUEMART_NAME_OF_USERFIELD_CONTAINS_INVALID_CHARACTERS'));
 			return false;

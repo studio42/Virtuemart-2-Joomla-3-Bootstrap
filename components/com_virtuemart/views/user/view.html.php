@@ -288,9 +288,7 @@ class VirtuemartViewUser extends VmView {
     function shopper($userFields) {
 
 	// Shopper info
-	if (!class_exists('VirtueMartModelShopperGroup'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'shoppergroup.php');
-
+	JLoader::register('VirtueMartModelShopperGroup', JPATH_VM_ADMINISTRATOR.'/models/shoppergroup.php');
 	$_shoppergroup = VirtueMartModelShopperGroup::getShoppergroupById($this->_model->getId());
 
 	JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');

@@ -67,7 +67,7 @@ class virtuemartViewrecommend extends VmView {
 			self::showLastCategory($tpl);
 			return;
 		}
-		if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+		if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.'/models/vendor.php');
 		$product = $product_model->getProduct($virtuemart_product_id);
 		/* Set Canonic link */
 		$format = JRequest::getWord('format', 'html');

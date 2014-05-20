@@ -30,7 +30,7 @@ class shopFunctionsF {
 
 	static public function getLoginForm ($cart = FALSE, $order = FALSE, $url = 0) {
 
-		if(!class_exists( 'VirtuemartViewUser' )) require(JPATH_VM_SITE.DS.'views'.DS.'user'.DS.'view.html.php');
+		JLoader::register('VirtuemartViewUser', JPATH_VM_SITE.'/views/user/view.html.php');
 		$view = new VirtuemartViewUser();
 		$view->setLayout( 'login' );
 
@@ -202,29 +202,24 @@ class shopFunctionsF {
 	//TODO this is quirk, why it is using here $noVendorMail, but everywhere else it is using $doVendor => this make logic trouble
 	static public function renderMail ($viewName, $recipient, $vars = array(), $controllerName = NULL, $noVendorMail = FALSE,$useDefault=true) {
 
-		if(!class_exists( 'VirtueMartControllerVirtuemart' )) require(JPATH_VM_SITE.DS.'controllers'.DS.'virtuemart.php');
+		JLoader::register('VirtueMartControllerVirtuemart', JPATH_VM_SITE.'/controllers/virtuemart.php');
 // 		$format = (VmConfig::get('order_html_email',1)) ? 'html' : 'raw';
 
 		$controller = new VirtueMartControllerVirtuemart();
 		//Todo, do we need that? refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
-		$controller->addViewPath( JPATH_VM_SITE.DS.'views' );
+		$controller->addViewPath( JPATH_VM_SITE.'/views' );
 
 		$view = $controller->getView( $viewName, 'html' );
 		if(!$controllerName) $controllerName = $viewName;
 		$controllerClassName = 'VirtueMartController'.ucfirst( $controllerName );
-		if(!class_exists( $controllerClassName )) require(JPATH_VM_SITE.DS.'controllers'.DS.$controllerName.'.php');
+		JLoader::register($controllerClassName, JPATH_VM_SITE.'/controllers/'.$controllerName.'.php');
 
 		//Todo, do we need that? refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
 		$view->addTemplatePath( JPATH_VM_SITE.'/views/'.$viewName.'/tmpl' );
 
 		$vmtemplate = VmConfig::get( 'vmtemplate', 'default' );
 		if($vmtemplate == 'default') {
-		// var_dump(JVM_VERSION); jexit();
-			if(JVM_VERSION > 1) {
-				$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
-			} else {
-				$q = 'SELECT `template` FROM `#__templates_menu` WHERE `client_id`="0" AND `menuid`="0"';
-			}
+			$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
 			$db = JFactory::getDbo();
 			$db->setQuery( $q );
 			$template = $db->loadResult();
@@ -233,7 +228,7 @@ class shopFunctionsF {
 		}
 
 		if($template) {
-			$view->addTemplatePath( JPATH_ROOT.DS.'templates'.DS.$template.DS.'html'.DS.'com_virtuemart'.DS.$viewName );
+			$view->addTemplatePath( JPATH_ROOT.'/templates/'.$template.'/html/com_virtuemart/'.$viewName );
 		} else {
 			if(isset($db)) {
 				$err = $db->getErrorMsg();
@@ -445,7 +440,7 @@ class shopFunctionsF {
 	static function setTemplate ($template) {
 
 		if(!empty($template) && $template != 'default') {
-			if(is_dir( JPATH_THEMES.DS.$template )) {
+			if(is_dir( JPATH_THEMES.'/'.$template )) {
 				//$this->addTemplatePath(JPATH_THEMES.DS.$template);
 				$mainframe = JFactory::getApplication( 'site' );
 				$mainframe->set( 'setTemplate', $template );
@@ -516,11 +511,8 @@ class shopFunctionsF {
 
 	static function getComUserOption () {
 
-		if(JVM_VERSION === 1) {
-			return 'com_user';
-		} else {
-			return 'com_users';
-		}
+		return 'com_users';
+
 	}
 
 	/**

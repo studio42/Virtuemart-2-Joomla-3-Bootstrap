@@ -62,7 +62,7 @@ if(typeof Virtuemart === "undefined")
                     $.fancybox.showActivity();
                 }
 
-                $.getJSON(vmSiteurl+'index.php?option=com_virtuemart&nosef=1&view=cart&task=addJS&format=json'+vmLang,encodeURIComponent(datas),
+                $.getJSON(vmSiteurl+'index.php?option=com_virtuemart&nosef=1&view=cart&task=addJS&format=json'+vmLang,datas,
                 function(datas, textStatus) {
                     if(datas.stat ==1){
 

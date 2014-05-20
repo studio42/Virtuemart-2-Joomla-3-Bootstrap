@@ -34,7 +34,7 @@ defined('_JEXEC') or die();
 
 <div class="vendor-description">
 <?php echo $this->vendor->vendor_store_desc.'<br>';
-	// if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+	// if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 	// echo shopFunctions::renderVendorAddress($this->vendor->virtuemart_vendor_id);
 
 	?></div>

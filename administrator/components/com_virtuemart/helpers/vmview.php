@@ -29,6 +29,7 @@ class VmView extends JViewLegacy{
 	var $tmpl ='';
 	protected $vendor = 0;
 	var $canChange = false;
+	var $adminVendor = false;
 	/**
 	 * Sets automatically the shortcut for the language and the redirect path
 	 *
@@ -440,10 +441,10 @@ class VmView extends JViewLegacy{
 	public function canChange($created_by = null){
 		if ($created_by === null) return $this->canChange;
 		static $user_id = null;
-		static $vendor = null;
-		if ($vendor === null) $vendor = Permissions::getInstance()->isSuperVendor();
-		if ($vendor == 1) return true; // can change all
-		if ($user_id === null) $user_id = JFactory::getUser()->get('id');
+		if ($this->adminVendor == 1) {
+			$this->canChange = true;
+			return true;
+		} elseif ($user_id === null) $user_id = JFactory::getUser()->get('id');
 		$this->canChange = ($created_by === $user_id);
 		return $this->canChange;
 

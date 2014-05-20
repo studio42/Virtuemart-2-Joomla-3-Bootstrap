@@ -290,8 +290,8 @@ class VirtueMartModelUserfields extends VmModel {
 			vmError($field->getError());
 			return false;
 		}
-	
-		if (!$field->check(count($fieldValues))) {
+			$field->countFieldValues = count($fieldValues);
+		if (!$field->check()) {
 			// Perform data checks
 			//vmError($field->getError());
 			return false;

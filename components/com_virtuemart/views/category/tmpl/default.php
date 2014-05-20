@@ -23,6 +23,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 JHTML::_ ('behavior.modal');
+// NEW !! overide for ordering list and manufacturers
+JHtml::addIncludePath(JPATH_COMPONENT . '/layouts');
 /* javascript for list Slide
   Only here for the order list
   can be changed by the template maker
@@ -39,12 +41,22 @@ jQuery(document).ready(function () {
 $document = JFactory::getDocument ();
 $document->addScriptDeclaration ($js);
 
-echo $this->editLink('category',$this->category->virtuemart_category_id,$this->category->created_by);
+$editLink = $this->editLink('category',$this->category->virtuemart_category_id,$this->category->created_by);
 // set the current parent category for simplier adding new
 $idLink = '&category_parent_id='.$this->category->virtuemart_category_id;
-echo $this->newLink('category',$idLink,$this->category->created_by);
+$newCatLink = $this->newLink('category',$idLink,$this->category->created_by);
 $idLink = '&virtuemart_category_id='.$this->category->virtuemart_category_id;
-echo $this->newLink('product',$idLink,$this->category->virtuemart_category_id);
+$newProdLink = $this->newLink('product',$idLink,$this->category->virtuemart_category_id);
+if ($newProdLink || $newCatLink || $editLink) { ?>
+	<div class="btn-group pull-right">
+		<?php
+		 echo $newCatLink;
+		 echo $newProdLink;
+		 echo $editLink;
+		?>
+	</div>
+	<div class="clearFix clear"></div>
+<?php }
 if (empty($this->keyword) and !empty($this->category)) {
 	?>
 <div class="category_description">
@@ -55,92 +67,58 @@ if (empty($this->keyword) and !empty($this->category)) {
 
 /* Show child categories */
 
-if (VmConfig::get ('showCategory', 1) and empty($this->keyword)) {
-	if (!empty($this->category->haschildren)) {
+if (VmConfig::get ('showCategory', 1) && empty($this->keyword) && !empty($this->category->haschildren) ) {
 
-		// Category and Columns Counter
-		$iCol = 1;
-		$iCategory = 1;
+	// Calculating Categories Per Row
+	$perRow = VmConfig::get ('categories_per_row', 3);
+	$spanClass = 'span'.floor (12/$perRow );
+	$cCount = 1 ;
+	$cTotal = count ($this->category->children);
 
-		// Calculating Categories Per Row
-		$categories_per_row = VmConfig::get ('categories_per_row', 3);
-		$category_cellwidth = ' width' . floor (100 / $categories_per_row);
-		$span = ' span' . floor (12 / $categories_per_row);
-		$count_categories = count ($this->category->children);
-		// Separator
-		$verticalseparator = " vertical-separator";
-		?>
-
-		<div class="category-view">
-
+	?>
+	<div class="category-view">
+	  <ul class="thumbnails">
 		<?php // Start the Output
-		if ($count_categories) {
-			foreach ($this->category->children as $category) {
+		foreach ($this->category->children as $category) {
 
-				// Show the horizontal seperator
-				if ($iCol == 1 && $iCategory > $categories_per_row) {
-					?>
-					<div class="horizontal-separator"></div>
-					<?php
-				}
-
-				// this is an indicator wether a row needs to be opened or not
-				if ($iCol == 1) {
-					?>
-			<div class=" row-fluid">
-			<?php
-				}
-
-				// Show the vertical seperator
-				if ($iCategory == $categories_per_row or $iCategory % $categories_per_row == 0) {
-					$show_vertical_separator = ' ';
-				} else {
-					$show_vertical_separator = $verticalseparator;
-				}
-
-				// Category Link
-				$caturl = JRoute::_ ('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $category->virtuemart_category_id, FALSE);
-
-				// Show Category
-				?>
-				<div class="category floatleft<?php echo $span . $show_vertical_separator ?>">
-					<div class="spacer">
-						<h2>
-							<a href="<?php echo $caturl ?>" title="<?php echo $category->category_name ?>">
-								<?php echo $category->category_name ?>
-								<br/>
-								<?php // if ($category->ids) {
-								echo $category->images[0]->displayMediaThumb ("", FALSE);
-								//} ?>
-							</a>
-						</h2>
-					</div>
-				</div>
-				<?php
-				$iCategory++;
-
-				// Do we need to close the current row now?
-				if ($iCol == $categories_per_row) {
-					?>
-					<div class="clear"></div>
-		</div>
-			<?php
-					$iCol = 1;
-				} else {
-					$iCol++;
-				}
-			}
-		}
-		// Do we need a final closing row tag?
-		if ($iCol != 1) {
+			// Category Link
+			$caturl = JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $category->virtuemart_category_id, FALSE);
 			?>
-			<div class="clear"></div>
-		</div>
-	<?php } ?>
+			<li class="<?php echo $spanClass ?>">
+			  <div class="thumbnail">
+				<div class="text-center">
+					<?php if (!empty($category->images)) { ?>
+						<a href="<?php echo $caturl ?>" title="<?php echo $category->category_name ?>">
+							<?php echo $category->images[0]->displayMediaFull("", false); ?>
+						</a>
+						<?php
+						}
+					?>
+				</div>
+				<div class="caption">
+					<a href="<?php echo $caturl ?>" title="<?php echo $category->category_name ?>">
+						<h5><?php echo $category->category_name ?></h5>
+					</a>
+				</div>
+			  </div>
+			</li>
+			<?php 
+			// see if whe must add a new line
+			if ($cCount == $perRow && $cTotal>0 ) { ?>
+				</ul>
+				<ul class="thumbnails">
+				<?php 
+				$cCount =0;
+			}
+			$cTotal--;
+			$cCount++;
+		} ?>
+
+	  </ul>
 	</div>
 
 	<?php
-	}
+
 }
 ?>
 <div class="browse-view">
@@ -168,16 +146,18 @@ if (!empty($this->keyword)) {
 <!-- End Search Box -->
 	<?php } ?>
 
-<?php // Show child categories
+<?php // Show products in category
 if (!empty($this->products)) {
+	$pTotal = count($this->products);
+	$spanClass = 'span'.floor (12/$this->perRow);
+	$pCount = 1 ;
 	?>
 <div class="orderby-displaynumber">
-	<div class="width70 floatleft">
-		<?php echo $this->orderByList['orderby']; ?>
-		<?php echo $this->orderByList['manufacturer']; ?>
-	</div>
-	<div class="width30 floatright display-number"><?php echo $this->vmPagination->getResultsCounter ();?><br/><?php echo $this->vmPagination->getLimitBox ($this->category->limit_list_step); ?></div>
-	<div class="vm-pagination">
+	<?php echo JHtml::_('vm.ordering',$this->orderByList['orderby']) ?>
+	<?php echo JHtml::_('vm.manufacturers', $this->orderByList['manufacturer']) ?>
+
+	<div class="pull-right"><?php /* echo $this->vmPagination->getResultsCounter ();?><br/><?php */ echo $this->vmPagination->getLimitBox ($this->category->limit_list_step); ?></div>
+	<div class="vm-pagination pagination">
 		<?php echo $this->vmPagination->getPagesLinks (); ?>
 		<span style="float:right"><?php echo $this->vmPagination->getPagesCounter (); ?></span>
 	</div>
@@ -187,155 +167,41 @@ if (!empty($this->products)) {
 
 <h1><?php echo $this->category->category_name; ?></h1>
 
-	<?php
-	// Category and Columns Counter
-	$iBrowseCol = 1;
-	$iBrowseProduct = 1;
+	<ul class="thumbnails">
+	  <?php foreach ($this->products as $product) { ?>
 
-	// Calculating Products Per Row
-	$BrowseProducts_per_row = $this->perRow;
-	$Browsecellwidth = ' width' . floor (100 / $BrowseProducts_per_row);
-
-	// Separator
-	$verticalseparator = " vertical-separator";
-
-	$BrowseTotalProducts = count($this->products);
-
-	// Start the Output
-	foreach ($this->products as $product) {
-
-		// Show the horizontal seperator
-		if ($iBrowseCol == 1 && $iBrowseProduct > $BrowseProducts_per_row) {
-			?>
-		<div class="horizontal-separator"></div>
-			<?php
-		}
-
-		// this is an indicator wether a row needs to be opened or not
-		if ($iBrowseCol == 1) {
-			?>
-	<div class="row">
-	<?php
-		}
-
-		// Show the vertical seperator
-		if ($iBrowseProduct == $BrowseProducts_per_row or $iBrowseProduct % $BrowseProducts_per_row == 0) {
-			$show_vertical_separator = ' ';
-		} else {
-			$show_vertical_separator = $verticalseparator;
-		}
-
-		// Show Products
-		?>
-		<div class="product floatleft<?php echo $Browsecellwidth . $show_vertical_separator ?>">
-			<div class="row-fluid">
-				<div class="width30 floatleft center span4">
-				    <a title="<?php echo $product->product_name ?>" rel="vm-additional-images" href="<?php echo $product->link; ?>">
-						<?php
-							echo $product->images[0]->displayMediaThumb('class="browseProductImage"', false);
-						?>
-					 </a>
-
-					<!-- The "Average Customer Rating" Part -->
-					<?php if ($this->showRating) { ?>
-					<span class="contentpagetitle"><?php echo JText::_ ('COM_VIRTUEMART_CUSTOMER_RATING') ?>:</span>
-					<br/>
-					<?php
-					// $img_url = JURI::root().VmConfig::get('assets_general_path').'/reviews/'.$product->votes->rating.'.gif';
-					// echo JHTML::image($img_url, $product->votes->rating.' '.JText::_('COM_VIRTUEMART_REVIEW_STARS'));
-					// echo JText::_('COM_VIRTUEMART_TOTAL_VOTES').": ". $product->votes->allvotes;
-					?>
-					<?php } ?>
- 					<?php
-						if ( VmConfig::get ('display_stock', 1)) { ?>
-						<!-- 						if (!VmConfig::get('use_as_catalog') and !(VmConfig::get('stockhandle','none')=='none')){?> -->
-						<div class="paddingtop8">
-							<span class="vmicon vm2-<?php echo $product->stock->stock_level ?>" title="<?php echo $product->stock->stock_tip ?>"></span>
-							<span class="stock-level"><?php echo JText::_ ('COM_VIRTUEMART_STOCK_LEVEL_DISPLAY_TITLE_TIP') ?></span>
-						</div>
-						<?php } ?>
-				</div>
-
-				<div class="width70 floatright span8">
-
-					<h4><?php echo JHTML::link ($product->link, $product->product_name); ?></h4>
-
-					<?php // Product Short Description
-					if (!empty($product->product_s_desc)) {
-						?>
-						<p class="product_s_desc">
-							<?php echo shopFunctionsF::limitStringByWord ($product->product_s_desc, 40, '...') ?>
-						</p>
-						<?php } ?>
-
-					<div class="product-price marginbottom12" id="productPrice<?php echo $product->virtuemart_product_id ?>">
-						<?php
-						if ($this->show_prices == '1') {
-							if ($product->prices['salesPrice']<=0 and VmConfig::get ('askprice', 1) and  !$product->images[0]->file_is_downloadable) {
-								echo JText::_ ('COM_VIRTUEMART_PRODUCT_ASKPRICE');
-							}
-							//todo add config settings
-							if ($this->showBasePrice) {
-								echo $this->currency->createPriceDiv ('basePrice', 'COM_VIRTUEMART_PRODUCT_BASEPRICE', $product->prices);
-								echo $this->currency->createPriceDiv ('basePriceVariant', 'COM_VIRTUEMART_PRODUCT_BASEPRICE_VARIANT', $product->prices);
-							}
-							echo $this->currency->createPriceDiv ('variantModification', 'COM_VIRTUEMART_PRODUCT_VARIANT_MOD', $product->prices);
-							if (round($product->prices['basePriceWithTax'],$this->currency->_priceConfig['salesPrice'][1]) != $product->prices['salesPrice']) {
-								echo '<div class="price-crossed" >' . $this->currency->createPriceDiv ('basePriceWithTax', 'COM_VIRTUEMART_PRODUCT_BASEPRICE_WITHTAX', $product->prices) . "</div>";
-							}
-							if (round($product->prices['salesPriceWithDiscount'],$this->currency->_priceConfig['salesPrice'][1]) != $product->prices['salesPrice']) {
-								echo $this->currency->createPriceDiv ('salesPriceWithDiscount', 'COM_VIRTUEMART_PRODUCT_SALESPRICE_WITH_DISCOUNT', $product->prices);
-							}
-							echo $this->currency->createPriceDiv ('salesPrice', 'COM_VIRTUEMART_PRODUCT_SALESPRICE', $product->prices);
-							if ($product->prices['discountedPriceWithoutTax'] != $product->prices['priceWithoutTax']) {
-								echo $this->currency->createPriceDiv ('discountedPriceWithoutTax', 'COM_VIRTUEMART_PRODUCT_SALESPRICE_WITHOUT_TAX', $product->prices);
-							} else {
-								echo $this->currency->createPriceDiv ('priceWithoutTax', 'COM_VIRTUEMART_PRODUCT_SALESPRICE_WITHOUT_TAX', $product->prices);
-							}
-							echo $this->currency->createPriceDiv ('discountAmount', 'COM_VIRTUEMART_PRODUCT_DISCOUNT_AMOUNT', $product->prices);
-							echo $this->currency->createPriceDiv ('taxAmount', 'COM_VIRTUEMART_PRODUCT_TAX_AMOUNT', $product->prices);
-							$unitPriceDescription = JText::sprintf ('COM_VIRTUEMART_PRODUCT_UNITPRICE', $product->product_unit);
-							echo $this->currency->createPriceDiv ('unitPrice', $unitPriceDescription, $product->prices);
-						} ?>
-
-					</div>
-
-					<p>
-						<?php // Product Details Button
-						echo JHTML::link ($product->link, JText::_ ('COM_VIRTUEMART_PRODUCT_DETAILS'), array('title' => $product->product_name, 'class' => 'product-details'));
-						?>
-					</p>
-
-				</div>
-				<div class="clear"></div>
+		<li class="<?php echo $spanClass ?>">
+		  <div class="thumbnail">
+			<div class="text-center">
+				<a href="<?php echo $product->link; ?>" title="<?php echo $this->category->category_name.' : '.$product->product_name ?>">
+					<?php echo $product->images[0]->displayMediaThumb('class="browseProductImage"', false); ?>
+				</a>
 			</div>
-			<!-- end of spacer -->
-		</div> <!-- end of product -->
-		<?php
-
-		// Do we need to close the current row now?
-		if ($iBrowseCol == $BrowseProducts_per_row || $iBrowseProduct == $BrowseTotalProducts) {
-			?>
-			<div class="clear"></div>
-   </div> <!-- end of row -->
-			<?php
-			$iBrowseCol = 1;
-		} else {
-			$iBrowseCol++;
+			<div class="caption">
+			  <h4 class="text-center"><?php echo $product->product_name ?></h4>
+			  <p class="text-center" style="height:40px;"> 
+				<?php // Product Short Description
+				if (!empty($product->product_s_desc)) {
+					echo shopFunctionsF::limitStringByWord ($product->product_s_desc, 60, '...') ;
+				 } ?>
+			  </p>
+			  <h3><?php echo JHTML::link ($product->link, /*JText::_ ('JSHOW').*/' <i class="icon icon-arrow-right-2"></i> ', array('title' => $product->product_name, 'class' => 'pull-right')); ?><span class=""><?php echo $this->currency->createPriceDiv ('salesPrice', 'COM_VIRTUEMART_PRODUCT_SALESPRICE', $product->prices,true); ?></span></h3>
+			</div>
+		  </div>
+		</li>
+		<?php 
+		// see if whe must add a new line
+		if ($pCount == $this->perRow && $pTotal>0 ) { ?>
+			</ul>
+			<ul class="thumbnails">
+			<?php 
+			$pCount =0;
 		}
-
-		$iBrowseProduct++;
-	} // end of foreach ( $this->products as $product )
-	// Do we need a final closing row tag?
-	if ($iBrowseCol != 1) {
-		?>
-	<div class="clear"></div>
-
-		<?php
-	}
-	?>
-
-<div class="vm-pagination"><?php echo $this->vmPagination->getPagesLinks (); ?><span style="float:right"><?php echo $this->vmPagination->getPagesCounter (); ?></span></div>
+		$pTotal--;
+		$pCount++;
+	  } ?>
+	</ul>
+<div class="vm-pagination pagination"><?php echo $this->vmPagination->getPagesLinks (); ?><span style="float:right"><?php echo $this->vmPagination->getPagesCounter (); ?></span></div>
 
 	<?php
 } elseif ($this->search !== NULL) {

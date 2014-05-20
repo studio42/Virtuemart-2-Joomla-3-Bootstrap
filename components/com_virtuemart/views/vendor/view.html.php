@@ -59,10 +59,8 @@ class VirtuemartViewVendor extends VmView {
 			$document->setTitle( JText::_('COM_VIRTUEMART_VENDOR_LIST') );
 			$pathway->addItem(JText::_('COM_VIRTUEMART_VENDOR_LIST'));
 
-			$vendors = $model->getVendors();
-			$model->addImages($vendors);
-
-			$this->assignRef('vendors', $vendors);
+			$this->vendors = $model->getVendors();
+			$model->addImages($this->vendors);
 
 		} else {
 
@@ -73,32 +71,27 @@ class VirtuemartViewVendor extends VmView {
 				$dispatcher = & JDispatcher::getInstance ();
 				JPluginHelper::importPlugin ('content');
 				$vendor->text = $vendor->vendor_store_desc;
-				jimport ('joomla.html.parameter');
-				$params = new JParameter('');
-
-				if (JVM_VERSION === 2) {
-					if (!isset($vendor->event)) {
-						$vendor->event = new stdClass();
-					}
-					$results = $dispatcher->trigger ('onContentPrepare', array('com_virtuemart.vendor', &$vendor, &$params, 0));
-					// More events for 3rd party content plugins
-					// This do not disturb actual plugins, because we don't modify $vendor->text
-					$res = $dispatcher->trigger ('onContentAfterTitle', array('com_virtuemart.vendor', &$vendor, &$params, 0));
-					$vendor->event->afterDisplayTitle = trim (implode ("\n", $res));
-
-					$res = $dispatcher->trigger ('onContentBeforeDisplay', array('com_virtuemart.vendor', &$vendor, &$params, 0));
-					$vendor->event->beforeDisplayContent = trim (implode ("\n", $res));
-
-					$res = $dispatcher->trigger ('onContentAfterDisplay', array('com_virtuemart.vendor', &$vendor, &$params, 0));
-					$vendor->event->afterDisplayContent = trim (implode ("\n", $res));
-				} else {
-					$results = $dispatcher->trigger ('onPrepareContent', array(& $vendor, & $params, 0));
+				$params = new JRegistry;
+				if (!isset($vendor->event)) {
+					$vendor->event = new stdClass();
 				}
+				$results = $dispatcher->trigger ('onContentPrepare', array('com_virtuemart.vendor', &$vendor, &$params, 0));
+				// More events for 3rd party content plugins
+				// This do not disturb actual plugins, because we don't modify $vendor->text
+				$res = $dispatcher->trigger ('onContentAfterTitle', array('com_virtuemart.vendor', &$vendor, &$params, 0));
+				$vendor->event->afterDisplayTitle = trim (implode ("\n", $res));
+
+				$res = $dispatcher->trigger ('onContentBeforeDisplay', array('com_virtuemart.vendor', &$vendor, &$params, 0));
+				$vendor->event->beforeDisplayContent = trim (implode ("\n", $res));
+
+				$res = $dispatcher->trigger ('onContentAfterDisplay', array('com_virtuemart.vendor', &$vendor, &$params, 0));
+				$vendor->event->afterDisplayContent = trim (implode ("\n", $res));
+
 				$vendor->vendor_store_desc = $vendor->text;
 			}
-			$this->assignRef('vendor', $vendor);
+			$this->vendor = $vendor;
 
-			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.'/models/vendor.php');
 			$userId = VirtueMartModelVendor::getUserIdByVendorId($virtuemart_vendor_id);
 
 			//$usermodel = VmModel::getModel('user');
@@ -116,7 +109,7 @@ class VirtuemartViewVendor extends VmView {
 				$user = JFactory::getUser();
 				$document->setTitle( JText::_('COM_VIRTUEMART_VENDOR_CONTACT') );
 				$pathway->addItem(JText::_('COM_VIRTUEMART_VENDOR_CONTACT'));
-				$this->assignRef('user', $user);
+				$this->user = $user;
 
 			} else {
 				$document->setTitle( JText::_('COM_VIRTUEMART_VENDOR_DETAILS').' '.$this->vendor->vendor_store_name );
@@ -131,27 +124,18 @@ class VirtuemartViewVendor extends VmView {
 					foreach($this->products as $product){
 						$product->stock = $productModel->getStockIndicator($product);
 					}
-					if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+					if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 					$this->showBasePrice = Permissions::getInstance()->check('admin'); //todo add config settings
-					$perRow = VmConfig::get('products_per_row',3);
-					$this->assignRef('perRow', $perRow);
-
-					$pagination = $productModel->getPagination($perRow);
-					// var_dump($pagination);
-					$this->assignRef('vmPagination', $pagination);
+					$this->perRow = VmConfig::get('products_per_row',3);
+					$this->pagination = $productModel->getPagination($this->perRow);
 				}
 			}
 
-			$linkdetails = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=details&virtuemart_vendor_id=' .
+			$this->linkdetails = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=details&virtuemart_vendor_id=' .
 				$virtuemart_vendor_id, FALSE).'">'.JText::_('COM_VIRTUEMART_VENDOR_DETAILS').'</a>';
-			$linkcontact = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=contact&virtuemart_vendor_id=' . $virtuemart_vendor_id, FALSE).'">'.JText::_('COM_VIRTUEMART_VENDOR_CONTACT').'</a>';
-			$linktos = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=tos&virtuemart_vendor_id=' . $virtuemart_vendor_id, FALSE).'">'.JText::_('COM_VIRTUEMART_VENDOR_TOS').'</a>';
+			$this->linkcontact = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=contact&virtuemart_vendor_id=' . $virtuemart_vendor_id, FALSE).'">'.JText::_('COM_VIRTUEMART_VENDOR_CONTACT').'</a>';
+			$this->linktos = '<a href="'.JRoute::_('index.php?option=com_virtuemart&view=vendor&layout=tos&virtuemart_vendor_id=' . $virtuemart_vendor_id, FALSE).'">'.JText::_('COM_VIRTUEMART_VENDOR_TOS').'</a>';
 
-
-			//$this->assignRef('lineSeparator', $lineSeparator);
-			$this->assignRef('linkdetails', $linkdetails);
-			$this->assignRef('linkcontact', $linkcontact);
-			$this->assignRef('linktos', $linktos);
 		}
 
 		parent::display($tpl);

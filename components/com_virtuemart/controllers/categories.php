@@ -38,15 +38,13 @@ class VirtueMartControllerCategories extends JControllerLegacy {
 	public function display($cachable = false, $urlparams = false)  {
 
 		if (JRequest::getvar('search')) {
-			// $view = $this->getView('category', 'html');
-			// $view->display();
 			$safeurlparams = '';
 			$cachable = false;
 		} else {
 			// Display it all
 			$safeurlparams = array('virtuemart_category_id'=>'INT','virtuemart_manufacturer_id'=>'INT','virtuemart_currency_id'=>'INT','return'=>'BASE64','lang'=>'CMD','orderby'=>'CMD','limitstart'=>'CMD','order'=>'CMD','limit'=>'CMD');
 		}
-		parent::display(true, $safeurlparams);
+		parent::display($cachable, $safeurlparams);
 		if($categoryId = JRequest::getInt('virtuemart_category_id',0)){
 			shopFunctionsF::setLastVisitedCategoryId($categoryId);
 		}
@@ -55,13 +53,7 @@ class VirtueMartControllerCategories extends JControllerLegacy {
 
 	public function json(){
 
-		$view = $this->getView('categories', 'json');
-
-		$layoutName = JRequest::getWord('layout', 'default');
-		$view->setLayout($layoutName);
-
-		// Display it all
-		$view->display();
+		parent::display();
 
 	}
 }

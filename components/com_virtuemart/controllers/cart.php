@@ -37,16 +37,16 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	 * @author Max Milbers
 	 */
 	public function __construct() {
-		parent::__construct();
+
 		if (VmConfig::get('use_as_catalog', 0)) {
 			$app = JFactory::getApplication();
 			$app->redirect('index.php');
 		} else {
-			if (!class_exists('VirtueMartCart'))
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
-			if (!class_exists('calculationHelper'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
+			JLoader::register('VirtueMartCart', JPATH_VM_SITE.'/helpers/cart.php');
+			JLoader::register('calculationHelper', JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
+
 		}
+		parent::__construct();
 		$this->useSSL = VmConfig::get('useSSL', 0);
 		$this->useXHTML = true;
 	}
@@ -115,12 +115,15 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	 * @access public
 	 */
 	public function addJS() {
-
+		
+		$input = JFactory::getApplication()->input;
+		$pid = $input->get( 'virtuemart_product_id' , array(), 'ARRAY');
 		$this->json = new stdClass();
 		$cart = VirtueMartCart::getCart(false);
 		if ($cart) {
 
 			$virtuemart_product_ids = JRequest::getVar('virtuemart_product_id', array(), 'default', 'array');
+
 			$view = $this->getView ('cart', 'json');
 			$errorMsg = 0;//JText::_('COM_VIRTUEMART_CART_PRODUCT_ADDED');
 			$product = $cart->add($virtuemart_product_ids, $errorMsg );
@@ -142,7 +145,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			$this->json->stat = '0';
 		}
 		echo json_encode($this->json);
-		jExit();
+		// jExit();
 	}
 
 	/**
@@ -153,13 +156,13 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	 */
 	public function viewJS() {
 
-		if (!class_exists('VirtueMartCart'))
-		require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		JLoader::register('VirtueMartCart', JPATH_VM_SITE.'/helpers/cart.php');
+
 		$cart = VirtueMartCart::getCart(false);
 		$this->data = $cart->prepareAjaxData();
 		$lang = JFactory::getLanguage();
-		$extension = 'com_virtuemart';
-		$lang->load($extension); //  when AJAX it needs to be loaded manually here >> in case you are outside virtuemart !!!
+
+		$lang->load('com_virtuemart'); //  when AJAX it needs to be loaded manually here >> in case you are outside virtuemart !!!
 		if ($this->data->totalProduct > 1)
 		$this->data->totalProductTxt = JText::sprintf('COM_VIRTUEMART_CART_X_PRODUCTS', $this->data->totalProduct);
 		else if ($this->data->totalProduct == 1)
@@ -247,7 +250,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		$cart = VirtueMartCart::getCart();
 		if ($cart) {
 			//Now set the shipment ID into the cart
-			if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+			JLoader::register('vmPSPlugin', JPATH_VM_PLUGINS.'vmpsplugin.php');
 			JPluginHelper::importPlugin('vmshipment');
 			$cart->setShipment($virtuemart_shipmentmethod_id);
 			//Add a hook here for other payment methods, checking the data of the choosed plugin
@@ -303,7 +306,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		//Now set the payment rate into the cart
 		$cart = VirtueMartCart::getCart();
 		if ($cart) {
-			if(!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.DS.'vmpsplugin.php');
+			JLoader::register('vmPSPlugin', JPATH_VM_PLUGINS.'vmpsplugin.php');
 			JPluginHelper::importPlugin('vmpayment');
 			//Some Paymentmethods needs extra Information like
 			$virtuemart_paymentmethod_id = JRequest::getInt('virtuemart_paymentmethod_id', '0');

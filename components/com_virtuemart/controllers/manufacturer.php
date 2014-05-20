@@ -28,7 +28,12 @@ defined('_JEXEC') or die();
 
 class VirtueMartControllerManufacturer extends JControllerLegacy
 {
+	function display() {
 
+		// Display it all
+		$safeurlparams = array('virtuemart_manufacturer_id'=>'INT','return'=>'BASE64','lang'=>'CMD');
+		return parent::display(true, $safeurlparams);
+	}
 }
 
 // No closing tag

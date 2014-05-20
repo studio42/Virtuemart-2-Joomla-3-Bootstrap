@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @package		VirtueMart
  * @author RolandD,Max Milbers
  */
-if(!class_exists('VmView')) require(JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
+JLoader::register('VmView', JPATH_VM_ADMINISTRATOR.'/helpers/VmView.php');
 
 class VirtuemartViewProduct extends VmView {
 
@@ -89,7 +89,7 @@ class VirtuemartViewProduct extends VmView {
 				}
 				$this->assignRef('product_childs', $product_childs);
 
-				if(!class_exists('VirtueMartModelConfig')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'config.php');
+				JLoader::register('VirtueMartModelConfig', JPATH_VM_ADMINISTRATOR.'/models/config.php');
 				$this->productLayouts = VirtueMartModelConfig::getLayoutList('productdetails',$product->layout);
 
 				// Load Images
@@ -404,7 +404,7 @@ class VirtuemartViewProduct extends VmView {
 	 */
 	function renderDiscountList($selected,$name='product_discount_id',$id=null){
 		if ($id ===null) $id = $name ;
-		if(!class_exists('VirtueMartModelCalc')) require(JPATH_VM_ADMINISTRATOR.'/models'.DS.'calc.php');
+		JLoader::register('VirtueMartModelCalc', JPATH_VM_ADMINISTRATOR.'models/calc.php');
 		$discounts = VirtueMartModelCalc::getDiscounts();
 
 		$discountrates = array();

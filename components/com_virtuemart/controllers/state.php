@@ -19,8 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-
-if(!class_exists('VirtueMartModelState')) require( JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'state.php' );
+JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.'/helpers/vmmodel.php');
 
 class VirtueMartControllerState extends JControllerLegacy
 {

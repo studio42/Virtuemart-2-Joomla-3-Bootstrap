@@ -60,7 +60,7 @@ if ( !$showtax) {
 				<?php
 // 				vmdebug('$item',$item);
 					if (!empty($item->product_attribute)) {
-							if(!class_exists('VirtueMartModelCustomfields'))require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'customfields.php');
+							if(!class_exists('VirtueMartModelCustomfields'))require(JPATH_VM_ADMINISTRATOR.'/models/customfields.php');
 							$product_attribute = VirtueMartModelCustomfields::CustomsFieldOrderDisplay($item,'FE');
 						echo $product_attribute;
 					}

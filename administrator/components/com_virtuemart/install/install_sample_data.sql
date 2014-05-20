@@ -1,313 +1,666 @@
--- VirtueMart table data SQL script
--- This will insert all required data into the VirtueMart tables
+INSERT IGNORE INTO `#__virtuemart_calcs` (`virtuemart_calc_id`, `virtuemart_vendor_id`, `calc_jplugin_id`, `calc_name`, `calc_descr`, `calc_kind`, `calc_value_mathop`, `calc_value`, `calc_currency`, `calc_shopper_published`, `calc_vendor_published`, `for_override`, `calc_params`, `ordering`, `shared`, `published`) VALUES
+	(1, 1, 0, 'Tax 20%', '', 'VatTax', '+%', 20.0000, 47, 0, 0, 0, '', 0, 0, 1),
+	(2, 1, 0, 'Discount 5%', '', 'DATax', '-%', 5.0000, 47, 0, 0, 0, '', 0, 0, 1),
+	(3, 1, 0, 'Special tax for category pagination 10%, an example for rule per category to show multitax store function', '', 'VatTax', '+%', 10.0000, 47, 0, 0, 0, '', 0, 0, 1);
+
+INSERT IGNORE INTO `#__virtuemart_calc_categories` (`id`, `virtuemart_calc_id`, `virtuemart_category_id`) VALUES
+	(1, 3, 3);
+
+INSERT IGNORE INTO `#__virtuemart_categories` (`virtuemart_category_id`, `virtuemart_vendor_id`, `category_template`, `category_layout`, `category_product_layout`, `products_per_row`, `limit_list_step`, `limit_list_initial`, `hits`, `metarobot`, `metaauthor`, `ordering`, `shared`, `published`) VALUES
+	(1, 1, '0', '0', '0', 0, '0', 0, 0, '', '', 1, 0, 1),
+	(2, 1, '0', '0', '0', 0, '0', 0, 0, '', '', 2, 0, 1),
+	(3, 1, '0', '0', '0', 0, '0', 0, 0, '', '', 3, 0, 1),
+	(4, 1, '0', '0', '0', 0, '0', 0, 0, '', '', 4, 0, 1),
+	(5, 1, '0', '0', '0', 0, '0', 0, 0, '', '', 1, 0, 1),
+	(6, 1, '0', '0', '0', 0, '0', 0, 0, '', '', 2, 0, 1),
+	(7, 1, '0', '0', '0', 0, '0', 0, 0, '', '', 5, 0, 1),
+	(8, 1, '0', '0', '0', 0, '0', 0, 0, '', '', 1, 0, 1),
+	(9, 1, '0', '0', '0', 0, '0', 0, 0, '', '', 1, 0, 1);
+
+INSERT IGNORE INTO `#__virtuemart_categories_XLANG` (`virtuemart_category_id`, `category_name`, `category_description`, `metadesc`, `metakey`, `customtitle`, `slug`) VALUES
+	(1, 'Default Products', '<p>Sample of several default products. You will find settings displayed.</p>', '', '', '', 'default-products'),
+	(2, 'Default Pattern', '<p><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px; ">Example for usage of product pattern. For showcase reason the PATTERN is NOT unpublished.</span></p>', '', '', '', 'default-pattern'),
+	(3, 'Pagination testarea', '<p><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">Notice: for correct ordering in product view set valid ordering in BE.</span><br />Ordering showcase category. Use this category to test the ordering of products. You can also select several Manufacturer.</p>', '', '', '', 'pagination-testarea'),
+	(4, 'Headgear', '<p><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">Showcase for subcategory with several sample product.</span></p>', '', '', '', 'headgear'),
+	(5, 'Hats', '<p><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">Example for usage of product pattern. For showcase reason the PATTERN is NOT unpublished.</span><br />Sample for product category. Create new category in VM BE > <em>Product Categories</em> > <em>New</em></p>', '', '', '', 'hats'),
+	(6, 'Caps', '<p><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">Example for usage of product pattern. For showcase reason the PATTERN is NOT unpublished.</span><br />Sample for product category. Create new category in VM BE > <em>Product Categories</em> > <em>New</em></p>', '', '', '', 'caps'),
+	(7, 'Clothes', '', '', '', '', 'clothes'),
+	(8, 'Men clothes', '<p>Sample for Subcategory. <br />Select superordinated category in VM BE > <em>Product Categories</em> > Your Category in section <em>Details > Category Ordering </em></p>', '', '', '', 'men-clothes'),
+	(9, 'Women clothes', '<p>Sample for Subcategory. <br />Select superordinated category in VM BE > <em>Product Categories</em> > Your Category in section <em>Details > Category Ordering </em></p>', '', '', '', 'women-clothes');
+
+INSERT IGNORE INTO `#__virtuemart_category_categories` (`id`, `category_parent_id`, `category_child_id`, `ordering`) VALUES
+	(1, 0, 1, 0),
+	(2, 0, 2, 0),
+	(3, 0, 3, 0),
+	(4, 0, 4, 0),
+	(5, 4, 5, 5),
+	(6, 4, 6, 6),
+	(7, 0, 7, 5),
+	(8, 7, 8, 1),
+	(9, 7, 9, 1);
+
+INSERT IGNORE INTO `#__virtuemart_category_medias` (`id`, `virtuemart_category_id`, `virtuemart_media_id`, `ordering`) VALUES
+	(1, 1, 2, 1),
+	(2, 2, 2, 1),
+	(3, 3, 2, 1),
+	(4, 4, 3, 1),
+	(8, 7, 6, 1),
+	(6, 6, 5, 1),
+	(7, 5, 3, 1),
+	(9, 8, 6, 1),
+	(10, 9, 7, 1);
+
+INSERT IGNORE INTO `#__virtuemart_coupons` (`virtuemart_coupon_id`, `coupon_code`, `percent_or_total`, `coupon_type`, `coupon_value`, `coupon_start_date`, `coupon_expiry_date`, `coupon_value_valid`, `coupon_used`, `published`) VALUES
+	(1, 'Sample Coupon', 'total', 'permanent', 0.01000, '0000-00-00 00:00:00', '2015-01-01 00:00:00', 0.00000, '0', 1);
+
+INSERT IGNORE INTO `#__virtuemart_customs` (`virtuemart_custom_id`, `custom_parent_id`, `virtuemart_vendor_id`, `custom_jplugin_id`, `custom_element`, `admin_only`, `custom_title`, `show_title`, `custom_tip`, `custom_value`, `custom_field_desc`, `field_type`, `is_list`, `is_hidden`, `is_cart_attribute`, `layout_pos`, `custom_params`, `shared`, `published`, `ordering`) VALUES
+	(1, 0, 1, 0, '', 0, 'COM_VIRTUEMART_RELATED_PRODUCTS', 1, 'COM_VIRTUEMART_RELATED_PRODUCTS_TIP', '', 'COM_VIRTUEMART_RELATED_PRODUCTS_DESC', 'R', 0, 0, 0, NULL, NULL, 0, 1, 0),
+	(2, 0, 1, 0, '', 0, 'COM_VIRTUEMART_RELATED_CATEGORIES', 1, 'COM_VIRTUEMART_RELATED_CATEGORIES_TIP', NULL, 'COM_VIRTUEMART_RELATED_CATEGORIES_DESC', 'Z', 0, 0, 0, NULL, NULL, 0, 1, 0),
+	(3, 0, 1, 0, '0', 0, 'Customfield String', 1, '', '', '', 'S', 0, 0, 0, '', '0', 0, 1, 0),
+	(4, 0, 1, 0, '0', 0, 'Customfield Textarea', 1, '', '', '', 'Y', 0, 0, 0, '', '0', 0, 1, 0),
+	(5, 0, 1, 0, '0', 0, 'Customfield Parent', 1, '', '', '', 'P', 0, 0, 0, '', '0', 0, 1, 0),
+	(6, 5, 1, 0, '0', 0, 'Customfield Child String 1', 1, '', '', '', 'S', 0, 0, 0, '', '0', 0, 1, 0),
+	(7, 5, 1, 0, '0', 0, 'Customfield Child String 2', 1, '', '', '', 'S', 0, 0, 0, '', '0', 0, 1, 0),
+	(8, 5, 1, 0, '0', 0, 'Customfield Textarea Child', 1, '', '', '', 'Y', 0, 0, 0, '', '0', 0, 1, 0),
+	(9, 0, 1, 0, '0', 0, 'Customfield Cart Variant', 1, '', '', '', 'V', 0, 0, 1, '', '0', 0, 1, 0),
+	(10, 0, 1, 0, '0', 0, 'Customfield Child Variant', 1, '', '', '', 'A', 0, 0, 1, '', '0', 0, 1, 0),
+	(11, 0, 1, 0, '0', 0, 'Caps Customfield Parent', 1, '', '', '', 'P', 0, 0, 0, '', '0', 0, 1, 0),
+	(12, 0, 1, 0, '0', 0, 'Cap Size', 1, '', '', '', 'V', 0, 0, 1, '', '0', 0, 1, 0),
+	(13, 11, 1, 0, '0', 0, 'Cap Details', 1, '', '', '', 'S', 0, 0, 0, '', '0', 0, 1, 0),
+	(14, 11, 1, 0, '0', 0, 'Cap Components', 1, '', '', '', 'S', 0, 0, 0, '', '0', 0, 1, 0),
+	(15, 0, 1, 0, '0', 0, 'Clothing weave', 1, '', '', '', 'V', 0, 0, 1, '', '0', 0, 1, 0),
+	(16, 0, 1, 0, '0', 0, 'Clothing size', 1, '', '', '', 'V', 0, 0, 1, '', '0', 0, 1, 0),
+	(17, 0, 1, 0, '0', 0, 'Clothing parent', 1, '', '', '', 'P', 0, 0, 0, '', '0', 0, 1, 0),
+	(18, 17, 1, 0, '0', 0, 'Clothing Composit', 1, '', '', '', 'S', 0, 0, 0, '', '0', 0, 1, 0),
+	(19, 17, 1, 0, '0', 0, 'Clothing textarea', 1, '', '', '', 'Y', 0, 0, 0, '', '0', 0, 1, 0);
+
+INSERT IGNORE INTO `#__virtuemart_manufacturercategories` (`virtuemart_manufacturercategories_id`, `published`) VALUES
+	(1, 1);
+
+INSERT IGNORE INTO `#__virtuemart_manufacturercategories_XLANG` (`virtuemart_manufacturercategories_id`, `mf_category_name`, `mf_category_desc`, `slug`) VALUES
+	(1, 'default', 'This is the default manufacturer category ', 'default');
+
+INSERT IGNORE INTO `#__virtuemart_manufacturers` (`virtuemart_manufacturer_id`, `virtuemart_manufacturercategories_id`, `hits`, `published`) VALUES
+	(1, 1, 0, 1),
+	(2, 1, 0, 1),
+	(3, 1, 0, 1);
+
+INSERT IGNORE INTO `#__virtuemart_manufacturers_XLANG` (`virtuemart_manufacturer_id`, `mf_name`, `mf_email`, `mf_desc`, `mf_url`, `slug`) VALUES
+	(1, 'Manufacturer', 'manufacturer@example.org', '<p>An example for a manufacturer</p>', 'http://www.example.org', 'manufacturer'),
+	(2, 'Default', 'example@manufacturer.net', '<p>Default manufacturer</p>', 'example.manufacturer.net', 'default'),
+	(3, 'Producer', 'info@producer.com', '<p>An example for another manufacturer.</p>', 'producer.com', 'producer');
+
+INSERT IGNORE INTO `#__virtuemart_manufacturer_medias` (`id`, `virtuemart_manufacturer_id`, `virtuemart_media_id`, `ordering`) VALUES
+	(1, 1, 9, 1),
+	(2, 2, 9, 1),
+	(3, 3, 9, 1);
+
+INSERT IGNORE INTO `#__virtuemart_medias` (`virtuemart_media_id`, `virtuemart_vendor_id`, `file_title`, `file_description`, `file_meta`, `file_mimetype`, `file_type`, `file_url`, `file_url_thumb`, `file_is_product_image`, `file_is_downloadable`, `file_is_forSale`, `file_params`, `file_lang`, `shared`, `published`) VALUES
+	(1, 1, 'vendor.gif', '', '', 'image/gif', 'vendor', 'images/stories/virtuemart/vendor/vendor.gif', '', 0, 0, 0, '', '', 0, 1),
+	(2, 1, 'student_hat_16.jpg', '', '', 'image/jpeg', 'category', 'images/stories/virtuemart/category/student_hat_16.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(3, 1, 'hat_category8.jpg', '', '', 'image/jpeg', 'category', 'images/stories/virtuemart/category/hat_category8.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(5, 1, 'cap6.jpg', '', '', 'image/jpeg', 'category', 'images/stories/virtuemart/category/cap6.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(6, 1, 'jacket_classic7.jpg', '', '', 'image/jpeg', 'category', 'images/stories/virtuemart/category/jacket_classic7.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(7, 1, 'black_dress_2.jpg', '', '', 'image/jpeg', 'category', 'images/stories/virtuemart/category/black_dress_2.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(8, 1, 'cart_logo.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/cart_logo.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(9, 1, 'manufacturer.jpg', '', '', 'image/jpeg', 'manufacturer', 'images/stories/virtuemart/manufacturer/manufacturer.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(10, 1, 'classic_hat.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/classic_hat.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(11, 1, 'cowboy_hat.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/cowboy_hat.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(12, 1, 'derbyhat.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/derbyhat.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(13, 1, 'santa_cap.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/santa_cap.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(14, 1, 'baseballcap.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/baseballcap.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(15, 1, 'marinecap.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/marinecap.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(16, 1, 'jumper.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/jumper.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(17, 1, 'wide_dress_2.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/wide_dress_2.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(18, 1, 'jacket_classic.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/jacket_classic.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(19, 1, 'poncho.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/poncho.jpg', '', 0, 0, 0, '', '', 0, 1),
+	(20, 1, 'dress.jpg', '', '', 'image/jpeg', 'product', 'images/stories/virtuemart/product/dress.jpg', '', 0, 0, 0, '', '', 0, 1);
+
+INSERT IGNORE INTO `#__virtuemart_products` (`virtuemart_product_id`, `virtuemart_vendor_id`, `product_parent_id`, `product_sku`, `product_weight`, `product_weight_uom`, `product_length`, `product_width`, `product_height`, `product_lwh_uom`, `product_url`, `product_in_stock`, `product_ordered`, `low_stock_notification`, `product_available_date`, `product_availability`, `product_special`, `product_sales`, `product_unit`, `product_packaging`, `product_params`, `hits`, `intnotes`, `metarobot`, `metaauthor`, `layout`, `published`, `pordering`, `created_on`, `created_by`, `modified_on`, `modified_by`) VALUES
+	(1, 1, 0, '', 50.0000, 'KG', 45.0000, 5.0000, 5.0000, 'M', '', 78, 0, 5, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(2, 1, 0, '', 15.0000, 'KG', 10.0000, 25.0000, 10.0000, 'M', '', 10, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', 0.1000, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(3, 1, 0, '', 0.1000, 'KG', 0.0100, 0.0100, 0.0300, 'M', '', 55, 0, 10, '0000-00-00 00:00:00', '', 0, 0, 'KG', 1.0000, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(4, 1, 0, '', 1.0000, 'KG', 0.2000, 0.1000, 0.3000, 'M', '', 100, 0, 5, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(5, 1, 0, '', 0.1000, 'KG', 0.2000, 0.0100, 0.0300, 'M', '', 10, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(6, 1, 0, '', 0.1000, 'KG', 0.2000, 0.0100, 0.3000, 'M', '', 50, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(7, 1, 0, '', 0.4000, 'KG', 0.1000, 0.2000, 0.3000, 'M', '', 80, 0, 10, '0000-00-00 00:00:00', '', 0, 0, 'KG', 0.1000, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="1"|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(8, 1, 7, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 1, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(9, 1, 7, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 2, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(10, 1, 7, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 3, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(11, 1, 0, '', 0.4000, 'KG', 0.1000, 0.2000, 0.3000, 'M', '', 150, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(12, 1, 11, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 1, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(13, 1, 11, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 2, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(14, 1, 11, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 3, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(15, 1, 0, '', 0.1000, 'KG', 0.1000, 0.2000, 0.3000, 'M', '', 100, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(16, 1, 15, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 1, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(17, 1, 15, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 2, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(18, 1, 15, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 3, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(19, 1, 0, '', 0.4000, 'KG', 0.1000, 0.2000, 0.3000, 'M', '', 100, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="1"|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(20, 1, 19, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(21, 1, 19, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(22, 1, 19, '', 4.0000, 'KG', 1.0000, 2.0000, 3.0000, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="10"|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(23, 1, 0, '', 0.4000, 'KG', 0.1000, 0.2000, 0.3000, 'M', '', 80, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="1"|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(24, 1, 23, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 1, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(25, 1, 23, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 2, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(26, 1, 23, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="10"|', NULL, '', '', '', '0', 1, 3, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(27, 1, 0, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(28, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(29, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(30, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(31, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(32, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(33, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(34, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(35, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(36, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(37, 1, 27, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(38, 1, 0, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(39, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(40, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(41, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(42, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(43, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(44, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(45, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(46, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(47, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(48, 1, 38, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(49, 1, 0, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(50, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(51, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(52, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(53, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(54, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(55, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(56, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(57, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(58, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(59, 1, 49, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(60, 1, 0, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(61, 1, 60, '', 125.0000, 'G', 20.0000, 20.0000, 10.0000, 'CM', '', 35, 2, 5, '0000-00-00 00:00:00', '', 0, 0, '100G', 0.5000, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="1"|', NULL, '', '', '', '0', 1, 1, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(62, 1, 60, '', 150.0000, 'G', 35.0000, 30.0000, 15.0000, 'CM', '', 15, 1, 5, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="1"|', NULL, '', '', '', '0', 1, 2, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(63, 1, 60, '', 200.0000, 'G', 25.0000, 25.0000, 25.0000, 'CM', '', 122, 2, 10, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="1"|', NULL, '', '', '', '0', 1, 3, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(64, 1, 0, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(65, 1, 64, '', 0.1000, 'KG', 25.0000, 20.0000, 2.0000, 'CM', '', 77, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', 1.0000, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 1, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(66, 1, 64, '', 0.0750, 'KG', 0.2000, 0.2000, 0.1500, 'M', '', 152, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="1"|', NULL, '', '', '', '0', 1, 2, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(67, 1, 64, '', 150.0000, 'G', 25.0000, 25.0000, 15.0000, 'CM', '', 50, 0, 5, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box="1"|', NULL, '', '', '', '0', 1, 3, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(68, 1, 0, '', NULL, 'KG', NULL, NULL, NULL, 'M', '', 0, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 0, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(69, 1, 68, '', 350.0000, 'G', NULL, NULL, NULL, 'M', '', 45, 0, 2, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 1, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(70, 1, 68, '', 300.0000, 'G', NULL, NULL, NULL, 'M', '', 12, 0, 1, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 2, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(71, 1, 68, '', 550.0000, 'G', NULL, NULL, NULL, 'M', '', 15, 0, 0, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 3, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(72, 1, 68, '', 200.0000, 'G', NULL, NULL, NULL, 'M', '', 45, 0, 5, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 4, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635),
+	(73, 1, 68, '', 250.0000, 'G', NULL, NULL, NULL, 'M', '', 54, 0, 5, '0000-00-00 00:00:00', '', 0, 0, 'KG', NULL, 'min_order_level=""|max_order_level=""|step_order_level=""|product_box=""|', NULL, '', '', '', '0', 1, 5, '0000-00-00 00:00:00', 635, '0000-00-00 00:00:00', 635);
+
+INSERT IGNORE INTO `#__virtuemart_products_XLANG` (`virtuemart_product_id`, `product_s_desc`, `product_desc`, `product_name`, `metadesc`, `metakey`, `customtitle`, `slug`) VALUES
+	(1, 'This is a default product.', '<p>Default product with standart settings no customfields. You can set:</p>\r\n<p>Tab Product Information<br />- General: Published, On Featured, Product SKU, Product Name, Produkt alias, URL, <br />- Assignation:Manufacturer, Product Categories, Shopper Groups, Type of Product detail page<br />- Product pricing: Cost price, Base price, Final price, Override, and priceranges dependant on Shopper group.<br />- You can add Child products here also.</p>\r\n<p>Tab Product Description<br />- Description, Short descriptionm Meta information</p>\r\n<p>Tab Product Status<br />- Stock amount, Low Stock notification, Minimum and maximum purchase quantity, Availability Date + image<br />- Booked, ordered products amount, Quantity Steps<br />- Also it is possible to send email to shopper who bought this product.</p>\r\n<p>Tab Dimension and Weight<br />- Lenght, Width, Height, Weight, Packing, and Units in Box</p>\r\n<p>Tab Product images<br />- Use already uploaded images<br />- Set image information<br />- Upload new image<br />- manage thumbnail</p>\r\n<p>Tab Custom Fields<br />- Set related Categories &amp; Products<br />- Select customfields</p>\r\n<p> </p>\r\n<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. <br /><br /></p>', 'Default product', '', '', '', 'default-product'),
+	(2, 'It\'s a free Product!', '<p>This product shows how a free product is set up. At least let price empty. The shopper can purchase without beeing charged. In settings you decide if an invoice will be created for free products. In all cases the shopper needs to checkout.</p>\r\n<p>It can be used e.g. if you want to offer catalogue or merchandise products.</p>', 'Free product', '', '', '', 'free-product'),
+	(3, 'Default product with customfield string.', '<p>This is a default product with standart settings and a customfield type string. You can set:<br /> - Title (text)<br />- Show title (select)<br />- Published (select)<br />- Select parent customfield (for building a pattern of multiple customfields at once) (select)<br />- Cart Attribut (select)<br />- Description (text)<br />- Default (text)<br />- Tooltip (text)<br />- Layout position<br />- Admin only (select)<br />- Is a list (select)<br />- Hidden (select)</p>', 'Product w/customfield string', '', '', '', 'product-w-customfield-string'),
+	(4, 'This is a default product with customfield textarea.', '<p>Default product with one customfield textarea you see this customfield content below.</p>\r\n<p>You can use customfield textarea to add further informating apart from product description.</p>\r\n<p> </p>', 'Product w/customfield textarea', '', '', '', 'product-w-customfield-textarea'),
+	(5, 'This is a default product with standart settings and a customfield type parent.', '<p>You can set use customfield type parent to bind multiple child customfields into a parental bundle.<br /><br />For example for books, you may wish to always give the following description:</p>\r\n<p>Reading level: Ages 9-12<br />Hardcover: 224 pages<br />Publisher: Amulet Books (November 15, 2011)<br />Language: English<br />ISBN-10: 1419702238<br />ISBN-13: 978-1419702235</p>\r\n<p>Therefore bind multiple customfields e.g. string into a parent customfield to use it as a pattern.</p>', 'Product w/customfield parent', '', '', '', 'product-w-customfield-parent'),
+	(6, 'Default product with cart variants modifies price.', '<p>Custom Field with Cart Attribute allows you to add some options to a product that can modify the product price. For example, you may wish to sell a book, or the downladable version of it. And the price is different in both case.<br /><br />In this case you can select different variants. Default, Variant A,B, or C. The price will be modified by selection. In VM configuration you can also select either tax should be applied to cart variant in customfield.</p>', 'Product w/cart variant', '', '', '', 'product-w-cart-variant'),
+	(7, 'Product with child variant; parent ordable', '<p>This product will explain the usage of customfield generic (dynamic) child variant. The base product is ordable in this case.</p>\r\n<p>Consider you sell products in different color settings: you want to change the color of the product by selecting a color variant.<br />Therefore dynamic child variants can be used to allow you different description, images, or product status for every variant of your base product.<br /><br />Set up a new product, set price, add child products. Add created customfield generic child variant. <br />The child products are assigned to another unpublished category as the parent product for calculation or llike in this case to no category.<br />Tick the checkboxes <em>Display parent as option</em>.<br /><br /></p>', 'Product w/child variant', '', '', '', 'product-w-child-variant'),
+	(8, '', '', 'child variant 1', '', '', '', 'child-variant-1'),
+	(9, '', '', 'child variant 2', '', '', '', 'child-variant-2'),
+	(10, '', '', 'child variant 3', '', '', '', 'child-variant-3'),
+	(11, 'Product with child variant; parent not ordable', '<p>This product will explain the usage of customfield generic (dynamic) child variant. The base product is not ordable in this case.</p>\r\n<p>Consider you sell products in different color settings: you want to change the color of the product by selecting a color variant.<br />Therefore dynamic child variants can be used to allow you different description, images, or product status for every variant of your base product.<br /><br />Set up a new product, set price, add child products. Add created customfield generic child variant. <br />The child products are assigned to another category as the parent product for caclulation or like in this case to no category.<br />Do not tick the checkbox <em>Display parent as option in this case</em>.</p>', 'Product w/child variant parent not ordable', '', '', '', 'product-w-child-variant-parent-not-ordable'),
+	(12, '', '', 'Child variant 1 15€', '', '', '', 'child-variant-1-15'),
+	(13, '', '', 'Child variant 1 20€', '', '', '', 'child-variant-1-20'),
+	(14, '', '', 'Child variant 1 25€', '', '', '', 'child-variant-1-25'),
+	(15, 'Default product with child variant and cart variant.', '<p>This product is a showcase to present the combination of product price, child variant price, and cart variant price.</p>', 'Product w/child variant w/cart variant', '', '', '', 'product-w-child-variant-w-cart-variant'),
+	(16, '', '', 'child variant w/cart variant 1', '', '', '', 'child-variant-w-cart-variant-1'),
+	(17, '', '', 'child variant w/cart variant 2', '', '', '', 'child-variant-w-cart-variant-2'),
+	(18, '', '', 'child variant w/cart variant 3', '', '', '', 'child-variant-w-cart-variant-3'),
+	(19, 'Showcase for pattern usage.', '<p>This product is used as a pattern for other products. It is a parent product and has multiple child products. <br />You can set several settings (content, customfields) for parent product. Childs of this parent will basically have the same settings as the parent automatically inherite until you overwrite.<br /><br /></p>\r\n<p>In this case product price is set in pattern.</p>', 'Basic PATTERN', '', '', '', 'basic-pattern'),
+	(20, 'This is a basic child of Product PATTERN.', '<p>This is a basic child of Product PATTERN. You see inherited settings, only Product description is overwritten.<br /><br /><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">In case the child product should be available by browsing set the product category.</span></p>', 'Basic child', '', '', '', 'basic-pattern197'),
+	(21, 'This is a basic child of Product PATTERN. You see inherited settings.', '<p>This is a basic child of Product PATTERN. You see inherited settings. <br />Overwritten are following setting/content:<br />- Product desc<br />- Product price<br /><br /><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">In case the child product should be available by browsing set the product category.</span></p>', 'Basic price overwrite', '', '', '', 'basic-price-overwrite'),
+	(22, 'Multiple overwrites short desc.', '<p>This is a child of Product PATTERN. Most inherited settings are overwritten: <br />- Short desc<br />- Product desc<br />- Product price<br />- Product Images<br />- Product Dimension and Weight (Units in Box)<br /><br /><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">In case the child product should be available by browsing set the product category.</span></p>', 'Basic multiple overwrites', '', '', '', 'basic-multiple-overwrites'),
+	(23, 'Showcase advanced pattern usage.', '<p>This product is used as a pattern for other products. It is a parent product and has multiple child products. <br />You can set several settings (content, customfields) for parent product. Childs of this parent will basically have the same settings as the parent automatically inherite until you overwrite.</p>\r\n<p>One of the hugest advantages is stock control ability.</p>\r\n<p> </p>', 'Advanced PATTERN', '', '', '', 'advanced-pattern'),
+	(24, '', '<p>This is a basic child of Product PATTERN. You see inherited settings, only Product description is overwritten.<br /><br /><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">In case the child product should be available by browsing set the product category.</span></p>', 'Advanced child', '', '', '', 'advanced-child'),
+	(25, '', '<p>This is a advanced child of Advanced PATTERN. You see inherited settings. <br />Overwritten are following setting/content:<br />- Product desc<br />- Product price<br /><br /><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">In case the child product should be available by browsing set the product category.</span></p>', 'Advanced price overwrite', '', '', '', 'advanced-price-overwrite'),
+	(26, 'Advanced multiple overrides', '<p>This is a child of Product PATTERN. Most inherited settings are overwritten: <br />- Short desc<br />- Product desc<br />- Product price<br />- Product Images<br />- Product Dimension and Weight (Units in Box)<br />- Customfields<br /><br /><span style="background-color: #FCDB73; text-align: center;padding: 5px 40px;">In case the child product should be available by browsing set the product category.</span></p>', 'Advanced multiple overrides', '', '', '', 'advanced-multiple-overrides'),
+	(27, '', '', '3- Product 1st PATTERN', '', '', '', '3-product-1st-pattern'),
+	(28, '', '', '2- 1st pattern CHILD 1', '', '', '', '2--1st-pattern-child-1'),
+	(29, '', '', '7- 1st pattern CHILD 2', '', '', '', '7-1st-pattern-child-2'),
+	(30, '', '', '5- 1st pattern CHILD 3', '', '', '', '5-1st-pattern-child-3'),
+	(31, '', '', '4- 1st pattern CHILD 4', '', '', '', '4-1st-pattern-child-4'),
+	(32, '', '', '1- 1st pattern CHILD 5', '', '', '', '1--1st-pattern-child-5'),
+	(33, '', '', '32- 1st pattern CHILD 6', '', '', '', '32-1st-pattern-child-6'),
+	(34, '', '', '25- 1st pattern CHILD 7', '', '', '', '25-1st-pattern-child-7'),
+	(35, '', '', '24- 1st pattern CHILD 8', '', '', '', '24-1st-pattern-child-8'),
+	(36, '', '', '27- 1st pattern CHILD 9', '', '', '', '27-1st-pattern-child-9'),
+	(37, '', '', '28- 1st pattern CHILD 10', '', '', '', '28-1st-pattern-child-10'),
+	(38, '', '', '8- Product 2st PATTERN', '', '', '', '8-product-2st-pattern'),
+	(39, '', '', '6- 2nd pattern CHILD 1', '', '', '', '6--2nd-pattern-child-1'),
+	(40, '', '', '15- 2nd pattern CHILD 2', '', '', '', '15-2nd-pattern-child-2'),
+	(41, '', '', '30- 2nd pattern CHILD 3', '', '', '', '30-2nd-pattern-child-3'),
+	(42, '', '', '17- 2nd pattern CHILD 4', '', '', '', '17-2nd-pattern-child-4'),
+	(43, '', '', '16- 2nd pattern CHILD 5', '', '', '', '16-2nd-pattern-child-5'),
+	(44, '', '', '22- 2nd pattern CHILD 6', '', '', '', '22-2nd-pattern-child-6'),
+	(45, '', '', '23- 2nd pattern CHILD 7', '', '', '', '23-2nd-pattern-child-7'),
+	(46, '', '', '21- 2nd pattern CHILD 8', '', '', '', '21-2nd-pattern-child-8'),
+	(47, '', '', '18- 2nd pattern CHILD 9', '', '', '', '18-2nd-pattern-child-9'),
+	(48, '', '', '33- 2nd pattern CHILD 10', '', '', '', '33-2nd-pattern-child-10'),
+	(49, '', '', '20- Product 3rd PATTERN', '', '', '', '20-product-3rd-pattern'),
+	(50, '', '', '19- 3rd pattern child 1', '', '', '', '19--3rd-pattern-child-1'),
+	(51, '', '', '14- 3rd pattern child 2', '', '', '', '14--3rd-pattern-child-2'),
+	(52, '', '', '13- 3rd pattern child 3', '', '', '', '13--3rd-pattern-child-3'),
+	(53, '', '', '11- 3rd pattern child 4', '', '', '', '11--3rd-pattern-child-4'),
+	(54, '', '', '26- 3rd pattern child 5', '', '', '', '26-3rd-pattern-child-5'),
+	(55, '', '', '9- 3rd pattern child 6', '', '', '', '9--3rd-pattern-child-6'),
+	(56, '', '', '31- 3rd pattern child 7', '', '', '', '31-3rd-pattern-child-7'),
+	(57, '', '', '10- 3rd pattern child 8', '', '', '', '10--3rd-pattern-child-8'),
+	(58, '', '', '29- 3rd pattern child 9', '', '', '', '29-3rd-pattern-child-9'),
+	(59, '', '', '12- 3rd pattern child 10', '', '', '', '12--3rd-pattern-child-10'),
+	(60, '', '', 'PATTERN Hats', '', '', '', 'pattern-hats'),
+	(61, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Classic Hat', '', '', '', 'classic-hat'),
+	(62, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Cowboy Hat', '', '', '', 'cowboy-hat'),
+	(63, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Derby Hat', '', '', '', 'derby-hat'),
+	(64, '', '', 'PATTERN Caps', '', '', '', 'pattern-caps'),
+	(65, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.', '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Santa Cap', '', '', '', 'santa-cap'),
+	(66, 'Base lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Baseball Cap', '', '', '', 'baseball-cap'),
+	(67, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Marine Cap', '', '', '', 'marine-cap'),
+	(68, 'Pattern for Clothing. For showcase reason this pattern is NOT unpublished.', '<p>For showcase reason this pattern is NOT unpublished.</p>', 'PATTERN Clothing', '', '', '', 'pattern-outer-garments'),
+	(69, 'Jumper dress ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '', 'Jumper', '', '', '', 'jumper'),
+	(70, 'Wide dress dress ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '<p>Wide dress ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Wide dress', '', '', '', 'wide-dress'),
+	(71, 'Classic jacket ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '<p>Classic Jacket ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Classic Jacket', '', '', '', 'classic-jacket'),
+	(72, 'Poncho ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '<p>Poncho ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Poncho', '', '', '', 'poncho'),
+	(73, 'Dress ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '<p>Dress ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>', 'Dress', '', '', '', 'dress');
+
+INSERT IGNORE INTO `#__virtuemart_product_categories` (`id`, `virtuemart_product_id`, `virtuemart_category_id`, `ordering`) VALUES
+	(1, 1, 1, 1),
+	(2, 2, 1, 2),
+	(3, 3, 1, 3),
+	(4, 4, 1, 4),
+	(5, 5, 1, 5),
+	(6, 6, 1, 6),
+	(7, 7, 1, 7),
+	(8, 11, 1, 8),
+	(9, 15, 1, 9),
+	(13, 21, 2, 3),
+	(11, 20, 2, 2),
+	(12, 19, 2, 1),
+	(14, 22, 2, 4),
+	(15, 23, 2, 5),
+	(16, 24, 2, 6),
+	(17, 25, 2, 7),
+	(20, 27, 3, 3),
+	(19, 26, 2, 8),
+	(21, 28, 3, 2),
+	(22, 36, 3, 27),
+	(23, 35, 3, 24),
+	(24, 34, 3, 25),
+	(25, 33, 3, 32),
+	(26, 32, 3, 1),
+	(27, 31, 3, 4),
+	(28, 30, 3, 5),
+	(29, 29, 3, 7),
+	(30, 37, 3, 28),
+	(31, 38, 3, 8),
+	(32, 39, 3, 6),
+	(33, 47, 3, 18),
+	(34, 46, 3, 21),
+	(35, 45, 3, 23),
+	(36, 44, 3, 22),
+	(37, 43, 3, 16),
+	(38, 42, 3, 17),
+	(39, 41, 3, 30),
+	(40, 40, 3, 15),
+	(41, 48, 3, 33),
+	(42, 49, 3, 20),
+	(43, 50, 3, 19),
+	(44, 58, 3, 29),
+	(45, 57, 3, 10),
+	(46, 56, 3, 31),
+	(47, 55, 3, 9),
+	(48, 54, 3, 26),
+	(49, 53, 3, 11),
+	(50, 52, 3, 13),
+	(51, 51, 3, 14),
+	(52, 59, 3, 12),
+	(53, 60, 5, 1),
+	(54, 61, 5, 2),
+	(55, 62, 5, 3),
+	(56, 63, 5, 4),
+	(57, 64, 6, 1),
+	(58, 65, 6, 2),
+	(59, 66, 6, 3),
+	(60, 67, 6, 4),
+	(61, 68, 7, 1),
+	(62, 70, 7, 3),
+	(63, 70, 9, 1),
+	(64, 69, 7, 2),
+	(65, 69, 8, 1),
+	(66, 71, 7, 4),
+	(67, 71, 8, 2),
+	(68, 72, 7, 5),
+	(69, 72, 9, 2),
+	(70, 72, 8, 3),
+	(71, 73, 7, 6),
+	(72, 73, 9, 3),
+	(73, 63, 4, 4),
+	(74, 62, 4, 3),
+	(75, 61, 4, 2),
+	(76, 60, 4, 1),
+	(77, 67, 4, 8),
+	(78, 66, 4, 7),
+	(79, 65, 4, 6),
+	(80, 64, 4, 5);
+
+INSERT IGNORE INTO `#__virtuemart_product_customfields` (`virtuemart_customfield_id`, `virtuemart_product_id`, `virtuemart_custom_id`, `custom_value`, `custom_price`, `custom_param`, `published`, `ordering`) VALUES
+	(1, 3, 3, 'This is the content of the customfield string.', NULL, '', 0, 0),
+	(2, 4, 4, 'Default product with this customfield textarea.</br></br>\r\n\r\nLorem ipsum dolor sit amet, set clita kasd gubergren, no sea takimata sanctus est dolor sit amet consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.</br></br>\r\n\r\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</br></br>\r\n', NULL, '', 0, 1),
+	(3, 5, 5, '', NULL, '', 0, 0),
+	(4, 5, 6, 'Customfield Child string 1 content', NULL, '', 0, 1),
+	(5, 5, 7, 'Customfield ChildCustomfield Child string 2 content 2: string content', NULL, '', 0, 2),
+	(6, 5, 8, '</br>\r\nCustomfield Textarea Child content </br>\r\n>> This three customfields are assigned by adding Customfield Parent.</br>', NULL, '', 0, 3),
+	(7, 6, 9, '(default)', NULL, '', 0, 0),
+	(8, 6, 9, 'Variant A', 2.00000, '', 0, 1),
+	(9, 6, 9, 'Variant B', 5.00000, '', 0, 2),
+	(10, 6, 9, 'Variant C', 10.00000, '', 0, 3),
+	(11, 7, 10, 'product_sku', NULL, 'withParent="1"|parentOrderable="1"|', 0, 0),
+	(12, 11, 10, 'product_sku', NULL, 'withParent="1"|parentOrderable="0"|', 0, 0),
+	(13, 15, 1, '6', NULL, '', 0, 0),
+	(14, 15, 1, '7', NULL, '', 0, 1),
+	(15, 15, 10, 'product_sku', NULL, 'withParent="1"|parentOrderable="1"|', 0, 0),
+	(16, 15, 9, '(default)', NULL, '', 0, 1),
+	(17, 15, 9, 'Variante A', 10.00000, '', 0, 2),
+	(18, 15, 9, 'Variante B', 20.00000, '', 0, 3),
+	(19, 15, 9, 'Variante C', 30.00000, '', 0, 4),
+	(20, 23, 5, '', NULL, '', 0, 0),
+	(21, 23, 6, 'Customfield string 1: Child content', NULL, '', 0, 1),
+	(22, 23, 7, 'Customfield string 2: Child content', NULL, '', 0, 2),
+	(23, 23, 8, '</br>\r\nAdvanced PATTERN content </br>\r\n>> This three customfields are assigned by adding Customfields Parent. </br>', NULL, '', 0, 3),
+	(24, 26, 5, '', NULL, '', 0, 0),
+	(25, 26, 6, 'Advanced multiple overwrite', NULL, '', 0, 1),
+	(26, 26, 7, 'Advanced multiple overwrite', NULL, '', 0, 2),
+	(27, 26, 8, '>> Advanced multiple overwrite', NULL, '', 0, 3),
+	(28, 61, 1, '62', NULL, '', 0, 0),
+	(29, 61, 1, '63', NULL, '', 0, 1),
+	(30, 62, 1, '63', NULL, '', 0, 0),
+	(31, 62, 1, '61', NULL, '', 0, 1),
+	(32, 63, 1, '62', NULL, '', 0, 0),
+	(33, 63, 1, '61', NULL, '', 0, 1),
+	(44, 64, 13, 'Details: ', NULL, '', 0, 5),
+	(43, 64, 11, '', NULL, '', 0, 4),
+	(41, 64, 12, 'M-L', 1.00000, '', 0, 2),
+	(40, 64, 12, 'S-M', NULL, '', 0, 1),
+	(46, 65, 12, 'S', NULL, '', 0, 1),
+	(42, 64, 12, 'L-XL', 2.00000, '', 0, 3),
+	(45, 64, 14, 'Components: ', NULL, '', 0, 6),
+	(47, 65, 12, 'M', 1.00000, '', 0, 2),
+	(48, 65, 12, 'L', 3.00000, '', 0, 3),
+	(49, 65, 11, '', NULL, '', 0, 4),
+	(50, 65, 13, 'Extra fluffy cap your Santa will be amused', NULL, '', 0, 5),
+	(51, 65, 14, '100% Synthetic Deerimitation', NULL, '', 0, 6),
+	(52, 66, 12, 'S', NULL, '', 0, 1),
+	(53, 66, 12, 'M', 3.00000, '', 0, 2),
+	(54, 66, 12, 'L', 5.00000, '', 0, 3),
+	(55, 66, 11, '', NULL, '', 0, 4),
+	(56, 66, 13, 'The players choice!', NULL, '', 0, 5),
+	(57, 66, 14, '100% Cotton', NULL, '', 0, 6),
+	(58, 66, 1, '65', NULL, '', 0, 0),
+	(59, 66, 1, '67', NULL, '', 0, 1),
+	(60, 65, 1, '66', NULL, '', 0, 0),
+	(61, 65, 1, '67', NULL, '', 0, 1),
+	(62, 67, 12, 'S-M', NULL, '', 0, 1),
+	(63, 67, 12, 'M-L', 1.00000, '', 0, 2),
+	(64, 67, 12, 'L-XL', 2.00000, '', 0, 3),
+	(65, 67, 11, '', NULL, '', 0, 4),
+	(66, 67, 13, 'Your freetime and leisure heads friend', NULL, '', 0, 5),
+	(67, 67, 14, '100% Cotton', NULL, '', 0, 6),
+	(68, 67, 1, '65', NULL, '', 0, 0),
+	(69, 67, 1, '66', NULL, '', 0, 1),
+	(70, 68, 15, 'Twill', NULL, '', 0, 0),
+	(71, 68, 15, 'Rip-stop', 10.00000, '', 0, 1),
+	(72, 68, 16, 'M', NULL, '', 0, 2),
+	(73, 68, 16, 'L', 10.00000, '', 0, 3),
+	(74, 68, 17, '', NULL, '', 0, 4),
+	(75, 68, 18, '100% natural wool', NULL, '', 0, 5),
+	(76, 68, 19, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.', NULL, '', 0, 6),
+	(77, 69, 16, 'M-L', NULL, '', 0, 2),
+	(78, 69, 16, 'L-XL', 15.00000, '', 0, 3),
+	(79, 69, 17, '', NULL, '', 0, 4),
+	(80, 69, 18, '100% Cotton', NULL, '', 0, 5),
+	(81, 69, 19, 'Jumper ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.', NULL, '', 0, 6),
+	(82, 70, 15, 'Fine', NULL, '', 0, 0),
+	(83, 70, 15, 'Extra fine', 100.00000, '', 0, 1),
+	(84, 70, 16, 'S-M', NULL, '', 0, 2),
+	(85, 70, 16, 'M-L', 50.00000, '', 0, 3),
+	(86, 70, 17, '', NULL, '', 0, 4),
+	(87, 70, 18, '100% Cotton special', NULL, '', 0, 5),
+	(88, 70, 19, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.', NULL, '', 0, 6),
+	(89, 71, 15, 'Cord', NULL, '', 0, 0),
+	(90, 71, 15, 'Twill', 100.00000, '', 0, 1),
+	(91, 71, 16, 'M-L', NULL, '', 0, 2),
+	(92, 71, 16, 'L-XL', 100.00000, '', 0, 3),
+	(93, 71, 17, '', NULL, '', 0, 4),
+	(94, 71, 18, '100% Cotton', NULL, '', 0, 5),
+	(95, 71, 19, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.', NULL, '', 0, 6),
+	(96, 72, 15, 'Rubber', NULL, '', 0, 0),
+	(97, 72, 15, 'Polyethylen', 5.00000, '', 0, 1),
+	(98, 72, 16, 'S-M', NULL, '', 0, 2),
+	(99, 72, 16, 'L-XL', 5.00000, '', 0, 3),
+	(100, 72, 17, '', NULL, '', 0, 4),
+	(101, 72, 18, '100% Synthetic', NULL, '', 0, 5),
+	(102, 72, 19, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.', NULL, '', 0, 6),
+	(103, 73, 16, 'XS', NULL, '', 0, 0),
+	(104, 73, 16, 'S', 10.00000, '', 0, 1),
+	(105, 73, 16, 'M', 20.00000, '', 0, 2),
+	(106, 73, 16, 'L', 30.00000, '', 0, 3),
+	(107, 73, 17, '', NULL, '', 0, 4),
+	(108, 73, 19, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.', NULL, '', 0, 6);
+
+INSERT IGNORE INTO `#__virtuemart_product_manufacturers` (`id`, `virtuemart_product_id`, `virtuemart_manufacturer_id`) VALUES
+	(1, 1, 2),
+	(2, 2, 2),
+	(3, 3, 2),
+	(4, 4, 2),
+	(5, 5, 2),
+	(6, 6, 2),
+	(7, 7, 2),
+	(8, 8, 2),
+	(9, 9, 2),
+	(10, 10, 2),
+	(11, 11, 2),
+	(12, 15, 2),
+	(13, 19, 2),
+	(14, 20, 2),
+	(15, 21, 2),
+	(16, 22, 2),
+	(17, 23, 2),
+	(18, 24, 1),
+	(19, 25, 2),
+	(20, 26, 1),
+	(21, 27, 2),
+	(22, 28, 2),
+	(23, 36, 1),
+	(24, 35, 3),
+	(25, 34, 2),
+	(26, 33, 1),
+	(27, 32, 3),
+	(28, 31, 2),
+	(29, 30, 2),
+	(30, 29, 1),
+	(31, 37, 3),
+	(32, 38, 2),
+	(33, 39, 2),
+	(34, 47, 1),
+	(35, 46, 3),
+	(36, 45, 2),
+	(37, 44, 1),
+	(38, 43, 3),
+	(39, 42, 2),
+	(40, 41, 1),
+	(41, 40, 3),
+	(42, 48, 2),
+	(43, 49, 2),
+	(44, 50, 2),
+	(45, 58, 1),
+	(46, 57, 3),
+	(47, 56, 2),
+	(48, 55, 1),
+	(49, 54, 3),
+	(50, 53, 2),
+	(51, 52, 2),
+	(52, 51, 1),
+	(53, 59, 1),
+	(54, 60, 3),
+	(55, 61, 3),
+	(56, 62, 2),
+	(57, 63, 2),
+	(58, 64, 2),
+	(59, 65, 2),
+	(60, 66, 1),
+	(61, 67, 3),
+	(62, 68, 2),
+	(63, 70, 1),
+	(64, 69, 3),
+	(65, 71, 3),
+	(66, 72, 1),
+	(67, 73, 2);
+
+INSERT IGNORE INTO `#__virtuemart_product_medias` (`id`, `virtuemart_product_id`, `virtuemart_media_id`, `ordering`) VALUES
+	(1, 1, 8, 1),
+	(2, 2, 8, 1),
+	(3, 3, 8, 1),
+	(4, 4, 8, 1),
+	(5, 5, 8, 1),
+	(6, 6, 8, 1),
+	(7, 7, 8, 1),
+	(8, 11, 8, 1),
+	(9, 15, 8, 1),
+	(10, 19, 8, 1),
+	(11, 23, 8, 1),
+	(12, 26, 12, 1),
+	(13, 22, 11, 1),
+	(14, 27, 8, 1),
+	(15, 49, 8, 1),
+	(16, 38, 8, 1),
+	(17, 60, 8, 1),
+	(18, 61, 10, 1),
+	(19, 62, 11, 1),
+	(20, 63, 12, 1),
+	(21, 64, 8, 1),
+	(22, 65, 13, 1),
+	(23, 66, 14, 1),
+	(24, 67, 15, 1),
+	(25, 68, 8, 1),
+	(26, 69, 16, 1),
+	(27, 70, 17, 1),
+	(28, 71, 18, 1),
+	(29, 72, 19, 1),
+	(30, 73, 20, 1);
+
+INSERT IGNORE INTO `#__virtuemart_product_prices` (`virtuemart_product_price_id`, `virtuemart_product_id`, `virtuemart_shoppergroup_id`, `product_price`, `override`, `product_override_price`, `product_tax_id`, `product_discount_id`, `product_currency`) VALUES
+	(1, 1, 0, 10.00000, 0, 0.00000, 0, 0, 47),
+	(2, 2, 0, 0.00000, 0, 0.00000, 0, 0, 47),
+	(3, 3, 0, 10.00000, 0, 0.00000, 0, 0, 47),
+	(4, 5, 0, 10.00000, 0, 0.00000, 0, 0, 47),
+	(5, 6, 0, 10.00000, 0, 0.00000, 0, 0, 47),
+	(6, 7, 0, 10.00000, 0, 0.00000, 0, 0, 47),
+	(7, 8, 0, 15.00000, 0, 0.00000, 0, 0, 47),
+	(8, 9, 0, 20.00000, 0, 0.00000, 0, 0, 191),
+	(9, 10, 0, 25.00000, 0, 0.00000, 0, 0, 191),
+	(10, 11, 0, 10.00000, 0, 0.00000, 0, 0, 47),
+	(11, 12, 0, 15.00000, 0, 0.00000, 0, 0, 191),
+	(12, 13, 0, 20.00000, 0, 0.00000, 0, 0, 191),
+	(13, 14, 0, 25.00000, 0, 0.00000, 0, 0, 191),
+	(14, 15, 0, 10.00000, 0, 0.00000, 0, 0, 47),
+	(15, 16, 0, 15.00000, 0, 0.00000, 0, 0, 191),
+	(16, 17, 0, 20.00000, 0, 0.00000, 0, 0, 191),
+	(17, 18, 0, 25.00000, 0, 0.00000, 0, 0, 191),
+	(18, 4, 0, 10.00000, 0, 0.00000, 0, 0, 47),
+	(19, 19, 0, 10.00000, 0, 0.00000, 0, 0, 47),
+	(20, 21, 0, 20.00000, 0, 0.00000, 0, 0, 47),
+	(21, 22, 0, 30.00000, 0, 0.00000, 0, 0, 47),
+	(22, 23, 0, 100.00000, 0, 0.00000, 0, 0, 47),
+	(23, 25, 0, 150.00000, 0, 0.00000, 0, 0, 47),
+	(24, 26, 0, 200.00000, 0, 0.00000, 0, 0, 47),
+	(25, 27, 0, 40.00000, 0, 0.00000, 0, 0, 47),
+	(26, 38, 0, 210.00000, 0, 0.00000, 0, 0, 47),
+	(27, 49, 0, 300.00000, 0, 0.00000, 0, 0, 47),
+	(28, 61, 0, 29.00000, 0, 0.00000, 0, 0, 47),
+	(29, 62, 0, 34.90000, 0, 0.00000, 0, 0, 47),
+	(30, 63, 0, 44.90000, 0, 0.00000, 0, 0, 191),
+	(31, 64, 0, 25.00000, 0, 0.00000, 0, 0, 47),
+	(32, 65, 0, 24.90000, 0, 0.00000, 0, 0, 47),
+	(33, 66, 0, 15.00000, 0, 0.00000, 0, 0, 47),
+	(34, 67, 0, 17.90000, 0, 0.00000, 0, 0, 47),
+	(35, 68, 0, 249.90000, 0, 0.00000, 0, 0, 47),
+	(36, 69, 0, 149.90000, 0, 0.00000, 0, 0, 47),
+	(37, 70, 0, 490.90000, 0, 0.00000, 0, 0, 47),
+	(38, 71, 0, 899.90000, 0, 0.00000, 0, 0, 47),
+	(39, 72, 0, 24.90000, 0, 0.00000, 0, 0, 182),
+	(40, 73, 0, 449.90000, 0, 0.00000, 0, 0, 47),
+	(41, 72, 3, 19.90000, 0, 0.00000, 0, 0, 47),
+	(42, 73, 3, 349.90000, 0, 0.00000, 0, 0, 47),
+	(43, 61, 3, 14.90000, 0, 0.00000, 0, 0, 47),
+	(44, 62, 3, 24.90000, 0, 0.00000, 0, 0, 47),
+	(45, 63, 3, 34.90000, 0, 0.00000, 0, 0, 47),
+	(46, 65, 3, 14.90000, 0, 0.00000, 0, 0, 47),
+	(47, 66, 3, 9.90000, 0, 0.00000, 0, 0, 47),
+	(48, 67, 3, 12.90000, 0, 0.00000, 0, 0, 47);
 
 
---
---  Dumping data for `#__virtuemart_calcs`
---
+INSERT IGNORE INTO `#__virtuemart_ratings` (`virtuemart_rating_id`, `virtuemart_product_id`, `rates`, `ratingcount`, `rating`, `published`) VALUES
+	(1, 4, 4, 1, 4.0, 0),
+	(2, 5, 5, 1, 5.0, 0),
+	(3, 6, 4, 1, 4.0, 0),
+	(4, 7, 4, 1, 4.0, 0),
+	(5, 11, 5, 1, 5.0, 0),
+	(6, 15, 5, 1, 5.0, 0),
+	(7, 22, 3, 1, 3.0, 0),
+	(8, 23, 5, 1, 5.0, 0),
+	(9, 24, 4, 1, 4.0, 0),
+	(10, 25, 4, 1, 4.0, 0),
+	(11, 26, 5, 1, 5.0, 0),
+	(12, 21, 5, 1, 5.0, 0),
+	(13, 20, 3, 1, 3.0, 0),
+	(14, 19, 5, 1, 5.0, 0),
+	(15, 63, 5, 1, 5.0, 0),
+	(16, 60, 5, 1, 5.0, 0),
+	(17, 61, 4, 1, 4.0, 0),
+	(18, 62, 4, 1, 4.0, 0),
+	(19, 67, 5, 1, 5.0, 0),
+	(20, 64, 4, 1, 4.0, 0),
+	(21, 65, 5, 1, 5.0, 0),
+	(22, 66, 5, 1, 5.0, 0),
+	(23, 71, 5, 1, 5.0, 0),
+	(24, 72, 3, 1, 3.0, 0),
+	(25, 73, 4, 1, 4.0, 0),
+	(26, 70, 5, 1, 5.0, 0),
+	(27, 69, 4, 1, 4.0, 0);
 
-INSERT IGNORE INTO `#__virtuemart_calcs` (`virtuemart_calc_id`, `virtuemart_vendor_id`, `calc_name`, `calc_descr`, `calc_kind`, `calc_value_mathop`, `calc_value`, `calc_currency`, `ordering`, `calc_shopper_published`, `calc_vendor_published`, `publish_up`, `publish_down`, `created_on`, `modified_on`, `published`, `shared`) VALUES
-(1, 1, 'Tax 21%', 'A simple tax for all products regardless the category', 'VatTax', '+%', 21.00, '47', 0, 1, 1, '2010-02-21 00:00:00', NULL, NULL, NULL,  1, 0),
-(2, 1, 'Discount for all Hand Tools', 'Discount for all Hand Tools 2 euro', 'DATax', '-', 2, '47', 1, 1, 1, '2010-02-21 00:00:00', NULL, NULL, NULL, 1, 0),
-(3, 1, 'Duty for Powertools', 'Ah tax that only effects a certain category, Power Tools, and Shoppergroup', 'Tax', '+%', 20, '47', 0, 1, 1, '2010-02-21 00:00:00', NULL, NULL, NULL, 1, 0);
-
-
---
--- Dumping data for table `#__virtuemart_calc_categories`
---
-INSERT INTO `#__virtuemart_calc_categories` (`id`, `virtuemart_calc_id`, `virtuemart_category_id`) VALUES
-(1, 3, 2),
-(2, 2, 1);
-
---
--- Dumping data for table `#__virtuemart_calc_shoppergroups`
---
-
-INSERT IGNORE INTO `#__virtuemart_calc_shoppergroups` (`id`, `virtuemart_calc_id`, `virtuemart_shoppergroup_id`) VALUES
-(NULL, 2, 2);
-
-
---
--- Dumping data for table `#__virtuemart_categories`
---
-
-INSERT INTO `#__virtuemart_categories` (`virtuemart_category_id`, `virtuemart_vendor_id`,`published`, `created_on`, `modified_on`, `category_template`, `category_layout`, `category_product_layout`, `products_per_row`, `ordering`, `limit_list_step`, `limit_list_initial`, `metarobot`, `metaauthor`) VALUES
-(1, 1, 1, NULL, NULL, '0', 'default', 'default', 3, 1, 0, 10, '', ''),
-(2, 1, 1, NULL, NULL, '', '', '', 4, 2, NULL, NULL, '', ''),
-(3, 1, 1, NULL, NULL, '', '', '', 2, 3, NULL, NULL, '', ''),
-(4, 1, 1, NULL, NULL, '', '', '', 1, 4, NULL, NULL, '', ''),
-(5, 1, 1, NULL, NULL, '', '', '', 1, 5, NULL, NULL, '', '');
-
-INSERT INTO `#__virtuemart_categories_XLANG` (`virtuemart_category_id`, `category_name`, `category_description`, `metadesc`, `metakey`, `slug`) VALUES
-(1, 'Hand Tools', 'Hand Tools', '', '', 'handtools'),
-(2, 'Power Tools', 'Power Tools', '', '', 'powertools'),
-(3, 'Garden Tools', 'Garden Tools', '', '', 'gardentools'),
-(4, 'Outdoor Tools', 'Outdoor Tools', '', '', 'outdoortools'),
-(5, 'Indoor Tools', 'Indoor Tools', '', '', 'indoortools');
-
---
--- Dumping data for table `#__virtuemart_category_categories`
---
-
-INSERT IGNORE INTO `#__virtuemart_category_categories` (`category_parent_id`, `category_child_id`) VALUES
-( 0, 1),
-( 0, 2),
-( 0, 3),
-( 2, 4),
-( 2, 5);
-
---
--- Dumping data for table `#__virtuemart_category_medias`
---
-
-INSERT IGNORE INTO `#__virtuemart_category_medias` (`id`,`virtuemart_category_id`, `virtuemart_media_id`) VALUES
-(NULL, 1, 8),
-(NULL, 2, 11),
-(NULL, 3, 7),
-(NULL, 4, 10),
-(NULL, 5, 9);
-
---
--- Dumping data for table `#__virtuemart_customs`
---
-INSERT INTO `#__virtuemart_customs` (`virtuemart_custom_id`, `custom_parent_id`, `virtuemart_vendor_id`, `custom_jplugin_id`, `custom_element`, `admin_only`, `custom_title`, `custom_tip`, `custom_value`, `custom_field_desc`, `field_type`, `is_list`, `is_hidden`, `is_cart_attribute`, `layout_pos`, `custom_params`, `shared`, `published`, `created_on`, `created_by`, `ordering`, `modified_on`, `modified_by`, `locked_on`, `locked_by`) VALUES
-(3, 11, 1, 0, '0', 0, 'Handle length (cm)', '', '100', '', 'I', 0, 0, 0, '', '0', 0, 1, '0000-00-00 00:00:00', 0, 0, '2012-10-26 10:14:35', 627, '0000-00-00 00:00:00', 0),
-(4, 11, 1, 0, '0', 0, 'Replaceable Head', '', '0', '', 'B', 0, 0, 0, '', '0', 0, 1, '0000-00-00 00:00:00', 0, 0, '2012-10-26 10:14:41', 627, '0000-00-00 00:00:00', 0),
-(7, 0, 1, 0, '', 0, 'Photo', 'Give a media ID as defaut', '1', 'Add a photo', 'M', 0, 0, 0, NULL, NULL, 0, 1, '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(9, 0, 1, 0, '0', 0, 'Chain size', 'Select the chain size', '30', '(cm)', 'V', 0, 0, 1, '', '0', 0, 1, '0000-00-00 00:00:00', 0, 0, '2012-10-26 10:21:07', 627, '0000-00-00 00:00:00', 0),
-(11, 0, 1, 0, '0', 0, 'Hammer Specifications', '', '', '', 'P', 0, 0, 0, '', '0', 0, 1, '0000-00-00 00:00:00', 0, 0, '2012-10-26 10:12:15', 627, '0000-00-00 00:00:00', 0),
-(12, 11, 1, 0, '0', 0, 'Manufacturer Warranty', '', 'Lifetime against manufacturers defect', '', 'S', 0, 0, 0, '', '0', 0, 1, '0000-00-00 00:00:00', 0, 0, '2012-10-26 10:13:48', 627, '0000-00-00 00:00:00', 0),
-(13, 0, 1, 0, '', 0, 'Color', '', 'Choose a color', 'Be important on your construction site, buy a red one', 'S', 0, 0, 1, NULL, NULL, 0, 1, '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(17, 0, 1, 0, '0', 0, 'Diameter', 'Select the Diameter', '', '', 'V', 0, 0, 1, '', '0', 0, 1, '0000-00-00 00:00:00', 0, 0, '2012-10-26 12:26:20', 627, '0000-00-00 00:00:00', 0),
-(15, 0, 1, 0, '0', 0, 'Select the Hand Shovel type', '', '', '', 'A', 0, 0, 0, 'ontop', '0', 0, 1, '0000-00-00 00:00:00', 0, 0, '2012-10-26 10:45:53', 627, '0000-00-00 00:00:00', 0),
-(16, 11, 1, 0, '0', 0, 'Handle color', '', 'Blue;Pink;Gold;Platine', '', 'S', 1, 0, 0, '', '0', 0, 1, '2012-10-26 10:16:24', 627, 0, '2012-10-26 10:16:24', 627, '0000-00-00 00:00:00', 0),
-(18, 0, 1, 0, '0', 0, 'Ladder Specifications', '', '', '', 'P', 0, 0, 0, '', '0', 0, 1, '2012-10-26 12:27:52', 627, 0, '2012-10-26 12:27:52', 627, '0000-00-00 00:00:00', 0),
-(19, 18, 1, 0, '0', 0, 'Height', '', '2,60', '', 'I', 0, 0, 0, '', '0', 0, 1, '0000-00-00 00:00:00', 0, 0, '2012-10-26 12:38:57', 627, '0000-00-00 00:00:00', 0),
-(20, 18, 1, 0, '0', 0, 'Type of ladder', '', 'Extensible', '', 'S', 0, 0, 0, '', '0', 0, 1, '0000-00-00 00:00:00', 0, 0, '2012-10-26 12:29:48', 627, '0000-00-00 00:00:00', 0)
-;
-
---
--- Dumping data for table  `#__virtuemart_product_customfields`
---
-
-INSERT INTO `#__virtuemart_product_customfields` (`virtuemart_customfield_id`, `virtuemart_product_id`, `virtuemart_custom_id`, `custom_value`, `custom_price`, `custom_param`, `published`, `created_on`, `created_by`, `modified_on`, `modified_by`, `locked_on`, `locked_by`, `ordering`) VALUES
-(24, 5, 2, '5', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 10:25:23', 627, '0000-00-00 00:00:00', 0, 0),
-(22, 5, 1, '7', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 10:25:23', 627, '0000-00-00 00:00:00', 0, 0),
-(23, 5, 2, '2', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 10:25:23', 627, '0000-00-00 00:00:00', 0, 0),
-(45, 15, 18, '', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:40:49', 627, '0000-00-00 00:00:00', 0, 0),
-(46, 15, 19, '1,50', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:40:49', 627, '0000-00-00 00:00:00', 0, 1),
-(47, 15, 20, 'Step Ladder', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:40:49', 627, '0000-00-00 00:00:00', 0, 2),
-(41, 2, 20, 'Extensible', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:34:43', 627, '0000-00-00 00:00:00', 0, 2),
-(40, 2, 19, '2,10', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:34:43', 627, '0000-00-00 00:00:00', 0, 1),
-(42, 14, 18, '', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:39:17', 627, '0000-00-00 00:00:00', 0, 0),
-(43, 14, 19, '2,60', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:39:17', 627, '0000-00-00 00:00:00', 0, 1),
-(12, 1, 15, 'product_sku', 0.00000, 'withParent="1"|parentOrderable="0"|', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:43:38', 627, '0000-00-00 00:00:00', 0, 0),
-(13, 7, 9, '30', 0.00000, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 10:19:12', 627, '0000-00-00 00:00:00', 0, 0),
-(14, 7, 9, '40', 15.00000, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 10:19:12', 627, '0000-00-00 00:00:00', 0, 0),
-(15, 7, 9, '50', 35.00000, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 10:19:12', 627, '0000-00-00 00:00:00', 0, 0),
-(16, 6, 11, '', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:43:57', 627, '0000-00-00 00:00:00', 0, 0),
-(17, 6, 3, '100', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:43:57', 627, '0000-00-00 00:00:00', 0, 1),
-(18, 6, 4, '0', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:43:57', 627, '0000-00-00 00:00:00', 0, 2),
-(19, 6, 12, 'Lifetime against manufacturers defect', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:43:57', 627, '0000-00-00 00:00:00', 0, 3),
-(20, 6, 16, 'Pink', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:43:57', 627, '0000-00-00 00:00:00', 0, 4),
-(39, 2, 18, '', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:34:43', 627, '0000-00-00 00:00:00', 0, 0),
-(35, 8, 17, '15', 5.00000, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:27:05', 627, '0000-00-00 00:00:00', 0, 1),
-(34, 8, 17, '10', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:27:05', 627, '0000-00-00 00:00:00', 0, 0),
-(36, 8, 17, '20', 10.00000, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:27:05', 627, '0000-00-00 00:00:00', 0, 2),
-(44, 14, 20, 'Extensible', NULL, '', 0, '0000-00-00 00:00:00', 0, '2012-10-26 12:39:17', 627, '0000-00-00 00:00:00', 0, 2);
-
---
--- Dumping data for table `#__virtuemart_manufacturers`
---
-
-INSERT INTO `#__virtuemart_manufacturers` (`virtuemart_manufacturer_id`, `virtuemart_manufacturercategories_id`, `published`) VALUES
-(1, 1, 1);
-
-INSERT INTO `#__virtuemart_manufacturers_XLANG` (`virtuemart_manufacturer_id`, `mf_name`, `mf_email`, `mf_desc`, `mf_url`, `slug`) VALUES
-	(1, 'Manufacturer', ' manufacturer@example.org', 'An example for a manufacturer', 'http://www.example.org', 'manufacturer-example');
+INSERT IGNORE INTO `#__virtuemart_rating_votes` (`virtuemart_rating_vote_id`, `virtuemart_product_id`, `vote`, `lastip`) VALUES
+	(1, 4, 4, '::1'),
+	(2, 5, 5, '::1'),
+	(3, 6, 4, '::1'),
+	(4, 7, 4, '::1'),
+	(5, 11, 5, '::1'),
+	(6, 15, 5, '::1'),
+	(7, 22, 3, '::1'),
+	(8, 23, 5, '::1'),
+	(9, 24, 4, '::1'),
+	(10, 25, 4, '::1'),
+	(11, 26, 5, '::1'),
+	(12, 21, 5, '::1'),
+	(13, 20, 3, '::1'),
+	(14, 19, 5, '::1'),
+	(15, 63, 5, '::1'),
+	(16, 60, 5, '::1'),
+	(17, 61, 4, '::1'),
+	(18, 62, 4, '::1'),
+	(19, 67, 5, '::1'),
+	(20, 64, 4, '::1'),
+	(21, 65, 5, '::1'),
+	(22, 66, 5, '::1'),
+	(23, 71, 5, '::1'),
+	(24, 72, 3, '::1'),
+	(25, 73, 4, '::1'),
+	(26, 70, 5, '::1'),
+	(27, 69, 4, '::1');
 
 
---
--- Dumping data for table `#__virtuemart_manufacturercategories`
---
-
-INSERT INTO `#__virtuemart_manufacturercategories` (`virtuemart_manufacturercategories_id`, `published`) VALUES
-(1, 1);
-
-INSERT INTO `#__virtuemart_manufacturercategories_XLANG` (`virtuemart_manufacturercategories_id`, `mf_category_name`, `mf_category_desc`, `slug`) VALUES
-	(1, '-default-', 'This is the default manufacturer category', '-default-');
-
---
--- Dumping data for table `#__virtuemart_manufacturer_medias`
---
-
-INSERT IGNORE INTO `#__virtuemart_manufacturer_medias` (`id`,`virtuemart_manufacturer_id`, `virtuemart_media_id`) VALUES
-(NULL, 1, 14);
-
---
--- Dumping data for table `#__virtuemart_medias`
---
-INSERT INTO `#__virtuemart_medias` (`virtuemart_media_id`, `virtuemart_vendor_id`, `file_title`, `file_description`, `file_meta`, `file_mimetype`, `file_type`, `file_url`, `file_url_thumb`, `file_is_product_image`, `file_is_downloadable`, `file_is_forSale`, `file_params`, `shared`, `published`, `created_on`, `created_by`, `modified_on`, `modified_by`, `locked_on`, `locked_by`) VALUES
-(1, 1, 'hand_saw.jpg', '', 'hand saw', 'image/jpeg', 'product', 'images/stories/virtuemart/product/hand_saw.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '2012-10-26 10:25:23', 627, '0000-00-00 00:00:00', 0),
-(2, 1, 'hand_shovel.jpg', '', 'hand shovel', 'image/jpeg', 'product', 'images/stories/virtuemart/product/hand_shovel.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '2012-10-26 10:42:44', 627, '0000-00-00 00:00:00', 0),
-(3, 1, 'ladder.jpg', '', 'ladder', 'image/jpeg', 'product', 'images/stories/virtuemart/product/ladder.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(4, 1, 'power_drill.jpg', '', 'power drill', 'image/jpeg', 'product', 'images/stories/virtuemart/product/power_drill.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(5, 1, 'power_sander.jpg', '', 'power sander', 'image/jpeg', 'product', 'images/stories/virtuemart/product/power_sander.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(6, 1, 'shovel.jpg', '', 'shovel', 'image/jpeg', 'product', 'images/stories/virtuemart/product/shovel.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(7, 1, 'garden_tools.jpg', '', 'garden tools', 'image/jpeg', 'category', 'images/stories/virtuemart/category/garden_tools.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(8, 1, 'hand_tools.jpg', '', 'hand tools', 'image/jpeg', 'category', 'images/stories/virtuemart/category/hand_tools.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(9, 1, 'power_indoor_tool.jpg', '', 'power indoor tool', 'image/jpeg', 'category', 'images/stories/virtuemart/category/power_indoor_tool.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(10, 1, 'power_outdoor_tool.jpg', '', 'Power outdoor tool', 'image/jpeg', 'category', 'images/stories/virtuemart/category/power_outdoor_tool.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(11, 1, 'power_tools.jpg', '', 'power tools', 'image/jpeg', 'category', 'images/stories/virtuemart/category/power_tools.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '2012-10-26 10:24:06', 627, '0000-00-00 00:00:00', 0),
-(12, 1, 'manufacturersample.jpg', '', 'manufacturer sample', 'image/jpeg', 'manufacturer', 'images/stories/virtuemart/manufacturer/manufacturersample.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(13, 1, 'washupito.gif', '', 'washupito', 'image/gif', 'vendor', 'images/stories/virtuemart/vendor/washupito.gif', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0),
-(14, 1, 'hammer.jpg', '', 'hammer', 'image/jpeg', 'product', 'images/stories/virtuemart/product/hammer.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '2012-10-26 10:16:59', 627, '0000-00-00 00:00:00', 0),
-(15, 1, 'chain_saw.jpg', '', 'chain saw', 'image/jpeg', 'product', 'images/stories/virtuemart/product/chain_saw.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '2012-10-26 10:19:12', 627, '0000-00-00 00:00:00', 0),
-(16, 1, 'circular_saw.jpg', '', 'circular saw', 'image/jpeg', 'product', 'images/stories/virtuemart/product/circular_saw.jpg', '', 0, 0, 0, '', 0, 1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0);
-
-
-
-
-INSERT INTO `#__virtuemart_products` (`virtuemart_product_id`, `virtuemart_vendor_id`, `product_parent_id`, `product_sku`, `product_weight`, `product_weight_uom`, `product_length`, `product_width`, `product_height`, `product_lwh_uom`, `product_url`, `product_in_stock`, `product_ordered`, `low_stock_notification`, `product_available_date`, `product_availability`, `product_special`, `product_sales`, `product_unit`, `product_packaging`, `product_params`, `hits`, `intnotes`, `metarobot`, `metaauthor`, `layout`, `published`, `created_on`, `created_by`, `modified_on`, `modified_by`, `locked_on`, `locked_by`) VALUES
-(1, 1, 0, 'G01', 1.2000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 10, 0, 5, '2010-02-21 00:00:00', '48h.gif', 0, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-26 10:36:01', 0, '2012-10-28 17:55:17', 627, '0000-00-00 00:00:00', 0),
-(2, 1, 0, 'G02', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 76, 0, 5, '2010-02-21 00:00:00', '3-5d.gif', 0, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 0, '2012-10-25 10:36:01', 0, '2012-10-28 17:52:31', 627, '0000-00-00 00:00:00', 0),
-(3, 1, 0, 'G03', 0.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 32, 0, 5, '2010-02-21 00:00:00', '7d.gif', 0, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-23 10:36:01', 0, '2012-10-28 17:56:54', 627, '0000-00-00 00:00:00', 0),
-(4, 1, 0, 'G04', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 98, 0, 5, '2010-02-21 00:00:00', 'on-order.gif', 0, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-25 10:36:01', 0, '2012-10-28 17:55:32', 627, '0000-00-00 00:00:00', 0),
-(5, 1, 0, 'H01', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 32, 0, 5, '2010-02-21 00:00:00', '1-4w.gif', 1, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-22 10:36:01', 0, '2012-10-28 17:51:47', 627, '0000-00-00 00:00:00', 0),
-(6, 1, 0, 'H02', 0.9000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 500, 0, 5, '2011-12-21 00:00:00', '24h.gif', 1, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-26 10:36:01', 0, '2012-10-28 17:52:17', 627, '0000-00-00 00:00:00', 0),
-(7, 1, 0, 'P01', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 45, 0, 5, '2011-12-21 00:00:00', '48h.gif', 1, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-22 10:36:01', 0, '2012-10-28 17:53:13', 627, '0000-00-00 00:00:00', 0),
-(8, 1, 0, 'P02', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 33, 0, 5, '2010-12-21 00:00:00', '3-5d.gif', 0, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-23 10:36:01', 0, '2012-10-28 17:53:51', 627, '0000-00-00 00:00:00', 0),
-(9, 1, 0, 'P03', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 3, 0, 5, '2011-07-21 00:00:00', '2-3d.gif', 0, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-24 10:36:01', 0, '2012-10-28 17:53:00', 627, '0000-00-00 00:00:00', 0),
-(10, 1, 0, 'P04', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 2, 0, 5, '2010-12-21 00:00:00', '1-2m.gif', 0, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '0000-00-00 00:00:00', 0, '2012-10-28 17:55:56', 627, '0000-00-00 00:00:00', 0),
-(11, 1, 1, 'G01-01', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 0, 0, 5, '0000-00-00 00:00:00', '', 0, 0, '', 0.0000, 'min_order_level=null|max_order_level=null|product_box=null|', 0, '', '', '', '', 1, '2012-10-22 10:36:01', 0, '2012-10-28 17:55:17', 627, '0000-00-00 00:00:00', 0),
-(12, 1, 1, 'G01-02', 10.0000, '', 0.0000, 0.0000, 0.0000, '', '', 0, 0, 5, '0000-00-00 00:00:00', '', 0, 0, '', 0.0000, 'min_order_level=null|max_order_level=null|product_box=null|', 0, '', '', '', '', 1, '2012-10-26 09:36:01', 0, '2012-10-28 17:55:17', 627, '0000-00-00 00:00:00', 0),
-(13, 1, 1, 'G01-03', 10.0000, '', 0.0000, 0.0000, 0.0000, '', '', 0, 0, 5, '0000-00-00 00:00:00', '', 0, 0, '', 0.0000, 'min_order_level=null|max_order_level=null|product_box=null|', 0, '', '', '', '', 1, '2012-10-25 10:36:01', 0, '2012-10-28 17:55:17', 627, '0000-00-00 00:00:00', 0),
-(14, 1, 2, 'L01', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 22, 0, 5, '2011-12-21 00:00:00', '', 0, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-25 10:36:01', 0, '2012-10-28 17:52:31', 627, '0000-00-00 00:00:00', 0),
-(15, 1, 2, 'L02', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 0, 0, 5, '0000-00-00 00:00:00', '', 0, 0, 'KG', 0.0000, 'min_order_level=""|max_order_level=""|product_box=""|', 0, '', '', '', '0', 1, '2012-10-25 10:36:01', 0, '2012-10-28 17:52:31', 627, '0000-00-00 00:00:00', 0),
-(16, 1, 2, 'L03', 10.0000, 'KG', 0.0000, 0.0000, 0.0000, 'M', '', 0, 0, 5, '0000-00-00 00:00:00', '', 0, 0, '', 0.0000, 'min_order_level=null|max_order_level=null|product_box=null|', 0, '', '', '', '', 1, '2012-10-25 10:36:01', 0, '2012-10-28 17:52:31', 627, '0000-00-00 00:00:00', 0);
-
-
-INSERT INTO `#__virtuemart_products_XLANG` (`virtuemart_product_id`,`product_name`, `product_s_desc`, `product_desc`,  `metadesc`, `metakey`, `customtitle`, `slug`) VALUES
-(1, 'Hand Shovel', 'Parent product custom field of type "Generic child variant" with template position="ontop"', '<p>Nice hand shovel to dig with in the yard.</p><ul><li>Hand crafted handle with maximum grip torque</li><li>Titanium tipped shovel platter</li><li>Half degree offset for less accidents</li><li>Includes HowTo Video narrated by Bob Costas</li></ul><p><strong>Example of product with Parent product and Child products. The parent product has a custom field of type "<span>Generic child variant", useful to control the stock of the child products.</span></strong></p>', '', '', '', 'hand-shovel'),
-(2, 'Ladder (Pattern)', 'Parent product used as pattern.', '<p>A really long ladder to reach high places.</p><ul><li>Hand crafted handle with maximum grip torque</li><li>Titanium tipped shovel platter</li><li>Half degree offset for less accidents</li><li>Includes HowTo Video narrated by Bob Costas</li></ul><p><strong>Example of a parent product used as pattern. The child products are added using the button "Child product" button from the product list. <br /><strong>For the child products, fields not filled in are taken from the parent. Fields that are changed are displayed.</strong><br /></strong></p>', '', '', '', 'ladder-pattern'),
-(3, 'Shovel', 'Nice shovel.  You can dig your way to China with this one.', '<ul><li>Hand crafted handle with maximum grip torque</li><li>Titanium tipped shovel platter</li><li>Half degree offset for less accidents</li><li>Includes HowTo Video narrated by Bob Costas</li></ul><p><strong>Specifications</strong><br /> 5" Diameter<br /> Tungsten handle tip with 5 point loft</p>',  '', '', '', 'shovel'),
-(4, 'Smaller Shovel', 'Product with Text input Plugin Custom field', 'This shovel is smaller but you''ll be able to dig real quick.<ul><li>Hand crafted handle with maximum grip torque</li><li>Titanium tipped shovel platter</li><li>Half degree offset for less accidents</li><li>Includes HowTo Video narrated by Bob Costas</li></ul>',  '', '', '', 'smaller-shovel'),
-(5,  'Nice Saw', 'Product with Related Categories and Related Products associated', '<p>This saw is great for getting cutting through downed limbs.</p><ul><li>Hand crafted handle with maximum grip torque</li><li>Titanium tipped shovel platter</li><li>Half degree offset for less accidents</li><li>Includes HowTo Video narrated by Bob Costas</li></ul>', '', '', '', 'nice-saw'),
-(6, 'Hammer', 'Product with custom fields with no cart attribute.', '<p>A great hammer to hammer away with.</p><ul><li>Hand crafted handle with maximum grip torque</li><li>Titanium tipped shovel platter</li><li>Half degree offset for less accidents</li><li>Includes HowTo Video narrated by Bob Costas</li></ul>',  '', '', '', 'hammer'),
-(7, 'Chain Saw', 'Product with Custom field of type Cart variant and customer review', '<p>Don''t do it with an axe.  Get a chain saw.</p><ul><li>Tool-free tensioner for easy, convenient chain adjustment</li><li>3-Way Auto Stop; stops chain a fraction of a second</li><li>Automatic chain oiler regulates oil for proper chain lubrication</li><li>Small radius guide bar reduces kick-back</li></ul>',  '', '', '', 'chain-saw'),
-(8, 'Circular Saw', 'Product with custom field of type Cart Variant', '<p>Cut rings around wood.  This saw can handle the most delicate projects.</p><ul><li>Patented Sightline; Window provides maximum visibility for straight cuts</li><li>Adjustable dust chute for cleaner work area</li><li>Bail handle for controlled cutting in 90ÔøΩ to 45ÔøΩ applications</li><li>1-1/2 to 2-1/2 lbs. lighter and 40% less noise than the average circular saw</li><li><strong>Includes:</strong>Carbide blade</li></ul>',  '', '', '', 'circular-saw'),
-(9, 'Drill', 'Drill through anything.  This drill has the power you need for those demanding hole boring duties.', '<ul><li>High power motor and double gear reduction for increased durability and improved performance</li><li>Mid-handle design and two finger trigger for increased balance and comfort</li><li>Variable speed switch with lock-on button for continuous use</li><li><strong>Includes:</strong> Chuck key &amp; holder</li></ul><p><span style="color: #000000; font-size: medium;"><br /> </span></p>',  '', '', '', 'drill'),
-(10, 'Power Sander', 'Blast away that paint job from the past.  Use this power sander to really show them you mean business.', '<ul><li>Lever activated paper clamps for simple sandpaper changes</li><li>Dust sealed rocker switch extends product life and keeps dust out of motor</li><li>Flush sands on three sides to get into corners</li><li>Front handle for extra control</li><li>Dust extraction port for cleaner work environment</li></ul>',  '', '', '', 'power-sander'),
-(11, 'Hand Shovel cheap','', '',  '', '', '', 'hand-shovel-g01'),
-(12, 'Hand Shovel enforced','', '',  '', '', '', 'hand-shovel-g02'),
-(13, 'Hand Shovel heavy duty','', '',  '', '', '', 'hand-shovel-g03'),
-(14, 'Metal Ladder','', '',  '', '', '', 'metal-ladder'),
-(15, 'Wooden Ladder','', '<p>Loft ladders provide a safe and convenient solution to loft access and are quick and simple to install.</p>',  '', '', '', 'wooden-ladder'),
-(16, 'Plastic Ladder','', '',  '', '', '', 'plastic-ladder');
-
-INSERT IGNORE INTO `#__virtuemart_product_medias` (`id`,`virtuemart_product_id`, `virtuemart_media_id`) VALUES
-(NULL, 1, 2),
-(NULL, 2, 3),
-(NULL, 3, 6),
-(NULL, 4, 2),
-(NULL, 5, 1),
-(NULL, 6, 14),
-(NULL, 7, 15),
-(NULL, 8, 16),
-(NULL, 9, 4),
-(NULL, 10, 5);
-
-INSERT IGNORE INTO `#__virtuemart_vendor_medias` (`id`,`virtuemart_vendor_id`, `virtuemart_media_id`) VALUES
-(NULL, 1, 13);
---
--- Dumping data for table `#__virtuemart_product_categories`
---
-
-INSERT IGNORE INTO `#__virtuemart_product_categories` (`virtuemart_category_id`, `virtuemart_product_id`, `ordering`) VALUES
-(1, 1, NULL),
-(3, 2, NULL),
-(3, 3, NULL),
-(3, 4, NULL),
-(1, 5, NULL),
-(1, 6, NULL),
-(4, 7, NULL),
-(2, 8, NULL),
-(5, 9, NULL),
-(3, 14, NULL),
-(3, 15, NULL),
-(3, 16, NULL)
-
-;
-
-
---
--- Dumping data for table `#__virtuemart_product_manufacturers`
---
-
-INSERT IGNORE INTO `#__virtuemart_product_manufacturers` (`virtuemart_product_id`, `virtuemart_manufacturer_id`) VALUES
-(1, 1),
-(2, 1),
-(3, 1),
-(4, 1),
-(5, 1),
-(6, 1),
-(7, 1),
-(8, 1),
-(9, 1),
-(10, 1),
-(11, 1),
-(12, 1),
-(13, 1),
-(14, 1),
-(15, 1),
-(16, 1);
-
---
--- Dumping data for table `#__virtuemart_product_prices`
---
-
-INSERT INTO `#__virtuemart_product_prices` (`virtuemart_product_price_id`, `virtuemart_product_id`, `product_price`, `override`, `product_override_price`, `product_tax_id`, `product_discount_id`, `product_currency`, `product_price_publish_up`, `product_price_publish_down`, `virtuemart_shoppergroup_id`, `price_quantity_start`, `price_quantity_end`) VALUES
-(1, 5, '24.99000', 0, '0.00000', NULL, NULL, '144', 0, 0,  NULL, 0, 0),
-(2, 1, '4.49000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(3, 2, '39.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(4, 3, '24.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(5, 4, '17.99000', 1, '77.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(6, 6, '4.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(7, 7, '149.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(8, 8, '220.90000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(9, 9, '48.12000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(10, 10, '74.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(11, 11, '2.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(12, 12, '14.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(13, 13, '79.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(14, 14, '49.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(15, 15, '59.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0),
-(16, 16, '3.99000', 0, '0.00000', NULL, NULL, '144', 0, 0, NULL, 0, 0);
-
---
--- Dumping data for table `#__virtuemart_shoppergroups`
---
-
-INSERT IGNORE INTO `#__virtuemart_shoppergroups` (`virtuemart_shoppergroup_id`, `virtuemart_vendor_id`, `shopper_group_name`, `shopper_group_desc`, `default`) VALUES
-(NULL, 1, 'Gold Level', 'Gold Level Shoppers.', 0),
-(NULL, 1, 'Wholesale', 'Shoppers that can buy at wholesale.', 0);
-
---
--- Dumping data for table `#__virtuemart_worldzones`
---
-
-INSERT INTO `#__virtuemart_worldzones` (`virtuemart_worldzone_id`, `zone_name`, `zone_cost`, `zone_limit`, `zone_description`, `zone_tax_rate`) VALUES
-(1, 'Default', '6.00', '35.00', 'This is the default Shipment Zone. This is the zone information that all countries will use until you assign each individual country to a Zone.', 2),
-(2, 'Zone 1', '1000.00', '10000.00', 'This is a zone example', 2),
-(3, 'Zone 2', '2.00', '22.00', 'This is the second zone. You can use this for notes about this zone', 2),
-(4, 'Zone 3', '11.00', '64.00', 'Another useful thing might be details about this zone or special instructions.', 2);
-
-
-INSERT INTO `#__virtuemart_ratings` (`virtuemart_rating_id`, `virtuemart_product_id`, `rates`, `ratingcount`, `rating`, `published`, `created_on`, `created_by`, `modified_on`, `modified_by`) VALUES
-(1, 7, 5, 1, 5.0, 1, '2012-10-26 10:28:32', 627, '2012-10-26 10:29:16', 627);
-
-INSERT INTO `#__virtuemart_rating_reviews` (`virtuemart_rating_review_id`, `virtuemart_product_id`, `comment`, `review_ok`, `review_rates`, `review_ratingcount`, `review_rating`, `review_editable`, `lastip`, `published`, `created_on`, `created_by`, `modified_on`, `modified_by`, `locked_on`, `locked_by`) VALUES
-(1, 7, 'I just purchased this saw to cut up some tree branches that fell into my yard. I am so happy, it is light weight enough for me (a lady) to use.', 0, 10, 2, 5.00, 0, '::1', 1, '2012-10-26 10:28:32', 627, '2012-10-26 10:29:16', 627, '0000-00-00 00:00:00', 0);
-
-INSERT INTO `#__virtuemart_rating_votes` (`virtuemart_rating_vote_id`, `virtuemart_product_id`, `vote`, `lastip`, `created_on`, `created_by`, `modified_on`, `modified_by`) VALUES
-(1, 7, 5, '::1', '2012-10-26 10:28:32', 627, '2012-10-26 10:29:16', 627);
+INSERT INTO `#__virtuemart_shoppergroups` (`virtuemart_shoppergroup_id`, `virtuemart_vendor_id`, `shopper_group_name`, `shopper_group_desc`, `default`, `shared`, `published`) VALUES
+(NULL, 1, 'Gold Level', 'Gold Level Shoppers.', 0,1,1),
+(NULL, 1, 'Wholesale', 'Shoppers that can buy at wholesale.', 0,1,1);

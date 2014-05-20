@@ -20,7 +20,7 @@
 defined('_JEXEC') or die();
 
 
-JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+JLoader::register('VmModel', JPATH_VM_ADMINISTRATOR.'helpers/vmmodel.php');
 
 // JTable::addIncludePath(JPATH_VM_ADMINISTRATOR.DS.'tables');
 /**
@@ -60,9 +60,7 @@ class VirtueMartModelProduct extends VmModel {
 
 		}
 		else {
-			if (!class_exists ('shopFunctions')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
-			}
+			JLoader::register('shopFunctions', JPATH_VM_ADMINISTRATOR.'helpers/shopfunctions.php');
 			$browseOrderByFields = ShopFunctions::getValidProductFilterArray ();
 			$this->addvalidOrderingFieldName (array('product_price','p.`product_sales`'));
 			//$this->addvalidOrderingFieldName (array('product_price'));
@@ -960,9 +958,9 @@ class VirtueMartModelProduct extends VmModel {
 			}
 
 			if (!empty($product->shoppergroups) and $front) {
-				if (!class_exists ('VirtueMartModelUser')) {
-					require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'user.php');
-				}
+				// if (!class_exists ('VirtueMartModelUser')) {
+					// require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'user.php');
+				// }
 				$commonShpgrps = array_intersect ($virtuemart_shoppergroup_ids, $product->shoppergroups);
 				if (empty($commonShpgrps)) {
 					vmdebug('getProductSingle creating void product, usergroup does not fit ',$product->shoppergroups);
@@ -1007,10 +1005,7 @@ class VirtueMartModelProduct extends VmModel {
 
 				if (!empty($product->categories) and is_array ($product->categories) and count($product->categories)>1){
 
-					if (!class_exists ('shopFunctionsF')) {
-						require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
-					}
-
+					JLoader::register('shopFunctionsF', JPATH_VM_SITE.'/helpers/shopfunctionsf.php');
 					//We must first check if we come from another category, due the canoncial link we would have always the same catgory id for a product
 					//But then we would have wrong neighbored products / category and product layouts
 					$last_category_id = shopFunctionsF::getLastVisitedCategoryId ();
@@ -1124,6 +1119,7 @@ class VirtueMartModelProduct extends VmModel {
 					$product->customfields = $customfields->getProductCustomsField ($product);
 					$product->customfieldsRelatedCategories = $customfields->getProductCustomsFieldRelatedCategories ($product);
 					$product->customfieldsRelatedProducts = $customfields->getProductCustomsFieldRelatedProducts ($product);
+					$product->customfieldsProductKit = $customfields->getProductCustomsFieldProductKit ($product);
 					//  custom product fields for add to cart
 					$product->customfieldsCart = $customfields->getProductCustomsFieldCart ($product);
 					$child = $this->getProductChilds ($this->_id);
@@ -1164,9 +1160,9 @@ class VirtueMartModelProduct extends VmModel {
 		$product->virtuemart_manufacturer_id = NULL;
 		$product->virtuemart_product_price_id = NULL;
 
-		if (!class_exists ('VirtueMartModelVendor')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'vendor.php');
-		}
+		// if (!class_exists ('VirtueMartModelVendor')) {
+			// require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'vendor.php');
+		// }
 		//$product->virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor();
 
 		$product->product_price = NULL;
@@ -1271,9 +1267,7 @@ class VirtueMartModelProduct extends VmModel {
 
 		if ($app->isSite ()) {
 			$front = TRUE;
-			if (!class_exists ('Permissions')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
-			}
+			JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 			if (!Permissions::getInstance ()->check ('admin', 'storeadmin')) {
 				// list is filtered by vendor ID
 				// $onlyPublished = TRUE;
@@ -1570,13 +1564,9 @@ class VirtueMartModelProduct extends VmModel {
 
 		JSession::checkToken () or jexit ('Invalid Token');
 
+		if ($product) $data = (array)$product;
 
-		if ($product) {
-			$data = (array)$product;
-		}
-
-		if (!class_exists ('Permissions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'permissions.php');
-
+		JLoader::register('Permissions', JPATH_VM_SITE.'/helpers/permissions.php');
 		$perm = Permissions::getInstance();
 		$superVendor = $perm->isSuperVendor();
 		if(empty($superVendor)){
@@ -1640,9 +1630,7 @@ class VirtueMartModelProduct extends VmModel {
 		//We may need to change this, the reason it is not in the other list of commands for parents
 		if (!$isChild) {
 			if (!empty($data['save_customfields'])) {
-				if (!class_exists ('VirtueMartModelCustomfields')) {
-					require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'customfields.php');
-				}
+				JLoader::register('VirtueMartModelCustomfields', JPATH_VM_ADMINISTRATOR.'/models/customfields.php');
 				VirtueMartModelCustomfields::storeProductCustomfields ('product', $data, $product_data->virtuemart_product_id);
 			}
 		}
@@ -1674,9 +1662,7 @@ class VirtueMartModelProduct extends VmModel {
 				}
 
 				if (!$isChild and isset($data['use_desired_price'][$k]) and $data['use_desired_price'][$k] == "1") {
-					if (!class_exists ('calculationHelper')) {
-						require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
-					}
+					JLoader::register('calculationHelper', JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
 					$calculator = calculationHelper::getInstance ();
 					$pricesToStore['salesPrice'] = $data['salesPrice'][$k];
 					$pricesToStore['product_price'] = $data['product_price'][$k] = $calculator->calculateCostprice ($this->_id, $pricesToStore);
@@ -1869,7 +1855,7 @@ class VirtueMartModelProduct extends VmModel {
 		$product->virtuemart_product_id = $product->virtuemart_product_price_id = 0;
 		$this->productPricesClone ($product, $id);
 		//Lets check if the user is admin or the mainvendor
-		if(!class_exists('Permissions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'permissions.php');
+		JLoader::register('Permissions', JPATH_VM_SITE.'/helpers/permissions.php');
 		$admin = Permissions::getInstance()->check('admin');
 		if($admin){
 			$product->created_on = "0000-00-00 00:00:00";
@@ -2033,9 +2019,7 @@ class VirtueMartModelProduct extends VmModel {
 		}
 
 		// Loads the product price details
-		if (!class_exists ('calculationHelper')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
-		}
+		JLoader::register('calculationHelper', JPATH_VM_ADMINISTRATOR.'/helpers/calculationh.php');
 		$calculator = calculationHelper::getInstance ();
 
 		// Add in the quantity in case the customfield plugins need it
@@ -2082,8 +2066,8 @@ class VirtueMartModelProduct extends VmModel {
 				$fieldLink .= '&' . $key . '=' . $value;
 			}
 		}
-		$fieldLink[0] = "?";
-		$fieldLink = 'index.php' . $fieldLink;
+		// $fieldLink[0] = "?";
+		// $fieldLink = 'index.php' . $fieldLink;
 		$orderTxt = '';
 
 		$order = JRequest::getWord ('order', 'ASC');
@@ -2097,10 +2081,11 @@ class VirtueMartModelProduct extends VmModel {
 		if ($orderby != '' && $orderby != $orderbyCfg) {
 			$orderbyTxt = '&orderby=' . $orderby;
 		}
-
 		$manufacturerTxt = '';
-		$manufacturerLink = '';
+		$manuList = array();
 		if (VmConfig::get ('show_manufacturers')) {
+			$virtuemart_manufacturer_id = JRequest::getInt ('virtuemart_manufacturer_id', 0);
+
 			$tmp = $this->_noLimit;
 			$this->_noLimit = TRUE;
 
@@ -2109,12 +2094,12 @@ class VirtueMartModelProduct extends VmModel {
 			// manufacturer link list
 
 			$virtuemart_manufacturer_id = JRequest::getInt ('virtuemart_manufacturer_id', 0);
-			if ($virtuemart_manufacturer_id != '') {
+			if ($virtuemart_manufacturer_id) {
 				$manufacturerTxt = '&virtuemart_manufacturer_id=' . $virtuemart_manufacturer_id;
 			}
 
 			// if ($mf_virtuemart_product_ids) {
-			$query = 'SELECT DISTINCT l.`mf_name`,l.`virtuemart_manufacturer_id` FROM `#__virtuemart_manufacturers_' . VMLANG . '` as l';
+			$query = 'SELECT l.`mf_name`,l.`virtuemart_manufacturer_id` FROM `#__virtuemart_manufacturers_' . VMLANG . '` as l';
 			$query .= ' JOIN `#__virtuemart_product_manufacturers` AS pm using (`virtuemart_manufacturer_id`)';
 			$query .= ' LEFT JOIN `#__virtuemart_products` as p ON p.`virtuemart_product_id` = pm.`virtuemart_product_id` ';
 			$query .= ' LEFT JOIN `#__virtuemart_product_categories` as c ON c.`virtuemart_product_id` = pm.`virtuemart_product_id` ';
@@ -2122,34 +2107,29 @@ class VirtueMartModelProduct extends VmModel {
 			if ($virtuemart_category_id) {
 				$query .= ' AND c.`virtuemart_category_id` =' . (int)$virtuemart_category_id;
 			}
-			$query .= ' ORDER BY l.`mf_name`';
+			$query .= ' GROUP BY l.`virtuemart_manufacturer_id` ORDER BY l.`mf_name` ASC';
 			$this->_db->setQuery ($query);
-			$manufacturers = $this->_db->loadObjectList ();
+			$manufacturers = $this->_db->loadObjectList ('virtuemart_manufacturer_id');
 			// 		vmdebug('my manufacturers',$this->_db->getQuery());
-			$manufacturerLink = '';
-			if (count ($manufacturers) > 0) {
-				$manufacturerLink = '<div class="orderlist">';
-				if ($virtuemart_manufacturer_id > 0) {
-					$manufacturerLink .= '<div><a title="" href="' . JRoute::_ ($fieldLink . $orderTxt . $orderbyTxt, FALSE) . '">' . JText::_ ('COM_VIRTUEMART_SEARCH_SELECT_ALL_MANUFACTURER') . '</a></div>';
+
+			if ($manufacturers) {
+				if (isset($manufacturers[$virtuemart_manufacturer_id]) ) {
+					$manuList[$virtuemart_manufacturer_id] =array(
+						'text' => $manufacturers[$virtuemart_manufacturer_id]->mf_name,
+						'link' => JRoute::_ ($fieldLink . '&virtuemart_manufacturer_id=' . $virtuemart_manufacturer_id . $orderTxt . $orderbyTxt)
+					);
 				}
-				if (count ($manufacturers) > 1) {
-					foreach ($manufacturers as $mf) {
-						$link = JRoute::_ ($fieldLink . '&virtuemart_manufacturer_id=' . $mf->virtuemart_manufacturer_id . $orderTxt . $orderbyTxt,FALSE);
-						if ($mf->virtuemart_manufacturer_id != $virtuemart_manufacturer_id) {
-							$manufacturerLink .= '<div><a title="' . $mf->mf_name . '" href="' . $link . '">' . $mf->mf_name . '</a></div>';
-						}
-						else {
-							$currentManufacturerLink = '<div class="title">' . JText::_ ('COM_VIRTUEMART_PRODUCT_DETAILS_MANUFACTURER_LBL') . '</div><div class="activeOrder">' . $mf->mf_name . '</div>';
-						}
-					}
+				$manuList[0] =array(
+					'text' => JText::_ ('COM_VIRTUEMART_SEARCH_SELECT_ALL_MANUFACTURER'),
+					'link' => JRoute::_ ($fieldLink . $orderTxt . $orderbyTxt. '&virtuemart_manufacturer_id=')
+				);
+				foreach ($manufacturers as $mf) {
+					if ($mf->virtuemart_manufacturer_id == $virtuemart_manufacturer_id) continue;
+					$manuList[$mf->virtuemart_manufacturer_id] = array(
+						'text' => $mf->mf_name,
+						'link' => JRoute::_ ($fieldLink . '&virtuemart_manufacturer_id=' . $mf->virtuemart_manufacturer_id . $orderTxt . $orderbyTxt)
+					);
 				}
-				elseif ($virtuemart_manufacturer_id > 0) {
-					$currentManufacturerLink = '<div class="title">' . JText::_ ('COM_VIRTUEMART_PRODUCT_DETAILS_MANUFACTURER_LBL') . '</div><div class="activeOrder">' . $manufacturers[0]->mf_name . '</div>';
-				}
-				else {
-					$currentManufacturerLink = '<div class="title">' . JText::_ ('COM_VIRTUEMART_PRODUCT_DETAILS_MANUFACTURER_LBL') . '</div><div class="Order"> ' . $manufacturers[0]->mf_name . '</div>';
-				}
-				$manufacturerLink .= '</div>';
 			}
 			// }
 		}
@@ -2157,10 +2137,19 @@ class VirtueMartModelProduct extends VmModel {
 		/* order by link list*/
 		$orderByLink = '';
 		$fields = VmConfig::get ('browse_orderby_fields');
+		
+		// add at start of list the default one;
+		if ($orderby == '') {
+			$default = $orderbyCfg;
+		} else $default = $orderby;
+		$orderingList[$default] =array(
+			'text' => '',
+			'link' => '',
+		);
+
 		if (count ($fields) > 1) {
-			$orderByLink = '<div class="orderlist">';
 			foreach ($fields as $field) {
-				if ($field != $orderby) {
+				if ($field != $default) {
 
 					$dotps = strrpos ($field, '.');
 					if ($dotps !== FALSE) {
@@ -2172,63 +2161,47 @@ class VirtueMartModelProduct extends VmModel {
 						$prefix = '';
 						$fieldWithoutPrefix = $field;
 					}
-
-					$text = JText::_ ('COM_VIRTUEMART_' . strtoupper ($fieldWithoutPrefix));
-
 					if ($field == $orderbyCfg) {
-						$link = JRoute::_ ($fieldLink . $manufacturerTxt,FALSE);
+						$link = JRoute::_ ($fieldLink . $manufacturerTxt. '&orderby=');
 					}
 					else {
-						$link = JRoute::_ ($fieldLink . $manufacturerTxt . '&orderby=' . $field,FALSE);
+						$link = JRoute::_ ($fieldLink . $manufacturerTxt . '&orderby=' . $field);
 					}
-					$orderByLink .= '<div><a title="' . $text . '" href="' . $link . '">' . $text . '</a></div>';
+					$orderingList[$field] = array(
+						'text' => $fieldWithoutPrefix,
+						'link' => $link
+					);
 				}
 			}
-			$orderByLink .= '</div>';
 		}
 
 		/* invert order value set*/
 		if ($order == 'ASC') {
 			$orderlink = '&order=DESC';
-			$orderTxt = JText::_ ('COM_VIRTUEMART_SEARCH_ORDER_DESC');
 		}
 		else {
-			$orderTxt = JText::_ ('COM_VIRTUEMART_SEARCH_ORDER_ASC');
 			$orderlink = '';
 		}
 
-		/* full string list */
-		if ($orderby == '') {
-			$orderby = $orderbyCfg;
-		}
-		$orderby = strtoupper ($orderby);
-		$link = JRoute::_ ($fieldLink . $orderlink . $orderbyTxt . $manufacturerTxt,FALSE);
+		// $orderby = strtoupper ($orderby);
+		$link = JRoute::_ ($fieldLink . $orderlink . $orderbyTxt . $manufacturerTxt);
 
 		$dotps = strrpos ($orderby, '.');
 		if ($dotps !== FALSE) {
 			$prefix = substr ($orderby, 0, $dotps + 1);
-			$orderby = substr ($orderby, $dotps + 1);
+			$text = substr ($orderby, $dotps + 1);
 			// 				vmdebug('Found dot '.$dotps.' $prefix '.$prefix.'  $fieldWithoutPrefix '.$fieldWithoutPrefix);
 		}
 		else {
+			$text = $orderby;
 			$prefix = '';
 			// 		$orderby = $orderby;
 		}
+		// fiil default ordering
+		$orderingList[$default]['text'] = $orderby;
+		$orderingList[$default]['link'] = $link;
 
-		$orderByList = '<div class="orderlistcontainer"><div class="title">' . JText::_ ('COM_VIRTUEMART_ORDERBY') . '</div><div class="activeOrder"><a title="' . $orderTxt . '" href="' . $link . '">' . JText::_ ('COM_VIRTUEMART_SEARCH_ORDER_' . $orderby) . ' ' . $orderTxt . '</a></div>';
-		$orderByList .= $orderByLink . '</div>';
-
-		$manuList = '';
-		if (VmConfig::get ('show_manufacturers')) {
-			if (empty ($currentManufacturerLink)) {
-				$currentManufacturerLink = '<div class="title">' . JText::_ ('COM_VIRTUEMART_PRODUCT_DETAILS_MANUFACTURER_LBL') . '</div><div class="activeOrder">' . JText::_ ('COM_VIRTUEMART_SEARCH_SELECT_MANUFACTURER') . '</div>';
-			}
-			$manuList = ' <div class="orderlistcontainer">' . $currentManufacturerLink;
-			$manuList .= $manufacturerLink . '</div><div class="clear"></div>';
-
-		}
-
-		return array('orderby'=> $orderByList, 'manufacturer'=> $manuList);
+		return array('orderby'=> $orderingList, 'manufacturer'=> $manuList);
 	}
 
 
@@ -2324,9 +2297,8 @@ class VirtueMartModelProduct extends VmModel {
 function lowStockWarningEmail($virtuemart_product_id) {
 
 	if(VmConfig::get('lstockmail',TRUE)){
-		if (!class_exists ('shopFunctionsF')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
-		}
+
+		JLoader::register('shopFunctionsF', JPATH_VM_SITE.'/helpers/shopfunctionsf.php');
 
 		/* Load the product details */
 		$q = "SELECT l.product_name,product_in_stock FROM `#__virtuemart_products_" . VMLANG . "` l
@@ -2458,9 +2430,7 @@ function lowStockWarningEmail($virtuemart_product_id) {
 	function sentProductEmailToShoppers () {
 
 		jimport ('joomla.utilities.arrayhelper');
-		if (!class_exists ('ShopFunctions')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
-		}
+		JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 
 		$product_id = JRequest::getVar ('virtuemart_product_id', '');
 		vmdebug ('sentProductEmailToShoppers product id', $product_id);

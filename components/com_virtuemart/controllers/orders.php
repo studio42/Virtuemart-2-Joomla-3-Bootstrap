@@ -5,7 +5,7 @@
  *
  * @package	VirtueMart
  * @subpackage User
- * @author Oscar van Eijk
+ * @author Oscar van Eijk, Patrick Kohl
  * @link http://www.virtuemart.net
  * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -26,23 +26,6 @@ defined('_JEXEC') or die();
  */
 class VirtueMartControllerOrders extends JControllerLegacy
 {
-
-	/**
-	 * Todo do we need that anylonger? that way.
-	 * @see JControllerLegacy::display()
-	 */
-	public function display($cachable = false, $urlparams = false)  {
-
-		$format = JRequest::getWord('format','html');
-		if  ($format == 'pdf') $viewName= 'pdf';
-		else $viewName='orders';
-		$view = $this->getView($viewName, $format);
-
-		$this->addModelPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'models');
-
-		// Display it all
-		$view->display();
-	}
 
 }
 

@@ -26,13 +26,14 @@ class VmView extends JViewLegacy{
 		if ($verifyConfigValue) {
 			if ( !VmConfig::get($verifyConfigValue, 0) ) return '';
 		}
-		$folder = '/media/system/images/'; // use of relative path, $folder is not needed in j3
+		// $folder = '/media/system/images/'; // use of relative path, $folder is not needed in j3
 		$text='';
-		if ( $use_icon ) $text .= JHtml::_('image', $boutonName.'.png', JText::_($altText),  null, true);
+		// if ( $use_icon ) $text .= JHtml::_('image', $boutonName.'.png', JText::_($altText),  null, true);
+		if ( $use_icon ) $text .= '<span class="'.$boutonName.'"> </span>';//JHtml::_('image', $boutonName.'.png', JText::_($altText),  null, true);
 		if ( $use_text ) $text .= '&nbsp;'. JText::_($altText);
 		if ( $text=='' )  $text .= '&nbsp;'. JText::_($altText);
-		if ($modal) return '<a class="modal" rel="{handler: \'iframe\', size: {x: 700, y: 550}}" title="'. JText::_($altText).'" href="'.JRoute::_($link).'">'.$text.'</a>';
-		else 		return '<a title="'. JText::_($altText).'" href="'.JRoute::_($link, FALSE).'">'.$text.'</a>';
+		if ($modal) return '<a class="modal btn btn-default" rel="{handler: \'iframe\', size: {x: 700, y: 550}}" title="'. JText::_($altText).'" href="'.JRoute::_($link).'">'.$text.'</a>';
+		else 		return '<a class="btn btn-default" title="'. JText::_($altText).'" href="'.JRoute::_($link, FALSE).'">'.$text.'</a>';
 	}
 	function can($task,$view,$created_by = null,$vendorId = null){
 		static $user_id = null;
@@ -64,15 +65,18 @@ class VmView extends JViewLegacy{
 
 		if($idLink === null) return;
 		if (!$this->can($task,$view,$created_by,$vendorId)) return '';
+		if( jtext::_('COM_VIRTUEMART_'.$view) !== 'COM_VIRTUEMART_'.$view )
+			$text = jtext::_('COM_VIRTUEMART_'.$view);
+		else $text = $view ;
 	    $edit_link = 'index.php?option=com_virtuemart&tmpl=component&view='.$view.'&task='.$task.$idLink ;
-		return '<a title="'. JText::_('JNEW').' '.$view.'" href="'.JRoute::_($edit_link, FALSE).'" class="btn btn-default pull-right"><span class="icon icon-new"> </span> '.$view.'</a>';		
+		return '<a title="'. JText::_('JNEW').' '.$text.'" href="'.JRoute::_($edit_link, FALSE).'" class="btn btn-default"><span class="icon icon-new"> </span> '.$text.'</a>';		
 	}	// display edit link if the user have the rights.
 	function editLink($view,$id,$created_by,$task="edit",$vendorId = null) {
 
 		if(!$id) return;
 		if (!$this->can($task,$view,$created_by,$vendorId)) return '';
 	    $edit_link = 'index.php?option=com_virtuemart&tmpl=component&view='.$view.'&task='.$task.'&virtuemart_'.$view.'_id='.$id ;
-		return '<a title="'. JText::_('JGLOBAL_EDIT').'" href="'.JRoute::_($edit_link, FALSE).'" class="btn btn-default pull-right"><span class="icon icon-edit"> </span></a>';		
+		return '<a title="'. JText::_('JGLOBAL_EDIT').'" href="'.JRoute::_($edit_link, FALSE).'" class="btn btn-default"><span class="icon icon-edit"> </span></a>';		
 	}
 
 	public function escape($var)

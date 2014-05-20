@@ -64,11 +64,11 @@ $saveOrder = ($this->lists['filter_order'] == 'ordering' && $listDirn =="asc");
 	if ($customs) {
 
 		$i = 0;
-
+		$canPublish = ShopFunctions::can('publish');
 		foreach ($customs as $key => $custom) {
 
 			$checked = JHTML::_('grid.id', $i , $custom->virtuemart_custom_id,false);
-			$canDo = $this->canChange($custom->created_by) && ShopFunctions::can('publish');
+			$canDo = $this->canChange($custom->created_by) && $canPublish;
 			$published = $this->toggle( $custom->published, $i, 'published',$canDo);
 			?>
 			<tr sortable-group-id="<?php echo $custom->custom_parent_id; ?>">

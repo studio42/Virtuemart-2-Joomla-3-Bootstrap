@@ -38,10 +38,9 @@ class VirtueMartViewPluginresponse extends VmView {
 
       //Why do you we allow raw here?
 //       $paymentResponseHtml = JRequest::getVar('paymentResponseHtml','','default','STRING',JREQUEST_ALLOWRAW);
-		$layoutName = $this->getLayout();
 
 
-
+		$document->setMetaData('robots','NOINDEX, NOFOLLOW, NOARCHIVE, NOSNIPPET');
 		parent::display($tpl);
 	}
 

@@ -246,7 +246,6 @@ font-size: 12px;
 .vm_thumb {line-height:120px}
 .vm_thumb_image {
     text-align: center;
-    background: url("../images/admin_ui/toolbar_background.png") repeat-x scroll center bottom;
     border: 1px solid #B4B4B4;
     border-radius: 6px;
     display: block;
@@ -256,7 +255,6 @@ font-size: 12px;
     overflow: hidden;
     padding: 10px;
     position: relative;
-    text-align: center;
     vertical-align: middle;
     width: 120px;
 }
@@ -264,6 +262,25 @@ font-size: 12px;
 	/*Ensures that large thumbs are with-in bounding box so remove button is not hidden*/
 	max-height: 90px;
 	max-width: 110px;
+}
+.vm_thumb_image .vm-img-desc{ display:none }
+/*product kits display in rows */
+#custom_productkit{
+	border-top: 1px solid #e5e5e5;
+}
+#custom_productkit .vm_thumb_image{
+	text-align: left;
+	border:0px;
+	float: none;
+	height: auto;
+	width:auto;
+	padding: 5px;
+	 border-radius: 0px;
+	border-bottom: 1px solid #e5e5e5;
+}
+#custom_productkit .vm_thumb_image img{
+	/*Ensures that large thumbs are with-in bounding box so remove button is not hidden*/
+	max-width: 32px;
 }
 .vm__img_autocrop{
     display: block;
