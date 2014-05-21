@@ -105,7 +105,7 @@ class VmController extends JControllerLegacy{
 		$canDo = true;
 		if (!$this->_canEdit) {
 			// toggle is checked in controller
-			$taskBlacklist =array('edit','apply','save','apply','toggle','orderUp','orderDown','saveOrder');
+			$taskBlacklist =array('edit','apply','save','apply','toggle','orderUp','orderDown','saveOrder','paste');
 			// only check non admin
 			if (in_array($task,$taskBlacklist) ) {
 				$msg = JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED').' ('.JText::_('COM_VIRTUEMART_' . strtoupper($this->_cname)).')' ;

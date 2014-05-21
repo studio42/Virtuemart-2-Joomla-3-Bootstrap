@@ -67,12 +67,15 @@ class VirtuemartControllerTranslate extends VmController {
 		$id = JRequest::getInt('id',0);
 
 		$viewKey = JRequest::getWord('editView');
-		// TODO temp trick for vendor
-		if ($viewKey == 'vendor') $id = 1 ;
+		// we have here 2 access user & vendor give same results
+		if ($viewKey == 'user') $viewKey = 'vendor' ;
+		// Not needed , vendor is checked in constructor
+		//if ($viewKey == 'vendor') $id = 1 ;
+
 
 		$tables = array ('category' =>'categories','product' =>'products','manufacturer' =>'manufacturers','manufacturercategories' =>'manufacturercategories','vendor' =>'vendors', 'paymentmethod' =>'paymentmethods', 'shipmentmethod' =>'shipmentmethods');
 
-		if ( !array_key_exists($viewKey, $tables) ) {
+		if ( !isset($tables[$viewKey]) ) {
 			$json['msg'] ="Invalid view ". $viewKey;
 			echo json_encode($json);
 			jExit();

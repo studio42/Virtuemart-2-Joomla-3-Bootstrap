@@ -128,7 +128,7 @@ $rowColor = 0;
     </tr>
 <?php $rowColor = 1 - $rowColor; ?>
     <tr class="row<?php echo $rowColor?> form-horizontal">
-        <td>
+        <td class="vm-salesprices">
 			<label style="font-weight: bold;">
 				<span
                         class="hasTip"

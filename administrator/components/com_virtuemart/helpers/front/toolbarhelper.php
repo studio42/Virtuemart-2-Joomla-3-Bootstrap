@@ -32,17 +32,18 @@ abstract class JToolbarHelper
 	public static function title($title, $icon = 'generic.png')
 	{
 		// Strip the extension.
-		$icons = explode(' ', $icon);
-		foreach ($icons as &$icon)
-		{
-			$icon = 'icon-48-' . preg_replace('#\.[^.]*$#', '', $icon);
-		}
+		// $icons = explode(' ', $icon);
+		// foreach ($icons as &$icon)
+		// {
+			// $icon = 'icon-48-' . preg_replace('#\.[^.]*$#', '', $icon);
+		// }
+		$icon = empty($icon) ? 'generic' : preg_replace('#\.[^ .]*$#', '', $icon);
 
+		$html = '<h1 class="page-title"><span class="icon-'.$icon.'"></span>'.$title.'</h1>';
 		// $html = '<div class="pagetitle ' . htmlspecialchars(implode(' ', $icons)) . '"><h2>' . $title . '</h2></div>';
-
 		$app = JFactory::getApplication();
 		// $app->JComponentTitle = $html;
-		$app->JComponentTitle = $title;
+		$app->JComponentTitle = $html;
 		JFactory::getDocument()->setTitle($title);
 	}
 

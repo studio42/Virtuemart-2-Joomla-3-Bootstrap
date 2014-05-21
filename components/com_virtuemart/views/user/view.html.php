@@ -90,7 +90,7 @@ class VirtuemartViewUser extends VmView {
 	    return;
 	}
 
-	JLoader::register('VirtuemartModelUser', JPATH_VM_ADMINISTRATOR.'/helpers/user.php');
+	JLoader::register('VirtuemartModelUser', JPATH_VM_ADMINISTRATOR.'/models/user.php');
 
 	$this->_model = new VirtuemartModelUser();
 

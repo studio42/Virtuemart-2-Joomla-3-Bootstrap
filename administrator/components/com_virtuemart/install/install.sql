@@ -743,6 +743,8 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_products` (
   `virtuemart_vendor_id` smallint(1) UNSIGNED NOT NULL DEFAULT '1',
   `product_parent_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
   `product_sku` char(64),
+  `product_gtin` char(64),
+  `product_mpn` char(64),
   `product_weight` decimal(10,4),
   `product_weight_uom` char(7),
   `product_length` decimal(10,4),

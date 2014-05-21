@@ -56,7 +56,7 @@ $saveOrder = ($this->lists['filter_order'] == 'ordering' && $listDirn =="asc");
 			<?php echo JText::_('COM_VIRTUEMART_SHARED'); ?>
 		</th>
 		<?php } ?>
-		<th class="hidden-phone"><?php echo $this->sort('virtuemart_custom_id', 'COM_VIRTUEMART_ID')  ?></th>
+		<th class="visible-desktop"><?php echo $this->sort('virtuemart_custom_id', 'COM_VIRTUEMART_ID')  ?></th>
 	</tr>
 	</thead>
 	<tbody>
@@ -133,7 +133,7 @@ $saveOrder = ($this->lists['filter_order'] == 'ordering' && $listDirn =="asc");
                     </td>
 					<?php
 				} ?>
-				<td class="hidden-phone"><?php echo $custom->virtuemart_custom_id; ?></td>
+				<td class="visible-desktop"><?php echo $custom->virtuemart_custom_id; ?></td>
 			</tr>
 		<?php
 			$i++;

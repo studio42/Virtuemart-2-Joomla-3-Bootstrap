@@ -39,7 +39,7 @@ class VirtuemartViewVirtuemart extends VmView {
 			if($app->isadmin()) JToolBarHelper::preferences('com_virtuemart');
 		}
 		$this->loadHelper('image');
-
+		JToolBarHelper::title(JText::_('COM_VIRTUEMART'),'home');
 		$model = VmModel::getModel('virtuemart');
 
 		$this->nbrCustomers = $model->getTotalCustomers();

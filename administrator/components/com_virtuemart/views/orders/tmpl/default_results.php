@@ -36,7 +36,7 @@ defined ('_JEXEC') or die();
 			<th><?php echo $this->sort ('modified_on', 'COM_VIRTUEMART_ORDER_LIST_MDATE')  ?></th>
 			<th><?php echo $this->sort ('order_status', 'COM_VIRTUEMART_STATUS')  ?></th>
 			<th><?php echo $this->sort ('order_total', 'COM_VIRTUEMART_TOTAL')  ?></th>
-			<th class="hidden-phone"><?php echo $this->sort ('virtuemart_order_id', 'COM_VIRTUEMART_ID')  ?></th>
+			<th class="visible-desktop"><?php echo $this->sort ('virtuemart_order_id', 'COM_VIRTUEMART_ID')  ?></th>
 
 		</tr>
 		</thead>
@@ -48,7 +48,8 @@ defined ('_JEXEC') or die();
 			$keyword = JRequest::getWord ('keyword');
 
 			foreach ($this->orderslist as $key => $order) {
-				$checked = JHTML::_ ('grid.id', $i, $order->virtuemart_order_id);
+				$checked = JHTML::_ ('grid.id', $i, $order->virtuemart_vendor_id);
+				$canDo = $this->canChange($order->created_by) ;
 				?>
 			<tr >
 				<!-- Checkbox -->
@@ -58,10 +59,11 @@ defined ('_JEXEC') or die();
 					<?php echo $this->editLink(	$order->virtuemart_order_id, $order->order_number, 'virtuemart_order_id',
 						array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_ORDER_NUMBER') . ' ' .  $order->order_number) );
 					?>
+				</td>
 				<td>
 					<?php
 					if ($order->virtuemart_user_id) {
-						echo $this->editLink(	$order->virtuemart_user_id,	$order->order_name, 'virtuemart_user_id[]',
+						echo $this->editLink(	$order->virtuemart_user_id,	$order->order_name, 'virtuemart_user_id',
 							array('class'=> 'hasTooltip', 'title' => JText::_ ('COM_VIRTUEMART_ORDER_EDIT_USER') . ' ' .  $order->order_name) ,'user');
 					} else {
 						echo $order->order_name;
@@ -128,7 +130,7 @@ defined ('_JEXEC') or die();
 				</td>
 				<!-- Total -->
 				<td><?php echo $order->order_total; ?></td>
-				<td class="hidden-phone">
+				<td class="visible-desktop">
 					<?php echo $order->virtuemart_order_id ?>
 				</td>
 

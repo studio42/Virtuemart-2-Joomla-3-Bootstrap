@@ -31,14 +31,14 @@ $i=0;
     <div class="row-fluid"> 
 		<table class="span6">
 			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_FORM_PUBLISH','published',$this->product->published); ?>
-			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_SKU','product_sku',$this->product->product_sku); ?>
 			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_NAME','product_name',$this->product->product_name); ?>
 			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_ALIAS','slug',$this->product->slug); ?>
-			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_URL','product_url',$this->product->product_url); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_SKU','product_sku',$this->product->product_sku); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_GTIN','product_gtin',$this->product->product_gtin); ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_MPN','product_mpn',$this->product->product_mpn); ?>
 		</table>
 		<table class="span6">
 			<?php echo VmHTML::row('booleanlist','COM_VIRTUEMART_PRODUCT_FORM_SPECIAL','product_special',$this->product->product_special); ?>
-
 			<?php	if(Vmconfig::get('multix','none')!=='none'){ ?>
 				<?php echo VmHTML::row('raw','COM_VIRTUEMART_VENDOR', $this->lists['vendors'] ); ?>
 			<?php } 
@@ -53,6 +53,7 @@ $i=0;
 
 			<?php echo VmHTML::row('raw','COM_VIRTUEMART_SHOPPER_FORM_GROUP', $this->shoppergroupList ); ?>
 			<?php echo VmHTML::row('raw','COM_VIRTUEMART_PRODUCT_DETAILS_PAGE', $this->productLayouts) ?>
+			<?php echo VmHTML::row('input','COM_VIRTUEMART_PRODUCT_FORM_URL','product_url',$this->product->product_url); ?>
 
 		</table>
 		<?php
@@ -301,6 +302,9 @@ if (VmConfig::get('show_product_child_tab',1) ) { ?>
 			else on = "1";
 			input.val(on);
 			return false;
+		});
+		$('#pricesort').delegate('.vm-salesprices input', 'change', function(){
+			$(this).closest('.vm-salesprices').find('.toggle-hiden').trigger('click');
 		});
     });
 

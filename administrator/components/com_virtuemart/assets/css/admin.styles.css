@@ -483,3 +483,7 @@ line-height: 80px;
 max-height: 80px;
 max-width: 80px;
 }
+/*toolbar fix*/
+.page-title [class^="icon-"], .page-title [class*=" icon-"] {
+margin-right: 16px;
+}

@@ -163,10 +163,7 @@ $task = 'edit';
 	} ?>
 <header class="header">
 	<div class="container-title">
-		<h1 class="page-title"><?php 
-			echo $document->getTitle(); 
-		?>
-		</h1>
+		<?php echo $app ->JComponentTitle; //$document->getTitle(); ?>
 	</div>
 </header>
 	<div class="subhead-collapse">

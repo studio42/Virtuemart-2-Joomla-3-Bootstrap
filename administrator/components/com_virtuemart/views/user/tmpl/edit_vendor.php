@@ -21,7 +21,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 <div class="row-fluid">
 	<fieldset class="span6">
 		<legend>
-			<?php echo JText::_('COM_VIRTUEMART_VENDOR_FORM_INFO_LBL') ?>
+			<?php echo JText::_('COM_VIRTUEMART_VENDOR') ?>
 			<div class="pull-right"><?php echo $this->langList; ?></div>
 		</legend>
 		<table class="admintable">
