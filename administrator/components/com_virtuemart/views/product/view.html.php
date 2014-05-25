@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @package		VirtueMart
  * @author RolandD,Max Milbers
  */
-JLoader::register('VmView', JPATH_VM_ADMINISTRATOR.'/helpers/VmView.php');
+JLoader::register('VmView', JPATH_VM_ADMINISTRATOR.'/helpers/vmview.php');
 
 class VirtuemartViewProduct extends VmView {
 

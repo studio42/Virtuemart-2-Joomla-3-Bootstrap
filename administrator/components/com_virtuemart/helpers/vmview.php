@@ -51,13 +51,10 @@ class VmView extends JViewLegacy{
 		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.'/helpers');
 		$this->frontEdit = jRequest::getvar('tmpl') ==='component' ? true : false ;
 		if ($this->frontEdit) {
-			if (!class_exists('JToolBarHelper')) {
-				jimport( 'joomla.html.toolbar');
-				require(JPATH_VM_ADMINISTRATOR.'/helpers/front/button.php');
-				require(JPATH_VM_ADMINISTRATOR.'/helpers/front/toolbar.php');
-				require(JPATH_VM_ADMINISTRATOR.'/helpers/front/toolbarhelper.php');
-			}
 			$this->tmpl = '&tmpl=component';
+			JLoader::register('JToolBarHelper', JPATH_VM_ADMINISTRATOR.'/helpers/toolbarhelper.php');
+			JLoader::register('JToolbarButton', JPATH_VM_ADMINISTRATOR.'/helpers/button.php');
+			JLoader::register('JToolbar', JPATH_VM_ADMINISTRATOR.'/helpers/toolbar.php');
 		}
 		// this is to check, in most cases
 		$this->adminVendor = Permissions::getInstance()->isSuperVendor();

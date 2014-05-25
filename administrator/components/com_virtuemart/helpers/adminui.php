@@ -43,7 +43,7 @@ class AdminUIHelper {
 		// $document->addStyleSheet($admin.'css/admin_menu.css');
 		JHtml::_('bootstrap.framework');
 		if (JVM_VERSION===2 || self::$backEnd===false) {
-			$document->addStyleSheet($front.'css/ui/bootstrap.css');
+			$document->addStyleSheet($front.'css/ui/bootstrap.min.css');
 			// JHtml::_('bootstrap.loadCss') ;
 			JHtml::_('bootstrap.tooltip') ;
 			if (JVM_VERSION===2) $document->addScript($admin.'js/j25fixes.js');

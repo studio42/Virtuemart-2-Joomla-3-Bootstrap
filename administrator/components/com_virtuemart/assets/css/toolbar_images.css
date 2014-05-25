@@ -13,7 +13,13 @@
 #cpanel div.icon { cursor: pointer;float:left; }
  */
 .view-updatesmigration i.vmicon48 {height: 48px; width: 48px;}
-.vmicon48, .icon-48-head{background-image: url(../images/icone48.png) ; background-repeat: no-repeat !important; display :inline-block ;}
+.vmicon48, .icon-48-head {
+background-image: url(../images/icone48.png);
+background-repeat: no-repeat !important;
+display: inline-block;
+width: auto;
+height: auto;
+}
 .vm_category_48, .vm_product_types_48, .vm_custom_48{ background-position: 0 0; height: 48px; } 
 .vm_config_48{ background-position: 0 -48px !important; height: 48px; } 
 .vm_content_48{ background-position: 0 -96px !important; height: 48px; } 
