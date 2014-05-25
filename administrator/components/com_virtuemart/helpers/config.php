@@ -118,7 +118,7 @@ function vmInfo($publicdescr,$value=NULL){
  */
 function vmAdminInfo($publicdescr,$value=NULL){
 
-	JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/Permissions.php');
+	JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 	if(Permissions::getInstance()->isSuperVendor()){
 
 		$app = JFactory::getApplication();
@@ -205,7 +205,7 @@ function vmError($descr,$publicdescr=''){
 			vmTrace ('vmError message empty');
 		}
 		$lang = JFactory::getLanguage();
-		JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/Permissions.php');
+		JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 		if(Permissions::getInstance()->check('admin')){
 			//$app = JFactory::getApplication();
 			$descr = $lang->_($descr);
@@ -410,7 +410,7 @@ class VmConfig {
 
 			// 1 show debug only to admins
 			if($debug === 'admin' ){
-				JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/Permissions.php');
+				JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 				if(Permissions::getInstance()->check('admin')){
 					self::$_debug = TRUE;
 				} else {
@@ -667,7 +667,7 @@ class VmConfig {
 			self::loadConfig();
 		}
 
-		JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/Permissions.php');
+		JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 		if(Permissions::getInstance()->check('admin')){
 			if (!empty(self::$_jpConfig->_params)) {
 				self::$_jpConfig->_params[$key] = $value;
@@ -683,7 +683,7 @@ class VmConfig {
 	 */
 	function setParams($params){
 
-		JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/Permissions.php');
+		JLoader::register('Permissions', JPATH_VM_ADMINISTRATOR.'/helpers/permissions.php');
 
 		if(Permissions::getInstance()->check('admin')){
 			self::$_jpConfig->_params = array_merge($this->_params,$params);
