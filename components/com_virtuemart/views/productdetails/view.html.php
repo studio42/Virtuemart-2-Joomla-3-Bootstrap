@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::register('VmView', JPATH_VM_SITE.'/helpers/VmView.php');
+JLoader::register('VmView', JPATH_VM_SITE.'/helpers/vmview.php');
 JLoader::register('ShopFunctions', JPATH_VM_ADMINISTRATOR.'/helpers/shopfunctions.php');
 
 
@@ -169,7 +169,7 @@ class VirtueMartViewProductdetails extends VmView {
 
 	// Load the neighbours
     if (VmConfig::get('product_navigation', 1)) {
-	    $product->neighbours = $product_model->getNeighborProducts($product);
+	    $product->neighbours = $this->product_model->getNeighborProducts($product);
 	}
 	// Product vendor multiX
 	if ($multix = Vmconfig::get('multix','none') === 'admin') {
