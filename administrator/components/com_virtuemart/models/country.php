@@ -109,7 +109,7 @@ class VirtueMartModelCountry extends VmModel {
 		if (count($where) > 0) $whereString = ' WHERE '.implode(' AND ', $where) ;
 		if ($countState) {
 			$select .= ',COUNT(`virtuemart_state_id`) as states';
-			$from .=' left join `j3_virtuemart_states` as s on 
+			$from .=' left join `#__virtuemart_states` as s on 
 			s.`virtuemart_country_id` = c.`virtuemart_country_id`';
 			$whereString = ' GROUP BY `virtuemart_country_id`';
 		}

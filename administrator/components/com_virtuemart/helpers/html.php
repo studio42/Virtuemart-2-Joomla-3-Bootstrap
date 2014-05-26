@@ -292,7 +292,7 @@ static function vmGetCharset() {
 	}
 	// enchanced radio list grouped for bootstrap
 	static function radioListGroup($name, $value, &$arr) {
-		return '<fieldset class="radio btn-group">'.self::radioList($name, $value, &$arr, "", 'radio btn').'</fieldset>';
+		return '<fieldset class="radio btn-group">'.self::radioList($name, $value, $arr, "", 'radio btn').'</fieldset>';
 	}
 
 	/**
@@ -320,7 +320,7 @@ static function vmGetCharset() {
 			'0'	=>	JText::_('JNO'),
 			'1'	=>	JText::_('JYES')
 		);
-		return '<fieldset class="radio btn-group'.$yesno.'">'.self::radioList($name, (int)$value, &$arr, $class, "radio-btn").'</fieldset>' ;
+		return '<fieldset class="radio btn-group'.$yesno.'">'.self::radioList($name, (int)$value, $arr, $class, "radio-btn").'</fieldset>' ;
 		// return '<fieldset class="radio btn-group'.$yesno.'">'.JHTML::_( 'select.booleanlist',  $name , $class , $value).'</fieldset>' ;
 	}
 		/**

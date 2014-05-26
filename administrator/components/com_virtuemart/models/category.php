@@ -548,7 +548,7 @@ class VirtueMartModelCategory extends VmModel {
 			$new = true;
 
 			$this->_db->setQuery('SELECT count(*) 
-				FROM `j3_virtuemart_category_categories`
+				FROM `#__virtuemart_category_categories`
 				WHERE `category_parent_id` = '.$parent_id 
 				);
 			$data['ordering'] = $this->_db->loadResult();
